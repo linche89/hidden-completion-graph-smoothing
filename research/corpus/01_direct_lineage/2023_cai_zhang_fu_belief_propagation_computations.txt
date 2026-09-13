@@ -1,0 +1,757 @@
+Journal of Automation and Intelligence 2 (2023) 61–69
+
+
+    Contents lists available at ScienceDirect
+
+
+    Journal of Automation and Intelligence
+    journal homepage: www.keaipublishing.com/en/journals/journal-of-automation-and-intelligence/
+
+
+Research article
+
+Distributed computations for large-scale networked systems using belief
+propagationI
+Qianqian Cai a , Zhaorong Zhang b ,∗, Minyue Fu c
+a
+  School of Automation, Guangdong University of Technology, Guangzhou 510006, China
+b
+  Department of Applied Mathematics, Hong Kong Polytechnic University, Hong Kong Special Administrative Region of China
+c
+  School of System Design and Intelligent Manufacturing, Southern University of Science and Technology, Shenzhen 518055, China
+
+
+
+ARTICLE               INFO                               ABSTRACT
+Keywords:                                                This paper introduces several related distributed algorithms, generalised from the celebrated belief propagation
+Distributed estimation                                   algorithm for statistical learning. These algorithms are suitable for a class of computational problems in large-
+Distributed optimisation                                 scale networked systems, ranging from average consensus, sensor fusion, distributed estimation, distributed
+Sensor fusion
+                                                         optimisation, distributed control, and distributed learning. By expressing the underlying computational problem
+Distributed algorithm
+                                                         as a sparse linear system, each algorithm operates at each node of the network graph and computes iteratively
+                                                         the desired solution. The behaviours of these algorithms are discussed in terms of the network graph topology
+                                                         and parameters of the corresponding computational problem. A number of examples are presented to illustrate
+                                                         their applications. Also introduced is a message-passing algorithm for distributed convex optimisation.
+
+
+
+1. Introduction                                                                               a fully distributed algorithm and discuss their convergence properties.
+                                                                                              We also present examples to illustrate their performances.
+    This paper is concerned with distributed computation problems for                             The development of these algorithms and its theoretical analysis
+large scale networked systems, as depicted in Fig. 1. Examples of such                        follow from the so-called Gaussian belief propagation (BP) algorithm
+systems include sensor networks, smart grid, smart manufacturing sys-                         which applies to Gauss–Markov random fields which involve a sym-
+tems, multi-agent systems, traffic networks, social networks, and so on.                      metric system matrix [21,23–25]. The Gaussian BP algorithm is a
+Such a system often involves a large number of nodes (or agents, or sub-                      variant of the celebrated Pearl’s belief propagation algorithm [20], also
+systems) scattered in a large geographical area, linked via physical and                      known as message passing algorithm or sum–product algorithm in the
+communication interactions. Two predominant features of these sys-                            literature [21]. The algorithm runs iteratively on each node of the
+tems are (1) sparsity of the network connections expressed by a sparse                        graph associated with the system, and enjoys low complexities on local
+network graph and (2) limited computing and communication capabil-                            information exchange between neighbouring nodes, local computation
+ities at each node. It is necessary to fuse all the available information                     and local storage. For an acyclic graph, the algorithm converges to the
+available from the entire network to deliver the best global solutions                        exact solution in 𝑑 iterations, where 𝑑 is the diameter of the graph.
+or performances. Therefore, distributed computation is essential for                          This is also the theoretical minimum number of iterations required
+dealing with such large scale networked systems. For a large networked                        to solve a linear system using a distributed algorithm. For a loopy
+system such as sensor networks [1–3], networked control systems [4–                           graph, the algorithm is guaranteed to converge to the exact solution
+                                                                                              asymptotically. We will also study a distributed nonlinear optimisation
+6], network-based state estimation [7–11], biological networks [12,
+                                                                                              problem and introduce a message-passing algorithm (also a variant of
+13], multi-agent systems [14–16], multi-agent optimisation [17–19],
+                                                                                              the BP algorithm) and provide the convergence properties of the algo-
+distributed learning [20–26] and so on, it is often desirable to use
+                                                                                              rithm under certain pairwise separation and scaled diagonal dominance
+distributed algorithms.
+                                                                                              conditions.
+    In this paper, we give a comprehensive survey of a class of message-
+                                                                                                  The presented algorithms are collated and extended from the works
+passing distributed solutions for a number of important network com-
+                                                                                              of [8,21,23,27–32]. By presenting these results together, we get a
+putation problems. These problems include weighted average consen-
+                                                                                              unified view of these message-passing algorithms.
+sus, weighted least squares estimation, posterior probability computa-
+                                                                                                  The rest of the paper is organised as follows. Section 2 formulates
+tion and sparse linear systems. In each of these problems, we present
+                                                                                              the four network computation problems and introduces the required
+
+    I This work was supported in part by the of National Natural Science Foundation of China (U21A20476, U1911401, U22A20221, 62273100, 62073090).
+    ∗ Corresponding author.
+       E-mail addresses: qianqian.cai@outlook.com (Q. Cai), zhaorong.zhang@polyu.edu.hk (Z. Zhang), fumy@sustech.edu.cn (M. Fu).
+
+https://doi.org/10.1016/j.jai.2023.06.003
+Received 26 April 2023; Received in revised form 11 June 2023; Accepted 25 June 2023
+
+2949-8554/© 2023 The Authors. Published by Elsevier B.V. on behalf of KeAi Communications Co. Ltd. This is an open access article under the CC BY-NC-ND
+license (http://creativecommons.org/licenses/by-nc-nd/4.0/).
+Q. Cai, Z. Zhang and M. Fu                                                                                          Journal of Automation and Intelligence 2 (2023) 61–69
+
+
+                                                                                    2.2. Weighted least squares estimation
+
+                                                                                        Consider a network of nodes (1, 2, … , 𝑛) associated with a state
+                                                                                    vector 𝑥 = col{𝑥1 , 𝑥2 , … , 𝑥𝑛 } ∈ R𝑛 and a graph  = {, } as described
+                                                                                    before. In the distributed weighted least squares problem we consider
+                                                                                    in this paper, two types of measurements for 𝑥 are admitted: self
+                                                                                    measurements and pairwise measurements. A self measurement for node
+                                                                                    𝑖 is described by
+
+                                                                                    𝑧𝑖 = 𝐴𝑖 𝑥𝑖 + 𝑣𝑖 ,                                                                (2)
+
+                                                                                    where 𝐴𝑖 ≠ 0 and 𝑣𝑖 is the measurement noise with independent normal
+                                                                                    distribution  (0, 𝑅𝑖 ), 𝑅𝑖 > 0. Likewise, a pairwise measurement for and
+                                                                                    edge (𝑖, 𝑗) ∈  is described by
+
+                                                                                    𝑧𝑖𝑗 = 𝐵𝑖𝑗 𝑥𝑖 + 𝐵𝑗𝑖 𝑥𝑗 + 𝑣𝑖𝑗 ,                                                    (3)
+
+                                                                                    where [𝐵𝑖𝑗 𝐵𝑗𝑖 ] has full row rank and 𝑣𝑖𝑗 is the measurement noise with
+                                                                                    independent normal distribution  (0, 𝑅𝑖𝑗 ), 𝑅𝑖𝑗 > 0. It is assumed that
+                             Fig. 1. Networked systems.                             at least one node has a self measurement (i.e., not every node needs
+                                                                                    to have one self measurement), but every edge in  must have one
+                                                                                    pairwise measurement (otherwise, this edge can be removed from ).
+complexity constraints for distributed algorithms. Section 3 studies the            It is assumed that 𝐴𝑖 and 𝑅𝑖 are known only to node 𝑖, and likewise,
+Gaussian BP algorithm and its application for distributed computation               𝐵𝑖𝑗 , 𝐵𝑗𝑖 and 𝑅𝑖𝑗 are known only to the edge (𝑖, 𝑗).
+of posterior probabilities. Section 4 gives a distributed algorithm for                  Denote 𝑧 = col{… 𝑧𝑖 … 𝑧𝑖𝑗 …}, 𝑣 = col{… 𝑣𝑖 … 𝑣𝑖𝑗 …} and 𝑅 =
+weighted average consensus. Section 5 describes a distributed algo-                 diag{… 𝑅𝑖 … 𝑅𝑖𝑗 …}. Then the entire network’s measurements can be
+rithm for weighted least squares. Section 6 presents a distributed solver           expressed as
+for linear systems. Section 7 studies the distributed convex optimisation
+problem. The convergence performances of the distributed algorithms                 𝑧 = 𝐻𝑥 + 𝑣,                                                                      (4)
+are illustrated in simulation examples in Section 8. Conclusion remarks
+                                                                                    where 𝑣 ∼  (0, 𝑅) and
+are reached in Section 9.
+    Notation. R𝑛 denotes the 𝑛-dimensional Euclidean space. For 𝑥 ∈                    ⎡                  …          ⎤
+R𝑛 , 𝑥𝑖 denotes its 𝑖th component, and 𝑥 = col{𝑥1 , 𝑥2 , … , 𝑥𝑛 }.  =                 ⎢…           𝐴𝑖    …          ⎥
+                                                                                       ⎢                             ⎥
+{, } denotes a graph with node set  and edge set . For any node                 𝐻 =⎢                  …          ⎥
+𝑖 ∈ , 𝑖 denotes the set of its neighbouring nodes, and |𝑖 | is its                  ⎢…           𝐵𝑖𝑗   …   𝐵𝑗𝑖   …⎥
+                                                                                       ⎢                             ⎥
+cardinality. The notation 𝑚𝑖→𝑗 means a message (i.e., data, information,               ⎣                  …          ⎦
+or functions) transmitted from node 𝑖 to node 𝑗. E denotes expectation.
+                                                                                    with the unspecified entries (…) in 𝐻 equal to 0. It is clear that 𝐻 is
+ (𝜇, 𝑃 ) denotes the normal distribution with mean 𝜇 and covariance
+                                                                                    a sparse matrix.
+𝑃 . A probability density function 𝑝(𝑥) ∝ 𝑓 (𝑥) means 𝑝(𝑥) = 𝐶𝑓 (𝑥)
+for some constant 𝐶 > 0. For a matrix 𝑀 ∈ R𝑛×𝑛 , 𝜌(𝑀) denotes its                      The weighted least-squares problem [8] is to solve
+spectral radius. An optimiser of a function 𝑓 (𝑥) is denoted by 𝑥⋆ , and its        𝑥⋆ = arg min(𝑧 − 𝐻𝑥)𝑇 𝑅−1 (𝑧 − 𝐻𝑥).                                              (5)
+estimate by 𝑥.̂ 𝑂(𝑁) is the big-O notation, meaning a function bounded                          𝑥
+
+by 𝑎𝑁 + 𝑏 for some non-negative constant 𝑎 and 𝑏.
+                                                                                    2.3. Posterior probabilities in Gaussian graphical model
+2. Problem formulations
+                                                                                       A fundamental problem in sensor fusing and statistical learning is
+    In this section, we introduce several related distributed computa-              how to compute posterior probabilities in a Gaussian graphical model
+tion problems arising in estimation and sensor fusion in large-scale                using a distributed algorithm.
+networked systems.                                                                     Consider a Gaussian graphical model with a joint probability density
+                                                                                    function for 𝑥 ∈ R𝑛 :
+2.1. Weighted average consensus
+                                                                                                1
+                                                                                    𝑝(𝑥) ∝ exp{− 𝑥𝑇 𝐽 𝑥 + ℎ𝑇 𝑥},                                                     (6)
+                                                                                                2
+     Consider an undirected graph  = {, }. A graph is called undi-
+rected if information can flow in two ways between the two nodes on                 where 𝐽 is a symmetric positive definite matrix (called information
+any edge. A graph is called acyclic if it is connected and has no loops,            matrix) and ℎ is a vector (called potential vector). This is related to the
+i.e., it is a tree graph. We are interested in a large graph with sparse            standard Gaussian parameterisation in terms of the mean 𝜇 = E{𝑥} =
+connectivity, i.e., we assume that |𝑖 | ≪ 𝑛 for every 𝑖 ∈ .                       𝐽 −1 ℎ and covariance 𝑃 = E{(𝑥 − 𝜇)(𝑥 − 𝜇)𝑇 } = 𝐽 −1 . The associated
+     Let each node 𝑖 ∈  be associated with a variable (vector of a                 Gaussian graphical model is the undirected graph  = (, ) with
+common dimension) 𝑢𝑖 and a weight 𝑤𝑖 > 0. Denote by 𝑥̄ the weighted                  = {1, 2, … , 𝑛} and  = {(𝑖, 𝑗)|𝐽𝑖𝑗 ≠ 0, 𝑖, 𝑗 ∈ }.
+average of these 𝑢𝑖 , i.e.,                                                             The problem of posterior probabilities is to compute, for each node
+      ∑                                                                             𝑖, the marginal mean 𝜇𝑖 and marginal variance 𝑃𝑖𝑖 , in a distributed
+        𝑖∈ 𝑤𝑖 𝑢𝑖
+𝑥̄ = ∑            .                                                  (1)            way. In many applications, the computation of the means is far more
+         𝑖∈ 𝑤𝑖
+                                                                                    important than that of the variances. Moreover, the matrix 𝐽 is sparse,
+The problem of distributed average consensus [7] is to devise an iterative          due to the sparsity of the Gaussian graphical model. From the above
+algorithm which runs on every node 𝑖 ∈  to compute an estimate of 𝑥̄               discussion, we see that this falls into a problem of sparse linear system:
+such that after a certain number of iterations, each node’s estimate will
+             ̄ When 𝑤𝑖 = 1 for all nodes, weighted average consensus
+converge to 𝑥.
+becomes the standard (unweighted) average consensus.                                𝐽 𝜇 = ℎ.                                                                         (7)
+
+                                                                               62
+Q. Cai, Z. Zhang and M. Fu                                                                                                    Journal of Automation and Intelligence 2 (2023) 61–69
+
+
+2.4. Sparse linear systems
+
+   Consider a network of nodes (1, 2, … , 𝑛) associated with a state
+vector 𝑥 = col{𝑥1 , 𝑥2 , … , 𝑥𝑛 } ∈ R𝑛 . The information available at each
+node 𝑖 is that 𝑥 satisfies a linear system:
+
+𝑎𝑇𝑖 𝑥 = 𝑏𝑖 ,
+                                                                                                            Fig. 2. Message passing in belief propagation [23].
+where 𝑎𝑖 = col{𝑎𝑖1 , 𝑎𝑖2 , … 𝑎𝑖𝑛 } ∈ 𝐑𝑛 is a column vector and 𝑏𝑖 is a scalar.
+Collectively, the common state satisfies
+
+𝐴𝑥 = 𝑏                                                                      (8)
+
+with 𝐴 = col{𝑎𝑇1 , 𝑎𝑇2 , … , 𝑎𝑇𝑛 } and 𝑏 = col{𝑏1 , 𝑏2 , … , 𝑏𝑛 }. It is assumed
+throughout the paper that
+   (i) 𝐴 is invertible; and
+   (ii) 𝑎𝑖𝑖 ≠ 0 for all 𝑖.
+   Denote the solution of (8) by
+
+𝑥⋆ = 𝐴−1 𝑏.                                                                 (9)
+                                                                                                                      Fig. 3. An example of acyclic graph.
+     Define the induced graph  = {, } with  = {1, 2, … , 𝑛} and
+ = {(𝑖, 𝑗)|𝑎𝑖𝑗 ≠ 0 or 𝑎𝑗𝑖 ≠ 0}. We associate each node 𝑖 with (𝑎𝑖𝑖 , 𝑏𝑖 ),
+and each edge (𝑖, 𝑗) with 𝑎𝑖𝑗 . Note in particular that  is undirected,
+                                                                                        𝜓𝑖𝑗 (𝑥𝑖 , 𝑥𝑗 ) = exp{−𝐽𝑖𝑗 𝑥𝑖 𝑥𝑗 }                                                    (11)
+i.e., (𝑖, 𝑗) ∈  if and only if (𝑗, 𝑖) ∈ . For each node 𝑖 ∈ , we define
+its neighbouring set as 𝑖 = {𝑗|(𝑖, 𝑗) ∈ } and denote its cardinality by               The Gaussian BP algorithm iteratively passes messages between neigh-
+|𝑖 |. We assume in the sequel that |𝑖 | ≪ 𝑛 for all 𝑖 ∈ .                            bouring nodes. That is, the message from node 𝑖 to node 𝑗 ∈ 𝑖 in
+     The distributed linear system problem we are interested in is to devise            iteration 𝑘 is given by
+an iterative algorithm for each node 𝑖 ∈  to execute so that node 𝑖                                       1
+will be able to solve 𝑥𝑖 . Note that in this problem formulation, node 𝑖                𝑚(𝑘)                           2
+                                                                                         𝑖→𝑗 (𝑥𝑗 ) = exp{− 2 𝛥𝐽𝑖→𝑗 (𝑘)𝑥𝑗 + 𝛥ℎ𝑖→𝑗 (𝑘)𝑥𝑗 }
+is only interested in its local variable, and not interested in knowing the
+                                                                                        or simply the pair (𝛥𝐽𝑖→𝑗 (𝑘), 𝛥ℎ𝑖→𝑗 (𝑘)), which are computed by
+solution of 𝑥𝑗 for any other node 𝑗 ∈ , rather than every node trying to
+solve the entire 𝑥. This is motivated by the need of network scalability                                     𝐽𝑗𝑖2                             𝐽𝑗𝑖
+where asking every node to solve the entire 𝑥 is often unnecessary and                  𝛥𝐽𝑖→𝑗 (𝑘) = −                 ; 𝛥ℎ𝑖→𝑗 (𝑘) = −                ℎ̂ 𝑖∖𝑗 (𝑘),             (12)
+                                                                                                          𝐽̂𝑖∖𝑗 (𝑘)                      𝐽̂𝑖∖𝑗 (𝑘)
+also infeasible when the network becomes large.
+                                                                                        where
+2.5. Complexity constraints                                                                                   ∑
+                                                                                        𝐽̂𝑖∖𝑗 (𝑘) = 𝐽𝑖𝑖 +             𝛥𝐽𝑣→𝑖 (𝑘 − 1);
+                                                                                                            𝑣∈𝑖 ∖𝑗
+    The distributed solutions for the problems above will be provided                                        ∑
+in the next four sections. In each of the problems, we want its dis-                    ℎ̂ 𝑖∖𝑗 (𝑘) = ℎ𝑖 +             𝛥ℎ𝑣→𝑖 (𝑘 − 1)                                          (13)
+                                                                                                            𝑣∈𝑖 ∖𝑗
+tributed algorithm to be of low complexity and fast convergence.
+Certain constraints need to be imposed on the algorithm’s complexities                  with 𝛥𝐽𝑖→𝑗 (−1) = 0, 𝛥ℎ𝑖→𝑗 (−1) = 0. The estimated marginal mean and
+of communication, computation and storage to call it distributed. In our                variance for 𝜇𝑖 and 𝑃𝑖𝑖 are given by
+paper, these include:
+                                                                                        𝜇̂ 𝑖 (𝑘) = 𝐽̂𝑖−1 (𝑘)ℎ̂ 𝑖 (𝑘); 𝑃̂𝑖𝑖 (𝑘) = 𝐽̂𝑖−1 (𝑘),                                  (14)
+   C1: Local information exchange: Each node 𝑖 can exchange informa-
+       tion with each 𝑗 ∈ 𝑖 only once per iteration.                                   respectively, with
+   C2: Local computation: Each node 𝑖’s computational load should be                                    ∑
+                                                                                        𝐽̂𝑖 (𝑘) = 𝐽𝑖𝑖 +   𝛥𝐽𝑣→𝑖 (𝑘 − 1);
+       at most 𝑂(|𝑖 |) per iteration.                                                                    𝑣∈𝑖
+   C3: Local storage: Each node 𝑖’s storage should be at most 𝑂(|𝑖 |)                                    ∑
+       over all iterations.                                                             ℎ̂ 𝑖 (𝑘) = ℎ𝑖 +          𝛥ℎ𝑣→𝑖 (𝑘 − 1).                                              (15)
+                                                                                                          𝑣∈𝑖
+    Imposing these constraints is important to ensure that the produced                 The message passing process is illustrated in Fig. 2, where node 𝑖
+distributed algorithms are scalable, i.e., the computational complexity                 collects messages from its neighbouring nodes other than node 𝑗 to form
+per iteration at each node does not grow as the network size increases.
+                                                                                        the message 𝑚𝑖→𝑗 and then transmits it to node 𝑗.
+                                                                                            For an acyclic graph  (like the one in Fig. 3), the Gaussian BP
+3. Gaussian BP for posterior probabilities
+                                                                                        algorithm is known to compute the correct marginal means 𝜇𝑖 and
+                                                                                        variances 𝑃𝑖𝑖 in at most 𝑑 iterations, where 𝑑 is the diameter of
+   The Gaussian BP algorithm [21] is a variant of the celebrated belief
+                                                                                        . For a general (cyclic) graph (like the one in Fig. 4), conditions
+propagation (BP) algorithm [20] for solving posterior probabilities in
+                                                                                        under which the Gaussian BP algorithm converges have been studied
+a Gaussian graphical model. It is fully distributed and very efficient. It
+                                                                                        extensively. [21] showed that under the assumption that 𝐽 is diagonally
+aims to compute, for each node 𝑖, the marginal mean 𝜇𝑖 and marginal
+                                                                                        dominant, 𝜇𝑖 (𝑘) converges to 𝜇𝑖 asymptotically (as 𝑘 → ∞). This
+variance 𝑃𝑖𝑖 , in an iterative fashion. Rewriting 𝑝(𝑥) as
+                                                                                        assumption was relaxed to generalised diagonal dominance in [23].
+       ∏           ∏
+𝑝(𝑥) ∝    𝜓𝑖 (𝑥𝑖 )      𝜓𝑖𝑗 (𝑥𝑖 , 𝑥𝑗 )                               (10)               General, but more complex, conditions under which 𝜇𝑖 (𝑘) converges
+         𝑖∈       (𝑖,𝑗)∈                                                              correctly are given are in [24,25]. Recall that a square matrix 𝐴 = {𝑎𝑖𝑗 }
+                                                                                                                                        ∑
+with the node and edge potential functions                                              is said to be diagonally dominant if |𝑎𝑖𝑖 | > 𝑗≠𝑖 |𝑎𝑖𝑗 | for all 𝑖, 𝑗, and
+                                                                                        generalised diagonally dominant if there exists a diagonal matrix 𝐷 > 0
+                     1
+     𝜓𝑖 (𝑥𝑖 ) = exp{− 𝐽𝑖𝑖 𝑥2𝑖 + ℎ𝑖 𝑥𝑖 };                                                such that 𝐴𝐷 is diagonally dominant.
+                     2
+
+                                                                                   63
+Q. Cai, Z. Zhang and M. Fu                                                                                                   Journal of Automation and Intelligence 2 (2023) 61–69
+
+
+                                                                                  Algorithm 1 Distributed Algorithm for Distributed WAC [29]
+
+                                                                                      • Initialization: For each node 𝑖, do: For each 𝑗 ∈ 𝑖 , set 𝑥𝑖→𝑗 (0) =
+                                                                                        𝑏𝑖 , 𝑠𝑖→𝑗 (0) = 𝑓 (𝑤𝑖 ) and transmit them to node 𝑗.
+                                                                                      • Main loop: At iteration 𝑘 = 1, 2, ⋯, each node 𝑖 computes
+                                                                                                       ∑
+                                                                                        𝑠̃𝑖 (𝑘) = 𝑤𝑖 +   𝑠𝑗→𝑖 (𝑘 − 1)                                                       (23)
+                                                                                                              𝑗∈𝑖
+                                                                                                                   ∑
+                                                                                         𝑥̃ 𝑖 (𝑘) = 𝑤𝑖 𝑏𝑖 +               𝑠𝑗→𝑖 (𝑘 − 1)𝑥𝑗→𝑖 (𝑘 − 1)                          (24)
+                                                                                                                   𝑗∈𝑖
+                                                                                                      𝑥̃ 𝑖 (𝑘)
+                                                                                         𝑥̂ 𝑖 (𝑘) =            ,                                                            (25)
+                                                                                                      𝑠̃𝑖 (𝑘)
+                                                                                         then for each 𝑗 ∈ 𝑖 , computes
+
+                                                                                         𝑠𝑖→𝑗 (𝑘) = 𝑓 (𝑠̃𝑖 (𝑘) − 𝑠𝑗→𝑖 (𝑘 − 1))                                              (26)
+                                                                                                          𝑥̃ 𝑖 (𝑘) − 𝑥𝑗→𝑖 (𝑘 − 1)
+                  Fig. 4. A 1000-node loopy graph for Algorithm 3.                       𝑥𝑖→𝑗 (𝑘) =                                                                         (27)
+                                                                                                          𝑠̃𝑖 (𝑘) − 𝑠𝑗→𝑖 (𝑘 − 1)
+                                                                                         and transmits them to node 𝑗.
+4. Distributed algorithm for Weighted Average Consensus (WAC)
+
+
+    An alternative formulation of the distributed average consensus is
+                                                                                     The distributed algorithm for weighted average consensus is pre-
+as follows:
+                                                                                  sented in Algorithm 3 below, which comes from [29]. For notational
+     1∑                                                                           convenience, we denote 𝑏 = 𝑊 𝑢 − 𝑦(𝑡) and 𝑓 (𝑤) = 𝜌𝑤∕(𝜌 + 𝑤).
+min        𝑤𝑖 (𝑥𝑖 − 𝑢𝑖 )2
+  𝑥 2
+       𝑖∈
+
+subject to 𝑥𝑖 = 𝑥𝑗 , ∀(𝑖, 𝑗) ∈ .                                    (16)
+                                                                                      Algorithm 1 has the following key convergence properties. Please
+This is because it is straightforward to verify that, under the assumption        refer to [29] for proofs.
+that  is connected, the constraint above enforces that all 𝑥𝑖 are
+identical, which in turn means that the optimal solution 𝑥⋆ to (16) is            Theorem 1.
+that 𝑥⋆𝑖 =𝑥̄ in (1) for all 𝑖 ∈ .
+                                                                                      1. [29] Suppose the graph  is connected and acyclic with diameter 𝑑.
+    Define the incidence matrix 𝐵 = col{𝑒𝑖𝑗 ∶ (𝑖, 𝑗) ∈ }, where 𝑒𝑖𝑗 ∈ R𝑛
+                                                                                         Then, running Algorithm 1 yields the following finite convergence:
+is a row vector which contains 1 in the 𝑖th element, −1 in 𝑗th element,
+and 0 elsewhere. Then, (16) is equivalent to                                              ̂
+                                                                                          𝑥(𝑘) = 𝑥⋆ , ∀𝑘 ≥ 𝑑                                                                (28)
+   1                                                                                     where 𝑥(𝑘)
+                                                                                                ̂    = col{𝑥̂ 1 (𝑘), 𝑥̂ 2 (𝑘), … , 𝑥̂ 𝑛 (𝑘)}.
+min (𝑥 − 𝑢)𝑇 𝑊 (𝑥 − 𝑢), subject to 𝐵𝑥 = 0,                           (17)
+ 𝑥 2
+                                                                                      2. [29] For a general connected (cyclic) graph, Algorithm 1 has the
+where 𝑊 = diag{𝑤𝑖 } and 𝑢 = col{𝑢𝑖 }. Using the alternating direction                    following exponential convergence:
+method of multipliers (ADMM) method [26], (16) can be solved by
+                                                                                                       𝑖 ‖≤𝜂
+                                                                                          ‖𝑥̂ 𝑖 (𝑘) − 𝑥⋆     𝑘−1
+                                                                                                                 𝐶, ∀ 𝑖 ∈ , 𝑘 = 0, 1, 2, … ,                               (29)
+considering the augmented function
+              1                             1                                             where 0 < 𝜂 < 1 is an upper bound on the convergence rate of (29),
+𝐿𝜌 (𝑥, 𝑦) =     (𝑥 − 𝑢)𝑇 𝑊 (𝑥 − 𝑢) + 𝑦𝑇 𝐵𝑥 + 𝜌𝑥𝑇 𝐿𝑥,                 (18)                 given by
+              2                             2
+where 𝑦 ∈ R𝑛 is the Lagrange multiplier, 𝜌 > 0 is the penalty parameter,                                     (|𝑖 | − 1)𝜌
+                                                                                          𝜂 = max                                ,                                          (30)
+and 𝐿 = 𝐵 𝑇 𝐵 = {𝑙𝑖𝑗 } is the Laplacian matrix given by                                          𝑖∈     𝑤𝑖 + (|𝑖 | − 1)𝜌
+
+      ⎧| |,                                                                              and 𝐶 is a constant independent of 𝑘.
+                 𝑗=𝑖
+      ⎪ 𝑖
+𝑙𝑖𝑗 = ⎨−1,       𝑗 ≠ 𝑖, 𝑗 ∈ 𝑖                                       (19)         5. Distributed algorithm for WLS
+      ⎪0,        𝑗 ≠ 𝑖, 𝑗 ∉ 𝑖
+      ⎩
+                                                                                      It is straightforward to verify that the solution to the WLS problem
+The solution is given by the iterative calculations below [26]:
+                                                                                  in (5) is given by the following sparse linear system:
+𝑥(𝑡 + 1) = arg min 𝐿𝜌 (𝑥, 𝑦(𝑡)),                                     (20)
+                  𝑥                                                               𝛹𝑥 = 𝛼                                                                                    (31)
+𝑦(𝑡 + 1) = 𝑦(𝑡) + 𝜌𝐵𝑥(𝑡)                                             (21)         with 𝛹 = 𝐻 𝑇 𝑅−1 𝐻 and 𝛼 = 𝐻 𝑇 𝑅−1 𝑧. Thus, our focus is to solve (31)
+                                                                                  in a distributed way by using the sparsity structure of 𝐻 (or 𝛹 ). Denote
+with any initial 𝑥(0) and 𝑦(0), and 𝑡 = 0, 1, 2, …. It is known [26] that
+                                                                                  its solution by 𝑥⋆ = 𝛹 −1 𝛼.
+correct (optimal) solution to (17) is produced by iterating (20)–(21).
+                                                                                      A fully distributed WLS algorithm was presented in [8]. It is shown
+    It is clear that (20) is the key and most computationally demanding
+                                                                                  in Algorithm 2, where
+step. Solving (20) by setting 𝜕𝐿𝜌 (𝑥, 𝑦(𝑡))∕𝜕𝑥 = 0, which yields the
+                                                                                              −1
+following sparse linear system:                                                   𝛾𝑖𝑗 = 𝐵𝑖𝑗𝑇 𝑆𝑖,𝑗 𝐵𝑗𝑖                                                                       (32)
+
+(𝑊 + 𝜌𝐿)𝑥 = 𝑊 𝑢 − 𝑦(𝑡).                                              (22)         for ∀𝑖 ∈ , 𝑗 ∈ 𝑖 . The estimate for 𝑥⋆
+                                                                                                                         𝑖 in iteration 𝑘 is given by 𝑥
+                                                                                                                                                      ̂ 𝑖 (𝑘)
+                                                                                  in (35).
+The sparsity of the matrix 𝑊 + 𝜌𝐿 is due to the diagonal property of                  The basic idea of Algorithm 2 is as follows. At initial iteration 𝑘 = 0,
+𝑊 and sparse connectivity of .                                                   each 𝑖 ∈  computes its local version of 𝛹 and 𝛼, i.e., 𝛹̌ 𝑖 (0) and 𝛼̌ 𝑖 (0),
+
+                                                                             64
+Q. Cai, Z. Zhang and M. Fu                                                                                                         Journal of Automation and Intelligence 2 (2023) 61–69
+
+
+respectively, by using all components related to 𝑥𝑖 which are either                         6. Distributed solver for sparse linear systems
+self measurement or edge measurements. For each 𝑗 ∈ 𝑖 , messages
+passed from 𝑖 to 𝑗 are defined by 𝛹𝑖→𝑗 (0) and 𝛼𝑖→𝑗 (0), which carry the                         This section focuses on distributed solutions to a general sparse
+                                                                                             linear system (8). The key difference between (8) and sparse linear
+neighbouring information of 𝛹 and 𝛼 from node 𝑗 to node 𝑖. At iteration
+                                                                                             system (7) in the posterior probability problem that the latter has a
+𝑘 > 0, 𝛹̂ 𝑖 (𝑘) and 𝛼̂ 𝑖 (𝑘) can be updated using the initial value and                      symmetric and positive definite matrix 𝐽 for which the Gaussian BP
+messages sent by 𝑗 ∈ 𝑖 at the previous iteration, and the estimation                        algorithm, which was developed specifically for Gaussian graphical
+𝑥̂ 𝑖 (𝑘) can be expressed by 𝑥̂ 𝑖 (𝑘) = 𝛹̂ 𝑖 (𝑘)−1 𝛼̂ 𝑖 (𝑘). Node 𝑖 uses all messages        models, applies.
+sent by 𝑣 ∈ 𝑖 except 𝑗 to calculate 𝛹𝑖→𝑗 (𝑘) and 𝛼𝑖→𝑗 (𝑘), and sends them                       It turns out that, under suitable conditions, the Gaussian BP algo-
+to node 𝑗.                                                                                   rithm can be generalised to handle an asymmetric matrix 𝐴 in (8).
+                                                                                             The resulting distributed algorithm was developed in [27], as listed in
+                                                                                             Algorithm 3. In each iteration 𝑘 of the algorithm, each node 𝑖 computes
+Algorithm 2 Distributed WLS Algorithm [8] (based on 𝐻)                                       variables 𝑎𝑖→𝑗 (𝑘) and 𝑏𝑖→𝑗 (𝑘) for each of its neighbouring node 𝑗 ∈ 𝑖
+                                                                                             and transmit them to node 𝑗. All the nodes execute the same algorithm
+    • Initialization: Each node 𝑖 computes                                                   concurrently.
+                                                  ∑
+                           𝛹̌ 𝑖 (0) = 𝐴𝑇𝑖 𝑅−1
+                                           𝑖 𝐴𝑖 +
+                                                         𝑇 −1
+                                                   𝑗∈𝑖 𝐵𝑖𝑗 𝑆𝑖,𝑗 𝐵𝑖𝑗
+                                                                                             Algorithm 3 Distributed Solver for Linear systems [27]
+                                                    ∑
+                           𝛼̌ 𝑖 (0) = 𝐴𝑇𝑖 𝑅−1
+                                           𝑖 𝑧𝑖,𝑖 +
+                                                           𝑇 −1
+                                                     𝑗∈𝑖 𝐵𝑖𝑗 𝑆𝑖,𝑗 𝑧𝑖,𝑗                         • Initialization: For each node 𝑖, transmit 𝑎𝑖→𝑗 (0) = 𝑎𝑖𝑖 and
+                                                                                                  𝑏𝑖→𝑗 (0) = 𝑏𝑖 to each node 𝑗 ∈ 𝑖 .
+      and for each 𝑗 ∈ 𝑖
+                                                                                                • Main loop: At iteration 𝑘 = 1, 2, ⋯, each node 𝑖 computes
+                                           𝛹𝑖→𝑗 (0) = 𝛹̌ 𝑖 (0)                                                    ∑   𝑎𝑣𝑖 𝑎𝑖𝑣
+                                                                                                  𝑎̃𝑖 (𝑘) = 𝑎𝑖𝑖 −                                                                 (38)
+                                                                                                                    𝑎𝑣→𝑖 (𝑘 − 1)
+                                                                                                                       𝑣∈𝑖
+                                            𝛼𝑖→𝑗 (0) = 𝛼̌ 𝑖 (0)                                                        ∑ 𝑎𝑖𝑣 𝑏𝑣→𝑖 (𝑘 − 1)
+                                                                                                  𝑏̃ 𝑖 (𝑘) = 𝑏𝑖 −                                                                 (39)
+                                                                                                                               𝑎𝑣→𝑖 (𝑘 − 1)
+    • Main loop: At 𝑘 = 0, 1, ⋯, each node 𝑖 computes                                                                 𝑣∈𝑖
+
+                                                                                                               𝑏̃ 𝑖 (𝑘)
+                                   ∑        𝑇𝛾
+                                           𝛾𝑣𝑖 𝑣𝑖                                                 𝑥̂ 𝑖 (𝑘) =            ,                                                         (40)
+      𝛹̂ 𝑖 (𝑘 + 1) = 𝛹̌ 𝑖 (0) −                                                (33)                            𝑎̃𝑖 (𝑘)
+                                          𝛹𝑣→𝑖 (𝑘)
+                                   𝑣∈𝑖
+                                                                                                  then for each 𝑗 ∈ 𝑖 , computes
+                                   ∑ 𝛾𝑣𝑖
+                                      𝑇𝛼
+                                         𝑣→𝑖 (𝑘)
+       𝛼̂ 𝑖 (𝑘 + 1) = 𝛼̌ 𝑖 (0) −                                               (34)                                              𝑎𝑗𝑖 𝑎𝑖𝑗
+                                          𝛹𝑣→𝑖 (𝑘)                                                𝑎𝑖→𝑗 (𝑘) = 𝑎̃𝑖 (𝑘) +                                                            (41)
+                                   𝑣∈𝑖                                                                                       𝑎𝑗→𝑖 (𝑘 − 1)
+                                                                                                                              𝑎𝑖𝑗 𝑏𝑗→𝑖 (𝑘 − 1)
+                       𝛼̂ 𝑖 (𝑘 + 1)                                                               𝑏𝑖→𝑗 (𝑘) = 𝑏̃ 𝑖 (𝑘) +                                                           (42)
+      𝑥̂ 𝑖 (𝑘 + 1) =                                                           (35)                                            𝑎𝑗→𝑖 (𝑘 − 1)
+                       𝛹̂ 𝑖 (𝑡 + 1)
+                                                                                                  and transmits them to node 𝑗.
+      then for each 𝑗 ∈ 𝑖 , computes
+                                             𝛾𝑗𝑖𝑇 𝛾𝑗𝑖
+      𝛹𝑖→𝑗 (𝑘 + 1) = 𝛹̂ 𝑖 (𝑘 + 1) +                                            (36)              Once again, we have the following convergence results. Please refer
+                                           𝛹𝑗→𝑖 (𝑘)
+                                                                                             to [27,28,33] for proofs.
+                                           𝛾𝑗𝑖𝑇 𝛼𝑗→𝑖 (𝑘)
+       𝛼𝑖→𝑗 (𝑘 + 1) = 𝛼̂ 𝑖 (𝑘 + 1) +                                           (37)
+                                            𝛹𝑗→𝑖 (𝑘)                                         Theorem 3.
+
+      and transmits them to node 𝑗.                                                             1. [27] For an acyclic graph  with diameter 𝑑, suppose the linear sys-
+                                                                                                   tem (8) is generalised diagonally dominant. Then, running Algorithm
+                                                                                                   3 yields
+   The convergence properties of Algorithm 2 have been studied in [8,                              𝑥̂ 𝑖 (𝑘) = 𝑥⋆
+                                                                                                               𝑖 ,          ∀ 𝑘 ≥ 𝑑, 𝑖 ∈ .                                       (43)
+30], and they are summarised below. Please refer to [8,30] for proofs.
+                                                                                                2. [27] For a general connected (cyclic) graph , suppose the linear sys-
+                                                                                                   tem (8) is generalised diagonally dominant. Then, running Algorithm
+Theorem 2.                                                                                         3 yields
+    1. [8] If  is connected and acyclic with diameter 𝑑, the estimate 𝑥̂ 𝑖 (𝑘)                     lim 𝑥̂ 𝑖 (𝑘) = 𝑥⋆
+                                                                                                   𝑘→∞              𝑖 , ∀ 𝑖 ∈ .                                                  (44)
+       obtained by running Algorithm 2 converges to the exact value 𝑥⋆    𝑖 in
+       𝑑 iterations for all 𝑖 ∈ .                                                              3. ([28] and Corollary 1 of [33]) Moreover, defining the matrix 𝑈 =
+    2. [30] For a general connected (cyclic) graph and the types of mea-                           {𝑢𝑖𝑗 } such that 𝑢𝑖𝑖 = 0 and 𝑢𝑖𝑗 = |𝑎𝑖𝑗 ∕𝑎𝑖𝑖 | for all 𝑖, 𝑗 = 1, 2, … , 𝑛 with
+       surements (2)–(3), the estimate 𝑥̂ 𝑖 (𝑘) obtained by running Algorithm                      𝑗 ≠ 𝑖, then the convergence rate of 𝑥̂ 𝑖 (𝑘) is bounded by
+       2 is asymptotically convergent to the exact value 𝑥⋆  𝑖 as 𝑘 → ∞, for                       |𝑥̂ 𝑖 (𝑘) − 𝑥⋆
+                                                                                                                𝑖 | ≤ 𝐶𝜌(𝑈 ) , ∀ 𝑖 ∈ , 𝑘 = 0, 1, 2, … ,
+                                                                                                                            𝑘
+                                                                                                                                                                                  (45)
+       all 𝑖 ∈ .
+                                                                                                   where 𝐶 is a constant and 𝜌(𝑈 ) is the spectral radius of 𝑈 , with
+    3. [30] The convergence rate is bounded as follows:                                            𝜌(𝑈 ) < 1 guaranteed when 𝐴 is generalised diagonally dominant.
+
+                     𝑖 | ≤ 𝜌(𝛺) 𝐶
+        |𝑥̂ 𝑖 (𝑘) − 𝑥⋆       ̄ 𝑘
+                                                                                             7. Distributed convex optimisation
+
+        for each 𝑖 ∈ , where 𝛺 = (𝜔𝑖𝑗 ) = 𝐼 − 𝐷−1 𝛹 , 𝛺̄ = {|𝜔𝑖𝑗 |},                           In this section, we consider a more general distributed computation
+                                                                  ̄ < 1
+        𝐷 = diag{𝛹𝑖𝑖 }, and 𝐶 > 0 is a constant. In particular, 𝜌(𝛺)                         problem, namely, distributed convex optimisation problem. For a net-
+        is guaranteed.                                                                       work graph  = (, ) with node set  = {1, 2, … , 𝑛} and undirected
+
+                                                                                        65
+Q. Cai, Z. Zhang and M. Fu                                                                                                       Journal of Automation and Intelligence 2 (2023) 61–69
+
+
+edge set  ⊂  × , we want to solve the distributed optimisation                           Assumption 2.             Take any set of initial estimates {𝑥(0)
+                                                                                                                                                          𝑖→𝑗 , 𝑖 ∈ , 𝑗 ∈ 𝑖 }
+problem                                                                                                                        (0)
+                                                                                            and any set of initial messages {𝐽𝑖→𝑗  (⋅), 𝑖 ∈ , 𝑗 ∈ 𝑖 } which are
+                                                                                            twice continuously differentiable and satisfy the following for some
+min 𝐹 (𝑥)                                                                     (46)
+𝑥∈R𝑛                                                                                        0 ≤ 𝜌 < 𝜆−1 :
+for a nonlinear objective function 𝐹 ∶ R𝑛 → R having the following                           𝑑 2 (0)            𝑑2
+properties:                                                                                       𝐽𝑖→𝑗 (𝑥𝑗 ) −       𝑓𝑗𝑖 (𝑥𝑗 , 𝑥(0)
+                                                                                                                                𝑖→𝑗 )
+                                                                                             𝑑𝑥𝑗2               𝑑𝑥2𝑗
+
+Assumption 1.                                                                                     𝑤 || 𝜕 2                      |
+                                                                                                                                |
+                                                                                            ≥−𝜌 𝑖 |             𝑓𝑗𝑖 (𝑥𝑗 , 𝑥(0) )| , ∀𝑥𝑗 ∈ R.                                    (52)
+                                                                                                  𝑤𝑗 || 𝜕𝑥𝑗 𝜕𝑥𝑖            𝑖→𝑗  |
+                                                                                                                                |
+    • 𝐹 (⋅) is twice continuously differentiable, strictly convex and co-
+      ercive;                                                                                    In particular, that any
+    • 𝐹 (⋅) is expressed in a pairwise separation form (47) below with                        (0)
+                                                                                                  (𝑥𝑗 ) = 𝑓𝑗𝑖 (𝑥𝑗 , 𝑥(0)                (0)
+                                                                                            𝐽𝑖→𝑗                     𝑖→𝑗 ) + 𝑐𝑗𝑖 (𝑥𝑗 , 𝑥𝑖→𝑗 )
+      some graph  = (, );
+    • 𝐹 (⋅) is scaled diagonally dominant for some 0 < 𝜆 < 1 and positive                   with 𝑐𝑗𝑖 (⋅, ⋅) being affine in the first variable will satisfy (52), including
+      𝑤 ∈ R𝑛 .                                                                              𝑐𝑗𝑖 (⋅, ⋅) = 0.
+                                                                                                 The main convergence properties of the message-passing algorithm
+where the notions of pairwise separation and scaled diagonal domi-
+                                                                                            above are given below; see [32] for details and proof.
+nance are defined below.
+
+Definition 1 (Pairwise Separation). An objective function 𝐹 ∶ R𝑛 → R                        Theorem 4. Under Assumptions 1–2, the following convergence property
+is said to be in a pairwise separation form if it is expressed as                           holds for every node 𝑟 ∈  and 𝑘 > 0:
+        ∑              ∑                                                                        |𝑥(𝑘)
+                                                                                                  𝑟 − 𝑥𝑟 |
+                                                                                                       ⋆
+𝐹 (𝑥) =     𝑓𝑖 (𝑥𝑖 ) +   𝑓𝑖𝑗 (𝑥𝑖 , 𝑥𝑗 ),                          (47)
+         𝑖∈           (𝑖,𝑗)∈                                                                        𝑤𝑟
+                                                                                                              ∑                               (0)
+                                                                                                                  𝑢∈𝑖 |∇1 𝑓𝑖𝑢 (𝑥𝑖 , 𝑥𝑢 ) − ∇𝐽𝑢→𝑖 (𝑥𝑖 )|
+                                                                                                                                 ⋆ ⋆                ⋆
+where the factors {𝑓𝑖 (⋅)} and {𝑓𝑖𝑗 (⋅, ⋅)} are twice continuously differen-                     𝜆𝑘
+                                                                                            ≤          max                                                 .                    (53)
+tiable and coercive.                                                                            1 − 𝜆 𝑖∈                              2
+                                                                                                                        𝑤𝑖 min𝑥∈R𝑛 𝜕 2 𝐹 (𝑥)
+                                                                                                                                      𝜕𝑥𝑖
+
+Definition 2 (Scaled Diagonal Dominance [31]). Given a twice contin-                                                                             (0)
+                                                                                            Moreover, if the initial messages are chosen to be 𝐽𝑖→𝑗  (𝑥𝑗 ) = 𝑓𝑗𝑖 (𝑥𝑗 , 𝑥(0)
+                                                                                                                                                                        𝑖 )
+uously differentiable function 𝐹 ∶ R𝑛 → R, a scalar 𝜆 ∈ (0, 1), and a
+                                                                                            and 𝑥(0)    (0)
+                                                                                                 𝑖→𝑗 = 𝑥𝑖 for all 𝑖 ∈ , 𝑗 ∈ 𝑖 , then (53) simplifies to
+positive vector 𝑤 = (𝑤1 , 𝑤2 , … , 𝑤𝑛 ) ∈ R𝑛 , then 𝐹 (or, with some abuse
+              𝜕2
+of notation, 𝜕𝑥 2 𝐹 (𝑥)) is said to be (𝜆, 𝑤)-scaled diagonally dominant if,                |𝑥𝑟(𝑘) − 𝑥⋆                         |𝑥(0)
+                                                                                                      𝑟|                          𝑣 − 𝑥𝑣 |
+                                                                                                                                       ⋆
+                                                                                                                       𝑀
+for every 𝑖 ∈  and all 𝑥 ∈ R𝑛 ,                                                                             ≤ 𝜆𝑘+1         max            ,                                    (54)
+                                                                                                  𝑤𝑟                  1 − 𝜆 𝑣∈     𝑤𝑣
+∑       | 𝜕2           |        𝜕2
+        |              |                                                                    where 𝑀 is the conditioning value for the diagonal part of the Jacobian
+     𝑤𝑗 |         𝐹 (𝑥)| ≤ 𝜆𝑤𝑖      𝐹 (𝑥).                                    (48)
+        | 𝜕𝑥𝑖 𝜕𝑥𝑗      |       𝜕𝑥2𝑖
+𝑗∈𝑖    |              |                                                                    matrix for 𝐹 (⋅), i.e.,
+                                                                                                                         2
+     Note that pairwise separation basically means that the overall ob-                                     max𝑥∈R𝑛 𝜕 2 𝐹 (𝑥)
+                                                                                                                       𝜕𝑥𝑖
+jective function consists of local functions 𝑓𝑖 (𝑥𝑖 ) and coupling functions                𝑀 = max                             .                                               (55)
+                                                                                                                        2
+𝑓𝑖𝑗 (𝑥𝑖 , 𝑥𝑗 ) between neighbouring nodes. This structure is natural for                              𝑖∈
+                                                                                                            min𝑥∈R𝑛 𝜕 2 𝐹 (𝑥)
+                                                                                                                       𝜕𝑥𝑖
+many applications. The scaled diagonal dominance basically means
+that the Hessian matrix of 𝐹 (𝑥) is such that the local terms dominate                          We see from (54) that, with a simple choice of initial messages, the
+the influence of the coupling terms in some scaled fashion. This is a                       estimate 𝑥(𝑘) will converge to the optimal solution 𝑥⋆ exponentially
+sufficient condition for convexity of 𝐹 (𝑥) and can be justified in many                    fast. This superb convergence property is achieved with the simple
+network applications.                                                                       assumptions of pairwise separation and scaled diagonal dominance.
+     The distributed algorithm we introduce is a variant of the message                     Since these assumptions can be satisfied in many applications, the
+passing (or BP) algorithm. Denote the optimal solution of (46) by 𝑥⋆ .                      message-passing algorithm is indeed a powerful distributed convex
+The algorithm is given below.                                                               optimisation tool.
+                                                                               (𝑘)
+     At iteration 𝑘 = 0, 1, …, each node 𝑖 takes an incoming message 𝐽𝑢→𝑖          ∶
+R → R from each neighbouring node 𝑢 ∈ 𝑖 . These incoming messages
+                                                             (𝑘+1)                          8. Examples
+are fused together to create an outgoing message 𝐽𝑖→𝑗              ∶ R → R for each
+𝑗 ∈ 𝑖 according to
+  (𝑘+1)
+                                                  ∑ (𝑘)                                         In this section, we provide some examples to illustrate the dis-
+𝐽𝑖→𝑗     (𝑥𝑗 ) ∶= min 𝑓𝑖 (𝑦𝑖 ) + 𝑓𝑗𝑖 (𝑥𝑗 , 𝑦𝑖 ) +   𝐽𝑢→𝑖 (𝑦𝑖 )                              tributed algorithms introduced in this paper.
+                 𝑦𝑖
+                                             𝑢∈𝑖 ∖𝑗
+                   (𝑘+1)
+                + 𝜅𝑖→𝑗   ,                                                    (49)
+                                                                                            8.1. Example 1: Distributed weighted average consensus
+             (𝑘+1)                (𝑘+1)
+where 𝜅𝑖→𝑗         is such that 𝐽𝑖→𝑗     (0) = 0. The local objective function for
+each 𝑥𝑖 in iteration 𝑘 is constructed as                                                        To demonstrate the performance of Algorithm 1 on loopy graphs,
+                          ∑ (𝑘)                                                             we apply it to the 13-node graph in Fig. 5, with 𝑤𝑖 = 1, 𝑦𝑖 = 𝑖,
+𝛾𝑖(𝑘) (𝑥𝑖 ) ∶= 𝑓𝑖 (𝑥𝑖 ) +    𝐽𝑢→𝑖 (𝑥𝑖 ),                                      (50)
+                       𝑢∈𝑖                                                                 𝑖 = 1, 2, … , 13, and 𝛾 = 1000. The weighted average consensus (1) is
+                                                                                            easily checked to give 𝑥̄ = 7. The result of Algorithm 1 is given in
+and the estimate 𝑥(𝑘+1)
+                  𝑖     for 𝑥⋆
+                             𝑖 in iteration 𝑘 is obtained by minimising                     Fig. 6. It can be verified by analysing Fig. 6 that the convergence rate of
+𝛾𝑖(𝑘) , i.e.,                                                                                 ̂ − 𝑥⋆ ‖ turns out to be much faster than the estimate in (29)–(30).
+                                                                                            ‖𝑥(𝑘)
+                                                                                                We also note that applications of Algorithm 1 in distributed Kalman
+𝑥𝑖(𝑘+1) ∶= argmin 𝛾𝑖(𝑘) (𝑥𝑖 ).                                                (51)
+                                                                                            filtering and distributed clock synchronisation can be found in [2,3],
+    We will consider the choice of initial messages as follows.                             respectively.
+
+                                                                                       66
+Q. Cai, Z. Zhang and M. Fu                                                                                            Journal of Automation and Intelligence 2 (2023) 61–69
+
+
+
+
+                             Fig. 5. A 13-node loopy graph.
+
+
+
+
+                                                                                                      Fig. 8. Convergence of Algorithm 3 on acyclic graph.
+
+
+
+
+                 Fig. 6. Convergence of the proposed Algorithm 1.
+
+
+
+
+                                                                                                     Fig. 9. Convergence error of the proposed Algorithm 3.
+
+
+
+
+                                                                                    8.3. Example 3: Distributed linear system solver
+
+                                                                                        We first demonstrate Algorithm 3 on an acyclic graph depicted in
+                                                                                    Fig. 3. The matrix 𝐴 has 𝑎𝑖𝑖 = |𝑖 | and the non-zero 𝑎𝑖𝑗 randomly
+                                                                                    chosen from (−1, −0.85) and 𝑏𝑖 = 𝑖. It is easy to check that the diameter
+                                                                                    of the graph is 𝑑 = 4. The simulated result for Algorithm 3 is shown in
+                                                                                    Fig. 8. As we can see, it takes only 4 iterations to converge.
+                                                                                        Next, we test Algorithm 3 on a randomly connected loopy graph
+                                                                                    with 1000 nodes, as shown in Fig. 4. The circles represent the nodes
+                                                                                    and the curves represent the edges. The matrix 𝐴 is selected by taking
+                                                                                    the non-zero off-diagonal terms 𝑅𝑖𝑗 (the (𝑖, 𝑗)th entry of 𝑅) to be random
+                                                                                    within (−0.05, 0.05), and 𝑏𝑖 = 𝑖 for all 𝑖. We plot the logarithmic error
+                                                                                    log10 (‖𝑥(𝑘)
+                                                                                            ̂    − 𝑥⋆ ‖2 ∕𝑛) versus the iteration number 𝑘 in Fig. 9. As we
+              Fig. 7. WLS estimation error for the 13 node network.
+                                                                                    can see from the figure, the error also decreases exponentially (or the
+                                                                                    logarithmic error decreases linearly) as the iteration number increases.
+                                                                                    The error floor after 15 iterations is due to the accuracy limitation of
+8.2. Example 2: Distributed WLS                                                     Matlab.
+
+
+    We now study the loopy network with 13 nodes in Fig. 5 again. In                8.4. Example 4: Distributed convex optimisation
+this network, there are two nodes without self measurement, i.e., for
+                                                                                        To illustrate the distributed algorithm for convex optimisation, we
+𝑖 ∈ {2, 5}, 𝐴𝑖 = 0. The other nonzero 𝐴𝑖 and all the 𝐵𝑖𝑗 are chosen
+                                                                                    revisit the 13-node graph in Fig. 5 and consider the objective function
+randomly. Fig. 7 shows the estimation error by Algorithm 2 using 𝑦1 =
+       ∑                                                                            𝐹 (𝑥) with
+log10 { 𝑖 (𝑥̂ 𝑖 (𝑘) − 𝑥⋆  2
+                       𝑖 ) ∕𝑛}. We see from Fig. 7 that the estimation error
+                                                                                                     1
+converges to zero exponentially fast as the iteration number increases.                 𝑓𝑖 (𝑥𝑖 ) =     𝑎 𝑥2 − 𝑏𝑖 𝑥𝑖 + 𝜙(𝑥𝑖 ),
+                                                                                                     2 𝑖𝑖 𝑖
+
+                                                                               67
+Q. Cai, Z. Zhang and M. Fu                                                                                                  Journal of Automation and Intelligence 2 (2023) 61–69
+
+
+                                                                                          References
+
+                                                                                           [1] S. Kar, J.M.F. Moura, K. Ramanan, Distributed parameter estimation in sensor
+                                                                                               networks: Nonlinear observation models and imperfect communication, IEEE
+                                                                                               Trans. Inform. Theory 58 (6) (2012) 1–52.
+                                                                                           [2] Z. Wu, M. Fu, Y. Xu, R. Lu, A distributed Kalman filtering algorithm with fast
+                                                                                               finite-time convergence for sensor networks, Automatica 95 (2018) 63–72.
+                                                                                           [3] K. Xie, Q. Cai, M. Fu, A fast clock synchronization algorithm for wireless sensor
+                                                                                               networks, Automatica 92 (2018) 133–142.
+                                                                                           [4] S. Mou, J. Liu, A.S. Morse, A distributed algorithm for solving a linear algebraic
+                                                                                               equation, IEEE Trans. Automat. Control 60 (11) (2015) 2863–2878.
+                                                                                           [5] S. Mou, J. Liu, A.S. Morse, Asynchronous distributed algorithms for solving linear
+                                                                                               algebraic equations, IEEE Trans. Automat. Control 63 (2) (2018) 372–385.
+                                                                                           [6] X. Wang, S. Mou, Improvement of a distributed algorithm for solving linear
+                                                                                               equations, IEEE Trans. Ind. Electron. 64 (4) (2017) 3113–3117.
+                                                                                           [7] L. Xiao, S. Boyd, Fast linear iterations for distributed averaging, Systems Control
+                                                                                               Lett. 53 (2004) 65–78.
+                                                                                           [8] D. Marelli, M. Fu, Distributed weighted least-squares estimation with fast
+                                                                                               convergence for large-scale systems, Automatica 51 (2015) 27–39.
+                                                                                           [9] W.J. Russell, D.J. Klein, J.P. Hespanha, Optimal estimation on the graph cycle
+                                                                                               space, IEEE Trans. Signal Process. 59 (6) (2011) 2834–2846.
+                                                                                          [10] A. Bertrand, M. Moonen, Consensus-based distributed total least squares esti-
+               Fig. 10. Convergence of the 13-node system in Example 4.
+                                                                                               mation in ad hoc wireless sensor networks, IEEE Trans. Signal Process. 59 (5)
+                                                                                               (2011) 2320–2330.
+                                                                                          [11] A. Bertrand, M. Moonen, Low-complexity distributed total least squares esti-
+                                                                                               mation in ad hoc sensor networks, IEEE Trans. Signal Process. 60 (8) (2012)
+𝑓𝑖𝑗 (𝑥𝑖 , 𝑥𝑗 ) = 𝑎𝑖𝑗 𝑥𝑖 𝑥𝑗 ,                                                 (56)
+                                                                                               4321–4333.
+                                                                                          [12] M. Nagy, Z. Akos, D. Biro, T. Vicsek, Hierarchical group dynamics in pigeon
+where 𝑎𝑖𝑖 = |𝑖 |, the non-zero 𝑎𝑖𝑗 = 𝑎𝑗𝑖 are chosen uniformly from
+                                                                                               flocks, Nature 464 (2010) 890–893.
+(−1.2, −0.2), and 𝑏𝑖 are chosen randomly using the normal distribution                    [13] T. Nepusz, T. Vicsek, Controlling edge dynamics in complex networks, Nat. Phys.
+ (0, 1). The function 𝜙(𝑥𝑖 ) is a barrier function given by                                   (2012) Advance Online Publication.
+         {                                                                                [14] N. Tarcai, et al., Patterns, transitions and the role of leaders in the collective
+           −𝜖 log(𝑑 2 − 𝑥2𝑖 ), |𝑥𝑖 | < 𝑑                                                       dynamics of a simple robotic flock, J. Stat. Mech. Theory Exp. (4) (2011) P04010.
+𝜙(𝑥𝑖 ) =                                                          (57)
+           ∞,                  otherwise                                                  [15] Z. Lin, L. Wang, Z. Han, M. Fu, Distributed formation control of multi-agent
+                                                                                               systems using complex Laplacian, IEEE Trans. Automat. Control 59 (7) (2014)
+for some given 𝑑 > 0 and some (sufficiently) small 𝜖 > 0. This is used                         1765–1777.
+to relax a hard constraint of |𝑥𝑖 | < 𝑑. That is, for an interior point of                [16] Z. Lin, L. Wang, Z. Han, M. Fu, A graph Laplacian approach to coordinate-free
+                                                                                               formation stabilization for directed networks, IEEE Trans. Automat. Control 61
+|𝑥𝑖 | < 𝑑, the barrier function becomes void, but it becomes dominant as
+                                                                                               (5) (2016) 1269–1280.
+𝑥𝑖 moves towards the boundary of |𝑥𝑖 | = 𝑑. When the barrier function                     [17] A. Nedic, A. Ozdaglar, Distributed sub-gradient methods for multi-agent
+is neglected, the scaled diagonal dominance property can be simply                             optimization, IEEE Trans. Automat. Control 54 (1) (2009) 48–61.
+checked with 𝜆 ≈ 0.835.                                                                   [18] D. Jakovetic, J.M.F. Moura, J. Xavier, Fast distributed gradient methods, IEEE
+                                                                                               Trans. Automat. Control 59 (5) (2014) 1131–1146.
+     We initialise 𝑥(0)
+                     𝑖
+                                                   (0)
+                         = sat(𝑏𝑖 ∕(𝑎𝑖𝑖 𝑑))𝑑 and 𝐽𝑖→𝑗  (𝑥𝑗 ) = 𝑎𝑗𝑖 𝑥𝑗 𝑥(0)
+                                                                       𝑖   for all
+                                                                                          [19] J. Lu, C.Y. Tang, A distributed algorithm for solving positive definite linear
+𝑖, 𝑗, where sat(⋅) is the saturation function with saturation level of 1.                      equations over networks with membership dynamics, IEEE Trans. Control Netw.
+We have the exponential convergence result in Fig. 10, as predicted by                         Syst. 5 (1) (2018) 215–227.
+Theorem 4.                                                                                [20] J. Pearl, Probabilistic Reasoning in Intelligent Systems, Morgan Kaufman, 1988.
+                                                                                          [21] Y. Weiss, William T. Freeman, Correctness of belief propagation in Gaus-
+                                                                                               sian graphical models of arbitrary topology, Neural Comput. 13 (10) (2001)
+9. Conclusion                                                                                  2173–2200.
+                                                                                          [22] R. Shental, et al., Gaussian belief propagation solver for systems of linear
+                                                                                               equations, in: ISIT 2008, Toronto, Canada, 2008, pp. 6–11.
+    We have introduced a number of distributed algorithms for solv-                       [23] D.M. Malioutov, J.K. Johnson, A.S. Willsky, Walk-sums and belief propagation
+ing problems in large scale networked systems. These algorithms are                            in Gaussian graphical models, J. Mach. Learn. Res. 7 (2006) 2031–2064.
+                                                                                          [24] Q. Su, Y.-C. Wu, Convergence analysis of the variance in Gaussian belief
+efficient and meet the complexity constraints specified in Section 2.5.                        propagation, IEEE Trans. Signal Process. 62 (19) (2014) 5119–5131.
+These algorithms are related, and all evolved from the well-known BP                      [25] Q. Su, Y.-C. Wu, Convergence conditions of Gaussian belief propagation, IEEE
+algorithm, but tailored for different applications. Like the BP algorithm,                     Trans. Signal Process. 63 (5) (2015) 1144–1155.
+we expect the distributed algorithms introduced here to find wide                         [26] S. Boyd, et al., Distributed optimisation and statistical learning via the alternating
+                                                                                               direction method of multipliers, Found. Trends Mach. Learn. 3 (1) (2010) 1–122.
+applications in sensor fusion, distributed estimation, distributed opti-                  [27] Z. Zhang, Q. Cai, M. Fu, A fast distributed solver for linear systems under
+misation, distributed control, and distributed learning. Future research                       generalized diagonal dominance, IEEE Trans. Automat. Control 66 (5) (2021)
+can be directed to asynchronous implementation of these algorithms, as                         2423–2429.
+well as more study of their convergence properties and generalisation                     [28] Z. Zhang, M. Fu, Convergence rate analysis of Gaussian belief propagation for
+                                                                                               Markov networks, IEEE/CAA J. Autom. Sin. 7 (3) (2020) 668–673.
+to distributed nonlinear estimation.                                                      [29] K. Xie, Q. Cai, Z. Zhang, M. Fu, Distributed algorithms for average consensus of
+                                                                                               input data with fast convergence, IEEE Trans. Syst. Man Cybern.: Syst. 51 (5)
+                                                                                               (2021) 2653–2664.
+Declaration of competing interest                                                         [30] Q. Yang, Z. Zhang, M. Fu, Distributed weighted least-squares estimation for
+                                                                                               networked systems with edge measurements, Automatica 120 (109091) (2020).
+                                                                                          [31] C.C. Moallemi, B. Van Roy, Convergence of min-sum message-passing for convex
+    The authors declare that they have no known competing finan-
+                                                                                               optimization, IEEE Trans. Inform. Theory 56 (4) (2010) 2041–2050.
+cial interests or personal relationships that could have appeared to                      [32] Z. Zhang, M. Fu, Convergence properties of message-passing algorithm for
+influence the work reported in this paper.                                                     distributed convex optimisation with scaled diagonal dominance, IEEE Trans.
+                                                                                               Signal Process. 69 (1) (2021) 3868–3877.
+                                                                                          [33] Z. Zhang, Q. Cai, M. Fu, Convergence rate of a message-passing algorithm for
+Data availability                                                                              solving linear systems, arXiv:2004.06327.
+
+
+    No data was used for the research described in the article.
+
+                                                                                     68
+Q. Cai, Z. Zhang and M. Fu                                                                                                     Journal of Automation and Intelligence 2 (2023) 61–69
+
+
+                         Qianqian Cai received the B.S. degree in environmental
+                         engineering from the University of Shanghai for Science and                                      Minyue Fu received his Bachelor’s Degree in Electrical
+                         Technology, Shanghai, China, in 2011, and the Ph.D. degree                                       Engineering from the University of Science and Technol-
+                         in engineering from the University of Newcastle, Callaghan,                                      ogy of China, Hefei, China, in 1982, and Master and
+                         NSW, Australia, in 2016. She is currently an Associate Pro-                                      Ph.D. degrees in Electrical Engineering from University of
+                         fessor with the School of Automation, Guangdong University                                       Wisconsin-Madison, USA in 1983 and 1987, respectively.
+                         of Technology, Guangdong, China. Her current research                                            From 1987 to 1989, he served as an Assistant Professor
+                         interests include water pollution control engineering, en-                                       in the Department of Electrical and Computer Engineering,
+                         vironmental monitoring, reinforcement learning, networked                                        Wayne State University, USA. He joined the University of
+                         control system and state estimation.                                                             Newcastle, Australia, in 1989 and became a Chair Professor
+                                                                                                                          in Electrical Engineering in 2003. In 2023, he joined the
+                                                                                                                          Southern University of Science and Technology, Shenzhen,
+                         Zhaorong Zhang received her Bachelor’s degree of engi-               China. His current research interests include networked control systems, distributed
+                         neering from Nanjing University of Science and Technology,           estimation and control, high-precision control, and reinforcement learning. He has been
+                         Nanjing, China, in 2016 and Ph.D. degree from Uni-                   an Associate Editor for the IEEE Transactions on Automatic Control, IEEE Transactions
+                         versity of Newcastle, Newcastle, Australia, in 2021. She             on Signal Processing, Automatica and Journal of Optimisation and Engineering. He is
+                         is currently a postdoctoral fellow in the Department of              a Fellow of IEEE, Fellow of IFAC, Fellow of Engineers Australia, and Fellow of Chinese
+                         Applied Mathematics, Hong Kong Polytechnic University.               Association of Automation.
+                         Her recent research interests include distributed algorithms,
+                         reinforcement learning and networked control systems.
+
+
+
+
+                                                                                         69

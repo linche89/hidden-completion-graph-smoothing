@@ -1,0 +1,803 @@
+A NNALES DE L’I. H. P., SECTION C
+
+
+
+
+ S. JAFFARD
+ Propriétés des matrices « bien localisées » près de
+ leur diagonale et quelques applications
+ Annales de l’I. H. P., section C, tome 7, no 5 (1990), p. 461-476
+ <http://www.numdam.org/item?id=AIHPC_1990__7_5_461_0>
+
+
+
+
+    © Gauthier-Villars, 1990, tous droits réservés.
+    L’accès aux archives de la revue « Annales de l’I. H. P., section C »
+    (http://www.elsevier.com/locate/anihpc) implique l’accord avec les condi-
+    tions générales d’utilisation (http://www.numdam.org/conditions). Toute uti-
+    lisation commerciale ou impression systématique est constitutive d’une
+    infraction pénale. Toute copie ou impression de ce fichier doit conte-
+    nir la présente mention de copyright.
+
+
+
+
+                   Article numérisé dans le cadre du programme
+                 Numérisation de documents anciens mathématiques
+                               http://www.numdam.org/
+Ann. Inst. Henri Poincaré,
+
+Vol. 7, n° 5, 1990, p. 461-476.                                                   Analyse non linéaire
+
+
+
+
+    Propriétés des matrices « bien localisées » près de
+          leur diagonale et quelques applications
+
+
+                                          S. JAFFARD
+                                 C.M.A.P., École polytechnique,
+                                 91 1 28 Palaiseau Cedex, France
+                             et C.E.R.M.A., E.N.P.C., La Courtine,
+                                  93167 Noisy-le-Grand, France
+
+
+
+
+   RÉSUMÉ. - Nous étudions dans cet article deux classes de matrices
+infinies (matrices dont les coefficients sont à décroissance exponentielle
+ou polynomiale en s’éloignant de la diagonale). Nous montrons qu’elles
+
+possèdent des propriétés du type « calcul symbolique » : L’inversibilité
+sur 12 implique que les coefficients de la matrice inverse ont la même
+propriété de décroissance. De plus, l’inversion est une opération « locale » :
+Une perturbation des coefficients de A n’est pas ressentie sur son inverse
+loin de la zone de perturbation. Nous fournissons deux exemples d’applica-
+tions concernant les propriétés des bases orthonormées d’ondelettes.
+  Mots clés : Algèbres de matrices, calcul symbolique, inversion de grandes matrices, approxi-
+mation des inverses, estimations asymptotiques des ondelettes.
+
+
+   ABSTRACT. - In the following paper, two classes of infinité matrices
+are studied (matrices with exponentially or polynomially decreasing coeffi-
+cients away from the diagonal). Properties of symbolic calculus type are
+shown: Inversibility on l2 implies that the inverse has the same decay
+property. It is also shown that inversion is a "local" transformation of
+the matrix: A change in the coefficients is not felt far away from the area
+
+
+
+  Classification A.M.S. : I 5 A 09.
+                Annales de l’Institut Henri Poincaré - Analyse non linéaire - 0294-1449
+                            Vol. 7/90/05/461/t6/$3.60/0 Gauthier-Villars
+462                              S. JAFFARD
+
+
+
+changed. Two applications concerning the properties of orthonormal bases
+of wavelets are given.
+
+
+
+
+                            INTRODUCTION
+
+  Soit M une grande matrice diagonale par blocs
+
+
+
+
+et supposons que chaque Mi soit inversible. L’inverse de M est encore une
+matrice   diagonale par blocs et l’inversion est réalisée en inversant
+chaque Mi. Ainsi, l’éventuelle perturbation de l’une des Mi n’affecte pas
+le calcul de M -1 dans une région de M différente de Mi. Ce type de
+résultats est en général complètement faux si M n’est pas diagonale par
+blocs et le but de cet article est de montrer dans quelle mesure ils sont
+préservés si M est « bien localisée » près de sa diagonale; ce qui signifiera
+que les coefficients de M ont une décroissance exponentielle ou polyno-
+miale en s’éloignant de la diagonale. Nous verrons que ce type de localisa-
+tion est préservé par passage à l’inverse et que de grandes perturbations
+                                                                     1
+locales des coefficients de M peuvent ne pas affecter ceux de M - situés
+suffisamment loin de la perturbation.
+   Nous allons tout d’abord définir les espaces d’opérateurs sur lesquels
+nous travaillerons et montrer que ce sont des algèbres. Puis nous montre-
+rons que, si un tel opérateur est inversible sur l2, son inverse est du même
+
+type. Nous démontererons ensuite les propriétés de perturbation que nous
+avons mentionnées et enfin nous donnerons deux applications au compor-
+tement asymptotique des ondelettes.
+   Certains résultats qui suivent furent annoncés sans démonstration
+dans [J].
+
+
+
+                       I. LES   ALGÈBRES E03B3 ET Q03B1
+   Les matrices (ou opérateurs) que nous considérons seront (éventuelle-
+ment) infinies et indexées par des ensembles assez arbitraires car ce contexte
+est utile pour certaines applications. Nous décrivons d’abord les espaces ~Y.
+
+
+                                    Annales de l’Institut Henri Poincaré - Analyse non linéaire
+                         PROPRIÉTÉS DES MATRICES BIEN LOCALISÉES        463
+
+    Soit T un espace métrique discret muni d’une distance d telle que
+
+
+
+
+   DÉFINITION 1.     Une matrice A indexée par T x T appartient à ~,~ si ses
+                         -
+
+
+
+
+            A
+coefficients (s, t) vérifient
+
+  Les éléments de ~y sont des opérateurs bornés sur l2 (T). C’est une
+                                                     ’
+
+application immédiate du lemme suivant :
+    LEMME 1 (Schur). - Si une matrice A vérifie
+
+
+
+alors A est bornée sur l2 (T) et Il A Il __ c.
+   Supposons maintenant aue l’on ait
+
+
+
+(par exemple T 7~d et N > c,~. Alors
+                     =
+
+
+
+
+   DÉFINITION 2. - Soit a > N. Une matrice A appartient à Qa si
+
+
+   Ici encore, en appliquant le lemme de Schur, on voit que A est bornée
+sur  l2. Montrons maintenant le résultat suivant.
+  PROPOSITION 1.     Les espaces ~,~ et Qa sont des algèbres.
+                         -
+
+
+
+
+  En effet, supposons que A et B vérifient (2).
+Soit y’ y et E y - y’. Alors
+                     =
+
+
+
+
+       Supposons maintenant que A et B vérifient (4). On coupé la somme
+
+teT
+                          ] en deux parties suivant que
+                                                    q   (~
+                                                           2 (           ou
+
+
+
+
+Vol. 7, n° 5-1990.
+464                                  S. JAFFARD
+
+
+   La proposition qui suit est un outil classique en physique mathématique
+(voir [RS] par exemple) et nous n’en fournissons la démonstration que par
+soucis de complétude.
+
+  PROPOSITION 2. - Si                et A est        inversible comme opérateur sur
+l2 (T), A ~ I ~ ~.~ pour un certain y’.
+  On peut se restreindre au cas où A est définie positive: en effet
+
+
+et il suffit donc de prouver le résultat pour AA* qui est définie positive et
+appartient à
+On a
+
+
+Donc
+
+
+
+
+On peut majorer le terme (s, t) de Rn par r".
+D’autre part,1 R (s, t) ~ ~ c exp ( - y d (s, t)).
+Soit y’ y;
+
+
+
+
+     En prenant, pour le terme Rn (s, t) la meilleure des deux estimations
+fournies, on obtient le résultat annoncé.
+   Le résultat analogue dans le cas de la décroissance en puissance est
+moins immédiat et fait l’objet de la partie qui suit.
+
+  Remarque. - L’hypothèse (1) est nécessaire pour démontrer la
+proposition 2, comme le montrent certains contre-exemples dus à P. Tcha-
+nitchian et P. G. Lemarié. Dans ces contre-exemples, les matrices sont
+indexées par les points du demi-plan supérieur de la forme (k 2 ^’, 2 ~’)~, ~
+munis de la distance hyperbolique.
+  ( 1 ) n’est plus vérifiée que pour            Les matrices à décroissance
+exponentielle pour     cette distance forment des algèbres si l’exposant est
+suffisamment grand (cf [M]) mais leurs inverses peuvent ne plus être à
+décroissance exponentielle (cf. [T], [M]).
+
+                                          Annales de l’Institut Henri Poincaré - Analyse non linéaire
+                          PROPRIÉTÉS DES MATRICES BIEN LOCALISÉES                      465
+
+          II. CALCUL SYMBOLIQUE POUR LES ALGÈBRES Qa
+
+     Le but de cette partie est de démontrer la proposition suivante, établie
+avec Jean-Lin Journé.
+
+     PROPOSITION 3. - Si A appartient à Qa et est inversible comme opérateur
+sur   l2, A -1 appartient à Q~.
+     Nous introduisons tout d’abord quelques notations.
+     Il Ildésigne
+      A            la norme de A comme opérateur l2 - l2 .
+
+               k, j
+
+                 j    k                         k   j
+     On peut, comme précédemment, supposer que A                 =
+                                                                     I -B   avec ] )   1,
+
+et l’on veut montrer         que 03A3~Bn~03B1           + oo .
+  Pour simplifier les notations, nous supposons que les matrices sont
+indexées par Z x Z. Nous étudions tout d’abord le cas où 1 a 2.
+     LEMME 1 :1
+
+
+     Démonstration. - On a :
+
+
+
+
+On a
+
+
+
+
+et
+
+
+
+
+donc
+
+
+
+En prenant N de l’ordre de grandeur de                           on obtient
+
+
+
+
+D’où le lemme.
+Mais         est le sup des normes des images par B ou B* des vecteurs
+de la base canonique, donc Il         ( B ~I i ~p 1 I ~ B I I 2 - 2/p.
+Vol. 7, n° 5-1990.
+466                             S. JAFFARD
+
+
+  On                      ~. On a alors
+
+  LEMME 2. -     Si p est suffisamment proche de 1, et siIl M ~lp                  oo et
+
+
+
+
+  Démonstration. - On remarque tout d’abord que la matrice B est
+bornée de lP dans lP’ pour p suffisamment proche de 1, en effet
+
+
+
+
+La suite                    à l~ si q > S .
+           ~ appartient                 a - 1
+
+  D’après l’inégalité de Young, É sera continue de lP          -   lr si1 r>1 p+1 q-1.
+
+                  p   r                                    3 - a
+
+
+  Si (e;) est la base canonique de l~; on a
+                            -                 .   -
+
+
+
+
+donc
+
+
+            on en déduit par Hôlder que
+
+
+
+
+  LEMME 3. -
+  Démonstration. - Soit bn,      le coefficient (k, j) de Bn. On a
+
+
+
+et donc
+
+
+
+
+En appliquant le lemme 2, on obtient
+
+
+
+
+                                   Annales de l’Institut Henri Poincaré - Analyse non linéaire
+                     PROPRIÉTÉS DES MATRICES BIEN LOCALISÉES                467
+
+Le lemme 1 fournit alors
+
+
+
+
+Q~ étant une algèbre, il existe Ro > 0 tel que
+
+
+et donc
+
+
+Donc on a
+
+
+
+
+Il suffit alors d’itérer cet argument en observant que Il      est le seul point
+fixe de l’application
+
+
+pour obtenir le lemme 3.
+   LEMME 4. - Il existe ~y > 0 tel que V R > BIl Il ont ait
+   Démonstration. - Comme dans le lemme 2, la matrice                             ]
+est bornée de lP dans lp~ pour un p > 1. D’autre part, du lemme           3, on
+déduit
+
+
+On a
+
+
+
+Comme
+
+
+on en déduit
+
+
+
+
+Vol. 7, n° 5-1990.
+468                                S. JAFFARD
+
+
+On applique alors de nouveau la démonstration du lemme 3, et l’on
+obtient l’estimation désirée.
+
+  LEMME 5 . - Si A~Q03B1 et est inversible sur l2, A -1 E Q03B3 pour un y > 1.
+  Le lemme 5 est une conséquence du lemme 4,                 car ~ ~ B ~ ~ 1
+                                                                      et il suffit
+donc de choisir R 1 pour avoir
+
+
+qui est la majoration désirée.
+  Démonstration de la proposition 3. - Soit A E Qa et inversible sur 12.
+L’égalité algébrique suivante est immédiate à vérifier
+
+
+
+
+On en déduit aussitôt
+
+
+
+
+qui est l’estimation recherchée;
+Cela provient du fait que,          1 et E     1,
+
+
+
+
+  Le cas a >_ 2 s’obtient par récurrence sur la partie entière de a à partir
+des formules (5) et (6). On en déduit
+
+
+
+
+d’où la proposition 3. On vérifie aisément que la même démonstration
+s’applique si la distance entre les points du réseau vérifie (3), pour a > N.
+
+
+                 III. LES « LEMMES DE LA FENÊTRE »
+
+  Nous allons montrer que, si       ou     une grande perturbation de
+                                                           1
+A dans une certaine région affecte peu les éléments de A - qui sont
+éloignés de la perturbation.
+                                      Annales de l’Institut Henri Poincaré - Analyse non linéaire
+                      PROPRIÉTÉS DES MATRICES BIEN LOCALISÉES         469
+
+   Ce résultat fournit une estimation de l’erreur commise lorsqu’on appro-
+xime l’inverse d’une « matrice infinie » par l’inverse d’une sous-matrice
+finie. Il devrait donc être utile en analyse numérique.
+
+                             Premier lemme « de la fenêtre »
+    Si A et B sont deux éléments inversibles de ~y et Q c T. Si
+
+
+alors il existe c’ et y’ tels que
+
+
+  L’ensemble Q est fixé. Si A et B appartiennent à lff’Y’ nous dirons que
+A ~ B si (5) est vérifiée pour un certain y’.
+
+    LEMME 6. - Si A - B et C - D, AC - BD.
+    Il suffit de prouver que A ~ B ~ AC ~ BC.
+
+
+
+
+d’après (3.1). Donc
+
+
+Si ds,
+           u> $ ’ dt, Q>     alors ds,
+                                         Q> % ’ dt, Q>   et donc
+
+
+
+
+si ds,
+           u> i ’ di, il),
+
+En prenant la moyenne géométrique de cette dernière estimation et de (9),
+on obtient le lemme 6.
+  A cause de « l’astuce » classique A -1= (A* A) -1 A* et du lemme 6, on
+voit que pour démontrer le lemme de la fenêtre, on peut se restreindre au
+cas où A et B sont des opérateurs auto-adjoints positifs, donc finalement
+
+
+Vol. 7, n° 5-1990.
+470                                S. JAFFARD
+
+
+au cas où
+
+
+
+
+donc
+
+
+Nous allons montrer par récurrence qu’il existe c’, y’ tels que
+
+
+Cette estimation est vraie pour k =1 et c = c’. Supposons la vraie pour k.
+On a
+
+
+
+(utilisé dans la démonstration de la proposition 2).
+  On a
+
+
+
+
+Soit y’    y, E = y - y’ et                           t))
+
+
+
+d’où (10) à l’ordre k + 1 en prenant c’ sup (2 c, 2 cco).
+                                          =
+
+
+
+De (10) et (9) on obtient, pour tout ko,
+
+
+
+
+      Le choix optimal de ko fournit l’estimation cherchée (pour un autre y’).
+
+   N.B. : Le type de résultats que nous avons montré pour les inverses
+ s’étend immédiatement à d’autres « fonctions » que l’inverse; nous utilise-
+ rons notamment le même résultat pour ~- ~~2 (quand A est définie posi-
+
+ tive).
+    Nous allons maintenant démontrer le résultat analogue dans le cas de
+ la décroissance polynomiale.
+
+                                     Annales de l’Institut Henri Poincaré - Analyse non linéaire
+                   ’
+                     PROPRIÉTÉS DES MATRICES BIEN LOCALISÉES          471
+
+                            Second lemme « de la fenêtre »
+
+   Si A et B sont deux éléments inversibles de Qa et          ~, si
+
+
+alors il existe c’ tel que
+
+
+
+   La démonstration de ce lemme suit de façon assez proche celle du
+premier lemme de la fenêtre. On démontre tout d’abord que ces estimations
+sont stables par produit, c’est-à-dire que, si l’on note A ~ B quand (12)
+est vérifiée, alors
+
+   LEMME 7. - Si A - B et C - D, alors AC - BD.
+   Il suffit de prouver que A ~ B ==> AC ~ BC
+
+
+
+
+Si d u t
+              ~1 2 d t S2   alors
+
+
+
+
+Si /(M, ~ ~
+                 ~(~, Q),   alors J(M, Q) ~
+                                              ~(~, Q),   et
+
+
+
+
+Donc
+
+
+
+
+d’où le lemme 7. On peut donc, pour démontrer le lemme de la fenêtre,
+se ramener au cas où A et B sont de la forme Id + Al et Id + B1, avec
+
+
+
+
+Vol. 7, n° 5-1990.
+472                                      S. JAFFARD
+
+
+
+Notons an (s, t) le terme (s, t) de A i et bn (s, t) le terme (s, t) de B1. D’après
+l’estimation (7), on a :
+
+
+
+
+Donc
+
+
+
+
+  Nous allons maintenant fournir deux exemples d’applications de ces
+lemmes, concernant le comportement asymptotique des ondelettes.
+
+
+  IV. ESTIMATIONS ASYMPTOTIQUES DES ONDELETTES SUR
+                      UN OUVERT
+
+  Nous allons tout d’abord rappeler brièvement la méthode de construc-
+tion des ondelettes sur un ouvert (cf. [JM]).
+  Soit Q un ouvert de [R". On définit le B-spline a par
+
+(03BE) = 03A0(sin03BEt 03BE1)2m+2.
+  Les espaces de splines emboîtés Vj sont les espaces engendrés par les
+fonctions 03C3j,k(x)=2nj/203C3(2jx-k) telles que supp c Q. On note
+                                                                    039Bj
+l’ensemble des 2014 correspondants.
+
+   Une fonction de V . est déterminée              ar ses    valeurs aux         oints    k. Plus
+précisément,                  il existe cl et c2 telles que
+
+
+
+
+                                           Annales de l’Institut Henri Poincaré - Analyse non linéaire
+                     PROPRIÉTÉS DES MATRICES BIEN LOCALISÉES                      473
+
+
+
+ On construit deux bases           la première est définie par
+
+
+ C’est une base orthonormée. La seconde est définie par
+
+
+
+ C’est une base de « splines cardinaux » c’est-à-dire que
+
+ Notons Wj le complémentaire orthogonal de Vj dans           Vj+ 1.
+                                                                    (
+                                                                Lj, k l 2 j )
+                                                                            =
+                                                                              8,, ,.
+
+   On construit une base orthonormée de W~ en projetant sur
+                                                            W~ les
+ fonctions           telles que                     et en   orthonormalisant la
+base ainsi obtenue par le « procédé d’orthonormalisation de Gram » que
+nous avons    déjà utilisé pour obtenir les k. On obtient ainsi les ondelettes
+~~ + 1, k. La réunion  de toutes ces ondelettes fournit une base orthonormée
+de L 2 (Q).
+   Si l’on réalisait la même construction avec Q      =
+                                                            nous obtiendrions
+les ondelettes « usuelles », c’est-à-dire que l’on aurait, en notant ces onde-
+lettes sur [R"     et
+
+
+
+
+   Bien sûr, si        les ondelettes n’ont plus une telle simplicité numéri-
+que.  Nous   allons voir que les ondelettes sont toutefois numériquement
+très proches des « ondelettes asymptotiques »       et      ~r~, k,
+                                                              pourvu qu’elles
+soient centrées suffisamment loin du bord. Plus précisément, on a
+
+   PROPOSITION 4. - Pour tout a tel que I a I __ 2 m + 1, et pour un Y > o,
+
+
+
+
+  Nous esquissons la démonstration de cette proposition. Elle est une
+conséquence immédiate du « lemme de la fenêtre » car, les fonctions
+splines    à partir desquelles sont construites les fonctions  et
+sont les mêmes. La matrice de Gram des                dans le cas de l’ouvert est
+donc une restriction de la matrice de Gram dans fR". On prend comme
+distance sur les indices d (~,, ~,’) _ ~1 k - k’et, en appliquant le « lemme de
+
+Vol. 7, n° 5-1990.
+474                                   S. JAFFARD
+
+
+la fenêtre » dans le cas de G -1 ~2 (et non G ~ 1 ) on obtient aussitôt
+
+
+
+
+En effet, les crj, k étant à support compact, G est une « matrice bande ».
+Les estimations sur les dérivées s’obtiennent de la même manière en
+dérivant la formule donnant         en fonction des
+                                                    o k.
+  En appliquant le « lemme de la fenêtre » pour G’B on obtient des
+estimations du type (13) pour les fonctions Lj, k.
+  Pour l’estimation sur les         on montre que les estimations (13) sont
+conservées par projection sur V~, puis qu’elles le sont encore par applica-
+tion de l’algorithme de Gram. L’application qui suit nous a été signalée
+par Yves Meyer.
+
+
+
+   IV. BASE DE FRANKLIN ET ONDELETTES DE STROMBERG
+
+  Dans ce qui suit les notations avec "concerneront des fonctions sur R
+et les ondelettes de Stromberg et les notations sans " l’intervalle [0, 1]et
+la base de Franklin (cf. [M]).
+   Le problème que résolvent le système de Franklin et les ondelettes de
+Stromberg est de construire à partir des fonctions continues et affines
+par morceaux sur les intervalles de la forme [k 2 -’, (k + 1 ) 2 ~’] une base
+orthonormée de L2 [0, 1] [respectivement L~ (f~)].
+   On note T (x) la fonction sup(0, 1- ~xl) et V~ (resp.                   Vj)
+                                                                        l’espace des
+fonctions continues, affines par morceaux sur les intervalles
+[k 2 -’, (k + 1 ) 2 -’] et à support sur [0, 1](respectivement sur (~).
+   Soit  T~, k = 2’~2 T (2’ x ~ k).   On note V~ l’espace engendré par les
+(T;~ etk)k ~~ ~,sont
+                 ... ~       Vj   l’espace engendré par les              Les espaces
+V~     V~              des espaces  emboîtés  de  fonctions   splines.  Nous   allons
+construire les deux bases considérées (de Franklin et de Stromberg) par
+des algorithmes d’orthonormalisation très similaires.
+   La base de Franklin se construit par la méthode d’orthonormalisation
+de Gram-Schmidt appliquée à la suite               k) pour k impair (rangés dans
+l’ordre lexicographique, j étant l’indice principal). On obtient ainsi une
+famille de fonctions ~r~, k qui forme une base orthonormée de L2 ([0, 1]).
+   La base de Stromberg se construit comme suit. Supposons que nous
+ayons une base orthonormée de V~. On la complète en une base ortho-
+normée de V~+ 1 en appliquant le procédé d’orthonormalisation de Gram-
+Schmidt à la suite            pour k-impair, et en commençant à k = - oo . Cette
+formulation un peu imprécise signifie que, si l’on note V~+ 1, k l’espace
+engendré par V~ et les fonctions {T~,k-)k~ k, k. impair’ alors           est obtenue
+par projection orthogonale (et normalisation)        de Tj, k sur le complémentaire
+                                        Annales de l’Institut Henri Poincaré - Analyse non linéaire
+                     PROPRIÉTÉS DES MATRICES BIEN LOCALISÉES                        475
+
+orthogonal de            dans Vi, k. Pour un j fixé, on voit que les procédés
+d’obtention des fonctions         et       sont très similaires.
+  Soient Pj, k et     les projections sur Vj, k (resp.     k). Soit Gj, k la matrice
+de Gram des           J et (T~,      (id. pour  U~,k). Alors, la projection d’une
+fonction f sur Vj, k est donnée par
+
+
+
+En notant d(o, k), (j’,                    , on voit que les matrices G
+et Ci sont des « matrices bande » et que leurs coefficients (jl, kl, j2, k2)
+sont identiques dès que     k 1 E ~ 1,
+                                 ...,
+                                           2’ 1-1 ~
+                                             et           k2 E ~ 1,
+                                                         ...,         2’2 - ~ ~ .
+                                                                         Les
+hypothèses du « lemme de la fenêtre » sont donc vérifiées, avec pour Q
+l’ensemble des (k’, j’) tels que k’ ~i~ ~ 1, 2’ ~ -1 ~ .
+                                            ...,
+
+     On note
+
+
+et
+
+
+
+On a alors :
+
+
+Le système de Franllin est obtenu en appliquant le procédé d’orthonomali-
+sation de Gram-Schmidt aux fonctions Tj, l’ Il fournit la fonction ~j,k
+normalisée.
+  L’ondelette de Stromberg est la fonction       r~~, k
+                                               normalisée. Les propriétés
+de localisation de ces deux fonctions (que l’on obtient comme corollaire
+immédiat de la proposition 2) font que l’on a
+
+
+L’ondelette de Stromberg est donc « l’asymptotique » du système de Fran-
+klin, lorsque les fonctions sont localisées loin du bord.
+     N.B. : On a le même résultat en partant de splines plus régulières sur
+[0, 1].
+   N.B. : On a utilisé dans les deux applications ci-dessus le « lemme de
+la fenêtre » dans des cas où les deux ensembles d’indices étaient distincts;
+on se ramène au cas dans lequel le lemme est écrit en «
+                                                           complétant » les
+matrices finis par des 1 sur la diagonale et des 0 ailleurs, de façon à ce
+que les deux ensembles d’indices soient les mêmes.
+   Signalons enfin que les résultats d’estimation uniforme sur les fonctions
+du système de Franklin
+
+
+sont une conséquence immédiate des lemmes.
+
+
+Vol. 7, n° 5-1990.
+476                                     S. JAFFARD
+
+
+                                   REMERCIEMENTS
+
+  L’auteur tient à remercier Jean-Lin Journé avec lequel il a démontré la
+proposition 3, ainsi que Yves Meyer pour de nombreuses suggestions.
+
+                                    RÉFÉRENCES
+
+[J]    S. JAFFARD, Construction of wavelets on open sets, à paraître dans les Proceedings du
+       Congrès Ondelettes et méthodes temps-fréquence, Marseille, 1987, Springer-Verlag.
+[JM] S. JAFFARD et Y. MEYER, Bases d’ondelettes dans des ouverts de Rn, J. Math. Pures
+     Appl., vol. 68, 1989, p. 95-108.
+[LM] P. G. LEMARIÉ et Y. MEYER, Ondelettes et bases hilbertiennes, Rev. Math. Iberoameri-
+       cana, vol. 1, 1986.
+[M]    Y. MEYER, Ondelettes et opérateurs, Hermann (à paraître).
+[RS]   M. REED et B. SIMON, Methods of modern mathematical physics, Academic Press,
+       1978.
+[S]    J. O. STROMBERG, A modified Franklin system and higher order spline systems on
+       Rn as unconditionnal bases for Hardy spaces, Conference in honor of Antoni Zygmund,
+       vol. 2, p. 475-493, W. BECKNER éd., Wadsworth Math. series.
+[T]    P. TCHAMITCHIAN, Calcul symbolique sur les opérateurs de Calderôn-Zygmund et
+       bases inconditionnelles de L2(R), C. R. Acad. Sci. Paris, t. 303, série I, n° 6, 1986.
+
+                                                         ( Manuscrit reçu le 25 mai 1989.)
+
+
+
+
+                                           Annales de l’Institut Henri Poincaré - Analyse non linéaire

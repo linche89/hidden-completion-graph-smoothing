@@ -1,0 +1,1002 @@
+                                               Distributed Least Squares Solver for Network Linear Equations
+                                                          Tao Yang a , Jemin George b , Jiahu Qin c,? , Xinlei Yi d , Junfeng Wu e
+                                                a
+                                                  State Key Laboratory of Synthetical Automation for Process Industries, Northeastern University, Shenyang 110819, China
+                                                                                  b
+                                                                                    U.S. Army Research Laboratory, Adelphi, MD 20783, USA
+                                                              c
+                                                                Department of Automation, University of Science and Technology of China, Hefei 230027, China
+                                          d
+                                            Division of Decision and Control Systems, School of Electrical Engineering and Computer Science, KTH Royal Institute of Technology,
+                                                                                                  100 44, Stockholm, Sweden
+                                                                 e
+                                                                   College of Control Science and Engineering, Zhejiang University, Hangzhou 310027, China
+arXiv:1810.00156v2 [math.OC] 9 Sep 2019
+
+
+
+
+                                          Abstract
+
+                                          In this paper, we study the problem of finding the least square solutions of over-determined linear algebraic equations over networks in a
+                                          distributed manner. Each node has access to one of the linear equations and holds a dynamic state. We first propose a distributed least square
+                                          solver over connected undirected interaction graphs and establish a necessary and sufficient on the step-size under which the algorithm
+                                          exponentially converges to the least square solution. Next, we develop a distributed least square solver over strongly connected directed
+                                          graphs and show that the proposed algorithm exponentially converges to the least square solution provided the step-size is sufficiently small.
+                                          Moreover, we develop a finite-time least square solver by equipping the proposed algorithms with a finite-time decentralized computation
+                                          mechanism. The theoretical findings are validated and illustrated by numerical simulation examples.
+                                          Key words: Distributed Algorithms; Dynamical Systems; Finite-time Computation; Least Squares; Linear Equations
+
+
+
+                                          1   Introduction                                                          optimization algorithms have be proposed. For example, a
+                                                                                                                    continuous-time version of distributed algorithms proposed
+                                              In recent years, the development of distributed algorithms
+                                                                                                                    in Nedić and Ozdaglar (2009); Nedić, Ozdaglar, and Parrilo
+                                          to solve linear algebraic equations over multi-agent networks
+                                                                                                                    (2010) has been applied to solve the exact least square
+                                          has attracted much attention due to the fact that linear
+                                                                                                                    problem in Shi et al. (2017). However, the drawback is
+                                          algebraic equations are fundamental for various practical
+                                                                                                                    the slow convergence rate due to the diminishing step-size.
+                                          engineering applications (Mou, Liu, and Morse, 2015;
+                                                                                                                    With a fixed step-size, it can only find approximated least
+                                          Mou, Morse, Lin, Wang, and Fullmer, 2016; Anderson,
+                                                                                                                    square solutions with a bounded error. The recent studies
+                                          Mou, Morse, and Helmke, 2016; Liu, Morse, Nedić, and
+                                                                                                                    focus on developing distributed algorithms with faster
+                                          Başar, 2017; Liu, Mou, and Morse, 2018; Shi, Anderson,
+                                                                                                                    convergence rates to find the exact least square solutions,
+                                          and Helmke, 2017; Lu and Tang, 2018; Wang, Ren, and
+                                                                                                                    see, e.g., continuous-time algorithms proposed in Wang
+                                          Duan, 2019a; Zeng, Liang, Hong, and Chen, 2019). In
+                                                                                                                    and Elia (2010); Gharesifard and Cortés (2014); Liu,
+                                          these algorithms, each node has access to one equation and
+                                                                                                                    Lageman, Anderson, and Shi (2019) based on the classical
+                                          holds a dynamic state, which is an estimate of the solution.
+                                                                                                                    Arrow-Hurwicz-Uzawa flow (Arrow, Huwicz, and Uzawa,
+                                          By exchanging their states with neighboring nodes over
+                                                                                                                    1958), and discrete-time algorithms proposed in Wang and
+                                          an underlying interaction graph, all nodes collaboratively
+                                                                                                                    Elia (2012); Liu et al. (2019); Wang, Zhou, Mou, and
+                                          solve the linear equations. Various distributed algorithms
+                                                                                                                    Corless (2019b).
+                                          based on distributed control and optimization have been
+                                          developed for solving the linear equations which have exact                   Due to the exponential convergence of these existing
+                                          solutions, among which discrete-time algorithms are given                 algorithms, all nodes need to constantly perform local
+                                          in Mou et al. (2015); Liu et al. (2018, 2017); Lu and Tang                computation and communicate with their neighboring nodes,
+                                          (2018); Wang et al. (2019a) and continuous-time algorithms                which results in a waste of computation and communication
+                                          are presented in Anderson et al. (2016); Shi et al. (2017).               resources. This is not desirable in multi-agent networks since
+                                          However, most of these existing algorithms can only produce               each node is usually equipped with limited communication
+                                          least square solutions for over-determined linear equations               resources. Therefore, the fundamental problem is how to
+                                          in the approximate sense (Mou et al., 2015) or for limited                find the exact least square solution in a finite number of
+                                          graph structures (Wang and Elia, 2012; Shi et al., 2017).                 iterations, and hence terminate further communication and
+                                                                                                                    computation to save energy and resources. This motivates
+                                              By reformulating the least square problem as a                        our study of this paper.
+                                          distributed optimization problem, various distributed
+                                                                                                                        The contributions of this paper are summarized as
+                                          ? Corresponding author. Tel.: +86-551-63601508.                           follows.
+                                            Email addresses: yangtao@mail.neu.edu.cn (Tao                           • First, we develop a distributed algorithm for solving the
+                                          Yang), jemin.george.civ@mail.mil (Jemin George),                             least square problem over connected undirected graphs.
+                                          jhqin@ustc.edu.cn (Jiahu Qin), xinleiy@kth.se                                We explicitly establish a critical value on the step-size,
+                                          (Xinlei Yi), jfwu@zju.edu.cn (Junfeng Wu).                                   below which the algorithm exponentially converges to
+
+
+
+                                          Preprint submitted to Automatica                                                                                         10 September 2019
+  the least square solution, and above which the algorithm          where z ∈ RN and H ∈ RN ×m are known. It is well
+  diverges. Our proposed algorithm is discrete-time                 known that if z ∈ span(H), then the linear equation (1)
+  and readily to be implemented, while the algorithms               always has one or many exact solutions. If z ∈
+                                                                                                                 / span(H), the
+  proposed in Wang and Elia (2012); Liu et al. (2019)               above equation (1) has no exact solution and the least square
+  are continuous-time and require the discretization for            solution of (1) is defined by the solution of the following
+  the implementation. Compared to existing studies for              optimization problem:
+  distributed optimization for strongly convex and smooth
+                                                                                                    1
+  local cost functions (Xu, Zhu, Soh, and Xie, 2015; Qu                                  min            kz − Hyk2 .                (2)
+                                                                                        y∈Rm 2
+  and Li, 2018; Nedić, Olshevsky, and Shi, 2017; Jakovetić,
+  2019), which only establish sufficient conditions on the
+  step-size for the exponential convergence, in this paper,         Assumption 1 Assume that the matrix H has full column
+  we focus on the case where local cost functions are               rank, i.e., rank(H) = m.
+  quadratic and only positive semidefinite (convex) but                 It is well known that under Assumption 1, the problem
+  not positive definite (strongly convex). Moreover, we             (2) has a unique solution and is given by
+  establish a necessary and sufficient condition on the
+  step-size for the exponential convergence.                                           y∗ = (H> H)−1 H> z.                         (3)
+• Furthermore, we develop a distributed least square solver
+  over directed graphs and show that the proposed algorithm             Denote                                             
+  exponentially converges to the least square solution if                                      h>
+                                                                                                1                        z1
+  the step-size is sufficiently small. Compared with the                                 >                       
+                                                                                         h2                      z2 
+  existing distributed algorithms for computing the exact
+                                                                                    H =  . ,                z =  . ,           (4)
+                                                                                                                 
+  least square solutions (Wang and Elia, 2010; Gharesifard                               ..                      .. 
+  and Cortés, 2014; Wang and Elia, 2012; Wang et al.,                                                           
+  2019b; Liu et al., 2019), which are only applicable to                                 h>N                       zN
+  connected undirected graphs or weight-balanced strongly
+  connected digraphs, our proposed algorithm is applicable          where h>i is the i-th row vector of the matrix H. With these
+  to strongly connected directed graphs, which are not              notations, we can rewrite the linear equation (1) as
+  necessarily weight-balanced.                                                     h>
+                                                                                    i y = zi ,           i = 1, 2, . . . , N.
+• Last but not least, we develop a finite-time least square
+  solver by equipping the proposed distributed algorithms               Let G = (V, E) be an interaction graph with the set of
+  with a decentralized computation mechanism based on the           nodes V = {1, 2, . . . , N } and the set of edges E ⊆ V ×V. In
+  finite-time consensus technique proposed in Sundaram              this paper, we aim to develop a distributed algorithm over the
+  and Hadjicostis (2007); Yuan, Stan, Shi, Barahona, and            graph G to compute the least square solution of (2), where
+  Goncalves (2013); Charalambous, Yuan, Yang, Pan,                  each node i ∈ V only has access to the value of hi and zi
+  Hadjicostis, and Johansson (2015); Yang, Wu, Sun, and             without knowledge of hj or zj from other nodes.
+  Lian (2016); Yao, Yuan, Sundaram, and Yang (2018).
+  The proposed mechanism enables an arbitrarily chosen                 Define x = [x>            > >
+                                                                                        1 . . . xN ] ∈ RN m . Consider a cost
+                                                                                       Nm
+  node to compute the exact least square solution within a          function F (·) : R    → R:
+  finite number of iterations, by using its local successive                                             N
+                                                                                                         X
+  state values obtained from the underlying distributed                                 F (x) =                fi (xi ),           (5)
+  algorithm. With the finite-time computation mechanism,                                                 i=1
+  nodes can terminate further communication. This result
+  is among the first distributed algorithms which compute           where
+  the exact least square solutions in a finite number of                                       1 >
+                                                                                     fi (xi ) =  |h xi − zi |2 .            (6)
+  iterations.                                                                                  2 i
+                                                                    The least square problem (2) is equivalent to the following
+    The remainder of the paper is organized as follows:
+                                                                    distributed optimization problem
+In Section 2, we formulate the least square problem for
+linear equations. In Sections 3, we present our main results                                            N
+                                                                                                        X
+for undirected graphs and directed graphs, respectively. In                          min                      fi (xi )            (7a)
+Section 4, we develop a finite-time least square solver by                          x∈RN m
+                                                                                                        i=1
+equipping the proposed algorithms with a decentralized                                  s.t.            x1 = · · · = xN .         (7b)
+finite-time computation mechanism. Section 5 presents
+numerical simulation examples. Finally, concluding remarks          Therefore, under Assumption 1, the solution to the above
+are offered in Section 6.                                           optimization problem is given by x1 = · · · = xN = y∗ ,
+                                                                    where y∗ is given by (3).
+2   Problem Formulation
+                                                                    3   Convergence Results
+   Consider the following linear algebraic equation with
+unknown y ∈ Rm :                                                       In this section, we solve the least square problem (2) by
+                       z = Hy,                       (1)            considering its equivalent problem (7) for undirected graphs
+                                                                    and directed graphs, respectively.
+
+
+                                                                2
+3.1   Undirected Graphs                                                These studies either require all the local cost functions
+                                                                       fi (·), i = 1, . . . , N to be strongly convex or at least one
+    We first present our proposed algorithm, where each node
+                                                                       local cost function to be strongly convex. In our case, local
+i maintains two state vectors xi (t) ∈ Rm and vi (t) ∈ Rm ,
+                                                                       cost functions given in (6) are quadratic, however, they
+which are node i’s estimate of the least square solution,
+                                            PN                         are only convex but not strongly convex since the matrix
+and estimate of the average gradient N1 i=1 ∇fi (xi (t)),              hi h>i is only positive semidefinite but not positive definite.
+respectively. At each time step t, each node i updates its             Therefore, the convergence analysis in these studies cannot
+state vectors as                                                       be applied.
+                   X
+      xi (t + 1) =      Wij xj (t) − αvi (t),            (8a)              In order to establish the convergence, we rewrite the
+                     j∈Ni                                              distributed algorithm (10) as the following linear system:
+                     X                                                     "          #         "      #
+      vi (t + 1) =          Wij vj (t)                                       x(t + 1)             x(t)
+                     j∈Ni                                                                =M              , v(0) = ∇F (x(0)), (12)
+                                                                             v(t + 1)             v(t)
+                     + ∇fi (xi (t + 1)) − ∇fi (xi (t)),     (8b)
+                                                                       where
+where the initial condition xi (0) can be chosen arbitrarily                     "                                            #
+and vi (0) = ∇fi (xi (0)), α > 0 is the step-size, Ni is the                              W ⊗ Im                 −αIN m
+set of neighboring nodes of node i including node i itself,               M=                                       .               (13)
+i.e., Ni = {j|(j, i) ∈ E} ∪ {i}, Wij is the non-negative                             −H̃ (IN − W) ⊗ Im W ⊗ Im − αH̃
+weight that node i assigns to its neighboring node j in the
+undirected graph G, and                                                      The matrix M has the following property.
+              ∇fi (xi (t)) = hi h>                                       Lemma     1 Let Assumptions 1–3 hold. Then regardless of the
+                                 i xi (t) − zi hi ,             (9)
+                                                                         value of the step-size α, 1 is an eigenvalue of the matrix M
+                                                                         given by (13) and its algebraic multiplicity is equal to the
+Assumption 2 Assume the interaction graph G is undirected                geometric multiplicity, which is m.
+and connected.                                                               The proof of Lemma 1 is given in Appendix B.
+Assumption 3 The mixing weight matrix W = [Wij ] ∈                       The convergence of the distributed algorithm (10) (or
+RN ×N satisfies the following properties:                                equivalently the linear system (12)) depends on the locations
+                                                                         of all other non-unity eigenvalues of the matrix M, as
+   (i) For any (i, j) ∈ E, Wij > 0. Moreover, Wii > 0 for
+                                                                         shown in the following proposition, whose proof is given
+       all i ∈ V. For other (i, j), Wij = 0.
+                                                                         in Appendix C.
+  (ii) The matrix W is symmetric and doubly stochastic, that
+       is, W = W> , W1N = 1N , and 1>                    >               Proposition 1 Let Assumptions 1–3 hold. Then the
+                                               N W = 1N .
+                                                                         distributed algorithm (10) exponentially converges to the
+Remark 1 Note that for a connected undirected graph, the                 least square solution if and only if the step-size α is selected
+matrix W has all its eigenvalues in (−1, 1]. Moreover, the               such that all other non-unity eigenvalues of the matrix M
+eigenvalue at 1 is unique. Assumption 3 is common in the                 given by (13), except the m semisimple eigenvalues at 1,
+literature, see, e.g., Xiao and Boyd (2004); Shi, Ling, Wu,              are strictly within the unit circle.
+and Yin (2015); Qu and Li (2018); Nedić et al. (2017); Xu,
+Zhu, Sohy, and Xie (2018). Several different mixing rules                    The necessary and sufficient condition given in
+can be used to ensure that all properties of Assumption 3 are            Proposition   1 is implicit. The following theorem whose
+satisfied, see Shi et al. (2015) for details. For example, one           proof is given in Appendix D, establishes an explicit
+can choose the matrix W = IN − τ1 L, where L is Laplacian                condition on the step-size.
+matrix associated with the graph G and τ > 2 λmax (L), 1                 Theorem 1 Let Assumptions 1–3 hold. Then the distributed
+where λmax (L) is the largest eigenvalue of the Laplacian                algorithm (10) exponentially converges to the least square
+matrix.                                                                  solution if and only if α < ᾱ, where
+                                                                                                           1
+     Let x(t) = [x>              >     >           >            >     >
+                    1 (t) . . . xN (t)] , v(t) = [v1 (t) . . . vN (t)] ,            ᾱ =                                .         (14)
+                  >              >                  >            > >
+H̃ = diag(h1 h1 , . . . , hN hN ), and zH = [z1 h1 . . . zN hN ] .                       2λmax (IN + W)−2 ⊗ Im H̃
+Then the algorithm (8) can be rewritten in a compact form:
+x(t + 1) = (W ⊗ Im )x(t) − αv(t),               (10a)                  Remark 3 Theorem 1 explicitly characterizes the critical
+v(t + 1) = (W ⊗ Im )v(t) + ∇F (x(t + 1)) − ∇F (x(t)),                  value on the step-size, below which the algorithm
+                                                (10b)                  exponentially converges to the least square solution, and
+                                                                       above which the algorithm diverges. The explicit critical
+                                                                       value depends on the mixing weight matrices W and the
+where the initial condition v(0) = ∇F (x(0)), and                      matrix H. Note that the existing studies (Xu et al., 2015;
+                 ∇F (x(t)) = H̃x(t) − zH .                  (11)       Qu and Li, 2018; Nedić et al., 2017) only established
+                                                                       conservative sufficient conditions on the step-size for the
+Remark 2 Note that the algorithm (8) or its compact form               exponential convergence. Theorem 1 provides a necessary
+(10) is essentially the same as the algorithms proposed in             and sufficient condition on the step-size for quadratic cost
+Xu et al. (2015); Qu and Li (2018); Nedić et al. (2017).              functions.
+
+
+
+                                                                   3
+Remark 4 Also note that similar to the existing studies                         Several choices of the weight matrices P and Q which
+(Xu et al., 2015; Qu and Li, 2018; Nedić et al., 2017), the                satisfy Assumption 5 are discussed in Du et al. (2018); Xin
+upper bound ᾱ of the step-size cannot be computed exactly                  and Khan (2018); Pu et al. (2018). One particular choice is
+in a distributed way. Nevertheless, for the case that the                           (
+                                                                                       1
+                                                                                                              (
+                                                                                                                 1
+mixing weight W = IN − τ1 L, where τ = maxi∈V {di } + 1                               din
+                                                                                           if j ∈ Niin            out if i ∈ Njout
+                                                                             pij =      i              , qij = dj                  , (17)
+and di is the weighted degree of node i, we can estimate                              0    otherwise            0     otherwise
+a lower bound of the critical value, which in turn provides
+a sufficient condition for the proposed algorithm (10)                      where din       out
+                                                                                   i and dj are in-degree and out-degree of node i
+to exponentially converge to the least square solution as                   and node j, respectively.
+                                               λ2 (IN +W)
+follows. Note that from (14), we have ᾱ ≥ min   2λmax (H̃)
+                                                              .
+                                                                               Note that algorithm (16) can be written in a compact
+Next, since λmax (L) ≤ 2 maxi∈V {di } (see, eq. (12)                        form as
+of Olfati-Saber, Fax, and Murray (2007)), we have
+IN + W = 2IN − τ1 L ≥ maxi∈V2{di }+1 IN . Therefore,                         x(t + 1) = (P ⊗ Im )x(t) − αv(t),                (18a)
+                                                                             v(t + 1) = (Q ⊗ Im )v(t) + ∇F (x(t + 1)) − ∇F (x(t)),
+λ2min (IN +W) ≥ (maxi∈V4{di }+1)2 . Hence, we find the lower
+                                              2
+                                                                                                                              (18b)
+bound of the critical value ᾱ ≥ (max {d }+1)      2λ    (H̃)
+                                                              .
+                                              i∈V   i       max
+
+Note that both maxi∈V {di } and λmax (H̃) can be obtained                   where v(0) = ∇F (x(0)). Also note that the distributed
+in a distributed manner and in finite-time by using the                     algorithm (18) can be written as the linear system of the
+max-consensus algorithm proposed in Cortés (2008).                         form (12), however with a different system matrix:
+Therefore, we find a more conservative upper bound for the                           "                                      #
+step-size α to ensure the exponential convergence of the                                     P ⊗ Im              −αIN m
+                                                                               M=                                             . (19)
+proposed algorithm in a distributed manner, that is,                                                       
+                                                                                       −H̃ (IN − P) ⊗ Im Q ⊗ Im − αH̃
+                               2
+            α<                                 .      (15)
+                 (maxi∈V {di } + 1)2 λmax (H̃)
+                                                                                The following lemma whose proof is given in Appendix E,
+                                                                            shows that regardless of the value of the step-size α > 0, the
+3.2   Directed Graphs                                                       matrix M given in (19) only has m semisimple eigenvalues
+    In this section, we extend the algorithm (10) to handle                 at 1.
+directed graphs. Our proposed algorithm is based on                         Lemma 2 Let Assumptions 1, 4 and 5 hold. Then regardless
+recently developed distributed optimization algorithms for                  of the value of the step-size α, 1 is an eigenvalue of the matrix
+directed graphs (Du, Yao, Wu, Li, Liu, and Yang, 2018;                      M given by (19) and its algebraic multiplicity is equal to
+Xin and Khan, 2018; Pu, Shi, Xu, and Nedić, 2018). Rather                  the geometric multiplicity, which is m.
+than using the doubly stochastic matrix W as in (10), the                       The convergence of the distributed algorithm (18)
+proposed algorithm uses a row stochastic matrix for the                     depends on the locations of all other non-unity eigenvalues
+mixing of estimates of the least square solution in the update              of the matrix M given by (19), as shown in the following
+(10a), and employs a column stochastic matrix for tracking                  proposition, whose proof is similar to the proof of
+the average gradient in the update (10b). More specifically,                Proposition 1, and thus omitted.
+at time step t, each node i performs the following updates:
+               X                                                            Proposition 2 Let Assumptions 1, 4 and 5 hold. Then the
+xi (t + 1) =        pij xj (t) − αvi (t),                (16a)              distributed algorithm (18) exponentially converges to the
+               j∈Niin                                                       least square solution if and only if the step-size α is selected
+               X                                                            such that all other non-unity eigenvalues of the matrix M
+vi (t + 1) =            qij vj (t) + ∇fi (xi (t + 1)) − ∇fi (xi (t)),
+                                                                            given by (19), except the m semisimple eigenvalues at 1, are
+               j∈Niin                                                       strictly within the unit circle.
+                                                              (16b)
+                                                                            Remark 5 Note that the algorithm (18) is essentially the
+                                                                            same as the algorithms proposed in Du et al. (2018); Xin and
+where the initial condition xi (0) can be chosen arbitrarily
+                                                                            Khan (2018); Pu et al. (2018). However, the convergence
+and vi (0) = ∇fi (xi (0)), and Niin = {j ∈ V | (j, i) ∈
+                                                                            analysis in these studies for general cost functions cannot be
+E} ∪ {i} is the in-neighbor set of node i.
+                                                                            applied here due to the same reason as discussed in Remark
+Assumption 4 Assume the interaction graph G is directed                     2. Compared with these existing studies which established
+and strongly connected.                                                     sufficient conditions for the exponential convergence,
+Assumption 5 The mixing weight matrices P = [pij ] ∈                        Proposition 2 provides a necessary and sufficient conditions
+RN ×N and Q = [qij ] ∈ RN ×N satisfy the following                          for quadratic cost functions.
+properties:                                                                     The necessary and sufficient condition given in
+  (i) P is row stochastic and Q is column stochastic.                       Proposition 2 is implicit. Unlike the case of undirected
+ (ii) pij > 0 if j ∈ Niin , and pij = 0 otherwise.                          graphs, the explicit characterization of a necessary and
+(iii) qij > 0 if i ∈ Njout , where Njout = {i ∈ V | (j, i) ∈                sufficient condition on the step-size for directed graphs is
+      E} ∪ {j} is the out-neighbor set of node j, and qij = 0               rather challenging and will be investigated in the future.
+      otherwise.                                                            Nevertheless, the following theorem whose proof is given
+
+
+
+                                                                        4
+                                                                                                                                                          
+in Appendix F, shows that the algorithm exponentially                                         y r,j (1)      y r,j (2)         . . . y r,j (k + 1)
+converges to the least square solution if the step-size is                                
+                                                                                           y r,j (2)
+                                                                                                                                            
+sufficiently small.                                                               (r)
+                                                                                                            y r,j (3) . . . y r,j (k + 2) 
+                                                                                 Hj,2k ,                                                   .
+                                                                                                                                           
+                                                                                                  ..             ..    ..            ..
+Theorem 2 Let Assumptions 1, 4 and 5 hold. Then the
+                                                                                         
+                                                                                                  .              .        .          .     
+                                                                                                                                            
+distributed algorithm (18) exponentially converges to the                                  y r,j (k + 1) y r,j (k + 2) . . . y r,j (2k + 1)
+least square solution if α is sufficiently small.
+                                                                                                                                             (23)
+                                                                                 A decentralized finite-time computation mechanism
+4     Decentralized Finite-time Computation                                  is summarized in Algorithm 1. The next theorem shows
+                                                                             that this algorithm enables any node to compute the exact
+   In this section, we develop a finite-time least square                    least square solution by using its own local successive
+solver by equipping the algorithm (10) for undirected                        observations in a finite number of iterations. The proof
+graphs (or the algorithm (18) for directed graphs) with a                    readily follows from Yuan et al. (2013), and is thus omitted.
+decentralized computation mechanism, which enables an
+arbitrarily chosen node to compute the exact least square                    Algorithm 1 Decentralized Finite-time Computation for the
+solution in a finite number of time steps, by using the                      Least Square Solution
+successive values of its local states.                                       Data: Successive observations of yr (t) = xr (t), t ∈ Z+ .
+   Consider the distributed algorithm (12) with the matrix                   Result: The least square solution y∗ .
+M given by (13) for undirected graphs or (19) for directed                   For each j = 1, . . . , m, do the following steps:
+graphs. Assume that at time step t, an arbitrarily chosen node               Step 1 Compute the vector of differences y r,j (t) by (22).
+r ∈ V has observations about its state xr (t) ∈ Rm . That is,                Step 2 Construct the square Hankel matrix Hj,2k by (23).
+                                                                                                                                          (r)
+
+                                                                         Step 3 Increase the dimension k of the square Hankel
+                 yr,1 (t)     xr,1 (t)   "      #                                      (r)
+                                                                             matrix Hj,2k .
+                .   .                  x(t)
+      yr (t) =     .   .                                                 Step 4 When the square Hankel matrix is singular, compute
+                .  =  .  = Cr                 ,              (20)
+                                           v(t)                                            (r)    (r)       (r)
+                                                                             the kernel βj = [βj,0 . . . βj,Dr,j −1 1]> .
+                yr,m (t)     xr,m (t)
+                                                                             Step 5 Compute the j-th component of the least square
+                                                                             solution yj∗ according to (24):
+with                                                                                                                     (r)
+                                                                                                             >
+                                                                                                          yj,D     βj
+                    Cr,1                                                                            yj∗ =        r,j
+                                                                                                                               ,                           (24)
+                                                                                                                    (r)
+                   .  h                                                                                     1> βj
+                                          i
+             Cr =   ..  = e>
+                             r ⊗ I m m×N m ,
+                                    0                            (21)
+                        
+                       Cr,m                                                  where       h                                                        i>
+                                                                                yj,Dr,j = yr,j (0) yr,j (1)              ...       yr,j (Dr,j )        .
+where e>r ∈ R
+              1×N
+                   is the row vector whose r-th entry is 1,
+and the remaining entries are all zeros.
+                                                                             Theorem 3 Suppose that the algorithm (10) for undirected
+    Based on these local successive observations, we will
+                                                                             graphs (or the algorithm (18) for directed graphs) is
+propose a decentralized computation algorithm which
+                                                                             convergent. Then Algorithm 1 enables an arbitrarily chosen
+enables an arbitrarily chosen node r to compute the exact
+                                                                             node r ∈ V to compute the exact least square solution from
+                                       ∗ >
+least square solution y∗ = [y1∗ . . . ym ] ∈ Rm in a finite
+                                                                             a finite number of consecutive states xr (t) observed over a
+number of iterations. The algorithm is motivated by the
+                                                                             range of time-steps.
+finite-time technique originally proposed in Sundaram
+and Hadjicostis (2007); Yuan et al. (2013) for distributed                   Remark 6 Note that Algorithm 1 relies on the analysis of
+consensus. Here, we extend it for computing the exact least                  the rank of a square Hankel matrix. As shown in Theorem 3,
+square solution. To our best knowledge, the finite-time least                for node r to compute the j-th component of the least square
+square solvers are not available in the literature.                          solution yj∗ , the (k + 1) × (k + 1) square Hankel matrix
+                                                                             is guaranteed to lose rank when k = Dr,j . That is, an
+    In order for an arbitrarily chosen node r ∈ V to compute
+                                                                             arbitrarily chosen node r with successive observations over
+the j-th component of the least square solution yj∗ , node r
+                                                                             2(Dr,j + 1) number of time steps is able to compute the j-th
+needs to store successive observations for a few time steps.
+                                                                             component. Moreover, as shown in Yuan et al. (2013), the
+Consider the 2k+2 successive observations yr,j (t) = xr,j (t)
+                                                                             number Dr,j + 1 is equal to the rank of the observability
+at node r, that is, yr,j (0), yr,j (1), . . . , yr,j (2k), yr,j (2k +
+                                                                             matrix associated with the matrix pair (M, Cr,j ).
+1). With these observations, node r then calculates the
+difference between successive values of yr,j (t) = xr,j (t)                  5    Numerical Examples
+according to
+                                                                                 In this section, we provide numerical examples to
+    y r,j (t) , yr,j (t) − yr,j (t − 1),   t = 1, . . . , 2k + 1, (22)       validate and illustrate our results.
+                                                                             Example 1. In this example, we illustrate the results stated
+and constructs a (k + 1) × (k + 1) square Hankel matrix as                   in Theorem 1. Consider a linear equation in the form of
+
+
+
+                                                                         5
+                                                                                             4
+
+
+                                                                                             3
+
+
+                                                                                             2
+
+
+                                                                                             1
+
+
+                                                                                             0
+
+  Fig. 1. An undirected and connected graph with four nodes.
+                                                                                             -1
+                                0       1
+                                                        −1 
+(1) where y ∈ R2 , H =           3
+                                 2
+                                         0
+                                         0       and z = −20 . Since                         -2
+                                                                                                  0   500        1000   1500        2000     2500            3000      3500         4000     4500    5000
+                                 1       0                       2                                                                         Time Steps
+Assumption 1 is satisfied, the linear equation has a unique
+least square solution y∗ = [−0.1429 − 1]> . The underlying                                                                     (a) α = 0.1857
+interaction graph is given in Fig. 1, which is undirected and
+connected. Therefore, Assumption 2 is satisfied. Consider                                    4
+
+the proposed distributed                       the mixing
+                          algorithm (10). Choose
+                        0.7                                                                 3
+                               0.15 0.15   0
+                         0.15  0.85   0    0
+weight matrix W = 0.15 0 0.7 0.15 . It is easy to
+                                                                                             2
+                            0        0       0.15     0.85
+verify that the matrix W satisfies Assumption 3. For this
+                                                                                             1
+case, the critical value given in ᾱ in (14) is ᾱ = 0.1858.
+    For the initial condition x(0) = [4 1 2 − 2 − 1 1 −                                      0
+
+2 − 1]> , the initial condition v(0) is computed as v(0) =
+                                                                                             -1
+H̃x(0)−zH = [0 2 18 0 0 0 −4 0]> . The state evolutions of
+xi for i = 1, 2, 3, 4 for the case α = 0.1857 and α = 0.1859                                 -2
+                                                                                                  0          50            100                   150                 200               250           300
+are plotted in Fig. 2(a) and Fig. 2(b), respectively. It clearly                                                                           Time Steps
+
+shows that when α = 0.1857 < ᾱ, all xi (t) converge to the                                                                    (b) α = 0.1859
+exact least square solution y∗ , and when α = 0.1859 > ᾱ,
+all xi,1 (t) diverge although all xi,2 (t) converge to −1. These                             Fig. 2. State evolutions xi for the algorithm (10).
+results are consistent with the results of Theorem 1.
+                                                                                             4
+
+Example 2. In this example, we illustrate the results stated                                                                  0.5
+                                                                                             3
+in Theorem 3. The parameters are chosen the same as those                                                                      0
+
+
+in Example 1. Now we also equip the algorithm (10) with                                      2                             -0.5
+
+
+the decentralized finite-time computation mechanism given                                                                      -1                                               @
+                                                                                                                                                                                I
+                                                                                             1
+by Algorithm 1. The state evolutions of xi for i = 1, 2, 3, 4                                                                        50     100        150     200    250     300
+                                                                                                                                                                                 @
+for the case when α = 0.18 are shown in Fig. 3(a). By                                        0
+
+equipping the algorithm (10) with the finite-time mechanism
+                                                                                            -1
+proposed in Algorithm 1, all nodes compute the exact least
+square solution within 16 time steps, which is indicated by                                 -2
+                                                                                                 0          50          100                150                200              250             300
+the vertical blue line in Fig. 3, and hence terminate further                                                                        Time Steps
+
+computation and communication. However, we observe that,                                                            (a) State evolutions for xi
+at this time step, even approximated least square solution is
+not achieved by running the algorithm (10) alone, and it will                                4
+                                                                                                                               1
+take much larger time steps to converge to the least square                                                                   0.5
+                                                                                             3
+solution with a reasonable accuracy.                                                                                           0
+
+Example 3. In this example, we illustrate the results stated                                 2                             -0.5
+
+
+in Proposition 2. Consider a linear 1 2equation in the form                                1
+                                                                                                                               -1                                               I
+                                                                                                                                                                                @
+                                                         −1
+                                                                                                                                   50     100        150     200    250     300
+                                                                                                                                                                                 @
+                        2
+of (1) where y ∈ R , H = 22 21 , and z = −2               0 .
+                                                                                             0
+                                             1    0                      2
+Since Assumption 1 is satisfied, the linear equation has a                                  -1
+
+unique least square solution y∗ = [0.1923 − 0.6514]> . The
+directed interaction graph is given in Fig. 4, which is strongly                            -2
+                                                                                                 0          50          100                150                200              250             300
+
+connected. Therefore, Assumption 4 is satisfied. Also note                                                                           Time Steps
+
+
+that the digraph is not weight-balanced since din    2 = 3 6=
+                                                                                                                   (b) State evolutions for xi,1
+dout
+ 2   = 2. Consider the algorithm (18) with the step-size
+α = 0.1. Choose the mixing weight matrices according                                 Fig. 3. Simulation Results. Algorithm (10) alone takes roughly 300
+                  " 12 0 0 12 #                 " 12 0 0 13 #                        steps to reach the least square solution, while Algorithm 1 enables
+                    1   1   1                                1   1   1
+                                0                                        0           nodes to compute the exact least square solution within 16 steps.
+to (17) as P =      3
+                    0
+                        3
+                        0
+                            3
+                            1   1        and Q =             2
+                                                             0
+                                                                 2
+                                                                 0
+                                                                     2
+                                                                     1   1   ,
+                            2   2                                    2   3
+                        1       1                                1       1
+                    0   2   0   2                            0   2   0   3
+
+
+
+
+                                                                                 6
+                                                                                   4
+
+
+                                                                                                         0.8
+                                                                                   3
+                                                                                                         0.6
+                                                                                                         0.4
+                                                                                   2                     0.2
+                                                                                                           0
+                                                                                                         -0.2
+                                                                                                                                                         I
+                                                                                                                                                         @
+                                                                                   1                            20    40   60     80   100   120   140
+                                                                                                                                                          @
+                                                                                   0
+
+
+                                                                                  -1
+    Fig. 4. A strongly connected directed graph with four nodes.
+                                                                                  -2
+                                                                                        0           50                                 100                    150
+         4                                                                                                           Time Steps
+
+
+         3
+                                                                                                (a) State evolutions for xi,1
+         2
+                                                                                   1
+
+         1                                                                                               -0.4
+                                                                                  0.5
+                                                                                                         -0.6
+         0                                                                                               -0.8
+                                                                                   0
+                                                                                                          -1
+        -1                                                                                               -1.2
+                                                                                 -0.5                                                                    I
+                                                                                                                                                         @
+                                                                                                         -1.4
+                                                                                                                20    40   60     80   100   120   140
+        -2                                                                                                                                                @
+                                                                                  -1
+
+        -3
+             0            50                100             150                  -1.5
+                               Time Steps
+                                                                                  -2
+
+
+Fig. 5. State evolutions of xi for algorithm (18) with the step-size             -2.5
+                                                                                        0           50                                 100                    150
+α = 0.1.                                                                                                             Time Steps
+
+                                                                                                (b) State evolutions for xi,2
+which satisfy Assumption 5. It is easy to check that all
+the eigenvalues of the matrix M given by (19), except 2
+                                                                           Fig. 6. Simulation Results. Algorithm (18) alone takes roughly 150
+semisimple eigenvalues at 1, are strictly within the unit
+                                                                           steps to reach the least square solution, while Algorithm 1 enables
+circle. Thus according to Proposition 2, the algorithm (18)                nodes to compute the exact least square solution within 16 steps.
+exponentially converges to the exact least square solution.
+The state evolutions of xi for i = 1, 2, 3, 4 are plotted in               direction is to extend the proposed distributed algorithms to
+Fig. 5, which shows that all xi (t) converge to the exact least            networks with time-delays.
+square solution y∗ .
+   Moreover, by equipping the algorithm (18) with                          References
+the finite-time computation mechanism proposed in
+Algorithm 1, all nodes compute the exact least square
+solution within 16 time steps, which are indicated by the                  Anderson, B., Mou, S., Morse, A. S., Helmke, U., 2016.
+vertical blue line in the plots of Fig. 6. However, we observe               Decentralized gradient algorithm for solution of a linear
+that, at this time step, even approximated least square                      equation. Numerical Algebra, Control and Optimization
+solution is not achieved by running the algorithm (18) alone.                6 (3), 319–328.
+                                                                           Arrow, K., Huwicz, L., Uzawa, H., 1958. Studies in Linear
+6    Conclusions                                                             and Non-linear Programming. Stanford University Press.
+                                                                           Cai, K., Ishii, H., 2012. Average consensus on general
+    In this paper, we studied the problem of distributed                     strongly connected digraphs. Automatica 48 (11), 2750 –
+computing the exact least square solution of over-determined                 2761.
+linear algebraic equations over multi-agent networks. We                   Charalambous, T., Yuan, Y., Yang, T., Pan, W., Hadjicostis,
+first proposed a distributed algorithm as an exact least square              C. N., Johansson, M., 2015. Distributed finite-time
+solver for undirected connected graphs. We established a                     average consensus in digraphs in the presence of
+necessary and sufficient condition on the step-size under                    time-delays. IEEE Transactions on Control of Network
+which the proposed algorithm exponentially converges to the                  Systems 2 (4), 370–381.
+exact least square solution. Next, we developed a distributed              Cortés, J., 2008. Distributed algorithms for reaching
+least square solver for strongly connected directed graphs,                  consensus on general functions. Automatica 44 (3),
+which are not necessarily weight-balanced. We showed that                    726–737.
+the proposed algorithm exponentially converges to the least                Du, W., Yao, L., Wu, D., Li, X., Liu, G., Yang, T.,
+square solution if the step-size is sufficiently small. Finally,             2018. Accelerated distributed energy management for
+we developed a finite-time exact least square solver for                     microgrids. In: Proc. of the IEEE Power and Energy
+linear equations, by equipping the proposed algorithms with                  Society General Meeting.
+a decentralized computation mechanism. With the proposed                   Gharesifard, B., Cortés, J., 2014. Distributed
+mechanism, an arbitrarily chosen node is able to compute                     continuous-time convex optimization on weight-balanced
+the exact least square solution within a finite number of time               digraphs. IEEE Transactions on Automatic Control
+steps, by using its local successive observations. The future                59 (3), 781–786.
+
+
+
+                                                                       7
+Horn, R. A., Johnson, C. R., 2001. Matrix Analysis, 2nd                  distributed consensus in graphs with time-invariant
+   Edition. Cambridge University Press.                                  topologies. In: Proc. American Control Conference. pp.
+Jakovetić, D., 2019. A unification and generalization of                711–716.
+   exact distributed first-order methods. IEEE Transactions            Wang, J., Elia, N., 2010. Control approach to distributed
+   on Signal and Information Processing over Networks                    optimization. In: Proc. 48th Annual Allerton Conference
+   5 (1), 31–46.                                                         on Communication, Control, and Computing (Allerton).
+Jury, E., 1991. A note on the modified stability table for               pp. 557–561.
+   linear discrete time systems. IEEE Trans. Circ. & Syst.             Wang, J., Elia, N., 2012. Distributed least square with
+   38 (2), 221–223.                                                      intermittent communications. In: Proc. American Control
+Liu, J., Morse, A. S., Nedić, A., Başar, T., 2017. Exponential         Conference. pp. 6479–6484.
+   convergence of a distributed algorithm for solving linear           Wang, P., Ren, W., Duan, Z., 2019a. Distributed algorithm to
+   algebraic equations. Automatica 83, 37–46.                            solve a system of linear equations with unique or multiple
+Liu, J., Mou, S., Morse, A. S., 2018. Asynchronous                       solutions from arbitrary initializations. IEEE Transactions
+   distributed algorithms for solving linear algebraic                   on Control of Network Systems 6 (1), 82–93.
+   equations. IEEE Transactions on Automatic Control                   Wang, X., Zhou, J., Mou, S., Corless, M. J., 2019b. A
+   63 (2), 372–385.                                                      distributed algorithm for least squares solutions. IEEE
+Liu, Y., Lageman, C., Anderson, B. D. O., Shi, G., 2019. An              Transactions on Automatic Control, to appear.
+   Arrow-Hurwicz-Uzawa type flow as least squares solver               Xiao, L., Boyd, S., 2004. Fast linear iterations for distributed
+   for network linear equations. Automatica 100, 187–193.                averaging. Systems & Control Letters 53 (1), 65–78.
+Lu, J., Tang, C. Y., 2018. A distributed algorithm for solving         Xin, R., Khan, U. A., 2018. A linear algorithm for
+   positive definite linear equations over networks with                 optimization over directed graphs with geometric
+   membership dynamics. IEEE Transactions on Control of                  convergence. Control Systems Letters 2 (3), 315–320.
+   Network Systems 5 (1), 215–227.                                     Xu, J., Zhu, S., Soh, Y. C., Xie, L., 2015. Augmented
+Mou, S., Liu, J., Morse, A. S., 2015. A distributed algorithm            distributed gradient methods for multi-agent optimization
+   for solving a linear algebraic equation. IEEE Transactions            under uncoordinated constant stepsizes. In: Proc. of the
+   on Automatic Control 60 (11), 2863–2878.                              54th IEEE Conference on Decision and Control. pp.
+Mou, S., Morse, A. S., Lin, Z., Wang, L., Fullmer, D.,                   2055–2060.
+   2016. A distributed algorithm for efficiently solving linear        Xu, J., Zhu, S., Sohy, Y. C., Xie, L., 2018. A
+   equations and its applications. Systems & Control Letters             Bregman splitting scheme for distributed optimization
+   91, 21–27.                                                            over networks. IEEE Transactions on Automatic Control
+Nedić, A., Olshevsky, A., Shi, W., 2017. Achieving                      63 (11), 3809–3824.
+   geometric convergence for distributed optimization over             Yang, T., Wu, D., Sun, Y., Lian, J., 2016. Minimum-time
+   time-varying graphs. SIAM Journal on Optimization                     consensus based approach for power system applications.
+   27 (4), 2597–2633.                                                    IEEE Transactions on Industrial Electronics 63 (2),
+Nedić, A., Ozdaglar, A., 2009. Distributed subgradient                  1318–1328.
+   methods for multi-agent optimization. IEEE Transactions             Yao, L., Yuan, Y., Sundaram, S., Yang, T., 2018. Distributed
+   on Automatic Control 54 (1), 48–61.                                   finite-time optimization. In: Proc. 14th IEEE International
+Nedić, A., Ozdaglar, A., Parrilo, P. A., 2010. Constrained              Conference on Control & Automation. pp. 147–154.
+   consensus and optimization in multi-agent networks.                 Yuan, Y., Stan, G.-B., Shi, L., Barahona, M., Goncalves,
+   IEEE Transactions on Automatic Control 55 (4), 922–938.               J., 2013. Decentralised minimum-time consensus.
+Olfati-Saber, R., Fax, J. A., Murray, R. M., 2007. Consensus             Automatica 49 (5), 1227–1235.
+   and cooperation in networked multi-agent systems.                   Zeng, X., Liang, S., Hong, Y., Chen, J., 2019. Distributed
+   Proceedings of the IEEE 95 (1), 215–233.                              computation of linear matrix equations: An optimization
+Pu, S., Shi, W., Xu, J., Nedić, A., 2018. A push-pull gradient          perspective. IEEE Transactions on Automatic Control
+   method for distributed optimization in networks. In: 57th             64 (5), 1858–1873.
+   IEEE Conference on Decision and Control (CDC). pp.
+   3385–3390.
+Qu, G., Li, N., 2018. Harnessing smoothness to accelerate              A   Useful Lemmas
+   distributed optimization. IEEE Transactions on Control of
+   Network Systems 5 (3), 1245–1260.                                   Lemma 3 Let Assumption 1 holds and c be a vector in Rm .
+Shi, G., Anderson, B. D. O., Helmke, U., 2017. Network                 If (1N ⊗ c)> H̃(1N ⊗ c) = 0, then c = 0m .
+   flows that solve linear equations. IEEE Transactions on
+                                                                       Proof: Define H̄ , diag(h>            >
+                                                                                                1 ; . . . ; hN ). It is easy to see that
+   Automatic Control 62 (6), 2659–2674.                                        >                          >
+Shi, W., Ling, Q., Wu, G., Yin, W., 2015. EXTRA: An                    H̃ = H̄ H̄. Therefore, (1N ⊗ c) H̃(1N ⊗ c) = 0 implies
+   exact first-order algorithm for decentralized consensus             H̄(1N ⊗ c) = 0N m , or equivalently Hc = 0N . It then
+   optimization. SIAM Journal on Optimization 25 (2),                  follows from rank(H) = m that c = 0m .
+   944–966.                                                            Lemma 4 (Horn and Johnson, 2001, Theorem 7.7.3) Let A
+Silvester, J. R., 2000. Determinants of block matrices. The            and B be real and symmetric matrices and suppose that A
+   Mathematical Gazette 84 (501), 460–467.                             is positive definite. If B is positive semidefinite, then A ≥ B
+Sundaram, S., Hadjicostis, C. N., 2007. Finite-time                    (respectively, A > B) if and only if λmax (A−1 B) ≤ 1
+                                                                       (respectively, λmax (A−1 B) < 1).
+
+
+                                                                   8
+B   Proof of Lemma 1                                                     M, except m semisimple eigenvalues at 1, are strictly within
+   By substituting P = W and Q = W into the matrix M                     the unit circle if and only if α < ᾱ.
+given by (19), we get the matrix M given by (13). Thus,                  Sufficiency: Suppose that the condition α < ᾱ is satisfied,
+Lemma 1 is a special case of Lemma 2 whose proof is given                we need to show that all the eigenvalues of the matrix M,
+in Appendix E.                                                           except m semisimple eigenvalues at 1, are strictly within the
+                                                                         unit circle. For any non-unity eigenvalue λ of the matrix M,
+C   Proof of Proposition 1                                               there is a nonzero right eigenvector [v1> v2> ]> , such that
+Sufficiency: Suppose that all the eigenvalues of the matrix              "                                          #" #          " #
+M, except m semisimple eigenvalues at 1, are strictly within                       W ⊗ Im                −αIN m         v1          v1
+                                                                                                                             =λ       .
+the unit circle. This together with Lemma 1 implies that the               −H̃ (IN − W) ⊗ Im W ⊗ Im − αH̃ v2                        v2
+                                                   N m×N m
+                              −1 matrix V ∈ R
+matrix there existsa non-singular
+                      Im
+                                                             ,
+such that M = V          Ms   V   , where  the eigenvalues  of           We then have
+the matrix Ms are all the non-unity eigenvalues of the matrix
+M, which are strictly within the unit circle, the columns of             − αv2 = (λIN m − W ⊗ Im )v1 ,            (D.1a)
+                                                                                                                      
+the matrix V are right eigenvectors and generalized right                − H̃ (IN − W) ⊗ Im v1 = λIN m − (W ⊗ Im − αH̃) v2 .
+eigenvectors of the matrix M, the rows of the matrix V−1                                                          (D.1b)
+are left eigenvectors and generalized left eigenvectors of the
+matrix M. Moreover, the first m columns of the matrix V                  Since α > 0, substituting (D.1a) into (D.1b) to eliminate v2
+and the first m rows of the matrix V−1 are given by                      yields:
+                                                                                              Q(λ)v1 = 0N m ,                   (D.2)
+              "          #
+               1 N ⊗ Im
+         ṽ =              ,                                             where
+                0N ⊗ Im
+                                                                         Q(λ) = λ2 IN m + αH̃ − 2W ⊗ Im λ + W2 ⊗ Im − αH̃.
+                                                                                                              
+                         h                           i
+      ω̃ > = (H> H)−1 (1>                     >
+                             N ⊗ Im )H̃ −1N ⊗ Im
+                                                       .                                                                        (D.3)
+                                                                         Define
+Therefore, we have                                                                        Q2 =IN m ,
+     "      #       "          #                                                           Q1 =αH̃ − 2W ⊗ Im ,                   (D.4)
+       x(t)           Im
+ lim          =V                 V−1                                                                 2
+                                                                                          Q0 =W ⊗ Im − αH̃.
+t→∞ v(t)                     t
+                          Ms
+                        "      #                                         Note that the matrices Qi for i = 0, 1, 2 are real and
+                      > x(0)                                             symmetric. Then (D.2) becomes:
+              = ṽ ω̃
+                          v(0)                                                       (λ2 Q2 + λQ1 + Q0 )v1 = 0N m .       (D.5)
+                "            #
+                  1N ⊗ Im                                               Note that (D.5) implies that
+              =                 (H> H)−1 (1>
+                                           N ⊗ Im )H̃x(0)
+                  0N ⊗ Im                                                               p(λ) , a2 λ2 + a1 λ + a0 = 0,            (D.6)
+                                              
+                − (1>  N ⊗ Im )(H̃x(0) − zH )                            where
+                "           #                                                           ai = v1∗ Qi v1 , for i = 0, 1, 2,        (D.7)
+                  1N ⊗ y ∗                                                     ∗
+              =                ,                                         and v1 is the conjugate transpose of the vector v1 . Note that
+                     0N m                                                ai for i = 0, 1, 2 are real and a2 > 0 since v1 is nonzero.
+                                                                             Denote Λ as the solution set to (D.6). Then λ ∈ Λ.
+where the second equality follows from the fact that all the
+                                                                         According to Jury stability criterion (Jury, 1991), |λ̃| <
+eigenvalues of the matrix Ms are strictly within the unit
+circle, the third equality follows the initialization given by           1, ∀λ̃ ∈ Λ if and only if
+(11), and the last equality follows from (3), and the fact that                                a2 + a1 + a0 > 0,                (D.8a)
+(1>                   >
+   N ⊗ Im )zH = H z, due to (4) and the definitions of H̃                                      a2 − a1 + a0 > 0,                (D.8b)
+and zH .                                                                                                |a0 | < a2 .            (D.8c)
+    Therefore, for all i = 1, . . . , N , xi (t) → y∗ and vi (t) →
+0m asymptotically as t → ∞. Note that for linear systems,                These equations together with (D.4) and (D.7) imply that
+asymptotic convergence and exponential convergence are                   |λ̃| < 1, ∀λ̃ ∈ Λ if and only if
+equivalent. Thus, the algorithm exponentially converges to
+                                                                                         v1∗ (W − IN )2 ⊗ Im v1 > 0,
+                                                                                                            
+the least square solution.                                                                                                (D.9a)
+                                                                                  ∗             2
+                                                                                                            
+Necessity: Note that if the matrix M has an eigenvalue                           v1 (W + IN ) ⊗ Im − 2αH̃ v1 > 0,         (D.9b)
+outside the unit circle, then the distributed algorithm (12) is                     ∗     2
+                                                                                                            
+                                                                                  v1 (W − IN ) ⊗ Im − αH̃ v1 < 0,         (D.9c)
+unstable.                                                                           ∗     2
+                                                                                                            
+                                                                                  v1 (W + IN ) ⊗ Im − αH̃ v1 > 0.         (D.9d)
+D   Proof of Theorem 1
+     In view of Proposition 1, in order to prove the theorem,            In the following, with the help of (D.9), we show that |λ| <
+it is equivalent to show that all the eigenvalues of the matrix          1. Thus, the sufficiency is proved.
+
+
+
+                                                                     9
+   We first show that the condition (D.9c) holds. From               M has at least one eigenvalue either on or outside the unit
+W2 ≤ IN and H̃ ≥ 0, we know that v1∗ ((W2 −IN )⊗Im −                 circle.
+αH̃)v1 ≤ 0. Suppose that the condition      (D.9c) does not              To show this, we first note that when α = ᾱ, it follows
+hold. Then, v1∗ (W2 − IN ) ⊗ Im v1 = 0 and v1∗ H̃v1 = 0.             from Lemma 4 that the matrix (W + IN )2 ⊗ Im − 2ᾱH̃
+                                   
+
+Since IN −W2 is positive semidefinite and v1∗ (W2 −IN )⊗             is only positive semidefinitebut not positive definite. Thus
+                                        1      
+Im v1 = 0, we know that (IN − W2 ) 2 ⊗ Im v1 = 0N m .                det (W+IN )2 ⊗Im −2ᾱH̃ = 0. Next, we show that when
+                                                                     α = ᾱ, the matrix M has an eigenvalue at −1. Since the
+Thus, ((IN − W2 ) ⊗ Im )v1 = 0N m . This together with               matrices λIN m − W ⊗ Im and αIN m commute, it follows
+                                                          2
+the fact that IN + W is positive definite and IN − W   =            from Silvester (2000, Theorem 3) that
+(IN + W)(IN − W) implies that (IN − W) ⊗ Im v1 =
+0N m . Therefore, if the condition (D.9c) does not hold, then            det(λI2N m − M)
+(W ⊗ Im )v1 = v1 and v1∗ H̃v1 = 0. Note that it follows
+                                                                                                                              
+                                                                       = det λIN m − (W ⊗ Im − αH̃) λIN m − W ⊗ Im
+from (W ⊗ Im )v1 = v1 that v1 = 1N ⊗ c for some                                                      
+c ∈ Rm . It It then follows from Lemma 3 that c = 0m .                       − αH̃ (IN − W) ⊗ Im
+Thus, v1 = 0N m which contradicts with the fact that v1 is a                        
+nonzero eigenvector. Therefore, the condition (D.9c) holds.            = det Q(λ) ,                                         (D.12)
+   Next, we show that the condition (D.9b) holds if α < ᾱ,
+where ᾱ is given by (14). We show this by proving that              where Q(λ) is given by (D.3). This together with the fact
+the matrix (W + IN )2 ⊗ Im − 2αH̃ is positive definite if            that det (W + IN )2 ⊗ Im − 2ᾱH̃ = 0 implies that
+α < ᾱ. Note that the matrix (W + IN )2 is positive definite
+                                                                                                                       
+                                                                     det(−I2N m − M) = det (W + IN )2 ⊗ Im − 2ᾱH̃ = 0.
+due to the fact W > −IN and the matrix 2αH̃ is positive
+semidefinite. It then follows from Horn and Johnson (2001,
+Theorem 7.7.3) (recapped in Lemma 4) that (W + IN )2 ⊗               Therefore, when α = ᾱ, the matrix M has an eigenvalue at
+                                                                     −1.
+Im − 2αH̃ is positive definite if and only if λmax ((W +
+IN )−2 ⊗ Im )2αH̃) < 1, which is equivalent to α < ᾱ.                  In order to highlight the relation between α and
+                                                                     Q(λ) defined in (D.3), we write Q(λ) as Q(λ, α).
+    We then note that the condition (D.9d) is automatically          For any fixed λ ∈ R and fixed α > 0, we denote
+satisfied since the condition (D.9b) holds and v1∗ ((W −             µ(λ, α) as the smallest eigenvalue of the matrix Q(λ, α).
+IN )2 ⊗ Im )v1 ≥ 0.                                                  It follows from RayleighRitz theorem that µ(λ, α) =
+   Finally, if the condition (D.9a) holds, then according to         minkvk=1 v> Q(λ, α)v.
+Jury stability criterion, we know that |λ̃| < 1, ∀λ̃ ∈ Λ.                Next, we show that for any α > ᾱ, there exists λ(α) ≤
+Thus, |λ| < 1. If the condition (D.9a) does not hold, i.e.           −1 such that µ(λ(α), α) = 0. Firstly, note that µ(λ, α)
+(W ⊗ Im )v1 = v1 , then it follows from (D.6) and (D.7)              is continuous with respect to (λ, α) and µ(−1, ᾱ) = 0.
+that                                                                 Secondly, for any fixed α, from the definition of Q(λ, α),
+  p(λ) = v1∗ v1 (λ − 1) + αv1∗ H̃v1 (λ − 1) = 0. (D.10)              we know that there exists λ0 (α) < −1 such that Q(λ, α) is
+                                     
+                                                                     positive definite for all λ ≤ λ0 (α), i.e., µ(λ, α) > 0 for all
+Since λ 6= 1 and v1 is a nonzero vector, we have                     λ ≤ λ0 (α). Thirdly, for any fixed λ < −1, from Q(λ, α) =
+                                                                     (W − λIN )2 ⊗ Im + α(λ − 1)H̃, we know that µ(λ, α)
+                              αv1∗ H̃v1                              decreases as α increases. Thus, µ(−1, α) ≤ µ(−1, ᾱ) = 0
+                    λ=1−                .             (D.11)
+                               v1∗ v1                                for all α ≥ ᾱ. Hence, for any fixed α > ᾱ, µ(λ, α) is
+                                                                     continuous with respect to λ, µ(λ, α) > 0 for all λ ≤ λ0 (α),
+We show that λ ∈ (−1, 1). From α > 0, (W ⊗ Im )v1 = v1               and µ(−1, α) ≤ 0. Thus, there exists λ(α) ∈ [λ0 (α), −1]
+and (D.9c), we know that αv1∗ H̃v1 > 0. Thus, λ < 1.                 such that µ(λ(α), α) = 0.
+Next, we show that λ > −1. Note that it follows (D.11)
+                                                                                                              
+                                                                         Finally, we note that det Q(λ, α) = 0 if µ(λ, α) = 0.
+that in order to show λ > −1, it is equivalent to show that          Therefore it follows from (D.12) that λ(α) ∈ [λ0 (α), −1],
+v1∗ (2IN m − αH̃)v1 > 0. This can be shown as follows:               is an eigenvalue of the matrix M, which is less than or equal
+                           1                                         to −1. Hence, the result follows.
+      v1∗ (2IN m − αH̃)v1 = v1∗ (4IN m − 2αH̃)v1
+                           2                                         E   Proof of Lemma 2
+                1 ∗
+             ≥ v1 (W + IN )2 ⊗ Im − 2αH̃ v1 > 0,
+                                             
+                2                                                        We first show that 1 is an eigenvalue of the matrix M and
+                                                                     its geometric multiplicity is m. Note that 1 is an eigenvalue
+where the first inequality follows from the fact that −IN <          of the matrix M, if and only if there is a nonzero right
+W ≤ IN and the second inequality follows from (D.9b).                eigenvector [v1> v2> ]> , such that
+                                                                       "                                        #" # " #
+Necessity: In order to show the necessity, we need to                           P ⊗ Im               −αIN m         v1       v1
+show that if all the eigenvalues of the matrix M, except                                                               =       .
+m semisimple eigenvalues at 1, are strictly within the unit              −H̃ (IN − P) ⊗ Im Q ⊗ Im − αH̃ v2                   v2
+circle, then α < ᾱ. We show this by contraposition, that is,
+if α ≥ ᾱ, then apart from the eigenvalues at 1, the matrix          These equations are equivalent to
+
+
+
+                                                                10
+                                                                          where the second equality follows from the fact that 1>
+                       
+ − αv2 = (IN − P) ⊗ Im v1 ,                                                                                                          NQ =
+                                           
+ − H̃ (IN − P) ⊗ Im v1 = (IN − Q) ⊗ Im + αH̃ v2 .                         1>N . It then follows  from  Lemma      3 that c =   0 m , which
+                                                                          contradicts with the fact that c is a nonzero vector. Therefore,
+With a little bit algebra, the above equations are also                   the matrix M always has m semisimple eigenvalues at 1.
+equivalent to                                                             F   Proof of Theorem 2
+                                     
+              −αv2 = (IN − P) ⊗ Im v1 ,          (E.1a)
+                                                                              In view of Proposition 2, in order to prove the theorem,
+               0N m = (IN − Q) ⊗ Im v2 .         (E.1b)                   it is equivalent to show that all the eigenvalues of the matrix
+                                                                          M, except m semisimple eigenvalues at 1, are strictly within
+From Assumptions 4 and 5, we know that the matrix P has                   the unit circle if α is sufficiently small.
+a unique eigenvalue at 1 with the right eigenvector 1N and                     In order to show this, we use the eigenvalue perturbation
+the left eigenvector ω > > 0 (all elements are positive), i.e.,           theory. Note that M = M0 + α∆, where
+        P1N = 1N , ω > P = ω > , ω > 1N = 1.                (E.2)                          "                                   #
+                                                                                                   P ⊗ Im            0N m×N m
+Therefore, the matrix IN − P has a unique eigenvalue at                            M0 =                                         ,
+zero with the right eigenvector 1N and the left eigenvector                                 −H̃ (IN − P) ⊗ Im Q ⊗ Im
+ω > > 0.
+                                                                                           "                   #
+                                                                                            0N m×N m −IN m
+    Similarly, the matrix Q has a unique eigenvalue at 1 with                        ∆=                          .
+the right eigenvector µ > 0 and the left eigenvector 1>                                     0N m×N m −H̃
+                                                      N , i.e.,
+
+             Qµ = µ, 1>      >    >
+                      N Q = 1N , 1N µ = 1.                  (E.3)         Thus the matrix M can be viewed as the matrix M0
+Thus, the matrix IN − Q has a unique eigenvalue at zero                   perturbed by α∆.
+with the right eigenvector µ > 0 and the left eigenvector                    Note that the from Assumptions 4 and 5, we know that
+1>N . Therefore, (E.1b) is satisfied if v2 = 0N m or v2 =
+                                                                          the matrices P and Q has a unique eigenvalue at 1, and all
+µ ⊗ c1 , where c1 ∈ Rm is nonzero. Next, we show that                     other eigenvalues are strictly within the unit circle. Given
+v2 = µ ⊗ c1 does not hold by contradiction. Suppose that                  the block diagonal structure of the matrix M0 , it is easy to
+v2 = µ ⊗ c1 . Then pre-multiplying (E.1a) by (ω ⊗ c1 )>                   see that the matrix M0 has 2m semisimple eigenvalues at 1,
+gives 0 = −αkc1 k2 ω > µ, which does not hold since α > 0,                and all other eigenvalues are strictly within the unit circle.
+c1 is nonzero, ω > > 0 and µ > 0. Therefore, v2 = 0N m .                  Denote λi , i = 1, . . . , 2N m as the eigenvalues of the matrix
+This together with (E.1a), the above properties of the matrix             M0 . Without loss of generality, assume that λj = 1 for
+IN − P and the fact that [v1> v2> ]> is nonzero implies that              j = 1, . . . , 2m. It is easy to verify that the right eigenvectors
+v1 = 1N ⊗ c for some nonzero c ∈ Rm .                                     associated with the eigenvalues at 1 of the matrix M0 are
+                                                                                 "                                                     #
+    Hence, we conclude that 1 is an eigenvalue of the                              0N ⊗ Im                     1N ⊗ Im
+matrix M with the geometric multiplicity being m and the                   U,                                                            ,
+corresponding right eigenvectors are of the form [v1> v2> ]>                        µ ⊗ Im (µ ⊗ Im )(1>        N ⊗ Im )H̃(1N ⊗ Im )
+with v1 = 1N ⊗c for some nonzero c ∈ Rm and v2 = 0N m .                   and the corresponding left eigenvectors are
+    Next, we show that the algebraic multiplicity associated                               "                           #
+with the eigenvalue at 1 is also m by contradiction. Suppose                           >     −(1>               >
+                                                                                                 N ⊗ Im )H̃ 1N ⊗ Im
+                                                                                     Ω ,                                 ,
+that the algebraic multiplicity of the eigenvalue at 1 is strictly                             ω > ⊗ Im       0>N ⊗ Im
+greater than m. Then there exists a nonzero right generalized
+eigenvector [u>     > >
+               1 u2 ] , such that                                         where ω > > 0 (all elements are positive) and µ > 0 are
+                               " # " #                                    given by (E.2) and (E.3), respectively.
+                                u1        v1
+                 (M − IN m )          =       ,                              Denote λi (α), i = 1, . . . , 2N m as the eigenvalues of
+                                u2        v2                              the matrix M = M0 + α∆ corresponding relatively to λi .
+where [v1> v2> ]> is the right eigenvector corresponding to               Note that Ω> U = I2m . It then follows from the eigenvalue
+the eigenvalue at 1, i.e., v1 = 1N ⊗ c for some nonzero                   perturbation theory (Cai and Ishii, 2012, Lemma 7) that the
+                                                                                       d
+c ∈ Rm and v2 = 0N m . This is equivalent to                              derivatives dα λj (α)|α=0 for j = 1, . . . , 2m exist and are
+                                                                         the eigenvalues of the following matrix:
+ (P − IN ) ⊗ Im u1 − αu2 = 1N ⊗ c,                                                    "                                             #
+                                                                                         0m×m                   0m×m
+                                                    
+ − H̃ (IN − P) ⊗ Im u1 + (Q − IN ) ⊗ Im − αH̃ u2 = 0.                       >
+                                                                           Ω ∆U =                                                     .
+                                                                                        −ω > µIm −ω > µ(1>   N ⊗ Im )H̃(1N ⊗ Im )
+From the above equations, we obtain
+                          
+          (Q − IN ) ⊗ Im u2 = −H̃(1N ⊗ c).                                    Moreover, due to the block triangular structure, the above
+                                                                          matrix has m eigenvalues at 0, and the other m eigenvalues
+We then have                                                              are the eigenvalues of the matrix −ω > µ(1>  N ⊗ Im )H̃(1N ⊗
+       (1N ⊗ c)> H̃(1N ⊗ c)                                               Im ). Given the structures of H and H̃, we obtain that
+          = −(1N ⊗ c)> (Q − IN ) ⊗ Im u2 = 0,
+                                     
+                                                                                       (1>                       >
+                                                                                         N ⊗ Im )H̃(1N ⊗ Im ) = H H,                   (F.1)
+
+
+                                                                     11
+which is positive definite since rank(H) = m from
+Assumption 1. Also note that −ω > µ < 0 since ω > > 0
+and µ > 0. Therefore, all eigenvalues of the matrix
+−ω > µ(1>
+        N ⊗ Im )H̃(1N ⊗ Im ) are negative.
+             d
+   Thus, dα     λj (α)|α=0 =      0 for j = 1, . . . , m and
+ d
+dα λ j (α)| α=0   < 0 for j       = m + 1, . . . , 2m. Since
+the eigenvalues of the matrix M are continuous of
+α, as α slightly increases from zero, the eigenvalues
+λ1 (α), . . . , λm (α) stay at 1, while λm+1 (α), . . . , λ2m (α)
+move to the left along the real axis. Let δ1 be the upper
+bound of α such that when α < δ1 , |λi (α)| < 1 for
+i = m + 1, . . . , 2m. Since the eigenvalues of the matrix
+M = M0 + α∆ continuously depend on α, there exists
+an upper bound δ2 such that when α < δ2 , |λi (α)| < 1
+for i = 2m + 1, . . . , 2N m. Hence, for sufficiently small
+α < α1 = min{δ1 , δ2 }, the matrix M has m eigenvalues
+at 1 while all other eigenvalues are strictly within the unit
+circle.
+
+
+
+
+                                                                    12

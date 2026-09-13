@@ -1,0 +1,347 @@
+{
+  "schema_version": 1,
+  "environment": {
+    "platform": "Windows-11-10.0.26100-SP0",
+    "python": "3.13.5",
+    "numpy": "2.3.3",
+    "scipy": "1.17.1",
+    "logical_cpus": 32,
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "benchmark_semantics": {
+    "matrix_assembly": "direct COO/CSR; no dense H/J",
+    "central_solver": "SciPy SuperLU factorization and triangular solve",
+    "tail_solver": "sampled transpose sparse solves; no complete inverse",
+    "tail_input": "raw offset-corrected measurements with diagonal R",
+    "dkw_scope": "95% per fixed graph and fixed radius, not simultaneous over radii",
+    "mpi": false
+  },
+  "total_seconds": 0.495336199994199,
+  "results": [
+    {
+      "case": "pglib_opf_case1354_pegase.m",
+      "source_sha256": "cd6d27dff4a56684f1e4f82cfa346b36d84c4e90733228aa88331cd550e17652",
+      "nodes": 1354,
+      "state_dimension": 1353,
+      "graph_edges": 1710,
+      "measurements": 2381,
+      "H_nnz": 5090,
+      "J_nnz": 6423,
+      "reference_bus_ids": [
+        4231
+      ],
+      "measurement_counts": {
+        "branch_flow_from": 1991,
+        "bus_angle": 73,
+        "bus_injection": 317
+      },
+      "flow_holder_semantics": "from",
+      "timing_seconds": {
+        "parse_seconds": 0.00785430008545518,
+        "build_seconds": 0.014764499966986477,
+        "factorization": 0.001168399932794273,
+        "central_solve": 7.08999577909708e-05,
+        "sampled_tail_solves_and_masks": 0.022235000040382147
+      },
+      "rss_bytes_at_checkpoints": {
+        "start": 69660672,
+        "after_build": 74027008,
+        "after_factor": 75087872,
+        "after_tails": 75276288
+      },
+      "rss_checkpoint_max": 75276288,
+      "central_relative_residual": 1.9364323474148493e-13,
+      "sampled_roots_with_replacement": [
+        154,
+        631,
+        476,
+        1133,
+        7,
+        731,
+        665,
+        512,
+        989,
+        781,
+        802,
+        227,
+        981,
+        815,
+        1001,
+        470
+      ],
+      "root_sample_count": 16,
+      "dkw_95_halfwidth_per_fixed_radius": 0.3395253789351549,
+      "raw_z_tail_monotone_over_sorted_radii": true,
+      "diameter_zero_tail_check": null,
+      "tail_summary": [
+        {
+          "radius": 0,
+          "raw_z_tail_mean": 0.024108522511389056,
+          "raw_z_tail_median": 0.027926637027240103,
+          "raw_z_tail_max": 0.03551460871551972,
+          "state_rhs_tail_mean": 4.220966290844781e-07,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 0.8125
+          }
+        },
+        {
+          "radius": 1,
+          "raw_z_tail_mean": 0.023990145083315952,
+          "raw_z_tail_median": 0.027642236328285746,
+          "raw_z_tail_max": 0.035513442491827925,
+          "state_rhs_tail_mean": 4.142629062527974e-07,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 0.8125
+          }
+        },
+        {
+          "radius": 2,
+          "raw_z_tail_mean": 0.023390494432336675,
+          "raw_z_tail_median": 0.02735364611119399,
+          "raw_z_tail_max": 0.03551272636910044,
+          "state_rhs_tail_mean": 4.050722201487668e-07,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 0.8125
+          }
+        },
+        {
+          "radius": 4,
+          "raw_z_tail_mean": 0.022080972226317178,
+          "raw_z_tail_median": 0.026971002234388457,
+          "raw_z_tail_max": 0.03037054086501162,
+          "state_rhs_tail_mean": 3.824506816753138e-07,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 0.75
+          }
+        }
+      ],
+      "case_total_seconds": 0.04716590000316501,
+      "status": "ok"
+    },
+    {
+      "case": "pglib_opf_case2869_pegase.m",
+      "source_sha256": "6c8e80fba6fc2fa78d65fce64cf4801425b01a0aa093661caf581b6551d4a7ac",
+      "nodes": 2869,
+      "state_dimension": 2868,
+      "graph_edges": 3968,
+      "measurements": 5474,
+      "H_nnz": 12084,
+      "J_nnz": 16394,
+      "reference_bus_ids": [
+        4231
+      ],
+      "measurement_counts": {
+        "branch_flow_from": 4582,
+        "bus_angle": 146,
+        "bus_injection": 746
+      },
+      "flow_holder_semantics": "from",
+      "timing_seconds": {
+        "parse_seconds": 0.016814099973998964,
+        "build_seconds": 0.03053420002106577,
+        "factorization": 0.00269059999845922,
+        "central_solve": 0.00014309992548078299,
+        "sampled_tail_solves_and_masks": 0.04826300009153783
+      },
+      "rss_bytes_at_checkpoints": {
+        "start": 74301440,
+        "after_build": 80809984,
+        "after_factor": 82137088,
+        "after_tails": 82251776
+      },
+      "rss_checkpoint_max": 82251776,
+      "central_relative_residual": 1.964919770089693e-13,
+      "sampled_roots_with_replacement": [
+        523,
+        1693,
+        2707,
+        911,
+        2036,
+        1084,
+        1856,
+        1654,
+        708,
+        339,
+        411,
+        2114,
+        2564,
+        73,
+        2541,
+        84
+      ],
+      "root_sample_count": 16,
+      "dkw_95_halfwidth_per_fixed_radius": 0.3395253789351549,
+      "raw_z_tail_monotone_over_sorted_radii": true,
+      "diameter_zero_tail_check": null,
+      "tail_summary": [
+        {
+          "radius": 0,
+          "raw_z_tail_mean": 0.04006509461908938,
+          "raw_z_tail_median": 0.03524421703911773,
+          "raw_z_tail_max": 0.06373756855138349,
+          "state_rhs_tail_mean": 7.358831095191868e-07,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 1.0
+          }
+        },
+        {
+          "radius": 1,
+          "raw_z_tail_mean": 0.03958709928364193,
+          "raw_z_tail_median": 0.03503047729527483,
+          "raw_z_tail_max": 0.06373738589739522,
+          "state_rhs_tail_mean": 7.259905578444153e-07,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 1.0
+          }
+        },
+        {
+          "radius": 2,
+          "raw_z_tail_mean": 0.03910069380426101,
+          "raw_z_tail_median": 0.034163956445146984,
+          "raw_z_tail_max": 0.06373729852721337,
+          "state_rhs_tail_mean": 7.142061626365788e-07,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 1.0
+          }
+        },
+        {
+          "radius": 4,
+          "raw_z_tail_mean": 0.03763444748270436,
+          "raw_z_tail_median": 0.03264334548003326,
+          "raw_z_tail_max": 0.0619839994704742,
+          "state_rhs_tail_mean": 6.865109411070361e-07,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 0.9375
+          }
+        }
+      ],
+      "case_total_seconds": 0.10016959998756647,
+      "status": "ok"
+    },
+    {
+      "case": "pglib_opf_case10000_goc.m",
+      "source_sha256": "8387f73e8c135938c60e41538dfbb6b4cb58d37738553fb8a36c1e1647a66e7b",
+      "nodes": 10000,
+      "state_dimension": 9999,
+      "graph_edges": 12742,
+      "measurements": 16184,
+      "H_nnz": 35787,
+      "J_nnz": 49905,
+      "reference_bus_ids": [
+        2725
+      ],
+      "measurement_counts": {
+        "branch_flow_from": 13193,
+        "bus_angle": 489,
+        "bus_injection": 2502
+      },
+      "flow_holder_semantics": "from",
+      "timing_seconds": {
+        "parse_seconds": 0.04894140001852065,
+        "build_seconds": 0.10828499996569008,
+        "factorization": 0.010349999996833503,
+        "central_solve": 0.0003999000182375312,
+        "sampled_tail_solves_and_masks": 0.1498482000315562
+      },
+      "rss_bytes_at_checkpoints": {
+        "start": 78983168,
+        "after_build": 95006720,
+        "after_factor": 99676160,
+        "after_tails": 98754560
+      },
+      "rss_checkpoint_max": 99676160,
+      "central_relative_residual": 6.923118015407675e-14,
+      "sampled_roots_with_replacement": [
+        4690,
+        2615,
+        1116,
+        9634,
+        4135,
+        6925,
+        4275,
+        2857,
+        5650,
+        8430,
+        2528,
+        1182,
+        4014,
+        7952,
+        287,
+        2329
+      ],
+      "root_sample_count": 16,
+      "dkw_95_halfwidth_per_fixed_radius": 0.3395253789351549,
+      "raw_z_tail_monotone_over_sorted_radii": true,
+      "diameter_zero_tail_check": null,
+      "tail_summary": [
+        {
+          "radius": 0,
+          "raw_z_tail_mean": 0.04359684814125117,
+          "raw_z_tail_median": 0.04498380035635527,
+          "raw_z_tail_max": 0.07253764890244556,
+          "state_rhs_tail_mean": 1.0455589826028736e-06,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 1.0
+          }
+        },
+        {
+          "radius": 1,
+          "raw_z_tail_mean": 0.043045958560812364,
+          "raw_z_tail_median": 0.04477195128858706,
+          "raw_z_tail_max": 0.07253762114663447,
+          "state_rhs_tail_mean": 9.105461717367458e-07,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 1.0
+          }
+        },
+        {
+          "radius": 2,
+          "raw_z_tail_mean": 0.042257615573022385,
+          "raw_z_tail_median": 0.04170975853261684,
+          "raw_z_tail_max": 0.07253761973409599,
+          "state_rhs_tail_mean": 8.334301740793248e-07,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 1.0
+          }
+        },
+        {
+          "radius": 4,
+          "raw_z_tail_mean": 0.03947155863993876,
+          "raw_z_tail_median": 0.04170869795985681,
+          "raw_z_tail_max": 0.05835220131120077,
+          "state_rhs_tail_mean": 7.516067895592575e-07,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 1.0
+          }
+        }
+      ],
+      "case_total_seconds": 0.3213750999420881,
+      "status": "ok"
+    }
+  ]
+}

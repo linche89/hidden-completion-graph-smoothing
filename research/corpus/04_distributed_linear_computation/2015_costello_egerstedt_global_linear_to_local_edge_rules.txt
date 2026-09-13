@@ -1,0 +1,449 @@
+     From Global, Finite-Time, Linear Computations to Local, Edge-Based
+                              Interaction Rules
+                                            Zak Costello and Magnus Egerstedt
+                                       School of Electrical and Computer Engineering
+                                              Georgia Institute of Technology
+                                       {zak.costello,magnus}@gatech.edu
+
+
+   Abstract— A network of locally interacting agents can be          which is a global property since it relies on the state of every
+thought of as performing a distributed computation. But not          node.
+all computations can be faithfully distributed. This paper inves-
+tigates which global, linear transformations can be computed
+in finite time using local rules with time varying weights, i.e.,       In this work, we are interested in problems where networks
+rules which rely solely on information from adjacent nodes in        are tasked with computing arbitrary linear transformations
+a network. The main result states that a linear transformation       of the initial node states. In particular, we answer two
+is computable in finite time using local rules if and only if the    fundamental questions: What global, linear transformations
+transformation has positive determinant. An optimal control          can be computed in finite time using edge-based interaction
+problem is solved for finding the local interaction rules, and
+simulations are performed to elucidate how optimal solutions         rules? How do we find the local rules that would compute a
+can be obtained.                                                     given linear transformation?
+                      I. I NTRODUCTION
+                                                                        Some work has been done in the general area of obtaining
+   One common theme when designing control and coordina-             global information with local interactions. In [19], a fixed
+tion mechanisms for distributed, multi-agent systems is that         weighting scheme was used to compute linear transforma-
+the information, on which decisions are based, is restricted         tions on networks. That work has a similar aim and takes
+to be shared among agents that are adjacent in the underlying        a different discrete time approach. In a certain sense, the
+information-exchange network, e.g., [1], [2], [3], [4]. As a         investigation in [20] follows this line of inquiry as well.
+result, local rules are needed for processing the information        There, quadratic invariance was used to establish whether
+and coordinating the agents in the network in such a way             or not a convex optimization problem exists whose solution
+that some global objective is achieved. Problems that fit            is a decentralized implementation of a centralized feedback
+this description can be found in a variety of applications,          controller. [21] further expounds on this idea and provides a
+including power systems [5], [6], [7], formation control [8],        practical, graph theoretic method for finding this distributed
+[9], [10], [11], [12], distributed sensor networks [13], [14],       controller. Additionally, in [22] a method is presented under
+smart textiles [15], and distributed optimization [16], [17]. In     which consensus is computed in finite time. Our work distin-
+this paper we take initial steps towards developing a general        guishes itself from this body of work by using a time varying
+theory of local implementability/computability of such global        weighting method, which admits the computation of global,
+behaviors.                                                           linear transformations in finite time. Specifically, we focus
+   As such, one key aspect of algorithm design is the defi-          on a continuous time scheme for distributed computation,
+nition of local interaction rules that produce desired global        over finite intervals using time-varying exogenous weight
+behaviors. An example of this are consensus algorithms for           functions.
+computing averages in a distributed manner. In fact, consen-
+sus plays a role in many different applications, including              In fact, in this paper, we consider computations that
+multi-agent robotics, distributed sensor fusion, and power           are to be performed using local rules over a static and
+network control, e.g., [3], [6], [18]. To this end, let the scalar   undirected information-exchange network. The local rules,
+state of each node in a network be xi ∈ R, with initial              once obtained, admits a decentralized implementation, where
+condition xi (t0 ) = ξi , i = 1, . . . , n, where n is the number    “decentralized” in this context means that each node in
+of nodes in the network. By stacking the states together in          the network only needs to communicate state information
+x ∈ Rn ,average consensus is achieved if                             among adjacent nodes in the network. In particular, we
+                                                                     ask if it is possible to define local interaction laws such
+                                               
+                                    1 ... 1
+                              1                                     that x(tf ) = T ξ, given the linear transformation T and
+                 lim x(t) =  ... . . . ...  ξ,               (1)
+                                                
+                t→∞           n                                      the initial conditions x(t0 ) = ξ. Necessary and sufficient
+                                    1 ... 1                          conditions are given for this to be possible, and they state
+where ξ is the vector containing all the initial node values. As     that local interaction rules exist if and only if T has positive
+such, the network is asymptotically computing the average,           determinant.
+                  II. P ROBLEM D EFINITION                              with initial condition Φ(t0 , t0 ) = I, where I is the n × n
+   To formalize what is meant by local interactions, we                 identity matrix.
+first need to discuss the information-exchange network over             Problem 1 [Local Computation]
+which the interactions are defined. To this end, let V be a             Given a linear transformation T and a connected graph G,
+vertex set with cardinality n, and E ⊂ V × V be an edge set             find W (t) ∈ sparse(G), t ∈ [t0 , tf ], such that
+with cardinality m, where we insist on (i, i) ∈ E, ∀i ∈ V ,
+                                                                                             Ẋ(t) = W (t)X(t),                     (8)
+as well as (i, j) ∈ E ⇔ (j, i) ∈ E. Let G be the graph
+G = (V, E), where the assumptions on E imply that G                     with boundary conditions X(t0 ) = I, X(tf ) = T .
+is undirected and contains self-loops. We moreover assume
+                                                                                  III. O N THE E XISTENCE OF S OLUTIONS
+that G is connected. As the main purpose with G is to
+encode adjacency information in the information-exchange                   The main point with this paper is an exploration of what
+network, we introduce the operator sparse(G) to capture                 linear transformations T admit a local implementation, i.e.,
+these adjacencies, and we say that an n × n matrix M ∈                  for what T Problem 1 has a solution. In this section, we
+sparse(G) if (i, j) 6∈ E ⇒ Mij = 0.                                     develop necessary and sufficient conditions for this to be the
+   There are a number of different ways in which local                  case.
+interactions can be defined. In this paper, we assume that they            We start by observing that since X(t) is really the state
+are given by exogenous time-varying, weights associated                 transition matrix Φ(t, t0 ), it is always invertible,
+with the edges in the network. These weights denoted wij (t)                          X(t)−1 = Φ(t, t0 )−1 = Φ(t0 , t).             (9)
+are in L∞ ([t0 , tf ]) where i and j indicate the originating
+and terminal node of the edge respectively. If xi ∈ R is the            As a direct consequence of this, T has to be invertible for a
+scalar state associated with node i ∈ V , we define a local             solution to Problem 1 to exist, i.e., we need that det(T ) 6=
+interaction as a continuous-time process                                0. But, as X(0) = I, we have that det(X(0)) = 1 > 0.
+                            X                                           Moreover, the determinant of a matrix depends continuously
+                 ẋi (t) =         wij (t)xj (t).            (2)        on its entries, and therefore the only way for det(X(τ )) <
+                           j|(i,j)∈E                                    0 for some τ ∈ (t0 , tf ], there has to exist a τ 0 ∈ (t0 , τ )
+Note that we do not insist on wij = wji even though G is                such that det(X(τ 0 )) = 0. But this can not happen since
+undirected.                                                             X is always invertible. From this it directly follows that for
+  If we stack the states together in x = [x1 , . . . , xn ]T ∈ Rn ,     Problem 1 to have a solution, T has to satisfy det(T ) > 0.
+what we mean by local interactions is thus                                 To state this fact more compactly, let GLn+ (R) denote the
+                                                                        set of all n × n, real matrices with positive determinant. We
+            ẋ(t) = W (t)x(t), W (t) ∈ sparse(G),                (3)    have thus established the following necessary condition for
+with solution                                                           the existence of a solution:
+                      x(t) = Φ(t, t0 )x(t0 ),                    (4)    Lemma 1. A solution to Problem 1 exists only if T ∈
+                                                                        GLn+ (R).
+where Φ is the state transition matrix associated with the
+system in (3), e.g., [23].                                                 One consequence of Lemma 1 is that it is impossible to use
+   The purpose of the local interactions is to perform a global,        local rules, as understood in this paper, to achieve consensus
+linear computation. In other words, given the n × n matrix              in finite time. This follows directly from the fact that the
+T and the initial condition x(t0 ) = ξ, what we would like              consensus computation is given by the linear map
+to do is find W (t) ∈ sparse(G), t ∈ [t0 , tf ], such that                                               1
+                                                                                                Tcons = 1T 1,                      (10)
+                           x(tf ) = T ξ.                         (5)                                     n
+                                                                        where 1 is a vector of length n, with all entries equal to one.
+But, comparing this expression to (4), this simply means that           And,
+what we would like is                                                                          rank(Tcons ) = 1,
+                          Φ(tf , t0 ) = T.                       (6)    i.e., det(Tcons ) = 0. Note, of course, that asymptotic con-
+If this was indeed the case, then the local interactions, as            sensus is possible, e.g. [2], [3], [4], [10].
+defined through W (t), would indeed compute T ξ over the                   Now that we have established necessary conditions for
+interval [t0 , tf ] for all possible values of ξ, i.e., one can think   Problem 1 to have a solution, we turn our attention to suf-
+of the network as a black box that takes ξ as the input at              ficient conditions. And, surprisingly enough, T ∈ GLn+ (R)
+time t0 and, at time tf , returns T ξ as the output.                    turns out to be both necessary and sufficient for a solution
+   As a final observation before we can formulate the general           to exist, which constitutes the main result in this paper:
+problem of performing global, linear computations using
+local interactions, we note that state transition matrix satisfies
+                                                                          Theorem 1. A solution to Problem 1 exists if and only
+the same dynamics as (3), i.e.,
+                                                                          if T ∈ GLn+ (R).
+                   dΦ(t, t0 )
+                              = W (t)Φ(t, t0 ),                  (7)
+                     dt
+  As we have already established sufficiency, what must be                 To clarify, gij (X) is a matrix whose ith row contains the
+shown is that whenever det(T ) > 0, there is a W (t) ∈                  jth row of X, with the rest of the elements in the matrix
+sparse(G) that drives X from I to T . The remainder of this             equal to 0,
+section is devoted to the establishment of this fact. However,                                    1
+                                                                                                       
+                                                                                                         0   ...    0
+                                                                                                                        
+before we can give the proof to Theorem 1, a number of                                             ..  ..   ..     .. 
+supporting results are needed, involving the controllability                                        .  .      .    . 
+of nonlinear, drift-free systems, i.e., systems of the form                                     i − 1 0
+                                                                                                            ...    0  
+                                  p
+                                                                                     gij (X) = i      Xj1 . . . Xjn  .
+                                                                                                                                (17)
+                                  X                                                             i + 1 0
+                                                                                                            ...    0 
+                          ẋ =          gi (x)ui ,               (11)                               ..  ..
+                                                                                                                        
+                                                                                                                     .. 
+                                                                                                             ..
+                                  i=1                                                                .  .      .     . 
+where x ∈ Rn is the state of the system, and u1 , . . . , up ∈ R                                  n      0        ...    0
+are the control inputs. For the sake of easy reference, we start          As a final step towards a formulation that is amenable to
+by recalling Chow’s Theorem, as formulated in [24], for such            Chow’s Theorem, let the vectorized version of gij be given
+drift-free systems:                                                     by ~gij = vec(gij ), resulting in the vectorized version of (16),
+                                                                                                  n
+Theorem 2 (Chow’s Theorem, e.g. [24]). The system in (11)                                         X     X
+                                                                                      vec(Ẋ) =                   ~gij (X)wij .      (18)
+is locally controllable about a point x0 if and only if
+                                                                                                  i=1 j|(i,j)∈E
+
+                         dim(∆(x0 )) = n,                        (12)      The first order of business towards establishing controlla-
+                                                                        bility of this system is the derivation of the Lie brackets for
+where ∆ is the involutive closure of the distribution                   the system in Equation 18.
+span{g1 , . . . , gp }.
+                                                                        Lemma 2.
+   The system is moreover controllable if it is locally con-                                      
+trollable everywhere. And, the proof that T ∈ GLn+ (R) is                                         −~gil (X) if j = k, i 6= l
+                                                                                                  
+sufficient for Problem 1 to have a solution will hinge on                   [~gij (X), ~gkl (X)] = ~gkj (X)  if i = l, j 6= k        (19)
+                                                                                                  
+showing that the dynamics, as defined through the local                                             0        otherwise
+                                                                                                  
+interaction rules in (3), is indeed controllable everywhere                The proof to this can be found in [25], which we omit here
+on GLn+ (R). To this end, we first must rewrite the dynamics            for brevity. Now that Lie brackets can be computed in general
+in Problem 1 on the appropriate form. For this, we need                 for this problem, we must determine if the involutive closure
+the index matrix Iij ∈ Rn×n , which has a one at the ith                of the distribution associated with the system in (18) contains
+row and jth column, and zeros everywhere else. The index                enough independent vector fields for local controllability.
+matrix allows us to rewrite                                             To help with this determination, we provide the following
+                                                                        lemma.
+                                 Ẋ = W X
+                                                                        Lemma 3. If node i is path-connected to node j, then ~gij (X)
+as                                                                    is in the distribution ∆(X).
+                               n
+                             n X
+                                                                         Proof. That node i is path-connected to node j means that
+                             X
+                  Ẋ =                 W      Iij  X,          (13)
+                             i=1 j=1                                     there is a path through adjacent nodes in the graph G that
+                                                                         starts at node i and ends at node j. Assume that the path
+where the symbol represents element-wise matrix product,                 goes through the nodes N1 , . . . , Nq , i.e., N1 is adjacent to
+i.e.,                                                                    N2 , N2 is adjacent to N3 , and so forth, while N1 = i and
+                                                                   Nq = j. Since these nodes are adjacent, we, by definition,
+           w11 . . . 0               0 ...  0
+                                                                         have that ~gN1 N2 , ~gN2 N3 , . . . , ~gNq−1 Nq ∈ ∆(X).
+    Ẋ =  ...       .
+                ..                  . ..   ..  X,
+                   . ..  + . . . +  ..
+         
+                                          .  .                            The involutive closure contains every possible Lie bracket
+              0     ...      0                  0    ...   wnn           that can be recursively created from elements ∆(X), which
+                                                     (14)                implies that the problem is to create ~gij from some com-
+where we have surpressed the explicit dependence on t for                bination of Lie brackets from elements in ∆(X). And,
+the sake of notational ease.                                             from Lemma 2, we know that [~gN1 N2 , ~gN2 N3 ] is equal to
+   Rearranging the terms and letting                                     −~gN1 N3 . Applying Lemma 2 again gives [−~gN1 N3 , ~gN3 N4 ] =
+                                                                        ~gN1 N4 . This procedure can be repeated until we arrive
+                           gij (X) = Iij X,                      (15)    at one of two possible cases. If q is even, the result
+                                                                         is [−~gN1 Nq−1 , ~gNq−1 Nq ] = ~gN1 Nq . If q is odd we get
+we get the drift-free matrix formulation                                 [~gN1 Nq−1 , ~gNq−1 Nq ] = −~gN1 Nq . In either case, we are able
+                         n
+                         X        X                                      to construct ~gN1 Nq from previous Lie brackets, as shown
+                  Ẋ =                      gij (X)wij .         (16)    in Figure 1. And, as N1 = i and Nq = j, we have
+                          i=1 j|(i,j)∈E                                 ~gij ∈ ∆(X).
+           v1    !g12     v2      !g23      v3       !g34   v4          which simplifies to
+                                                                                                 n
+                        [!g12 , !g23 ] = −!g13                                                   X
+                                                                                                       gii = X.                   (25)
+                        [−!g13 , !g34 ] = !g14                                                   i=1
+
+                                                                        gii is a matrix with one nonzero row at row i. The nonzero
+Fig. 1. An example of the construction in the proof of Lemma 3 with     rows of each gii are linearly independent. And, since X is
+node i and j being represented by v1 and v4 , respectively.             composed of n linearly independent rows, rank(X) = n, and
+                                                                        the first implication follows. Next, we must show that
+   Additionally the linear independence of vector fields is                          rank(X) = n ⇒ dim(∆(X)) = n2 ,               (26)
+needed in order to establish controllability. To this end the
+following lemma is presented.                                           which we do by contradiction. Using the expression gij =
+                                                                        Iij X, n2 matrices can be formed from X. Let us assume
+Lemma 4. {~guv (X)∀u, v ∈ V } is a set of linearly indepen-
+                                                                        that they are not linearly independent. This implies that there
+dent vectors.
+                                                                        exists a set of coefficients αij such that, for some (k, l),
+Proof. By definition, ~guv (X) = vec(Iuv X). This definition                                   X
+can be expanded to vec(Iuv X) = (XT ⊗ In )vec(Iuv ). Con-                                             gij αij = gkl .              (27)
+catenating all possible vectors resulting from combinations                                (i,j)6=(k,l)
+of vertices,                                                            Since X has full rank, X can be removed from (27) based
+   (XT ⊗ In ) vec(I11 ) vec(I21 ) . . . vec(Inn )                       on the fact that gij = Iij X, yielding
+                                                  
+                                                        (20)
+                                                                                              X
+which can be further simplified to                                                                    Iij αij = Ikl .      (28)
+                                                                                           (i,j)6=(k,l)
+                          (XT ⊗ In )In2                          (21)
+Taking the determinant of this expression yields                           By definition of the index matrix, (28) cannot be true,
+                                                                        since every matrix in the sum on the left has a value of
+                  det(XT ⊗ In ) = det(XT )n                      (22)   zero where Ikl has value of 1. Therefore, we have reached
+                                                                        a contradiction and can conclude that dim(∆(X)) = n2 .
+Because X ∈ GL+     n (R) the determinant of X is always
+positive and therefore we can write
+                          det(XT )n 6= 0                         (23)      Since X is really a state transition matrix, i.e., it is
+                                                                        indeed invertible (with rank(X) = n), the system in (16)
+This implies that the set of vectors {~guv (X)∀u, v ∈ V } is            is locally controllable everywhere on GLn+ (R) as long as the
+linearly independent.                                                   underlying graph G is connected:
+   To establish that the system is controllable on GLn+ (R),            Theorem 3. The system
+∆(X) must have rank n2 everywhere on this set, which is
+the topic of the next lemma.                                                            Ẋ = W X, W ∈ sparse(G)
+                                                                   2
+Lemma 5. If G is connected then ∆(X) has dimension n                    is locally controllable everywhere on GLn+ (R) if G is con-
+if and only if rank(X) = n.                                             nected.
+Proof. To prove this lemma, we need to show that the                      Theorem 3 and Lemma 1 give us all the ammunition
+implication goes both ways. Assume first that dim(∆(X)) =               needed to prove the main result in this paper, namely
+n2 . If G is connected then, by Lemma 3 and Lemma 4 the set             Theorem 1:
+                           ¯
+{gij (X)|i, j ∈ V } is in ∆(X)    and is linearly independent.
+Therefore,                                                              Proof of Theorem 1. Lemma 1 tells us that a solution only
+            ∆(X) = span{~gij , ∀(i, j) ∈ V × V }.                (24)   exists if T ∈ GLn+ (R), so what remains is to establish that
+                                                                        this is indeed sufficient. Hence, assume that T ∈ GLn+ (R).
+   For the purpose of the proof, it is convenient to go back to         Since I ∈ GLn+ (R), and GLn+ (R) is connected [26], there
+the matrix formulation, and we recall that ~gij = vec(gij ). As         is a continuous curve of matrices in GLn+ (R) that connects
+such, we will use the matrix form gij to construct X. And,              I and T . And, by Theorem 3, every point along the path
+since the goal is to form a matrix with rank n, only n linearly         connecting I and T is locally controllable. The system being
+independent matrices are needed. So, we arbitrarily choose to           drift-free moreover implies that it can flow along this curve,
+form X from the “diagonal” set {g11 , g22 , . . . , gnn }. Using        e.g., [27]. Therefore, a solution to Problem 1 exists if T ∈
+the fact that gij = Iij X, we can write,                                GLn+ (R).
+                        n             n
+                                                                           If we return to the consensus problem, we have already
+                        X             X
+                              gii =         Iii X,
+                        i=1           i=1                               established that Tcons in (10) is not computable in finite time
+using local rules. However, consider instead the transforma-                   Using the maximum principle, the local solution is found
+tion                                                                       by solving the two point boundary problem numerically
+                       1/n 1/n · · · 1/n                                                                                   n
+                      0      1     ···    0 
+                                                                                                           X               X
+                                                                                          Ẋij   =   −               Xkj         λil Xkl
+           Tcons2 =  .                    ..  .        (29)
+                                              
+                               .    .
+                      ..      ..     ..    .                                                           k|(i,k)∈E         l=1
+
+                        0     0     ···    1                                           X(t0 )    =   I, X(tf ) = T                         (34)
+                                                                                                       X         n
+                                                                                                                 X
+We have                                                                                   λ̇ij   =           λkj   λkl Xil ,
+                                      1
+                          det(Tcons2 ) =                   (30)                                      k|(i,k)∈E        l=1
+                                      n
+                                                                             where λij i, j = 1, . . . , n are costates. Numerical solutions
+and, as such, it is computable using local rules. In this case,
+                                                                             for the weight functions were found in both examples by
+the network average is only computed by a single node (node
+                                                                             solving (34) using test shooting. A reference which explains
+1 in this case), while the remaining nodes return to their
+                                                                             this method in detail is [28]. Using optimal control to
+initial values at the end of the computation. This can in fact
+                                                                             find weight functions was simply a convenient method for
+be generalized to any scalar, non-zero, linear map ` : Rn →
+                                                                             illustrating the feasibility of finding solutions.
+R through                            
+                                 `(ξ)                                        A. Swapping Node Values
+                               ξ2 
+                                                                                Consider the situation when the linear transformation T
+                       T` ξ =  .  ,
+                                     
+                               ..                                          represents a reordering (or swapping) of states. We examine
+                                        ξn                                   the 4 node case where the underlying graph topology is given
+                                                                             by nodes 2, 3, 4 forming a clique (fully connected subgraph)
+where we have assumed that `(ξ) depends on ξ1 .1 The point                   and node 1 is connected to node 2. In this example agents
+with this is that it is possible to compute any scalar, non-                 1 and 2 and agents 3 and 4 are to “swap” state values, the
+zero, linear map as long as the computation only has to take                 transformation matrix becomes
+place at a single node.                                                                                 
+                                                                                                          0 1 0 0
+                                                                                                                       
+                                                                                                        1 0 0 0
+                 IV. A N UMERICAL E XAMPLE                                                     Tswap = 0 0 0 1 .
+                                                                                                                                    (35)
+   Just because we know that a computation T ξ can be done                                                0 0 1 0
+using local rules it does not follow that we can (easily)
+                                                                             However, the linear interpolation between I and Tswap
+find these rules, encoded through W (t) ∈ sparse(G), such
+                                                                             contains a singular matrix, which makes the two-point
+that Ẋ = W X, X(t0 ) = I, X(tf ) = T . There are many
+                                                                             boundary problem numerically ill-conditioned when using
+possible ways in which weight functions can be found. In this
+                                                                             shooting methods, e.g., [28]. There are many such choices
+section, we address this problem in the context of optimal
+                                                                             of transformations where this ill-conditioning is a concern,
+control. The optimal control method detailed below was
+                                                                             as discussed in [29]. A way around this problem is to avoid
+chosen simply to illustrate that solutions can be found in
+                                                                             this singular matrix by solving two sequential two-point
+support of Theorem 1 and not for the purpose of providing an
+                                                                             boundary problems.
+efficient or scalable numerical method. In fact, we consider
+                                                                                As an example, in the first iteration, we let the boundary
+the cost
+                          Ztf                                                conditions be X(t0 ) = I, X((tf − t0 )/2) = T1 . For the
+                              1                                              second iteration, they are X((tf − t0 )/2) = T1 , X(tf ) =
+                  J(W ) =       kW (t)k2F dt,           (31)
+                              2                                              Tswap , where
+                                0
+                                                                                                                    
+                                                                                                        0 1 0 0
+where k·kF is the Frobenius norm. The resulting constrained                                           0 0 1 0
+                                                                                                      1 0 0 0 .
+                                                                                                 T1 =                               (36)
+minimization problem becomes
+                                                                                                        0 0 0 1
+Problem 2 [Optimal Local Interactions]
+                         Ztf                                                   This sequential approach avoids the numerical ill-
+                             1                                               conditioning, and the solution is shown in Figures 2 - 3.
+            min J(W ) =        kW (t)k2F dt                         (32)
+             W               2
+                                    0                                                             V. C ONCLUSIONS
+such that                                                                      In this paper, a step was taken towards computing arbitrary
+                                                                             global functions on networks with local interaction rules. In
+                 Ẋ = W X                                                    particular, it presented a method which allows a networked
+                 W (t) ∈ sparse(G), ∀t ∈ [t0 , tf ]                 (33)     system to compute global, linear transformations using only
+                 X(t0 ) = I, X(tf ) = T.                                     local rules.
+                                                                               We derived necessary and sufficient conditions under
+  1 If not, simply pick another node in the network that ξ does depend on,   which it is possible to use a distributed, time-varying weight-
+as the node where the computation takes place.                               ing scheme to compute the transformation T for undirected,
+                                 Edge Weights                                      [5] A. L. Dimeas and N. D. Hatziargyriou, “Operation of a multiagent
+       30                                                                              system for microgrid control,” Power Systems, IEEE Transactions on,
+                                                                                       vol. 20, no. 3, pp. 1447–1455, 2005.
+       20                                                                          [6] T. Ramachandran, Z. Costello, P. Kingston, S. Grijalva, and M. Egerst-
+                                                                                       edt, “Distributed power allocation in prosumer networks,” in IFAC
+                                                                                       Necsys, 2012.
+       10
+                                                                                   [7] S. Grijalva, M. Costley, and N. Ainsworth, “Prosumer-based control
+                                                                                       architecture for the future electricity grid,” in IEEE Multi-Conference
+           0
+  w
+
+
+
+
+                                                                                       on Systems and Control, 2011.
+                                                                                   [8] T. Balch and R. C. Arkin, “Behavior-based formation control for
+      -10                                                                              multirobot teams,” Robotics and Automation, IEEE Transactions on,
+                                                                                       vol. 14, no. 6, pp. 926–939, 1998.
+      -20                                                                          [9] M. Ji and M. Egerstedt, “Distributed coordination control of multi-
+                                                                                       agent systems while preserving connectedness,” IEEE Transactions
+      -30                                                                              on Robotics, vol. 23, no. 4, pp. 693–703, 2007.
+        0.00             0.05           0.10            0.15            0.20      [10] A. Jadbabaie, J. Lin, and A. S. Morse, “Coordination of groups
+                                                                                       of mobile autonomous agents using nearest neighbor rules,” IEEE
+                                      Time @sD                                         Transactions on Automatic Control, vol. 48, no. 6, pp. 988–1001, 2003.
+                                                                                  [11] H. Tanner, A. Jadbabaie, and G. Pappas, “Stable flocking of mobile
+Fig. 2. The weight functions define the local interactions needed to achieve           agents, part II : Dynamic topology,” in Proc. 42nd IEEE Conf.
+the swap in the 4-node case. The first and second subproblems are solved               Decision Control, 2003.
+over the time intervals [0, 0.1) and [0.1, 0.2] respectively.                     [12] N. Michael and V. Kumar, “Controlling shapes of ensembles of robots
+                                                                                       of finite size with nonholonomic constraints,” in RSS, 2008.
+                                                                                  [13] K. Romer and F. Mattern, “The design space of wireless sensor
+                                State Trajectory                                       networks,” Wireless Communications, IEEE, vol. 11, no. 6, pp. 54–
+                                                                                       61, 2004.
+       4                                                                          [14] F. Zhang and N. Leonard, “Coordinated patterns of unit speed particles
+                                                                                       on a closed curve,” Systems and Control Letters, vol. 56, no. 6, pp.
+       3                                                                               397–407, 2007.
+                                                                                  [15] D. Marculescu, R. Marculescu, N. H. Zamora, P. Stanley-Marbell, P. K.
+                                                                                       Khosla, S. Park, S. Jayaraman, S. Jung, C. Lauterbach, W. Weber,
+       2                                                                               et al., “Electronic textiles: A platform for pervasive computing,”
+  x
+
+
+
+
+                                                                                       Proceedings of the IEEE, vol. 91, no. 12, pp. 1995–2018, 2003.
+       1                                                                          [16] J. Cortés and F. Bullo, “Coordination and geometric optimization
+                                                                                       via distributed dynamical systems,” SIAM Journal on Control and
+                                                                                       Optimization, vol. 44, no. 5, pp. 1543–1574, 2005.
+       0                                                                          [17] A. Nedic, A. Ozdaglar, and A. Parrilo, “Constrained consensus and op-
+                                                                                       timization in multi-agent networks,” IEEE Transactions on Automatic
+      -1                                                                               Control, vol. 55, no. 4, pp. 922–938, 2010.
+       0.00             0.05            0.10            0.15            0.20      [18] R. Olfati-Saber and J. S. Shamma, “Consensus filters for sensor
+                                                                                       networks and distributed sensor fusion,” in Decision and Control, 2005
+                                     Time @sD                                          and 2005 European Control Conference. CDC-ECC’05. 44th IEEE
+                                                                                       Conference on. IEEE, 2005, pp. 6698–6703.
+Fig. 3. The evolution of the node states for the swap problem. The initial        [19] S. Sundaram and C. N. Hadjicostis, “Distributed function calculation
+state is x(t0 ) = [1, 2, 3, 4]T and the final state is x(tf ) = [2, 1, 4, 3]T ,        and consensus using linear iterative strategies,” Selected Areas in
+i.e., the first and second states swapped values and the third and fourth state        Communications, IEEE Journal on, vol. 26, no. 4, pp. 650–660, 2008.
+swapped values.                                                                   [20] M. Rotkowitz and S. Lall, “A characterization of convex problems
+                                                                                       in decentralized control,” Automatic Control, IEEE Transactions on,
+                                                                                       vol. 51, no. 2, pp. 274–286, 2006.
+                                                                                  [21] J. Swigart and S. Lall, “A graph-theoretic approach to distributed
+connected networks with fixed topology. Specifically, we                               control over networks,” in Decision and Control, 2009 held jointly
+showed that the necessary and sufficient condition for T to                            with the 2009 28th Chinese Control Conference. CDC/CCC 2009.
+                                                                                       Proceedings of the 48th IEEE Conference on. IEEE, 2009, pp. 5409–
+be locally computable is that it has positive determinant, i.e.,                       5414.
+T ∈ GLn+ (R).                                                                     [22] J. M. Hendrickx, R. M. Jungers, A. Olshevsky, and G. Vankeerberghen,
+                                                                                       “Graph diameter, eigenvalues, and minimum-time consensus,” Auto-
+                         ACKNOWLEDGMENT                                                matica, 2013.
+                                                                                  [23] R. Brockett, Finite Dimensional Linear Systems. John Wiley & Sons,
+   This work was sponsored in part by a grant from the US                              Inc., 1970.
+Air Force Office for Sponsored Research. The authors would                        [24] S. Sastry, Nonlinear systems: analysis, stability, and control. Springer
+like to thank Professor Mark Costello at the Georgia Institute                         New York, 1999, vol. 10.
+                                                                                  [25] Z. Costello and M. Egerstedt, “From global, finite-time, linear com-
+of Technology for his advice regarding this work.                                      putations to local, edge-based interaction rules,” ArXiv.org, 2014, a
+                                                                                       preprint is available at arXiv.
+                               R EFERENCES                                        [26] G. Strang, Introduction to Linear Algebra.          Wellesley-Cambridge
+                                                                                       Press, 1993.
+ [1] F. Bullo, J. Cortes, and S. Martnez, Distributed Control of Robotic Net-     [27] R. W. Brockett, “System theory on group manifolds and coset spaces,”
+     works. A Mathematical Approach to Motion Coordination Algorithms.                 SIAM Journal on Control, vol. 10, no. 2, pp. 265–284, 1972.
+     Princeton University Press, 2009.                                            [28] W. Press, S. Teukolsky, W. Vetterling, and B. Flannery, Numerical
+ [2] M. Mesbahi and M. Egerstedt, Graph theoretic methods in multiagent                Recipes: The Art of Scientific Computing. Cambridge University
+     networks. Princeton University Press, 2010.                                       Press, 2007.
+ [3] R. Olfati-Saber, J. A. Fax, and R. M. Murray, “Consensus and                 [29] A. Bhaya, “Real matrices with positive determinant are homotopic to
+     cooperation in networked multi-agent systems,” Proceedings of the                 the identity,” SIAM review, vol. 40, no. 2, pp. 335–340, 1998.
+     IEEE, vol. 95, no. 1, pp. 215–233, 2007.
+ [4] W. Ren and R. W. Beard, Distributed Consensus in Multi-vehicle
+     Cooperative Control. Springer-Verlag, 2008.

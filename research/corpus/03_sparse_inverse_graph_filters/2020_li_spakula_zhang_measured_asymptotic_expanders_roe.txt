@@ -1,0 +1,2114 @@
+                                              MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE
+                                                                  ALGEBRAS
+
+                                                                KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+                                                  Abstract. In this paper, we give a new geometric condition in terms of measured
+                                                  asymptotic expanders to ensure rigidity of Roe algebras. Consequently, we obtain
+                                                  the rigidity for all bounded geometry spaces which coarsely embed into some
+                                                  Lp -space for p ∈ [1, ∞). Moreover, we also verify rigidity for the box spaces
+arXiv:2010.10749v3 [math.OA] 20 Dec 2022
+
+
+
+
+                                                  constructed by Arzhantseva-Tessera and Delabie-Khukhro even though they do
+                                                  not coarsely embed into any Lp -space.
+                                                      The key step in our proof of rigidity is showing that a block-rank-one (ghost)
+                                                  projection on a sparse space X belongs to the Roe algebra C∗ (X) if and only if
+                                                  X consists of (ghostly) measured asymptotic expanders. As a by-product, we
+                                                  also deduce that ghostly measured asymptotic expanders are new sources of
+                                                  counterexamples to the coarse Baum-Connes conjecture.
+
+
+
+                                           Mathematics Subject Classification (2020): 46H35, 20F65, 05C81. Secondary: 19K56.
+                                           Keywords: Measured asymptotic expanders, Measured weak embeddings, Rigid-
+                                           ity of Roe algebras, Coarse Baum-Connes conjecture, Quasi-locality.
+
+
+                                                                                1. Introduction
+
+                                             (Uniform) Roe algebras are C∗ -algebras associated to metric spaces, which reflect
+                                           and encode the coarse (or large-scale) geometry of the underlying metric spaces.
+                                           They have been well-studied and have fruitful applications, among which the
+                                           most important ones would be the coarse Baum-Connes conjecture, the Novikov
+                                           conjecture on higher signatures and the Gromov–Lawson conjecture on positive
+                                           scalar curvature (see e.g. [40] for details).
+                                              The main purpose of this paper is to provide a new geometric condition in
+                                           terms of measured asymptotic expanders to guarantee the rigidity for (uniform)
+                                           Roe algebras associated to metric spaces. In recent years, the study of the rigidity
+                                           for those C∗ -algebras has gained considerable attention (for instance [8, 9, 11, 10,
+                                           12, 15, 37, 39]). Let us recall the general setting: let (X, d) be a metric space with
+                                           bounded geometry, and denote by C∗u (X) the uniform Roe algebra of X, defined
+                                           to be the norm closure of all bounded operators on ℓ2 (X) with finite propagation.
+                                           Similarly the Roe algebra of X, denoted by C∗ (X), is defined to be the norm closure
+                                           of all locally compact bounded operators on ℓ2(X; H0 ) with finite propagation,
+
+                                              Date: December 21, 2022.
+                                              KL was supported by the Internal KU Leuven BOF project C14/19/088. KL has also received
+                                           funding from the European Research Council (ERC) under the European Union’s Horizon 2020
+                                           research and innovation programme (grant agreement no. 677120-INDEX).
+                                              JŠ was partially supported by Marie Curie FP7-PEOPLE-2013-CIG Coarse Analysis (631945),
+                                           and by EPSRC EP/V002899/1. For the purpose of open access, the author has applied a Creative
+                                           Commons Attribution (CC BY) licence to any Author Accepted Manuscript version arising.
+                                              JZ was supported by NSFC11871342.
+                                                                                          1
+2                          KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+where H0 is an infinite-dimensional separable Hilbert space. It is well-known
+that if X and Y are coarsely equivalent metric spaces with bounded geometry,
+then their (uniform) Roe algebras are (stably) ∗-isomorphic. The rigidity problem
+refers to the converse implication:
+Problem 1.1 (Rigidity Problem). Let X and Y be two metric spaces with bounded
+geometry.
+        (1) If C∗u (X) and C∗u (Y) are stably ∗-isomorphic, are X and Y coarsely equivalent?
+        (2) If C∗ (X) and C∗ (Y) are ∗-isomorphic, are X and Y coarsely equivalent?
+
+  To briefly summarise the current status of Rigidity Problem (at the time of
+submission of the present paper1), and some of the main results of this paper, let
+us consider the following properties of a metric space with bounded geometry:
+    (A) Property (A).
+     (B) Coarse embeddability into a Hilbert space.
+    (C) Coarse embeddability into some Lp -space for p ∈ [1, ∞).
+    (D) “All sparse subspaces yield only compact ghost projections in their (uni-
+         form) Roe algebras.” (This technical condition in the uniform case was
+         first introduced in [9, 11, 10]; the general case in [8].)
+     (E) The space contains no sparse subspaces consisting of ghostly measured
+         asymptotic expanders. (This geometric condition is introduced in the
+         present paper, see below for precise definitions.)
+     (F) A positive answer to Rigidity Problem 1.1.
+All of (A) – (E) imply (F): The implication (A)⇒(F) is the main result in [37] (see
+Theorem 1.4 and 1.8 therein) where the Rigidity Problem was first posed. The next
+substantial progress was then made with the help of (D) by Braga and Farah in
+[9, Corollary 1.3] (for ∗-isomorphic uniform Roe algebras), but the full generality
+of (D)⇒(F) was given in [8, Theorem 1.3]. One of the main results of this paper is
+to establish (E)⇒(F) (see Theorem A below). One has the following implications:
+
+                                                           (C)             +3 (E)   +3 (F)
+                                                     ⑤  9A               ⑤   9A
+                                                 ⑤⑤⑤⑤⑤               ⑤⑤⑤⑤⑤
+                                               ⑤⑤⑤                 ⑤⑤⑤
+                                           ⑤⑤⑤⑤⑤               ⑤⑤⑤⑤⑤
+                           (A)      +3 (B)            +3 (D)
+
+
+  Here (A)⇒(B) is due to Yu [42, Theorem 2.2]. Also (B)⇒(C) holds trivially2,
+however, whether (C) implies (B) is still open for bounded geometry metric spaces.
+Next, (B)⇒(D) is essentially due to Finn-Sell [19, Proposition 35], made precise
+in [8, Theorem 5.2]. The remaining implications (C)⇒(E), (D)⇒(E) and (E)⇒(F)
+are all established in this paper (see Corollary 7.2, Corollary C and Theorem A
+respectively).
+
+    1
+    About half a year after this paper was first announced, an unconditional positive answer to
+the rigidity problem for uniform Roe algebras is given in [6]. However, the method in [6] does not
+immediately apply to Roe algebras. To the best of the authors’ knowledge, the rigidity problem
+for Roe algebras is still open in general.
+   2
+    We want to recall that condition (B) also implies the coarse embeddability into any Lp -space
+for p ∈ [1, ∞), which was proved in [31].
+            MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                      3
+
+  Some of the above implications are known to be not reversible: (B);(A) by [3,
+Theorem 1.1], (D);(B) by [19, Proposition 35] and [17, Corollary 1.2]. Further-
+more, (E);(C) by the results in this paper (see Theorem F and Lemma 2.8 below).
+Finally, we do not know whether (D)⇒(E) is reversible, and thus whether our
+new rigidity results here are actually (rather than formally) stronger than those
+in [8]. Nevertheless, the condition (E) is geometric and easier to check than the
+analytic condition (D), which allows us to provide new examples of rigid spaces
+in Section 7, and to establish the condition (C) as another geometric criterion for
+Rigidity (see Corollary E).
+  To explain our results and approach in more detail, we start with measured
+asymptotic expanders. They were introduced in [26, Definition 6.1] and can be
+naturally constructed from strongly ergodic or asymptotically expanding actions
+(see [26, Theorem 6.16]).
+Definition 1.2. A sequence of finite probability-measured metric spaces {(Xn , dn , mn )}n∈N
+is called a sequence of measured asymptotic expanders if for any α ∈ (0, 12 ], there exist
+cα ∈ (0, 1) and Rα > 0 such that for any n ∈ N and A ⊆ Xn with α ≤ mn (A) ≤ 12 , we
+have mn (∂Rα A) > cα · mn (A), where ∂Rα A := {x ∈ Xn \A : dn (x, A) ≤ Rα }.
+
+ Note that when all probability measures mn are taken to be normalised counting
+measures, then we recover the notion of asymptotic expanders introduced in [24].
+Definition 1.3. Let (X, d) be a metric space.
+                                                                      F
+      (1) X is called sparse3 if there exists a disjoint partition X = n∈N Xn such that
+            • 0 < |Xn | < ∞ for all n ∈ N, and
+            • d(Xn , Xm ) → ∞ as n + m → ∞ and n , m.
+      (2) We say that a sparse space X consists of ghostlyF       measured asymptotic ex-
+          panders if there exist a decomposition X = n Xn as in (1) and a sequence
+          of probability measures mn on Xn with limn→∞ supx∈Xn mn (x) = 0 such
+          that {(Xn , dn , mn )}n∈N forms a sequence of measured asymptotic expanders,
+          where dn is the restriction of d to Xn .
+
+  We are ready to state our main rigidity theorem:
+Theorem A (Theorem 6.13). Let X and Y be metric spaces with bounded geometry.
+Assume that either X or Y contains no sparse subspaces consisting of ghostly measured
+asymptotic expanders. Then the following are equivalent:
+      (1) X is coarsely equivalent to Y;
+      (2) C∗u (X) is stably ∗-isomorphic to C∗u (Y);
+      (3) C∗ (X) is ∗-isomorphic to C∗ (Y).
+
+  Before we discuss examples where the above theorem applies, let us outline
+our approach to its proof. The first step is to show that Problem 1.1 has a positive
+answer under the condition that all sparse subspaces contain no block-rank-one
+ghost projections in their Roe algebras (see Proposition 3.9)4 in the following sense:
+
+  3
+    In this case, we also say that X is a coarse disjoint union of Xn .
+  4
+    We would like to point out that our assumptions in Proposition 3.9 are formally weaker than
+the technical condition in [8, Theorem 1.3].
+4                          KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+                                   F
+Definition 1.4. Let (X, d) = n∈N (Xn , dn ) be a sparse space and H0 be a Hilbert
+space. We say that an operator P ∈ B(ℓ2(X; H0 )) is a block-rank-one projection with
+respect to {(Xn , dn )}n∈N if it is a projection of the form
+                                                          
+                         M              M 2              
+                   P :=        Pn ∈ B      ℓ (Xn ; H0) = B(ℓ2 (X; H0 )),
+                           n∈N            n∈N
+
+where each Pn is a rank-one projection in B(ℓ2 (Xn ; H0 )).
+  As each Pn has the form Pn (η) = hη, ξn iξn for all η ∈ ℓ2(Xn ; H0) where ξn is a unit
+vector in ℓ2 (Xn ; H0 ), we define for each n ∈ N the associated probability measure mn
+on Xn by mn (x) := ||ξn (x)||2 for x ∈ Xn .
+  Finally, we say that the block-rank-one projection P is a ghost5 if the sequence
+of associated probability measures satisfies limn→∞ supx∈Xn mn (x) = 0.
+
+  If each Pn is the rank-one projection onto constant functions on Xn , then the
+resulting projection P is the so-called averaging projection. Its relation to asymptotic
+expanders has been extensively studied in [23, 24]. The reader is cautioned that the
+notion of block-rank-one projections depends on the choice F       of the decomposition
+of X as a coarse disjoint union of finite metric spaces X = n∈N Xn , not only on
+the bijectively coarse equivalence type of X (see [24, Remark 3.5] for details).
+   TheF second step is to show that a block-rank-one (ghost) projection P on a sparse
+space n∈N (Xn , dn ) belongs to the Roe algebra C∗ (X) if and only if {(Xn , dn , mn )}n∈N
+forms a (ghostly) sequence of measured asymptotic expanders, where each mn
+denotes the associated probability measure on Xn . To this end, we prove the
+following theorem, which extends [23, Theorem 6.1] from asymptotic expanders
+to the measured case:
+                                                                                 F
+Theorem B (Proposition 4.8, Theorem 6.1 and Theorem 6.6). Let (X, d) = n∈N (Xn , dn )
+be a sparse space with bounded geometry and H0 be a Hilbert space. Let P ∈ B(ℓ2 (X; H0 ))
+be a block-rank-one projection with respect to {(Xn , dn )}n∈N and mn be the associated prob-
+ability measure on Xn . Then the following hold:
+        • If H0 = ℓ2(N), then P belongs to the Roe algebra C∗ (X) if and only if {(Xn , dn , mn )}n∈N
+          forms a sequence of measured asymptotic expanders.
+        • If H0 = C, then P belongs to the uniform Roe algebra C∗u (X) if and only if
+          {(Xn , dn , mn )}n∈N forms a sequence of measured asymptotic expanders.
+
+   Theorem B is the fundamental theorem of this paper, and its proof is rather tech-
+nical. To briefly summarise, we start with a structure theorem inspired by [23,
+Theorem 3.5] that measured asymptotic expanders admit a uniform exhaustion
+by measured expander graphs with bounded measure ratios (see Corollary 4.21)6.
+Next, we show that certain Laplacians associated to measured expanders with
+bounded measure ratios have spectral gap (see Proposition 5.4). Unfortunately,
+the measures involved in measured expanders may not come from reversible
+random walks on graphs, hence we cannot directly follow the classical argument
+from the theory of expanders to obtain the required spectral gap. We overcome
+this issue by building auxiliary random walks, whose stationary measures uni-
+formly control the original measures. Such control is guaranteed when we deal
+    5
+    See Definition 2.11 for general ghost operators.
+    6
+    A dynamical counterpart of structure theorem can be found in [25, 26].
+         MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                    5
+
+with measured expanders with bounded measure ratios. We refer the reader to
+Lemma 5.2 for the precise statement.
+   As outlined above, Theorem A can be deduced from our fundamental theorem
+(Theorem B). Additionally, Theorem B has two further substantial consequences.
+The first one is to provide both analytic and geometric characterisations for our
+rigidity condition. Namely, we have the following corollary (see also [10, Prob-
+lem 8.6]):
+Corollary C (Corollary 6.12). Let X be a metric space with bounded geometry. Then
+the following coarse properties are equivalent:
+   (1) all sparse subspaces of X contain no block-rank-one ghost projections in their Roe
+       algebras;
+   (2) all sparse subspaces of X contain no block-rank-one ghost projections in their
+       uniform Roe algebras;
+   (3) X contains no sparse subspaces consisting of ghostly measured asymptotic ex-
+       panders.
+   (4) X coarsely contains no sparse spaces consisting of ghostly measured asymptotic
+       expanders with uniformly bounded geometry.
+  Secondly, Theorem B possibly gives rise to a new source of counterexamples
+to the coarse Baum-Connes conjecture. More precisely, we obtain a measured
+analogue of [23, Theorem D]:
+Corollary D (Corollary 6.11). Let X be a sparse space consisting of ghostly measured
+asymptotic expanders. If X has bounded geometry and admits a fibred coarse embedding
+into a Hilbert space, then it does not satisfy the coarse Baum-Connes conjecture.
+   The remainder of the paper concentrates on the study of measured (asymptotic)
+expanders in order to provide sufficient conditions and examples for Corollary C
+(and thus also Theorem A). In Section 5.2, we obtain an Lp -Poincaré inequality for
+measured expanders (see Corollary 5.3). Using the structure theorem for mea-
+sured asymptotic expanders (Corollary 4.21), we conclude that any sparse space
+consisting of ghostly measured asymptotic expanders with uniformly bounded
+geometry cannot coarsely embed into any Lp -space for p ∈ [1, ∞) (see Corol-
+lary 7.2). Thus, we obtain the following corollary of Theorem A:
+Corollary E. Let X and Y be metric spaces with bounded geometry such that Y coarsely
+embeds into some Lp -space for p ∈ [1, ∞). Then the following are equivalent:
+   (1) X is coarsely equivalent to Y;
+   (2) C∗u (X) is stably ∗-isomorphic to C∗u (Y);
+   (3) C∗ (X) is ∗-isomorphic to C∗ (Y).
+   Apart from Corollary E, we provide concrete examples of spaces which are rigid,
+but do not coarsely embed into any Lp -space. These examples are not covered by
+previously existing results at least for Roe algebras.
+   To this end, we come up with the concept of a measured weak embedding (see
+Definition 2.6) and extend the main results in [4, 16] to the measured setting.
+More precisely, the structure result (Corollary 4.21) together with the Lp -Poincaré
+inequality for measured expanders (Corollary 5.3) leads to Proposition 7.3, which
+is a measured analogue of [4, Proposition 2]. By virtue of Proposition 7.3, the
+same idea in [4, 16] can be easily adapted to show the following theorem:
+6                      KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+Theorem F (Theorem 7.5 and Theorem 7.7). There exists a box space X of a finitely
+generated residually finite group Γ such that X does not coarsely embed into any Lp -space
+for 1 ≤ p < ∞, but X does not measured weakly contain any measured asymptotic
+expanders with uniformly bounded geometry. In fact, the group Γ may also be chosen to
+be the free group F3 of rank three.
+  As the box space in Theorem F obviously cannot contain sparse subspaces
+consisting of ghostly measured asymptotic expanders (see Lemma 2.8), we can
+apply Theorem A to produce new rigid spaces:
+Corollary G. There exist box spaces with bounded geometry that do not coarsely embed
+into any Lp -space for 1 ≤ p < ∞, but affirmatively answer Problem 1.1.
+  In [5, Thereom 1.2 and Thereom 1.3], Arzhantseva and Tessera constructed two
+examples of finitely generated groups as split extensions of two groups coarsely
+embeddable into Hilbert space but which themselves do not coarsely embed into
+Hilbert space. Hence Problem 1.1 also has a positive answer for these two finitely
+generated groups, as they contain no sparse subspaces consisting of ghostly mea-
+sured asymptotic expanders by Proposition 7.3. However, the rigidity for these
+groups is not new at all and has already been verified in [8]. Indeed, we simply
+apply [8, Theorem 1.5] because these two groups satisfy the coarse Baum-Connes
+conjecture with coefficients (see [8, Remark 2.10 and Proposition 2.11]).
+  We end the introduction by asking the following two questions:
+Question 1.5. Are ghostly measured asymptotic expanders obstacles to Prob-
+lem 1.1 (2)?
+Question 1.6. In the last decade, a theory of “high dimensional expanders” has
+begun to emerge (see [29] for a detailed survey). Therefore, it is natural to ask:
+can we define “measured asymptotic expanders in high dimensions” such that the
+corresponding Theorem B holds for all block-rank-n projections for n ∈ N?
+Convention. Throughout the paper, all metric spaces are non-empty and discrete,
+and graphs are connected and undirected.
+
+                                   2. Preliminaries
+
+  In this section, we introduce notation for metric spaces, and recall several basic
+definitions and results from coarse geometry.
+
+2.1. Metric spaces and expander graphs. Let (X, d) be a metric space, x ∈ X
+and R > 0. Then B(x, R) denotes the closed ball with radius R and centre at
+x. For any subset A ⊆ X, |A| denotes the cardinality of A; diam(A) denotes the
+diameter of A; NR (A) = {x ∈ X : d(x, A) ≤ R} denotes the R-neighbourhood of A; and
+∂R A = {x ∈ X\A : d(x, A) ≤ R} denotes the (outer) R-boundary of A. For a subspace
+Y ⊆ X and a subset A ⊆ Y, we may also consider the relative neighbourhood and
+boundary defined as NRY (A) = NR (A) ∩ Y and ∂YR A = (∂R A) ∩ Y.
+   Moreover, we say that a metric space (X, d) has bounded geometry if supx∈X |B(x, R)|
+is finite for each R > 0. Any metric space with bounded geometry is auto-
+matically countable and discrete. More generally, a sequence of metric spaces
+{(Xn , dn )}n∈N has uniformly bounded geometry if for all R > 0, the number NR :=
+supn∈N supx∈Xn |B(x, R)| is finite.
+          MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                       7
+
+   In this paper, we are particularly interested in a certain type of metric spaces
+arising from graphs, the so-called expander graphs.
+   For a (connected) graph G = (V, E) with the vertex set V and the edge set E,
+we endow V with the edge-path metric, which is defined to be the length (i.e., the
+number of edges) in a shortest path connecting given two vertices. For A ⊆ V,
+∂V A (or just ∂A) denotes its 1-boundary, which is also called the vertex boundary
+of A, and its edge boundary ∂E A is defined to be the set of all edges in E with one
+endpoint in A and the other one in V \ A.
+   We say that two vertices v and w in V are adjacent if there is an edge in E
+connecting them (in symbols v ∼E w or just v ∼ w). For a vertex v ∈ V, its valency
+is defined to be the number of vertices adjacent to v. It is clear that the edge-path
+metric on V has bounded geometry if and only if the graph has bounded valency in
+the sense that there exists some K ≥ 0 such that each vertex has valency bounded
+by K. More generally, a sequence of graphs {Gn }n∈N is said to have uniformly
+bounded valency if there exists some K ≥ 0 such that each vertex in Gn has valency
+bounded by K for all n. Hence, a sequence of graphs has uniformly bounded
+valency if and only if it has uniformly bounded geometry with respect to the
+edge-path metrics.
+  For a finite graph G = (V, E), its Cheeger constant is defined to be
+                                     n |∂A|                        |V| o
+                       c(G) := min            : A ⊆ V, 0 < |A| ≤        ,
+                                       |A|                          2
+where ∂A is the vertex boundary of A. Now we recall the definition of expander
+graphs, which are highly connected but sparse at the same time.
+
+Definition 2.1. A sequence of finite (connected)7 graphs {Gn = (Vn , En )}n∈N is called
+a sequence of expander graphs if it has uniformly bounded valency, |Vn | → ∞ as
+n → ∞, and infn∈N c(Gn ) > 0.
+
+  We can always make a sequence of finite metric spaces into a single metric
+space, which is sparse in the sense of Definition 1.3:
+
+Definition 2.2. Let {(Xn , dn )}n∈N be a sequence of finite metric spaces.
+                                                                     F     A coarse
+disjoint union of {(Xn , dn )}n∈N is a metric space (X, d), where X = n∈N Xn is the
+disjoint union of {Xn } as a set and d is a metric on X such that
+      • the restriction of d on each Xn coincides with dn ;
+      • d(Xn , Xm ) → ∞ as n + m → ∞ and n , m.
+If we need a precise choice of d, we can choose d as follows: d(x, y) = n + m +
+diam(Xn ) + diam(Xm ) for all x ∈ Xn and y ∈ Xm , whenever m and n are distinct
+natural numbers. Moreover, any two of such metrics are coarsely equivalent (see
+Section 2.2 for the precise meaning).
+
+  Clearly, a sequence of finite metric spaces {Xn }n∈N has uniformly bounded ge-
+ometry if and only if its coarse disjoint union has bounded geometry.
+
+  7
+   We note that the expanding condition already implies that all the graphs Gn in an expander
+sequence are connected.
+8                      KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+2.2. Metric embeddings. Given two metric spaces (X, dX ) and (Y, dY ), a map
+f : X → Y is called a coarse embedding if there exist non-decreasing unbounded
+functions ρ± : [0, ∞) → [0, ∞) such that
+                      ρ− (dX (x, y)) ≤ dY ( f (x), f (y)) ≤ ρ+ (dX (x, y))
+for any x, y ∈ X. In this case, we simply say that Y coarsely contains X. If f : X → Y
+is a coarse embedding and NC ( f (X)) = Y for some constant C > 0, then we say
+that f is a coarse equivalence between X and Y. In this case, we also say that X and
+Y are coarsely equivalent.
+  More generally, let {Xn }n∈N be a sequence of metric spaces and let Y be another
+metric space. A sequence of maps fn : Xn → Y is called a coarse embedding of
+{Xn }n∈N into Y if all fn are coarse embeddings with the same control functions ρ± .
+One can easily check that a sequence of finite metric spaces admits a coarse em-
+bedding into a non-trivial Banach space Y if and only if its coarse disjoint union
+as a single metric space admits a coarse embedding into Y.
+
+  Following the idea in [20] (see also [22, Section 7] and [21, Definition 5.2]), we
+say that a sequence of finite graphs {Xn }n∈N admits a weak embedding into a metric
+space Y if there exist L > 0 and L-Lipschitz maps fn : Xn → Y such that for every
+R > 0,
+                                       | fn−1 (B( fn (x), R))|
+(2.1)                        lim sup                           = 0.
+                             n→∞ x∈X
+                                     n
+                                                |Xn |
+In this case, we also say that Y weakly contains the sequence {Xn }n∈N .
+Remark 2.3. If the target space Y has bounded geometry, then (2.1) is equivalent
+to the following (see [21, Definition 5.2]):
+                                          | fn−1 ( fn (x))|
+                                lim sup                     = 0.
+                                n→∞ x∈X
+                                        n
+                                                |Xn |
+Thus, a coarse embedding of a sequence of finite graphs {Xn }n∈N with uniformly
+bounded valency into a metric space Y is a weak embedding provided that |Xn | →
+∞ as n → ∞.
+
+  For the purpose of this paper, we would also like to consider measured weak
+embeddings of ghostly sequences of finite measured metric spaces.
+Definition 2.4. We say that {(Xn , dn , mn )}n∈N is a sequence of finite measured metric
+spaces if each (Xn , dn ) is a finite metric space, and each mn is a non-trivial and finite
+measure defined on the σ-algebra of all subsets of Xn . Moreover, the sequence
+{(Xn , dn , mn )}n∈N is called ghostly if
+                                            mn (x)
+(2.2)                              lim sup          = 0.
+                                   n→∞ x∈X mn (Xn )
+                                          n
+
+
+Remark 2.5. If a sequence of finite measured metric spaces {(Xn , dn , mn )}n∈N is
+ghostly, then |supp(mn )| → ∞ as n → ∞. However, it is clear that the converse
+may fail in general. Moreover, if each mn is the counting measure on Xn then
+{(Xn , dn , mn )}n∈N is ghostly if and only if |Xn | → ∞ as n → ∞.
+            MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                       9
+
+Definition 2.6. We say that a sequence of finite measured metric spaces {(Xn , dn , mn )}n
+admits a measured weak embedding into a metric space Y if there exists a sequence
+of maps fn : Xn → Y such that
+      (1) the sequence { fn }n∈N is coarse8, i.e., there exists a non-decreasing unbounded
+          function ρ+ : [0, ∞) → [0, ∞) such that for every n ∈ N and x, y ∈ Xn , we
+          have dY ( fn (x), fn (y)) ≤ ρ+ (dXn (x, y));
+      (2) for every R > 0,
+                                       mn ( fn−1 (B( fn (x), R)))
+(2.3)                        lim sup                              = 0.
+                             n→∞ x∈X
+                                     n
+                                               mn (Xn )
+In this case, we also say that Y measured weakly contains the sequence {(Xn , dn , mn )}n .
+Remark 2.7. When all Xn in Definition 2.6 are finite graphs, condition (1) is equiv-
+alent to that all maps fn : Xn → Y are L-Lipschitz for some L > 0. Moreover, if
+each mn is the counting measure on Xn , then we recover the usual notion of weak
+embedding.
+
+  Similar to Remark 2.3, if the target space Y has bounded geometry then (2.3) is
+equivalent to the following:
+                                          mn ( fn−1 ( fn (x)))
+                                lim sup                        = 0.
+                                n→∞ x∈X
+                                        n
+                                              mn (Xn )
+At this point, the reader might want to compare this expression with (2.2).
+    Recall that a map f : X → Y between two metric spaces is called finite-to-
+one if the preimage f −1 (y) is finite for every y ∈ Y. Moreover, a sequence of
+maps { fn : Xn → Y}n∈N between metric spaces is called uniformly finite-to-one
+if there exists some N ∈ N such that for any n ∈ N and any y ∈ Y we have
+| fn−1 (y)| ≤ N. In particular, we say that a map f : X → Y between two metric
+spaces is uniformly finite-to-one if the constant sequence { fn = f }n∈N is uniformly
+finite-to-one. Notice that if X has bounded geometry, then any coarse embedding
+ f : X → Y is uniformly finite-to-one.
+  The proof of the following lemma is straightforward from the definitions, thus
+omitted.
+Lemma 2.8. Let {(Xn , dn , mn )}n∈N be a ghostly sequence of finite measured metric spaces,
+and Y be a metric space. Then the following hold:
+        • If {(Xn , dn )}n has uniformly bounded geometry, then every coarse embedding of
+          the sequence {(Xn , dn , mn )}n into Y is a measured weak embedding.
+        • If Y has bounded geometry, then every uniformly finite-to-one and coarse sequence
+          of maps from {(Xn , dn , mn )}n into Y is a measured weak embedding.
+
+2.3. Rigidity for Roe-like algebras. For a Hilbert space H , we denote the closed
+unit ball of H by (H )1 . Moreover, B(H ) and K(H ) denote the spaces of bounded
+and compact operators on H , respectively.
+   For a discrete metric space (X, d), we denote by χA the characteristic function on
+a subset A ⊆ X and δx = χ{x} for x ∈ X. Fixing a Hilbert space H0 , we consider the
+  8
+   We follow the terminology from [4]; other sources use bornologous or uniformly expansive for
+“coarse”, and further uniformly coarse or equi–coarse when used for families for maps.
+10                          KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+Hilbert space ℓ2 (X; H0 )  ℓ2 (X)⊗H0 . When H0 = C, we also write ℓ2(X) = ℓ2(X; C).
+There is a natural ∗-representation ℓ∞ (X) → B(ℓ2 (X; H0 )) induced by the canonical
+multiplication representation of ℓ∞ (X) on ℓ2(X).
+  We can always regard any operator T ∈ B(ℓ2(X; H0 )) as an X-by-X matrix
+(Tx,y )x,y∈X with entries in B(H0 ). More precisely, Tx,y ∈ B(H0 ) is defined by
+                                                   
+                                 Tx,y ξ = T(δ y ⊗ ξ) (x)
+for ξ ∈ H0 and x, y ∈ X. (Here δ y ⊗ ξ ∈ ℓ2(X) ⊗ H0  ℓ2(X; H0 ) represents the
+function from X to H0 taking the value ξ at y and 0 otherwise.) The propagation of
+T is defined to be
+                        ppg(T) := sup{d(x, y) : Tx,y , 0}.
+We say that T ∈ B(ℓ2 (X; H0 )) has finite propagation if ppg(T) is finite, and T is locally
+compact if Tx,y ∈ K(H0 ) for all x, y ∈ X.
+  In this paper, we will deal with the rigidity problem for the following variants
+of Roe algebras:
+Definition 2.9. Let X be a metric space with bounded geometry and H0 be an
+infinite-dimensional separable Hilbert space.
+         (1) The Roe algebra of X, denoted by C∗ (X), is defined to be the norm closure of
+             all finite propagation locally compact operators in B(ℓ2 (X; H0 )).
+         (2) The uniform algebra of X, denoted by UC∗ (X), is defined to be the norm
+             closure of all finite propagation operators T ∈ B(ℓ2(X; H0 )) such that there
+             exists some N ∈ N satisfying rank(Tx,y ) ≤ N for all x, y ∈ X.
+         (3) The stable Roe algebra of X, denoted by C∗s (X), is defined to be the norm
+             closure of all finite propagation operators T ∈ B(ℓ2(X; H0 )) such that there
+             exists a finite-dimensional subspace H ⊆ H0 satisfying Tx,y ∈ B(H) for all
+             x, y ∈ X.
+         (4) The uniform Roe algebra of X, denoted by C∗u (X), is defined to be the norm
+             closure of all finite propagation operators T ∈ B(ℓ2 (X)).
+
+  It is known that C∗u (X) ֒→ C∗s (X) ⊆ UC∗ (X) ⊆ C∗ (X), where the last two inclusions
+are canonical. Moreover, we have C∗u (X)⊗K(H0 )  C∗s (X). We also use the following
+simplified terminology:
+Definition 2.10 ([8, Definition 2.3], but see also [9]). Let X be a metric space with
+bounded geometry. A C∗ -subalgebra A ⊆ C∗ (X) is called Roe-like if C∗s (X) ⊆ A.
+
+   The rigidity for Roe-like algebras has already been extensively studied in the
+literature (e.g., [9, 10, 8, 37]). In order to formulate the most up-to-date rigidity
+result, we need to recall several concepts:
+Definition 2.11 (G. Yu9). Let X be a discrete metric space, H0 be a Hilbert space
+and T ∈ B(ℓ2 (X; H0 )). We say that T is a ghost if for any ε > 0, there exists a
+bounded subset F ⊆ X such that for any (x, y) < F × F we have kTx,y k < ε.
+
+   The following lemma clarifies Definition 1.4 and Definition 2.4. Since its proof
+is elementary, we leave the details to the reader:
+     9
+     Attributed to G. Yu in [34, 11.5.2].
+             MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                     11
+                             F
+Lemma 2.12. Let (X, d) = n∈N (Xn , dn ) be a sparse space and H0 be a Hilbert space. If
+P ∈ B(ℓ2(X; H0 )) is a block-rank-one projection with respect to {(Xn , dn )}n∈N , then P is a
+ghost if and only if the associated sequence of finite measured metric spaces {(Xn , dn , mn )}n
+is ghostly.
+Definition 2.13. Let X be a metric space with bounded geometry. We say that all
+sparse subspaces of X yield only compact ghost projections in their Roe algebras if for
+any sparse subspace X′ ⊆ X, all ghost projections in C∗ (X′ ) are compact.
+Theorem 2.14 ([8, Theorem 1.3]). 10 Let X and Y be metric spaces with bounded
+geometry. If all sparse subspaces of Y yield only compact ghost projections in their Roe
+algebras, then the following are equivalent:
+    (1) X is coarsely equivalent to Y;
+    (2) C∗u (X) is stably ∗-isomorphic to C∗u (Y);
+    (3) C∗s (X) is ∗-isomorphic to C∗s (Y);
+    (4) UC∗ (X) is ∗-isomorphic to UC∗ (Y);
+    (5) C∗ (X) is ∗-isomorphic to C∗ (Y).
+
+  As shown in [8, Theorem 5.3], all sparse subspaces of a metric space Y yield
+only compact ghost projections in their Roe algebras if Y satisfies various forms
+of the Baum-Connes conjecture. In particular, rigidity holds for those spaces.
+
+                                              3. Rigidity
+
+  In this section, we introduce new analytic conditions which guarantee rigidity
+for Roe-like algebras. More precisely, we define the following:
+Definition 3.1. Let X be a metric space with bounded geometry. We say that all
+sparse subspaces of X contain no block-rank-one ghost projections in their Roe algebras
+(or in their uniform Roe algebras) if C∗ (X′ ) (or C∗u (X′ )) contains no block-rank-one
+ghost projections for every sparse subspace X′ ⊆ X.
+
+   In the remainder of this section, we will follow an approach as in [8] to show
+that the above new analytic condition concerning Roe algebras in Definition 3.1
+is already sufficient for rigidity. First of all, we need the following lemma which
+is a combination of [9, Theorem 7.4] and [8, Lemma 3.1].
+Lemma 3.2. Let (Y, d) be a metric space with bounded geometry, and assume that all
+sparse subspaces of Y contain no block-rank-one ghost projections in Ptheir Roe algebras.
+Let (pn )n be an orthogonal sequence of rank-one projections such that n∈M pn converges
+in the strong operator topology to an element in C∗ (Y) for all M ⊆ N. Then
+                               n                               o
+                       inf sup kpn δ y ⊗ vk : y ∈ Y, v ∈ (H0 )1 > 0.
+                           n∈N
+
+Proof. The proof is almost the same as the one for [8, Lemma 3.1], except that we
+need the following claim instead of Claim 3.3 therein:
+Claim. By going to a subsequence of (pn )n , there exists a sequence (Yn )n of disjoint
+finite non-empty subsets of Y and a sequence of rank-one projections (qn )n in C∗ (Y)
+such that
+    (1) d(Yk , Ym ) → ∞ as k + m → ∞ and k , m;
+  10
+       We also refer the reader to [9, Corollary 1.3].
+12                        KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+      (2) kpn − qn k < 2−n .
+
+   The proof of this claim is very similar to Claim 3.3 in [8, Lemma 3.1], except
+that we require each qn to be rank-one rather than finite rank. But this follows
+automatically from the functional calculus construction qn = f (a) therein, where a
+is a rank-one self-adjoint operator and f is a continuous function on the spectrum
+of a with f (0) = 0. In particular, the rank of qn is bounded by one and exactly
+equals to one by (2). For more details we refer the reader to [8, Lemma 3.1].    
+
+  As a direct consequence of Lemma 3.2, we obtain the following corollary (cf. [8,
+Corollary 3.5]):
+Corollary 3.3. Let X and Y be metric spaces with bounded geometry, and assume that all
+sparse subspaces of Y contain no block-rank-one ghost projections in their Roe algebras.
+If A ⊆ C∗ (X) is a Roe-like C∗ -subalgebra, then every strongly continuous rank-preserving
+∗-homomorphism Φ : A → C∗ (Y) is a rigid ∗-homomorphism in the following sense:
+                          sup inf        sup          kΦ(e(x,u),(x,u) )δ y ⊗ vk > 0.
+                         u∈(H0 )1 x∈X y∈Y, v∈(H0 )1
+
+
+     The next proposition slightly extends [8, Theorem 4.5].
+Proposition 3.4. Let X and Y be metric spaces with bounded geometry, and assume
+that all sparse subspaces of Y contain no block-rank-one ghost projections in their Roe
+algebras. Let A ⊆ C∗ (X) and B ⊆ C∗ (Y) be Roe-like C∗ -algebras such that either B = C∗s (Y)
+or UC∗ (Y) ⊆ B. If A embeds onto a hereditary C∗ -subalgebra of B, then X coarsely embeds
+into Y.
+
+Proof. Let Φ : A → B be an embedding onto a hereditary C∗ -subalgebra of B. By
+[8, Lemma 4.1], Φ is strongly continuous and rank-preserving. By Corollary 3.3, Φ
+is a rigid ∗-homomorphism. It follows from [8, Lemma 4.2 and Lemma 4.4] that Φ
+induces a coarse embedding from X into Y (see also the proof of [8, Theorem 4.5]
+for more details).                                                              
+
+     We also need the following key proposition:
+Proposition 3.5. Let f : (X, dX ) → (Y, dY ) be a finite-to-one coarse map between metric
+spaces with bounded geometry and H0 be an infinite-dimensional
+                                                     F              separable Hilbert space.
+Assume that there
+               L   exist a sparse subspace   X 0  =         X
+                                                        n∈N n   of X  and a block-rank-one
+projection P =       P ∈ B(ℓ (X0 ; H0)) with respect to {Xn }n∈N such that P ∈ C∗ (X0 ).
+                 n∈N n
+                               2
+
+  Let mn be the associated probability measure on Xn given by mn (x) = ||Pn δx ||2 for
+x ∈ Xn . Denote fn := f |Xn and dn := dX |Xn . If the sequence { fn : (Xn , dn , mn ) → Y}n∈N is a
+measured weak embedding, then there exist a sparse subspace Y′ ⊆ Y and a block-rank-one
+ghost projection in C∗ (Y′ ).
+Remark 3.6. We do not know whether the conclusion holds also in the case when
+H0 is finite-dimensional.
+
+Proof. Since the map f is finite-to-one and Y has bounded geometry, it is easy
+to show that there is a subsequence {Xn }n∈M such that dY ( f (Xn ), f (Xm )) → ∞ as
+n + m → ∞ for n , m, whereF M is an infinite subset of N. If we take Yn := f (Xn )
+for each n ∈ M and Y′ := n∈M Yn to be their disjoint union, then Y′ is a sparse
+            MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                             13
+
+                                                      ′
+                                                        F
+subspace of Y. We consider L the sparse subspace X := n∈M Xn and the block-
+rank-one projection P′ :=       P ∈ B(ℓ2 (X′ ; H0)). Since P′ = χX′ PχX′ and χX′
+                             n∈M n
+has finite propagation, we deduce that P′ ∈ C∗ (X′ ).
+  Let HX′ := ℓ2(X′ ; H0 )  ℓ2 (X′ ) ⊗ H0 and HY′ := ℓ2 (Y′ ; HX′ )  ℓ2 (Y′ ) ⊗ ℓ2 (X′ ) ⊗
+H0 . Similarly to the proof of [23, Proposition 6.4], we construct an isometry
+V : HX′ → HY′ covering the coarse map f ′ := f |X′ : X′ → Y′ in the sense that
+supp(V) ⊆ {( f ′ (x), x) ∈ Y′ ×X′ | x ∈ X′ }, where supp(V) := {(y, x) ∈ Y′ ×X′ | V y,x , 0}.
+   Indeed, for each y ∈ Y′ we define an isometry V y : ℓ2 ( f ′−1 (y)) ⊗ H0 → Cδ y ⊗
+ℓ (X′ ) ⊗ H0 by the formula
+ 2
+
+
+         δz ⊗ ξ 7→ δ f ′ (z) ⊗ δz ⊗ ξ = δ y ⊗ δz ⊗ ξ, for z ∈ f ′−1 (y) and ξ ∈ H0 .
+             L                                             L                               
+                           2 ′−1                                               2    ′
+Since HX′ =         ′    ℓ  ( f  (y)) ⊗ H  0   and  H  Y ′ =       ′  Cδ y ⊗ ℓ   (X   ) ⊗ H 0  , we can
+             Ly∈Y                                              y∈Y
+define V :=     y∈Y′
+                       V y : HX′ −→ HY′ . By the construction of V, we clearly have
+                     ′
+that supp(V) ⊆ {( f (x), x) ∈ Y′ × X′ | x ∈ X′ }.
+  As V is a covering isometry for the coarse map f ′ , it follows that the isometry V
+induces a ∗-homomorphism AdV : C∗ (X′ ) → C∗ (Y′ ) given by T 7→ VTV ∗ (see also
+                                                                       ′ ∗
+[40, Lemma 5.1.12 and Remark       F    5.1.13]). Hence, Q := VP      LV is a projection in the
+Roe algebra C∗ (Y′ ). As f ′ = n∈M fn , we have that V =                n∈M n
+                                                                             V where
+                                  M
+                          Vn :=        V y : ℓ2 (Xn ; H0 ) → ℓ2 (Yn ; HX′ ).
+                                  y∈Yn
+                                                                          L
+Thus Qn := Vn Pn Vn∗ is a rank-one projection in B(ℓ2(Yn ; HX′ )) and Q =      Q is
+                                                                            n∈M n
+block-rank-one with respect to {Yn }n∈M .
+   Finally, we verify that Q is a ghost. A direct calculation shows that for any
+y, z ∈ Yn , we have that (Qn )y,z = χ fn−1 (y) Pn χ fn−1 (z) . Moreover,
+                                        q
+(3.1)                    k(Qn )y,z k = mn ( fn−1 (y)) · mn ( fn−1 (z)).
+Thus, it follows easily that Q is a ghost as { fn : (Xn , dn , mn ) → Y}n∈M forms a
+measured weak embedding.                                                          
+
+  Combining Proposition 3.5 with Lemma 2.8 and Lemma 2.12, we obtain the
+following (cf. [10, Theorem 7.6 and Remark 7.8]):
+Corollary 3.7. Let X and Y be metric spaces with bounded geometry, and let f : X → Y
+be a uniformly finite-to-one coarse map. If all sparse subspaces of Y contain no block-
+rank-one ghost projections in their Roe algebras, then the same holds for X.
+
+  As every coarse embedding from a metric space with bounded geometry into
+another metric space is uniformly finite-to-one, Proposition 3.4 and Corollary 3.7
+together give rise to the following corollary (cf. [8, Corollary 4.6]):
+Corollary 3.8. Let X and Y be metric spaces with bounded geometry, and assume that all
+sparse subspaces of Y contain no block-rank-one ghost projections in their Roe algebras.
+Let A ⊆ C∗ (X) and B ⊆ C∗ (Y) be Roe-like C∗ -algebras such that either B = C∗s (Y) or
+UC∗ (Y) ⊆ B. If A embeds onto a hereditary C∗ -subalgebra of B, then all sparse subspaces
+of X contain no block-rank-one ghost projections in their Roe algebras.
+
+     Finally, we reach the main result of this section.
+14                        KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+Proposition 3.9. Let X and Y be metric spaces with bounded geometry. Assume that all
+sparse subspaces of Y contain no block-rank-one ghost projections in their Roe algebras.
+Then the following are equivalent:
+
+     (1) X is coarsely equivalent to Y;
+     (2) C∗u (X) is stably ∗-isomorphic to C∗u (Y);
+     (3) C∗s (X) is ∗-isomorphic to C∗s (Y);
+     (4) UC∗ (X) is ∗-isomorphic to UC∗ (Y);
+     (5) C∗ (X) is ∗-isomorphic to C∗ (Y).
+
+Proof. We follow exactly the same proof of [8, Theorem 1.3] except we use Corol-
+lary 3.8 instead of [8, Corollary 4.6] and use Corollary 3.3 instead of [8, Corol-
+lary 3.5]. Hence, we decide not to repeat the proof word for word.              
+
+Remark 3.10. For a metric space of bounded geometry, it is clear that if all sparse
+subspaces yield only compact ghost projections in their Roe algebras, then they
+also do not contain any block-rank-one ghost projection in their Roe algebras.
+Thus, we have formally generalised [8, Theorem 1.3], and all of the four cases in
+[8, Theorem 5.3] can be included in the setting of Proposition 3.9.
+   An advantage of using block-rank-one ghost projections (rather than arbitrary
+non-compact ghost projections) is that we have a geometric characterisation
+proved in Corollary 6.12, which formulates in terms of measured asymptotic
+expanders. More precisely, we will show that both conditions concerning Roe
+algebras and uniform Roe algebras in Definition 3.1 are equivalent to that X con-
+tains no sparse subspaces consisting of ghostly measured asymptotic expanders.
+Studying measured asymptotic expanders allows us to produce new examples of
+rigid spaces (see Section 7 for details).
+
+
+
+                           4. Measured asymptotic expanders
+
+   In this section, we begin to characterise quasi-locality of a block-rank-one pro-
+jection by means of measured asymptotic expanders, which were introduced in
+[26, Definition 6.1]. The precise statement can be found in Proposition 4.8, which
+generalises [24, Theorem 3.11] from counting measures to general probability
+measures. Afterwards, we also establish a structure theorem for measured as-
+ymptotic expanders (Corollary 4.21), which is our main technical tool to prove
+Theorem B.
+
+
+4.1. Quasi-locality for block-rank-one projections. In this subsection, we con-
+nect measured asymptotic expanders with the quasi-locality of block-rank-one
+projections. In [23, 24], we studied quasi-locality of averaging projections, which
+led to introducing asymptotic expanders, and also showed that an averaging pro-
+jection is quasi-local if and only if it belongs to the uniform Roe algebra (see [23,
+Theorem 6.1]).
+   Recall that bounded operators which can be approximated by operators with
+finite propagation are always quasi-local in the following sense:
+          MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                       15
+
+Definition 4.1. Let X be a discrete metric space, H0 be a Hilbert space and T ∈
+B(ℓ2(X; H0 )). We say that T is quasi-local11 if for any ε > 0 there exists some R > 0
+such that for any A, B ⊆ X with d(A, B) > R, we have kχA TχB k < ε.
+  Throughout this subsection, we fix a sequence of finite metric spaces {(Xn , dn )}n∈N .
+Let (X, d) be their coarse disjoint union and H0 be a Hilbert space. Recall from
+Definition 1.4 that a block-rank-one projection with respect to {Xn }n∈N is an infinite
+rank projection of the form
+                                                    
+                       M            M 2            
+                  P=       Pn ∈ B   ℓ (Xn ; H0 ) = B(ℓ2 (X; H0 )),
+                        n∈N            n∈N
+
+where each Pn is a rank-one projection in B(ℓ2(Xn ; H0 )). Note that each Pn has the
+                                      2
+form Pn (η) = hη, ξn iξn for all η ∈ ℓL (Xn ; H0 ), where ξn is a unit vector in ℓ2 (Xn ; H0 ).
+In this case, we also say that P =            P is the block-rank-one projection associated
+                                          n∈N n
+to the unit vectors {ξn }n∈N . Then the associated probability measure mn on Xn is
+given by mn (x) = ||ξn (x)||2 .
+                                                        1
+Remark 4.2. When H0 = C and ξn is the unit vector √|X        χXn ∈ ℓ2(Xn ), the corre-
+                                                          n|
+sponding block-rank-one projection P is the so-called averaging projection. It has
+been well-studied in [23, 24], and the most significant result is the fact that P is
+quasi-local if and only if P belongs to the uniform Roe algebra C∗u (X) if and only if
+{Xn }n∈N forms a sequence of asymptotic expanders in the sense of Definition 4.7
+(see [23, Theorem 6.1]).
+  Similarly to [24, Lemma 3.8 and Proposition 3.9] it is straightforward to obtain
+the following two results:
+Lemma 4.3. For each n ∈ N and any A, B ⊆ Xn , we have
+                                                        p
+                     kχA Pn χB k = kχA ξn k · kχB ξn k = mn (A) · mn (B).
+                                                         L
+Proposition 4.4. A block-rank-one projection P =          n∈N n
+                                                               P ∈ B(ℓ2 (X; H0 )) with re-
+spect to {Xn }n∈N is quasi-local if and only if
+                            n                                               o
+            0 = lim sup mn (A) · mn (B) : n ∈ N, A, B ⊆ Xn , d(A, B) ≥ R .
+                 R→+∞
+
+  The following observations will allow us to reduce the proof of Theorem B to
+the case that all associated probability measures mn have full support:
+                                                                   F
+  For each n ∈ N, let Zn ⊆ Xn be the support of mn and Z = n Zn be the sparse
+subspace of X. Let Qn : ℓ2 (Xn ; H0 ) → ℓ2 (Zn ; H0) be the orthogonal projection, and
+                             M
+                        Q :=      Qn ∈ B(ℓ2(X; H0 ), ℓ2 (Z; H0 )).
+                                n∈N
+
+Note that each Qn Pn Q∗n ∈ B(ℓ2 (Zn ; H0)) is the orthogonal projection onto the one-
+dimensional subspace spanned by ξn|Zn in ℓ2(Zn ; H0 ), and Zn = supp(ξn ). It follows
+that QPQ∗ ∈ B(ℓ2 (Z; H0 )) is a block-rank-one projection with respect to {Zn }n∈N .
+The following is obvious:
+Lemma 4.5. A block-rank-one projection P ∈ B(ℓ2 (X; H0 )) with respect to {Xn }n∈N is
+quasi-local if and only if QPQ∗ ∈ B(ℓ2 (Z; H0 )) is quasi-local.
+  11
+   The notion of quasi-locality was first introduced by Roe in [32, Part I, Section 5] and [33,
+Remark on page 20], and we refer readers to [24, 28, 36, 38] for more details.
+16                             KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+     On the other hand, we also have the following observation:
+Lemma 4.6. Let P ∈ B(ℓ2 (X; H0 )) be a block-rank-one projection with respect to {Xn }n∈N .
+Then the following hold:
+           • When H0 = C, then P belongs to C∗u (X) if and only if QPQ∗ belongs to C∗u (Z).
+           • When H0 is a separable infinite-dimensional Hilbert space, then P belongs to
+             C∗ (X) if and only if QPQ∗ belongs to C∗ (Z).
+Proof. This follows from the fact that Q can be also regarded as an element in
+B(ℓ2(X; H0 )) with propagation zero, and P = Q∗ (QPQ∗ )Q.                    
+
+  When H0 = C and P is the averaging projection with respect to {Xn , dn }n∈N , then
+we know from [24, Theorem B] that P is quasi-local if and only if {(Xn , dn )}n∈N
+forms a sequence of asymptotic expanders in the following sense:
+Definition 4.7 ([24]). A sequence of finite metric spaces {(Xn , dn )}n∈N is called a
+sequence of asymptotic expanders12 if for any α ∈ (0, 12 ] there exist cα ∈ (0, 1) and
+Rα > 0 such that for any n ∈ N and A ⊆ Xn with α|Xn | ≤ |A| ≤ 12 |Xn |, we have
+|∂Rα A| > cα |A|.
+
+   The following result is one of the main motivations for us to study measured
+asymptotic expanders, and it is also the first step to attack the fundamental theo-
+rem (Theorem B). Since its proof is essentially a repetition of the arguments used
+to prove [24, Theorem 3.11], we omit further details.
+Proposition 4.8. Let (X,   Ld) be a coarse disjoint union of a sequence of finite metric spaces
+                                            2
+{(Xn , dn )}n∈N , and P =         P
+                               n∈N n
+                                      ∈ B(ℓ   (X)) be a block-rank-one projection with respect
+to {Xn }n∈N . If mn are the probability measures associated to P, then P is quasi-local if and
+only if {(Xn , dn , mn )}n∈N forms a sequence of measured asymptotic expanders.
+
+  For later purposes, we extend the notion of measured asymptotic expanders to
+general finite measured metric spaces defined in Definition 2.4 as follows:
+Definition 4.9 ([26, Definition 6.1]). A sequence of finite measured metric spaces
+{(Xn , dn , mn )}n∈N is called a sequence of measured asymptotic expanders if for any
+α ∈ (0, 21 ] there exist cα ∈ (0, 1) and Rα > 0 such that for any n ∈ N and A ⊆ Xn
+with α · mn (Xn ) ≤ mn (A) ≤ 12 mn (Xn ), we have mn (∂Rα A) > cα · mn (A).
+  In this case, we call functions c : α 7→ cα and R : α 7→ Rα from (0, 21 ] to (0, ∞)
+parameter functions of {(Xn , dn , mn )}n∈N , and {(Xn , dn , mn )}n∈N is called a sequence of
+measured (c, R)-asymptotic expanders.
+Remark 4.10. The notion of asymptotic expanders introduced and studied in [23,
+24] is exactly the notion of ghostly measured asymptotic expanders with respect
+to counting measures (see Remark 2.5).
+Remark 4.11. Recall that in [26, Theorem 6.16], the authors established a connection
+between measured asymptotic expanders and asymptotic expansion in measure
+for continuous measure-class-preserving actions by means of measured approx-
+imating spaces. As a consequence, it provides an efficient and unified way to
+construct measured asymptotic expanders from strongly ergodic actions (see [26,
+Proposition 3.5]).
+     12
+          In this paper, we do not require the condition |Xn | → ∞ as n → ∞ as a part of the definition.
+          MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                   17
+
+  We need three auxiliary lemmas in order to prove the structure theorem for
+measured asymptotic expanders in the next subsection. The first one allows us to
+handle subsets A ⊆ Xn with mn (A) ≥ 21 mn (Xn ). Although its proof is already given
+in [26], we still include it here for the sake of completeness.
+Lemma 4.12. (see [26, Lemma 6.3]) Let {(Xn , dn , mn )}n∈N be a sequence of measured
+(c, R)-asymptotic expanders. Then for any β ∈ [ 12 , 1), there exist c̃ > 0 and R̃ > 0
+depending only on the parameter functions c and R such that for every n ∈ N and A ⊆ Xn
+with 12 mn (Xn ) ≤ mn (A) ≤ β · mn (Xn ), we have mn (∂R̃ A) > c̃ · mn (A).
+   Furthermore, if c ≡ c and R ≡ R are constant functions, we can choose R̃ = R and
+     1−β
+c̃ = 2β c.
+
+                          1
+Proof. Replacing mn by mn (X n)
+                                mn , we may assume that each mn is a probability
+                                                       1−β
+measure. Now we fix β ∈ [ 12 , 1) and set α′ := 2 ∈ (0, 14 ]. By the hypothesis,
+there exist cα′ ∈ (0, 1) and Rα′ > 0 such that for any n ∈ N and A′ ⊆ Xn with
+α′ ≤ mn (A′ ) ≤ 21 , we have mn (∂Rα′ A′ ) > cα′ · mn (A′ ).
+  Given A ⊆ Xn with 12 ≤ mn (A) ≤ β, let B := Xn \ (NRα′ (A)). Then mn (B) ≤
+                              1−β                     1+β  1+β
+mn (Xn \A) ≤ 21 . If mn (B) < 2 , then mn (NRα′ (A)) > 2 ≥ 2β mn (A). Since NRα′ (A) =
+                                               1−β
+A ⊔ ∂Rα′ A, we deduce that mn (∂Rα′ A) > cα′ 2β mn (A). On the other hand, if mn (B) ≥
+1−β
+ 2
+    = α′ then we have mn (∂Rα′ B) > cα′ · mn (B). Since ∂Rα′ B ⊆ ∂Rα′ A, we conclude
+that
+                                                             1−β
+              mn (∂Rα′ A) ≥ mn (∂Rα′ B) > cα′ · mn (B) ≥ cα′     mn (A).
+                                                              2β
+Thus, we have completed the proof.                                                      
+
+  In the next lemma, we show that subspaces of measured asymptotic expanders
+are themselves measured asymptotic expanders in a uniform way provided that
+their measures are uniformly bounded below. Although elementary, this lemma
+plays a crucial role to prove the structure theorem for measured asymptotic ex-
+panders, and the corresponding lemma is not necessary in the case of asymptotic
+expanders as in [23].
+Lemma 4.13. Let {(Xn , dn , mn )}n∈N be a sequence of measured asymptotic expanders. For
+any β ∈ (0, 1], α ∈ (0, 12 ] and c ∈ (0, 1) there exists R > 0 such that for any sequence
+{Yn ⊆ Xn }n∈N with mn (Yn ) ≥ βmn (Xn ) and any A ⊆ Yn with α · mn (Yn ) ≤ mn (A) ≤
+1
+  m (Yn ), we have mn (∂YRn A) > c · mn (A).
+2 n
+
+                           1
+Proof. Replacing mn by mn (X n)
+                                mn , we may assume that each mn is a probability
+measure. From Proposition 4.4 and Proposition 4.8, we know that for any ε > 0,
+there exists some Rε > 0 such that for any n ∈ N and A, B ⊆ Xn with d(A, B) ≥ Rε
+                                                                   αβ2 (1−c)
+we have mn (A) · mn (B) < ε. In particular, it holds for ε := 2 > 0.
+   Fix an arbitrary sequence {Yn ⊆ Xn }n∈N with mn (Yn ) ≥ β, and any A ⊆ Yn with
+α · mn (Yn ) ≤ mn (A) ≤ 21 · mn (Yn ). Suppose that mn (∂YRnε A) ≤ c · mn (A). Then due to
+the decomposition
+                            Yn = (Yn \ NRYεn (A)) ⊔ A ⊔ ∂YRnε A,
+18                         KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+we have that
+                                                                   1−c            1−c
+     mn (Yn \ NRYεn (A)) = mn (Yn ) − mn (A) − mn (∂YRnε A) ≥          mn (Yn ) ≥     β.
+                                                                    2              2
+Hence, it follows that
+                                                                  1−c
+                        mn (A) · mn (Yn \ NRYεn (A)) ≥ α · β ·        β = ε.
+                                                                   2
+Since d(A, Yn \ NRYεn (A)) ≥ Rǫ , we have reached a contradiction.                                     
+
+   We finish this subsection by showing the existence of subspaces whose mea-
+sure is more “balanced” in the lemma below. Note that every counting measure
+is automatically “balanced” so that the next lemma is redundant in the study of
+asymptotic expanders. However, it is crucial for us to be able to apply Proposi-
+tion 5.4 in proving our fundamental theorem (Theorem B).
+   In order to formulate the lemma in a concise way, we here introduce the follow-
+ing notation: given two non-negative numbers a, b ∈ [0, ∞), we denote a ∼s b for some
+s ∈ (0, 1) if sa ≤ b ≤ as .
+Lemma 4.14. Let {(Xn , dn , mn )}n∈N be a sequence of finite measured metric spaces with
+uniformly bounded geometry. Given R > 0 and s ∈ (0, 1), there exists a subspace
+XnR,s ⊆ Xn for each n ∈ N satisfying the following:
+     (1) For any x, y ∈ XnR,s with dn (x, y) ≤ R, we have mn (x) ∼s mn (y);
+     (2) mn (Xn \ XnR,s ) ≤ s · NR · mn (XnR,s ), where NR := supn∈N supx∈Xn |B(x, R)|.
+
+Proof. We will recursively construct the desired XnR,s ⊆ Xn for each n ∈ N. Fix an
+n ∈ N, and choose any x0 ∈ Xn such that mn (x0 ) = maxx∈Xn mn (x). Define
+                        Xn,1 := Xn \{y ∈ B(x0 , R) : mn (y) < s · mn (x0 )}.
+Since s < 1, we see that x0 ∈ Xn,1 . Thereafter we choose any x1 ∈ Xn,1 \ {x0 } so that
+mn (x1 ) = maxx∈Xn,1 \{x0 } mn (x), and define
+                    Xn,2 := Xn,1 \{y ∈ Xn,1 ∩ B(x1 , R) : mn (y) < s · mn (x1 )}.
+Recursively, we choose xk ∈ Xn,k \{xk−1 , . . . , x0 } so that mn (xk ) = maxx∈Xn,k \{xk−1 ,...,x0 } mn (x),
+and define
+                   Xn,k+1 := Xn,k \{y ∈ Xn,k ∩ B(xk , R) : mn (y) < s · mn (xk )}.
+By convention, Xn,0 := Xn . Since Xn is finite, the recursive process will finish after
+finitely many steps, when Xn,k0 = {x0 , x1 , . . . , xk0 } for some k0 ∈ N ∪ {0}. Note that
+mn (x0 ) ≥ mn (x1 ) ≥ . . . ≥ mn (xk0 ). We denote the resulting subspace by XnR,s = Xn,k0 .
+Clearly, XnR,s satisfies condition (1).
+   Let Ai := {y ∈ Xn,i ∩ B(xi , R) : mn (y) < s · mn (xi )} for i = 0, 1, . . . , k0 . Then
+
+                               Xn \ XnR,s = Ak0 ⊔ Ak0 −1 ⊔ . . . ⊔ A0 .
+
+Since mn (Ai ) ≤ s · NR · mn (xi ) and XnR,s = {x0 , x1 , . . . , xk0 }, it is easily seen that XnR,s
+also satisfies condition (2), as required.                                                         
+            MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                             19
+
+4.2. Structure theorem for measured asymptotic expanders. Recall that the au-
+thors in [23, Theorem 3.7] proved a structure theorem for asymptotic expanders.
+Here we extend the structure result to the case of measured asymptotic expanders
+by a slightly different and improved argument.
+Theorem 4.15. Let {(Xn , dn , mn )}n∈N be a sequence of finite measured metric spaces with
+uniformly bounded geometry. Then the following are equivalent:
+      (1) {(Xn , dn , mn )}n∈N is a sequence of measured asymptotic expanders;
+      (2) for any c ∈ (0, 1), there exists a sequence {αk }k∈N in (0, 1) with αk → 0, and a
+          positive sequence {Rk }k∈N such that for each fixed n ∈ N there exists a sequence of
+          subspaces {Yn,k }k∈N in Xn satisfying the following for every k ∈ N:
+            (i) Yn,k ⊆ supp(mn ) and mn (Yn,k ) ≥ (1 − αk ) · mn (Xn );
+                                                                             Y
+           (ii) for each A ⊆ Yn,k with 0 < mn (A) ≤ 12 mn (Yn,k ), then mn (∂Rkn,k A) > c · mn (A);
+          (iii) there exists sk ∈ (0, 1) such that for any x, y ∈ Yn,k with dn (x, y) ≤ Rk , we
+                have mn (x) ∼sk mn (y).
+The hypothesis of (iii) is not needed for the implication “(2) ⇒ (1)”.
+
+Proof. “(1) ⇒ (2)”: Fix any c ∈ (0, 1). For each α ∈ (0, 21 ], let Rα satisfy the conclusion
+in Lemma 4.13 for β = 12 . Without loss of generality, we may assume that Rα > 1
+and limα→0 Rα = ∞. Let NRα := supn∈N supx∈Xn |B(x, Rα )| so that 1 ≤ NRα < ∞. If we
+              1
+set sα := Rα ·N Rα
+                   ∈ (0, 1), then Lemma 4.14 provides a subspace Xn,α := XnRα ,sα in Xn
+for each n ∈ N satisfying the following:
+       • For any x, y ∈ Xn,α with dn (x, y) ≤ Rα , we have mn (x) ∼sα mn (y);
+       • mn (Xn \ Xn,α ) ≤ sα · NRα · mn (Xn,α ) = R1α · mn (Xn,α ).
+From the second condition, we obtain that
+                                Rα               1
+                mn (Xn,α ) ≥         mn (Xn ) ≥ mn (Xn ) for every n ∈ N.
+                              Rα + 1             2
+So we know from Lemma 4.13 that for any A ⊆ Xn,α with α · mn (Xn,α ) ≤ mn (A) ≤
+1                           X
+  m (Xn,α ), we have mn (∂Rαn,α A) > c · mn (A).
+2 n
+                                    c
+  Now we assume that α ∈ (0, 4+2c       ]. For each n ∈ N, we consider a family Fn,α of
+subsets in Xn,α given by
+                  n                      1                      X
+                                                                                 o
+         Fn,α := A ⊆ Xn,α : mn (A) ≤ mn (Xn,α ) and mn (∂Rαn,α A) ≤ c · mn (A) .
+                                         2
+We see that Fn,α always contains the empty set ∅ so that it admits a maximal
+element directed by the inclusion. Let Fn,α be a maximal element in Fn,α , and set
+Yn,α := Xn,α \ Fn,α . By construction, we have mn (Fn,α ) < α · mn (Xn,α ) for each n ∈ N.
+Thus, it follows that
+                                            (1 − α) · Rα
+          mn (Yn,α ) > (1 − α)mn (Xn,α ) ≥               mn (Xn ) for every n ∈ N.
+                                               Rα + 1
+In the following, we divide into two cases:
+  Case I. Let A ⊆ Yn,α satisfy 0 < mn (A) ≤ 21 mn (Xn,α ) − mn (Fn,α ). In particular,
+                                                                  X                     X
+mn (A) ≤ 12 mn (Yn,α ) and mn (A ⊔ Fn,α ) ≤ 21 mn (Xn,α ). Since ∂Rαn,α (A ⊔ Fn,α ) ⊆ (∂Rαn,α Fn,α ) ∪
+  Y
+(∂Rn,α
+   α
+       A), we deduce that
+           X                    X              Y                                Y      
+       mn ∂Rαn,α (A ⊔ Fn,α ) ≤ mn ∂Rαn,α Fn,α + mn ∂Rn,α
+                                                     α
+                                                         A   ≤ c · m n (Fn,α ) + m n  ∂ n,α
+                                                                                       Rα
+                                                                                            A   .
+20                              KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+On the other hand, since Fn,α is maximal in Fn,α and A , ∅ we have that
+              X               
+          mn ∂Rαn,α (A ⊔ Fn,α ) > c · mn (A ⊔ Fn,α ) = c · mn (A) + c · mn (Fn,α ).
+                                                             Y
+Combining them together, we conclude that mn (∂Rn,α
+                                                α
+                                                    A) > c · mn (A).
+  Case II. Let A ⊆ Yn,α satisfy 21 mn (Xn,α ) − mn (Fn,α ) < mn (A) ≤ 21 mn (Yn,α ). Since α ≤ 41
+and mn (Fn,α ) < α · mn (Xn,α ), we have that
+   1                        1                           1     
+     mn (Xn,α ) ≥ mn (A) > mn (Xn,α ) − mn (Fn,α ) >        − α · mn (Xn,α ) ≥ α · mn (Xn,α ).
+   2                        2                             2
+                            X                        X           Y
+It follows that mn (∂Rαn,α A) > c · mn (A). As ∂Rαn,α A ⊆ (∂Rn,α
+                                                             α
+                                                                 A) ⊔ Fn,α , we see that
+                        Y                    X
+                mn (∂Rn,α
+                      α
+                          A) ≥ mn (∂Rαn,α A) − mn (Fn,α ) > c · mn (A) − mn (Fn,α ).
+                                    c
+Combining the facts that α ≤ 4+2c      , mn (A) > 21 mn (Xn,α ) − mn (Fn,α ) and mn (Fn,α ) <
+α · mn (Xn,α ), we deduce that
+                                            1
+                                mn (A) >        · mn (Xn,α ),
+                                          c+2
+which further implies that
+                                                     c
+                           c · mn (A) − mn (Fn,α ) > · mn (A).
+                                                     2
+                                 Y
+Hence, we obtain mn (∂Rn,α
+                       α
+                           A) > 2c · mn (A) in this case.
+                                                          c
+  In conclusion, for a given c ∈ (0, 1) and any α ∈ (0, 4+2c ] there exist Rα > 1 with
+limα→0 Rα = ∞, sα ∈ (0, 1), and a sequence of subspaces {Yn,α ⊆ Xn }n∈N such that
+                           c
+for all n ∈ N and α ∈ (0, 4+2c ]:
+                        (1−α)·Rα
+       • mn (Yn,α ) >     Rα +1
+                                 mn (Xn );
+                                                                               Y
+       • for each A ⊆ Yn,α with 0 < mn (A) ≤ 21 mn (Yn,α ) we have mn (∂Rn,α
+                                                                         α
+                                                                             A) > 2c ·mn (A);
+       • for any x, y ∈ Yn,α with dn (x, y) ≤ Rα we have mn (x) ∼sα mn (y).
+                                                c
+Now we choose a sequence {α̃k }k∈N in (0, 4+2c    ] such that α̃k → 0, and set Rk := Rα̃k ,
+                                                          (1−α̃k )Rk
+sk := sα̃k , and Yn,k := Yn,α̃k ∩ supp(mn ). Since limk→∞ Rk +1      = 1, we complete the
+                                     (1−α̃k )Rk
+proof by letting αk := 1 −             Rk +1
+                                                .
+
+
+   “(2) ⇒ (1)”: We assume that condition (2) holds with the constants therein.
+Given α ∈ (0, 12 ], we take a k ∈ N such that αk ≤ α8 . For any n ∈ N and A ⊆ Xn with
+α · mn (Xn ) ≤ mn (A) ≤ 12 mn (Xn ), we observe that
+                                                                    α           1
+mn (A∩Yn,k ) ≥ mn (A)−mn (Xn \Yn,k ) ≥ mn (A)−αk ·mn (Xn ) ≥ mn (A)− ·mn (Xn ) ≥ mn (A).
+                                                                    2           2
+In the following, we divide into two cases:
+     Case I. When mn (A ∩ Yn,k ) ≤ 21 mn (Yn,k ): By the hypothesis of (ii), we obtain that
+                                  Y                                        c
+              mn (∂XRkn A) ≥ mn (∂Rkn,k (A ∩ Yn,k )) > c · mn (A ∩ Yn,k ) ≥ · mn (A).
+                                                                           2
+ Case II. When mn (A∩Yn,k ) > 21 mn (Yn,k ): Since mn (Yn,k ) ≥ (1−αk )·mn (Xn ) ≥ 78 mn (Xn ),
+we have that
+                                               1             4
+                 mn (A ∩ Yn,k ) ≤ mn (A) ≤ mn (Xn ) ≤ mn (Yn,k ).
+                                               2             7
+          MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                          21
+
+As {(Yn,k , dn , mn )}n∈N forms a sequence of measured asymptotic expanders for each
+fixed k ∈ N, we can apply Lemma 4.12 to obtain two positive constants c′ and
+R′k only depending on c and Rk such that for any k ∈ N and B ⊆ Yn,k with
+1                                                  Y
+  m (Yn,k ) ≤ mn (B) ≤ 74 mn (Yn,k ), we have mn (∂R′n,k B) > c′ · mn (B). Hence, we obtain
+2 n                                                   k
+
+                              Y                                       c′
+            mn (∂XR′n A) ≥ mn ∂R′n,k (A ∩ Yn,k ) > c′ · mn (A ∩ Yn,k ) ≥ · mn (A).
+                   k            k                                       2
+ Combining these two cases, we conclude that {(Xn , dn , mn )}n∈N is a sequence of
+measured asymptotic expanders, as desired.                                      
+Remark 4.16. Note that the assumption of uniformly bounded geometry in Theo-
+rem 4.15 is only needed to guarantee the condition (iii), which is automatically true
+when all mn are counting measures. This is the reason why [23, Theorem 3.7] does
+not require the assumption of uniformly bounded geometry. Hence, Theorem 4.15
+completely recovers [23, Theorem 3.7].
+
+  We end this subsection by showing that a sequence of measured asymptotic
+expanders always admits a “uniform exhaustion” by measured expanders with
+bounded ratios in measure as follows:
+  Let {(Xn , dn , mn )}n∈N be a sequence of measured asymptotic expanders with
+uniformly bounded geometry. For each fixed k ∈ N, we consider a sequence of
+subspaces {Yn,k }n∈N satisfying the condition (2) in Theorem 4.15. We will make
+{Yn,k }n∈N into a sequence of finite measured graphs in the following sense:
+Definition 4.17. A sequence of finite measured metric spaces {(Vn , En , mn )}n∈N is
+called a sequence of finite measured graphs if each (Vn , En ) is a finite (connected and
+undirected) graph equipped with the edge-path metric.
+
+   More concretely, we define the vertex set Vn,k := Yn,k , the edge set En,k by u ∼En,k v
+if and only if u, v ∈ Vn,k satisfy 0 < dn (u, v) ≤ Rk , and the measure mn,k := mn |Vn,k .
+Then Yn,k ⊆ supp(mn ) and condition (ii) in Theorem 4.15 implies that mn,k has
+full support and (Vn,k , En,k ) is a finite (connected13 and undirected) graph. Hence,
+{(Vn,k , En,k , mn,k )}n∈N is a sequence of finite measured graphs. If we denote the
+edge-path metric on Vn,k by dn,k , then dn (u, v) ≤ Rk · dn,k (u, v) for all u, v ∈ Vn,k and
+               Y
+∂Vn,k A = ∂Rkn,k A for A ⊆ Vn,k . In particular, {(Vn,k , En,k )}n∈N has uniformly bounded
+valency and the inclusion map in,k : (Vn,k , dn,k ) → (Xn , dn ) is Rk -Lipschitz.
+  Due to the above construction and Theorem 4.15 (2), we have the following:
+     (i) mn,k has full support and mn,k (Vn,k ) ≥ (1 − αk ) · mn (Xn );
+    (ii) for each A ⊆ Vn,k with 0 < mn,k (A) ≤ 12 mn,k (Vn,k ), then mn,k (∂Vn,k A) > c·mn,k(A);
+   (iii) there exists sk ∈ (0, 1) such that for any adjacent pair of vertices u ∼En,k v,
+         we have mn,k (u) ∼sk mn,k (v).
+  The following definition is derived from condition (ii) above and it is a measured
+version of the classical notion of expanders (see Definition 2.1 and we also refer
+the reader to [27] for more details about measured expanders):
+
+  13
+    Just as for expanders, the expansion condition 4.15(2)(ii) forces any non-empty subset to have
+a non-empty boundary.
+22                          KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+Definition 4.18. Let {(Vn , En , mn )}n∈N be a sequence of finite measured graphs.
+We say that {(Vn , En , mn )}n∈N is a sequence of measured expanders14 if there exists
+c > 0 such that for any n ∈ N and A ⊆ Vn with 0 < mn (A) ≤ 12 mn (Vn ), we have
+mn (∂Vn A) > c · mn (A). In this case, we also say that {(Vn , En , mn )}n∈N is a sequence of
+c-measured expanders (a.k.a. measured (c, 1)-asymptotic expanders, cf. Definition
+4.9).
+Remark 4.19. In Definition 4.18, observe that if all of mn have full support then
+expansion in measure will force all graphs to be connected.
+
+  Before we state our structure theorem for measured asymptotic expanders by
+means of measured expanders, let us record the following lemma which is needed
+in Section 7.
+Lemma 4.20. Let {(Vn , En , mn )}n∈N be a sequence of c-measured expanders for some c > 0.
+Then for any β ∈ (0, 1), there exists some cβ > 0 depending only on c and β such that for
+any n ∈ N and A ⊆ Vn with 0 < mn (A) ≤ β · mn (Vn ), we have mn (∂Vn A) > cβ · mn (A).
+
+Proof. If 0 < β ≤ 21 , the conclusion follows from the definition of c-measured
+expanders.
+  If 12 < β < 1 and mn (A) ≤ 21 mn (Vn ), it again follows from the definition of c-
+measured expanders. If 21 < β < 1 and mn (A) > 12 mn (Vn ), it follows directly from
+Lemma 4.12 for c ≡ c and R ≡ 1.                                                    
+
+     We are ready to prove the following corollary:
+Corollary 4.21. Let {(Xn , dn , mn )}n∈N be a sequence of finite measured metric spaces with
+uniformly bounded geometry. Then the following are equivalent:
+      (1) {(Xn , dn , mn )}n∈N is a sequence of measured asymptotic expanders;
+      (2) there exist c > 0, a sequence {αk }k∈N in (0, 1) with αk → 0, a sequence {sk }k∈N in
+          (0, 1), and a positive sequence {Rk }k∈N such that for any n, k ∈ N there exist a finite
+          graph (Vn,k , En,k ) and a Rk -Lipschitz injective map in,k : Vn,k → Xn satisfying the
+          following:
+            (i) the pullback measure15 mn,k := i∗n,k (mn ) on Vn,k has full support and mn,k(Vn,k ) ≥
+                (1 − αk ) · mn (Xn );
+           (ii) for each k ∈ N, {(Vn,k , En,k, mn,k )}n∈N is a sequence of c-measured expanders
+                with uniformly bounded valency;
+          (iii) for any adjacent pair of vertices u ∼En,k v, we have mn,k (u) ∼sk mn,k (v).16
+The hypothesis of (iii) is not needed for the implication “(2) ⇒ (1)”.
+
+Proof. “(1) ⇒ (2)”: It follows exactly from our preceding construction.
+
+     14
+      In the classical definition of expanders, the sequence of graphs is usually required to have
+limn→∞ |Vn | = ∞ and uniformly bounded valency. Here we take the liberty of excluding these
+restrictions for a greater generality.
+   15
+      As in,k is injective, the pullback measure is well-defined by the formula i∗n,k (mn )(A) = mn (in,k (A))
+for any A ⊆ Vn,k .
+   16
+      Recall that given two positive numbers a and b, we denote a ∼s b for some s ∈ (0, 1) if
+sa ≤ b ≤ as .
+           MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                          23
+
+    “(2) ⇒ (1)”: For each fixed n ∈ N, let Yn,k := in,k (Vn,k ) for every k ∈ N. Since
+                  Y
+in,k (∂Vn,k A) ⊆ ∂Rkn,k (in,k (A)) for any A ⊆ Vn,k , it follows that {Yn,k }k∈N is a sequence of
+subspaces in Xn satisfying (i) and (ii) in Theorem 4.15 as desired.                            
+
+  As a direct consequence of Corollary 4.21, we obtain the following:
+Corollary 4.22. A metric space X does not measured weakly contain any measured
+expanders with uniformly bounded valency if and only if it does not measured weakly
+contain any measured asymptotic expanders with uniformly bounded geometry.
+
+
+                    5. The Poincaré inequality and spectral gaps
+
+  The aim of this section is to study the Lp -Poincaré inequality and spectral gaps
+for measured expanders with bounded measure ratios. To this end, we start by
+recalling the case of reversible random walks as established in [27].
+
+5.1. Reversible random walks. This subsection is devoted to recalling the Lp -
+Poincaré inequality and spectral gaps for reversible random walks. For more
+details about the theory of random walks, we refer to the textbooks [7, 41].
+   A random walk P  or a Markov kernel on a non-empty set V is a map r : V × V −→
+[0, ∞) such that v∈V r(u, v) = 1 for any u ∈ V. A stationary measure µ for a
+random walk r is a function µ : V −→ (0, ∞) such that µ(u)r(u, v) = µ(v)r(v, u)
+for any u, v ∈ V. A random walk is called reversible if it admits at least one
+stationary measure. In the reversible case, the map a : V × V −→ [0, ∞) defined
+by a(u, v) := µ(u)r(u, v) is called the conductance function. Clearly, a is symmetric
+                                                                             P        in
+the sense that a(u, v) = a(v, u) for all u, v ∈ V, and we also have µ(u) = v∈V a(u, v)
+for all u ∈ V.  P Conversely, let a : V × V → [0, ∞) be a symmetric map such
+that µ(u) := v∈V a(u, v) is positive and finite for each u ∈ V. Then the formula
+           a(u,v)
+r(u, v) := µ(u) defines a reversible random walk on V with stationary measure µ.
+  Given a reversible random walk r on a non-empty set V with a stationary
+measure µ, we can endow V with a (not necessarily connected17 but undirected)
+graph structure (V, E) by requiring that u ∼E v is an edge if and only if r(u, v) > 0
+(which is also equivalent to that r(v, u) > 0). Since the corresponding conductance
+function a is symmetric, we define a(e) := a(u, v) = a(v, u) for each edge  Pe ∈ E
+connecting vertices u and v. For D ⊆ E, its area is defined to be a(D) := e∈D a(e)
+and a(∅) = 0. Now let m be an arbitrary measure on V with full support such
+that (V, E, m) forms a finite measured graph. Then we define the (µ, a, m)-Cheeger
+constant of (V, E, m) to be
+                           n a(∂E A)                     1    o
+                     min          : A ⊆ V with 0 < m(A) ≤ m(V) ,
+                             µ(A)                        2
+where ∂E A is the edge boundary of A (i.e., the set of edges with exactly one
+endpoint in A). Similarly to Remark 4.19, if the (µ, a, m)-Cheeger constant is
+positive, then the graph (V, E) is automatically connected.
+
+  17
+     The constructed graph (V, E) is connected if and only if the random walk r is irreducible (see
+[7, Example 5.1.1] for details).
+24                        KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+  Consider the following Hilbert space:
+            n          X                    o                                 X
+ℓ2 (V; µ) := f : V → C    | f (v)|2 µ(v) < ∞         with    h f1 , f2iµ :=         f1 (v) f2 (v)µ(v).
+                             v∈V                                              v∈V
+
+The graph Laplacian ∆ ∈ B(ℓ2 (V; µ)) associated to the reversible random walk r is
+defined as
+                                            X
+(5.1)                  (∆ f )(v) := f (v) −      f (u)r(v, u)
+                                               u∈V:u∼E v
+
+for f ∈ ℓ2 (V; µ) and u, v ∈ V. In fact, the graph Laplacian ∆ is a positive bounded
+operator with norm at most 2. When the constructed graph (V, E) is connected,
+∆ f = 0 if and only if f is constant (see e.g., [7, Proposition 5.2.2] for details).
+  We end this subsection by stating the Lp -Poincaré inequality and the spectral
+gap of the graph Laplacian for reversible random walks as established in [27] (we
+refer the reader to [1, 2, 18, 30, 35] for results of this type for classical expanders).
+Proposition 5.1. [27, Proposition 3.2 and Proposition 3.8] Let r be a reversible random
+walk on a non-empty and finite set V with a stationary measure µ such that a is the
+associated conductance function and (V, E) is the associated graph structure.
+  If m is any non-trivial and finite measure on V of full support such that the (µ, a, m)-
+Cheeger constant c is positive, then the following hold:
+    (1) The spectrum of the graph Laplacian ∆ ∈ B(ℓ2 (V; µ)) is contained in {0}∪[c2/2, 2];
+    (2) For any p ∈ [1, ∞), there exists a positive constant cp only depending on c and p
+        such that for any map f : V → C we have the following Lp -Poincaré inequality:
+                X                                      X                       µ(u)µ(v)
+(5.2)                   | f (u) − f (v)|p a(u, v) ≥ cp       | f (u) − f (v)|p          .
+             u,v∈V:u∼ v                                u,v∈V
+                                                                                 µ(V)
+                      E
+
+
+5.2. Spectral projections for measured expanders. We now return to the general
+case of measured expanders and explore analogous Lp -Poincaré inequality and
+spectral gaps.
+  However, measures involved in the definition of measured expanders might not
+come from reversible random walks in general so that we cannot directly apply
+Proposition 5.1. To overcome this issue, we build auxiliary random walks whose
+stationary measures can uniformly control the original measures in measured
+expanders with bounded measure ratios on adjacent vertices. More precisely, we
+need the following key lemma:
+Lemma 5.2. Let {(Vn , En , mn )}n∈N be a sequence of c-measured expanders for some c > 0
+with valency uniformly bounded by K ≥ 1. Assume that each mn has full support and
+that there exists s ∈ (0, 1) such that mn (u) ∼s mn (v) for any edge u ∼En v and any n ∈ N.
+  Then for every n ∈ N there exists a reversible random walk rn : Vn × Vn → [0, ∞) such
+that the associated stationary measure µn : Vn → (0, ∞) and the associated conductance
+function an : Vn × Vn → [0, ∞) satisfy the following:
+     (1) an (u, v) = mn (u) + mn (v) whenever u, v ∈ Vn such that u ∼En v;
+     (2) For u, v ∈ Vn , we have rn (u, v) > 0 if and only if u ∼En v;
+                                                     s                     1
+     (3) For every n ∈ N and u ∈ Vn , we have K(1+s)    µn (u) ≤ mn (u) ≤ 1+s µn (u);
+     (4) For every n ∈ N, the (µn , an , mn )-Cheeger constant is bounded below by csK .
+           MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                           25
+
+Proof. For every n ∈ N, we consider the symmetric function an : Vn × Vn → [0, ∞)
+defined by
+                                  (
+                                    mn (u) + mn (v), if u ∼En v;
+                     an (u, v) :=
+                                    0,               otherwise,
+for u, v ∈ Vn . Since (Vn , En ) is a connected finite graph by Remark 4.19, the
+associated stationary measure µn : Vn → (0, ∞) is defined by
+                                  X
+                       µn (u) :=      an (u, v) for all u ∈ Vn .
+                                         v∈Vn
+
+Then the formula rn (u, v) := an (u, v)/µn (u) defines a reversible random walk on Vn
+with the stationary measure µn . Clearly, (1) and (2) hold by the above construc-
+tions. Moreover, (3) follows from the assumptions that mn (u) ∼s mn (v) for any
+edge u ∼En v and valencies are bounded by K together with the connectedness of
+the graph (Vn , En ).
+  As for (4), the assumption of c-measured expanders implies that for any n ∈ N
+and A ⊆ Vn with 0 < mn (A) ≤ 12 mn (Vn ) we have mn (∂Vn A) > c · mn (A). Hence,
+                     X              X                         X
+     an (∂En A) =       an (e) =            mn (u) + mn (v) ≥      (1 + s)mn (v)
+                               e∈∂En A    u∈A,v<A,u∼En v               v∈∂Vn A
+                                       cs
+                          = (1 + s)mn (∂Vn A) >
+                                          µn (A),
+                                       K
+where we use (3) in the last inequality. Hence, we have verified (4) as desired. 
+
+  Now we are ready to prove the following Lp -Poincaré inequality for measured
+expanders with bounded measure ratios on adjacent vertices:
+Corollary 5.3. Let {(Vn , En , mn )}n∈N be a sequence of c-measured expanders for some
+c > 0 with valency uniformly bounded by K ≥ 1. Assume that each mn has full support
+and there exists s ∈ (0, 1) such that mn (u) ∼s mn (v) for any edge u ∼En v and any n ∈ N.
+   Then for any p ∈ [1, ∞), there exists a positive constant c′ only depending on c, s, p, K
+such that for any n ∈ N and any map f : Vn → C, we have the following Lp -Poincaré
+inequality:
+            X                                                 X                      mn (u)mn (v)
+(5.3)               | f (u) − f (v)|p (mn (u) + mn (v)) ≥ c′       | f (u) − f (v)|p              .
+        u,v∈V :u∼ v                                          u,v∈V
+                                                                                      mn (Vn )
+             n       En                                         n
+
+
+
+Proof. First of all, we notice that for every n ∈ N there exists a reversible random
+walk rn on Vn such that the associated stationary measure µn and the associated
+conductance function an satisfy (1)-(4) in Lemma 5.2. Moreover, Lemma 5.2(2) tells
+us that (Vn , En ) is exactly the associated graph structure coming from the reversible
+random walk rn on Vn . Because of Lemma 5.2(4), Proposition 5.1 implies that for
+any p ∈ [1, ∞) there exists a positive constant cp only depending on c, s, p, K such
+that for any n ∈ N and any map f : Vn → C we have that
+               X                                          X                      µn (u)µn (v)
+                        | f (u) − f (v)|p an (u, v) ≥ cp       | f (u) − f (v)|p              .
+          u,v∈V :u∼ v                                    u,v∈V
+                                                                                   µ n (V n )
+                 n        En                               n
+
+                                                                                 s(1+s)cp
+By Lemma 5.2(1) and (3), we deduce the inequality (5.3) for c′ :=                   K
+                                                                                          > 0.   
+26                        KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+ Finally, we show that the graph Laplacian (up to conjugacy) associated to
+measured expanders with bounded measure ratios has a spectral gap as expected.
+Proposition 5.4. Let {(Vn , En , mn )}n∈N be a sequence of measured expanders with uni-
+formly bounded valency. Assume that each mn has full support and there exists s ∈ (0, 1)
+such that mn (u) ∼s mn (v) for any edge u ∼En v and any n ∈ N. Let (V, d) be a coarse
+disjoint union of {Vn }n∈N with respect to the edge-path metrics, and m be the direct sum
+measure of {mn }n∈N on V. Then for every n ∈ N there exists a reversible random walk on
+Vn with a stationary measure µn : Vn → (0, ∞) such that the following hold:
+     (1) If ∆n ∈ B(ℓ2 (Vn ; µn )) is the graph Laplacian defined as in (5.1) and Λn :=
+         Wn∗ ∆n Wn ∈ B(ℓ2 (Vn ; mn )) where Wn : ℓ2 (Vn ; mn ) →Lℓ2 (Vn ; µn ) is the “set-
+         theoretic identity” operator, then the spectrum of Λ :=          n∈N n
+                                                                               Λ ∈ B(ℓ2(V; m))
+         is contained in {0} ∪ [κ, ∞) for some κ > 0;
+     (2) Let Sn ∈ B(ℓ2 (Vn ; mn )) beL    the orthogonal projection onto the space of constant
+         functions on Vn , and S :=         n∈N
+                                                Sn . Then S = χ{0} (Λ) is the spectral projection;
+     (3) sup{d(u, v) : hΛδv , δu iℓ2 (V;m) , 0} ≤ 1.
+
+Proof. From Lemma 5.2(3), we know that there exists a constant  L      M > 0 such that
+||Wn || ≤ M for every n ∈ N. In particular, we have Λ =               Λ
+                                                                   n∈N n
+                                                                          ∈ B(ℓ2(V; m)).
+To see the desired spectral gap of Λ, we apply Lemma 5.2(4) together with [27,
+Lemma 3.19 and Proposition 3.21], which establish bounds between the spectral
+gap of Λ and the best constant in a Poincaré inequality, and between the latter
+quantity and the Cheeger constant. This completes (1).
+                                                                      L
+   Since each ∆n is positive, so are Λn and Λ. As χ{0} (Λ) =                  χ (Λn ), it
+                                                                          n∈N {0}
+suffices to show Sn = χ{0} (Λn ) for every n ∈ N. Clearly, χ{0} (Λn ) is the orthogonal
+projection onto the kernel of Λn . Hence, we need to check that the kernel of Λn
+exactly consists of constant functions on Vn . Since the identity operator Wn is
+invertible, it follows that if η ∈ ℓ2(Vn ; mn ) then Λn η = 0 if and only if ∆n Wn η = 0.
+Since each (Vn , En ) is connected and Wn−1 is also the identity operator, this is also
+equivalent to η is a constant function on Vn . Hence, we have verified (2).
+  It is easily seen from (5.1) that sup{d(u, v) : h∆n δv , δu iℓ2 (Vn ;µn ) , 0} ≤ 1 for every
+n ∈ N. This fact clearly ensures (3) as desired.                                             
+
+                                6. Proofs of main Theorems
+
+  In previous sections, we introduced all necessary ingredients to prove our main
+theorems. Now we are in the position to prove Theorem B, which is the foundation
+of this paper. As its proof is rather technical, we split it into two parts: we first
+consider the case of uniform Roe algebras and then the case of Roe algebras.
+
+6.1. The case of uniform Roe algebras. In this subsection, we prove the following
+theorem for block-rank-one projections in uniform Roe algebras:
+Theorem 6.1. Let {(Xn , dn )}n∈N be a sequence of finite metric spaces with uniformly
+bounded geometry and X be their coarse disjoint union. Let P ∈ B(ℓ2 (X)) be a block-
+rank-one projection with respect to {(Xn , dn )}n∈N . Then P is quasi-local if and only if P
+belongs to the uniform Roe algebra C∗u (X).
+
+Proof. The
+         Lsufficiency holds trivially, so we only focus on the necessity. Suppose
+that P =       P is a quasi-local block-rank-one projection associated to the unit
+           n∈N n
+          MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                                       27
+
+vectors {ξn }n∈N in ℓ2 (Xn ). Let mn be the associated probability measure on Xn
+defined by mn (x) := |ξn (x)|2 for x ∈ Xn . By Lemma 4.5, Lemma 4.6 and Proposi-
+tion 4.8, we may assume that each mn has full support on Xn and {(Xn , dn , mn )}n∈N
+is a sequence of measured asymptotic expanders.
+  Then Corollary 4.21 guarantees that there exist c > 0, a sequence {αk }k∈N in (0, 1)
+with αk → 0, a sequence {sk }k∈N in (0, 1), and a positive sequence {Rk }k∈N such that
+for any n, k ∈ N there exist a finite graph (Vn,k , En,k ) with the edge-path metric dn,k
+and a Rk -Lipschitz injective map in,k : Vn,k → Xn satisfying the following:
+     (i) the pullback measure mn,k := i∗n,k (mn ) on Vn,k has full support and mn,k(Vn,k ) ≥
+         1 − αk ;
+    (ii) for each k ∈ N, {(Vn,k , En,k , mn,k )}n∈N is a sequence of c-measured expanders
+         with uniformly bounded valency;
+   (iii) for any adjacent vertices u ∼En,k v, we have mn,k (u) ∼sk mn,k (v).
+   Now we fix a k ∈ N. Let (Vk , dk ) be a coarse disjoint union of {(Vn,k , dn,k )}n∈N
+and mk be the direct sum measure of {mn,k }n∈N on Vk . For each n ∈ N, let
+Sn,k ∈ B(ℓ2(Vn,k ; mn,k)) beL
+                            the orthogonal projection onto the space of constant func-
+                                                                                   1
+tions on Vn,k and Sk :=       n∈N
+                                   Sn,k ∈ B(ℓ2 (Vk ; mk )). Since {mn,k (v)− 2 δv }v∈Vn,k forms
+                                                           1
+an orthonormal basis in ℓ2 (Vn,k ; mn,k ) and {mn,k (v)− 2 ξn (in,k (v))δin,k (v) }v∈Vn,k forms an
+orthonormal set in ℓ2(Xn ), we define a linear isometry Un,k : ℓ2(Vn,k ; mn,k) → ℓ2 (Xn )
+by the formula
+                             1                   1
+                   mn,k (v)− 2 δv 7→ mn,k (v)− 2 ξn (in,k (v))δin,k (v) , for v ∈ Vn,k .
+Thus, we have a linear isometry
+                             M
+                       Uk :=    Un,k : ℓ2 (Vk ; mk ) → ℓ2(X).
+                                      n∈N
+
+  From Proposition 5.4, there exists an operator Λk ∈ B(ℓ2 (Vk ; mk )) such that Sk
+belongs to the unital C∗ -subalgebra generated by Λk in B(ℓ2 (Vk ; mk )) and
+(6.1)                      sup{dk (u, v) : hΛk δv , δu iℓ2 (Vk ;mk ) , 0} ≤ 1.
+Hence, each Uk Sk Uk∗ belongs to the unital C∗ -subalgebra generated by Uk Λk Uk∗ in
+B(ℓ2(X)). On the other hand, the bounded operator Uk Λk Uk∗ has propagation at
+most Rk as in,k is Rk -Lipschitz together with (6.1). Consequently, both Uk Λk Uk∗ and
+Uk Sk Uk∗ belong to the uniform Roe algebra C∗u (X) for every k ∈ N. In order to
+conclude P ∈ C∗u (X), it suffices to show that Uk Sk Uk∗ → P as k → ∞.
+  Recall that Sn,k in B(ℓ2 (Vn,k ; mn,k )) is the orthogonal projection onto the subspace
+spanned by the unit vector ζn,k ∈ ℓ2 (Vn,k ; mn,k), where ζn,k (v) = √ 1       = √ 1
+                                                                                    mn,k (Vn,k )   mn (Imin,k )
+                                                           ∗
+for every v ∈ Vn,k . It follows easily that Un,k Sn,k Un,k   is the orthogonal projection
+onto the one-dimensional subspace spanned by the unit vector ηn,k := Un,k ζn,k ∈
+ℓ2(Xn ). A direct calculation gives us
+                                        ξn (x)
+                                     
+                                      √mn (Imin,k ) , x ∈ Imin,k ;
+                                     
+                          ηn,k (x) = 
+                                     
+                                     0,               otherwise.
+Recall that ξn is the unit vector in ℓ2 (Xn ) corresponding to the rank-one projection
+Pn in B(ℓ2 (Xn )).
+28                       KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+ As 1 ≥ mn (Imin,k ) ≥ 1 − αk for all n ∈ N, we have that
+                            X          ξn (x)                2
+                                                                    X
+         kηn,k − ξn k2 =            p              − ξ n (x)   +              |ξn (x)|2
+                          x∈Imin,k    mn (Imin,k )               x∈Xn \Imin,k
+                                  1            2
+                       = p                  − 1 · mn (Imin,k ) + mn (Xn \ Imin,k )
+                              mn (Imin,k )
+                               1          2
+                       ≤ √             − 1 + αk .
+                              1 − αk
+Hence, it follows that
+               kUk Sk Uk∗ − Pk2 = sup kUn,k Sn,k Un,k
+                                                  ∗
+                                                      − P n k2
+                                    n∈N
+
+                                 ≤ 4 sup kηn,k − ξn k2
+                                      n∈N
+                                                              !
+                                           1         2
+                                √≤4     − 1 + αk → 0, as k → ∞.
+                                 1 − αk
+Consequently, we deduce that P belongs to C∗u (X) as desired.                                 
+
+6.2. The case of Roe algebras. In this subsection, we complete Theorem B. In
+fact, we prove a stronger result (see Theorem 6.6). In order to state Theorem 6.6,
+we need the following notion:
+Definition 6.2. Let (X, d) be a coarse disjoint union of a sequenceL         of finite metric
+spaces {(Xn , dn )}n∈N and H0 be a Hilbert space. Let P =                  P ∈ B(ℓ2 (X; H0 ))
+                                                                       n∈N n
+be a block-rank-one projection with respect to {Xn }n∈N . If ξn is a unit vector in
+ℓ2(Xn ; H0) associated to the rank-one projection Pn , then the unit vector ξ     en ∈ ℓ2 (Xn ),
+defined by ξ en (x) := kξn (x)k for x ∈ Xn , is called the uniformization of ξn . In this case,
+the rank-one projection P                    en in B(ℓ2 (Xn )) is called the uniformization
+                                         en iξ
+                             en := h · , ξ
+                                                         L
+of Pn , and the block-rank-one projection P        e :=         e in B(ℓ2 (X)) is called the
+                                                                P
+                                                            n∈N n
+uniformization of P.
+Remark 6.3. It is clear that Pn and P en in Definition 6.2 have the same associated
+probability measure on Xn given by Xn ∋ x 7→ ||ξn (x)||2 = |ξ  en (x)|2 . Hence, P is a
+                     e is a ghost by Lemma 2.12.
+ghost if and only if P
+
+     The next lemma follows directly from Lemma 4.3 and the previous remark.
+Lemma 6.4. Let (X, d) be a coarse disjoint union of a sequence of finite metric spaces
+{(Xn , dn )}n∈N , and H0 be a Hilbert space. Let P ∈ B(ℓ2 (X; H0 )) be a block-rank-one
+                                              e ∈ B(ℓ2(X)) be the uniformization of P. Then
+projection with respect to {Xn }n∈N , and let P
+P is quasi-local if and only if Pe is quasi-local.
+
+     As expected, we also have the following counterpart to Lemma 6.4:
+Lemma 6.5. Let (X, d) be a coarse disjoint union of a sequence of finite metric spaces
+{(Xn , dn )}n∈N with uniformly bounded geometry, and H0 be an infinite-dimensional sep-
+arable Hilbert space. Let P ∈ B(ℓ2 (X; H0 )) be a block-rank-one projection with respect
+                 e ∈ B(ℓ2 (X)) is the uniformization of P, then P ∈ C∗ (X) if and only if
+to {Xn }n∈N . If P
+e ∈ C∗u (X).
+P
+           MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                             29
+
+Proof. Let ξn be a unit vector in ℓ2P  (Xn ; H0 ) associated to the rank-one projection
+Pn for n ∈ N, and we write ξn = x∈Xn δx ⊗ ξn (x). Recall that its uniformization
+                                   en (x) = kξn (x)k for x ∈ Xn . By Lemma 4.6, we can
+       en ∈ ℓ2 (Xn ) is defined by ξ
+vector ξ
+assume that both ξn and ξ   en have full support in Xn for every n ∈ N.
+  For each n ∈ N, we consider the linear isometry Wn : ℓ2(Xn ) −→ ℓ2 (Xn ; H0 )
+defined by
+                                   δx ⊗ ξn (x)
+                       Wn (δx ) :=             , x ∈ Xn .
+                                    kξn (x)k
+Its adjoint operator Wn∗ : ℓ2 (Xn ; H0 ) → ℓ2 (Xn ) is given by the formula
+                                    hη, ξn (x)i
+                   Wn∗ (δx ⊗ η) =               · δx , for x ∈ Xn and η ∈ H0 .
+                                     kξn (x)k
+It follows that
+               X                          X               δx ⊗ ξn (x) X
+       e
+  Wn (ξn ) =        kξn (x)k · Wn (δx ) =      kξn (x)k ·             =       δx ⊗ ξn (x) = ξn ;
+               x∈Xn                       x∈Xn
+                                                           kξn (x)k      x∈Xn
+               X                         X hξ (x), ξ (x)i            X
+                                                n       n                                 en .
+  Wn∗ (ξn ) =       Wn∗ (δx ⊗ ξn (x)) =                       · δx =      kξn (x)k · δx = ξ
+               x∈X                       x∈X
+                                                 kξ n (x)k           x∈X
+                    n                         n                               n
+
+
+As Pn = h · , ξn iξn and P               en , we deduce that Pn = Wn ◦ P
+                                     en iξ
+                          en = h · , ξ                                    en ◦ Wn∗ and
+en = Wn∗ ◦ Pn ◦ Wn for every n ∈ N. Thus, P = W ◦ P
+P                                                                    e = W ∗ ◦ P ◦ W,
+                                                         e ◦ W ∗ and P
+            L
+where W :=      n∈N
+                     Wn is the linear isometry from ℓ2(X) to ℓ2 (X; H0 ).
+   As W and W ∗ have propagation zero, we obtain a bounded linear map C∗ (X) →
+C∗u (X) given by T 7→ W ∗ ◦ T ◦ W for T ∈ C∗ (X). In particular, if P ∈ C∗ (X) then
+                                                                          e ∈ C∗u (X).
+e = W ∗ ◦ P ◦ W ∈ C∗u (X). Conversely, we want to show that P ∈ C∗ (X) if P
+P
+Let T be any bounded operator on ℓ2 (X) with finite propagation. If x ∈ Xk and
+y ∈ Xl , then we have
+                                           hξ, ξl(y)i · Tx,y
+                  (W ◦ T ◦ W ∗ )x,y ξ =                           · ξk (x) for ξ ∈ H0 .
+                                          ||ξl (y)|| · ||ξk (x)||
+Thus, W ◦ T ◦ W ∗ has finite propagation and is locally compact as (W ◦ T ◦ W ∗ )x,y
+is a rank-one operator on H0 for every x, y ∈ X. As a consequence, we obtain
+an injective ∗-homomorphism C∗u (X) → C∗ (X) given by T 7→ W ◦ T ◦ W ∗ so that
+P=W◦P    e ◦ W ∗ ∈ C∗ (X). Hence, we complete the proof.                          
+
+  Combining Theorem 6.1 with Lemma 6.4 and Lemma 6.5, we obtain our main
+theorem in this subsection and finish the proof of Theorem B:
+Theorem 6.6. Let (X, d) be a coarse disjoint union of a sequence of finite metric spaces
+{(Xn , dn )}n∈N with uniformly bounded geometry, and H0 be an infinite-dimensional sep-
+arable Hilbert space. Let P ∈ B(ℓ2 (X; H0 )) be a block-rank-one projection with respect to
+              e ∈ B(ℓ2 (X)) is the uniformization of P, then the following are equivalent:
+{Xn }n∈N . If P
+    (1) P ∈ C∗ (X);
+    (2) P is quasi-local;
+        e ∈ C∗u (X);
+    (3) P
+        e is quasi-local.
+    (4) P
+30                       KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+Remark 6.7. If P ∈ F C∗u (X) is a block-rank-one projection with respect to a coarse
+disjoint union X = n∈N Xn , then so is P ⊗ e ∈ C∗ (X) for any fixed rank-one projec-
+tion e ∈ K(H0 ). In this case, the uniformization of P ⊗ e is P itself. Consequently,
+Theorem 6.1 can be deduced from Theorem 6.6.
+
+  Let us finish this subsection with some consequences for the coarse Baum-
+Connes conjecture. First of all, we improve Proposition 3.5 by providing the
+following measured version of [23, Proposition 6.4]:
+Proposition 6.8. Let Y be a metric space of bounded geometry. Assume that there exists
+a sequence of measured asymptotic expanders {(Xn , dn , mn )}n∈N of uniformly bounded
+geometry which admits a measured weak embedding { fn : (Xn , dn , mn ) → Y}n∈N such that
+for every y ∈ Y the preimage fn−1 (y) is empty for all but finitely many n ∈ N. Then there
+exist a sparse subspace Y′ ⊆ Y and a block-rank-one ghost projection in C∗u (Y′ ).
+   If we additionally assume that the sequence { fn }n∈N is uniformly finite-to-one and each
+mn is the counting measure, then the averaging projection of Y′ is a ghost in C∗u (Y′ ).
+
+Proof. Without loss of generality, we can assume that each mn isFa probability
+measure. Let X be a coarse disjoint union of {(Xn , dn )}n∈N , and f := n∈N fn : X →
+Y. As the sequence { fn }n∈N is coarse, we can assume that f is coarse as well by
+appropriately choosing the metric on X. From the assumption on the preimages
+of { fn }n∈N , we know that f is finite-to-one.
+   ByL   Proposition 4.8 and Theorem 6.1, the associated block-rank-one projection
+P :=       n∈N n
+                P with respect to {(Xn , dn , mn )}n∈N belongs to C∗u (X), where each Pn ∈
+B(ℓ2(Xn )) is  pthe rank-one projection onto the subspace spanned by the unit vector
+Xn ∋ x 7→ mn (x) in ℓ2 (Xn ). We fix an infinite-dimensional separable Hilbert space
+H0 and a rank-one projection e ∈ K(H0 ), then P ⊗ e ∈ C∗ (X) and its uniformization
+is P itself by Remark 6.7. Moreover, Remark 6.3 tells us that each mn is also the
+associated measure to Pn ⊗e.  F Hence, it follows from Proposition 3.5 that there exist
+                         ′
+a sparse subspace Y = n∈N Yn in Y where Yn = fn (Xn ), and a block-rank-one
+ghost projection Q ∈ C∗ (Y′ ). By Theorem 6.6 and Remark 6.3, we conclude that its
+uniformization Q    e is a block-rank-one ghost projection in C∗ (Y′ ) as desired.
+                                                                   u
+   Now we additionally assume that the sequence { fn }n∈N is uniformly finite-to-one
+and each mn is the probability counting measure on Xn . As Q         e is a block-rank-one
+ghost projection in C∗u (Y′ ), it follows from Proposition 4.8 and Lemma 2.12 that
+{(Yn , m′n )}n∈N forms a ghostly sequence of measured asymptotic expanders, where
+m′n is the probability measure on Yn associated to Q       en . From the formula (3.1) in
+the proof of Proposition 3.5 we have that
+                                                                    −1
+                                      en )y,y | = mn ( f −1 (y)) = | fn (y)| , for y ∈ Yn .
+                       en δ y ||2 = |(Q
+           m′n (y) = ||Q                                n
+                                                                      |Xn |
+  Since { fn }n∈N is uniformly finite-to-one and each fn is surjective onto Yn , there
+exists a constant s ≥ 1 such that for any n ∈ N and any y1 , y2 ∈ Yn , we have
+                              1 ′
+                                mn (y2 ) ≤ m′n (y1 ) ≤ sm′n (y2 ).
+                              s
+As a consequence of [26, Definition 6.4 and Lemma 6.5], we conclude that {Yn }n∈N
+is a sequence of asymptotic expanders with |Yn | → ∞ as n → ∞. So the averaging
+projection of {Yn }n∈N is a ghost in C∗u (Y′ ) by Theorem 6.1 or [23, Theorem C]. 
+             MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                             31
+
+  Note that in the previous proposition the condition “for every y ∈ Y the preim-
+age fn−1 (y) is empty for all but finitely many n ∈ N” is redundant if Y is sparse.
+This follows from Corollary 4.22 and the following general fact:
+Lemma
+F         6.9. Let {(Vn , En , mn )}n∈N be a sequence of finite measured graphs and Y =
+  k∈N Yk be a sparse space. If { fn : (Vn , En , mn ) → Y}n∈N is a measured weak embedding,
+then for every y ∈ Y the preimages fn−1 (y) , ∅ for only finitely many n’s.
+
+Proof. If this were not the case, then there would exist y0 ∈ Y such that fn−1    i
+                                                                                    (y0 ) , ∅
+for all i ∈ N. As all (Vn , En ) are connected graphs and all fn are L-Lipschitz for
+                                                                F
+some L > 0 by Remark 2.7, it follows that fni (Vni ) ⊆ E := M     k=1 Yk for some natural
+number M (independent of i). Since E is a non-empty finite set and fn−1        (E) = Vni for
+                                       P           −1
+                                                                             i
+all i ∈ N, it follows that mni (Vni ) = y∈E mni ( fni (y)) for every i ∈ N. In particular,
+                                                         mn ( fn−1 (yi ))
+                                                             1
+for each i ∈ N there exists yi ∈ E such that mi n (Vi n ) ≥ |E| > 0, which contradicts
+                                                 i     i
+with the assumption that { fn }n∈N is a measured weak embedding.                    
+
+  The following theorem is a consequence of Corollary 4.22, Proposition 6.8 and
+Lemma 6.9 with an identical proof of [23, Theorem 6.7].
+Theorem 6.10. Let {Xn }n∈N be a sequence of finite metric spaces of uniformly bounded
+geometry and X be their coarse disjoint union. If X admits a fibred coarse embedding
+into a Hilbert space18, and there exists a sequence of measured asymptotic expanders of
+uniformly bounded geometry which admits a measured weak embedding into X, then the
+following statements hold:
+   (1) The coarse Baum–Connes assembly map for X is injective but non-surjective.
+   (2) The induced map ι∗ : K∗ (K) → K∗ (IG ) is injective but non-surjective, where
+       ι : K ֒→ IG is the inclusion of the compact ideal K into the ghost ideal IG of
+       the Roe algebra C∗ (X).
+   (3) The induced map π∗ : K∗ (C∗max (X)) → K∗ (C∗ (X)) is injective but non-surjective,
+       where π : C∗max (X) ։ C∗ (X) is the canonical surjection from the maximal Roe
+       algebra onto the Roe algebra. In particular, π is not injective.
+
+  In view of Lemma 2.8, we deduce the following corollary of Theorem 6.10:
+Corollary 6.11. Let {Xn }n∈N be a sequence of finite metric spaces of uniformly bounded
+geometry and X be their coarse disjoint union. If X admits a fibred coarse embedding into
+a Hilbert space, and there exists a sequence of ghostly measured asymptotic expanders of
+uniformly bounded geometry which admits a coarse embedding into X, then X violates
+the coarse Baum-Connes conjecture.
+
+6.3. A geometric criterion for the rigidity problem. Now we provide a geometric
+condition for which the rigidity problem holds. Let us start with the following
+characterisations for the analytic conditions introduced in Definition 3.1:
+Corollary 6.12. Let X be a metric space with bounded geometry. Then the following
+properties are equivalent:
+   (1) all sparse subspaces of X contain no block-rank-one ghost projections in their Roe
+       algebras;
+  18
+       See [14, Definition 2.1] for the definition of fibred coarse embedding into Hilbert spaces.
+32                        KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+      (2) all sparse subspaces of X contain no block-rank-one ghost projections in their
+          uniform Roe algebras;
+      (3) X contains no sparse subspaces consisting of ghostly measured asymptotic ex-
+          panders.
+      (4) X coarsely contains no sparse spaces consisting of ghostly measured asymptotic
+          expanders with uniformly bounded geometry.
+In particular, all of these properties are coarsely invariant among metric spaces with
+bounded geometry.
+
+Proof. “(1) ⇒ (2)” follows from Remark 6.3 and Remark 6.7. While “(2) ⇒ (1)”
+follows from Remark 6.3 and “(1) ⇒ (3)” in Theorem 6.6. The equivalence between
+(2) and (3) follows directly from Lemma 2.12, Proposition 4.8 and Theorem 6.1.
+   Since every isometric embedding is a coarse embedding, we clearly have “(4) ⇒
+(3)”. To see “(3) ⇒ (4)”, we assume that X coarsely contains a sparse space X′
+consisting of ghostly measured asymptotic expanders with uniformly bounded
+geometry. If f : X′ → X is the coarse embedding, then f must be finite-to-one
+because X′ is sparse. As a consequence of Lemma 2.8 and Proposition 6.8, there
+exist a sparse subspace Z of X and a block-rank-one ghost projection in C∗u (Z).
+Hence, Z consists of ghostly measured asymptotic expanders by Lemma 2.12 and
+Proposition 4.8.
+   Finally, the last statement can be deduced from Proposition 3.7 together with
+the fact that every coarse embedding from a metric space with bounded geometry
+is uniformly finite-to-one.                                                    
+
+   Condition (3) in Corollary 6.12 is the one we are most interested in, because it
+is formally the weakest geometric criterion which guarantees rigidity. More pre-
+cisely, we obtain the following rigidity result (Theorem A) by combining Propo-
+sition 3.9 with Corollary 6.12.
+Theorem 6.13. Let X and Y be metric spaces with bounded geometry. Assume that
+either X or Y contains no sparse subspaces consisting of ghostly measured asymptotic
+expanders. Then the following are equivalent:
+      (1) X is coarsely equivalent to Y;
+      (2) C∗u (X) is Morita equivalent 19 to C∗u (Y);
+      (3) C∗s (X) is ∗-isomorphic to C∗s (Y);
+      (4) UC∗ (X) is ∗-isomorphic to UC∗ (Y);
+      (5) C∗ (X) is ∗-isomorphic to C∗ (Y).
+Remark 6.14. Very recently, it has been shown in [6] that (1) to (4) in Theorem 6.13
+are all equivalent for general metric spaces with bounded geometry. At this
+moment, we believe that Theorem 6.13 is still the best-known result on the equiv-
+alence of (5) with the other items.
+
+                                    7. Rigid metric spaces
+
+   In this final section, we will apply Theorem 6.13 to obtain new examples of
+rigid spaces which are not obviously covered by previously existing results.
+     19
+     By [13, Theorem 1.2], C∗u (X) and C∗u (Y) are Morita equivalent if and only if they are stably
+∗-isomorphic.
+           MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                            33
+
+  Let us start with the following result, which asserts that measured asymptotic
+expanders are obstructions to measured weak embeddings into Lp -spaces.
+Proposition 7.1. Any sequence of measured asymptotic expanders with uniformly
+bounded geometry cannot be measured weakly embedded into any Lp -space for p ∈ [1, ∞).
+Proof. We assume that there is a sequence of measured asymptotic expanders
+{(Xn , dn , mn )}n∈N with uniformly bounded geometry which could be measured
+weakly embedded into Lp (Z; ν) for some measure space (Z, ν) and p ∈ [1, ∞). By
+Corollary 4.21, we can assume that {(Xn , dn , mn )}n∈N is a sequence of measured
+expander graphs with valency uniformly bounded by K ≥ 1 such that all mn have
+full support with uniformly bounded measure ratio s ∈ (0, 1) on adjacent vertices.
+   By Corollary 5.3, there exists a positive constant c such that for any n ∈ N and
+any map g : Xn → C, we have the following Lp -Poincaré inequality:
+           X                                            X                   mn (u)mn (v)
+                                p
+(7.1)              |g(u) − g(v)| (mn (u) + mn (v)) ≥ c       |g(u) − g(v)|p              .
+        u,v∈X :u∼v                                     u,v∈X
+                                                                             mn (Xn )
+               n                                                n
+                            p
+If { fn : (Xn , dn , mn ) → L (Z, ν)}n∈N is a measured weak embedding, then all maps
+ fn can be chosen to be L-Lipschitz for some L > 0 by Remark 2.7. Integrating the
+inequality (7.1) over (Z, ν), we obtain that
+  X                         mn (u)mn (v) Lp X                                    (1 + s)KLp
+        k fn (u) − fn (v)kp                ≤                 (mn (u) + mn (v)) ≤            mn (Xn ).
+ u,v∈Xn
+                              mn (Xn )          c u,v∈X :u∼v                         sc
+                                                       n
+     P         mn (u)
+As u∈Xn mn (Xn ) = 1, using the pigeonhole principle we deduce that there exists at
+least one u ∈ Xn such that
+                            X                         mn (v)      (1 + s)KLp
+                                 k fn (u) − fn (v)kp            ≤            .
+                            v∈X
+                                                     m n (X n )       sc
+                             n
+
+                            (1+s)KLp
+ If we denote M :=       sc
+                              , then the set {v ∈ Xn : k fn (u) − fn (v)kp ≤ 2M} has
+measure greater than 21 mn (Xn ) for every n ∈ N. Equivalently, we have
+                  mn ( fn−1 (B( fn (u), (2M)1/p ))) 1
+                                                   > for every n ∈ N.
+                              mn (Xn )              2
+This contradicts with the assumption that { fn }n∈N is a measured weak embedding.
+                                                                               
+
+  By Lemma 2.8 and Proposition 7.1, we obtain the following result which extends
+the Lp -case of [23, Theorem 4.2].
+Corollary 7.2. A coarse disjoint union of a sequence of ghostly measured asymptotic
+expanders with uniformly bounded geometry cannot coarsely embed into any Lp -space for
+p ∈ [1, ∞).
+
+  As a consequence of Theorem 6.13, rigidity holds for metric spaces which
+coarsely embed into some Lp -space for p ∈ [1, ∞) as stated in Corollary E.
+  We finish this section by extending the main results in [4, 16] to the measured
+asymptotic case. More precisely, we show that there exist box spaces that do not
+coarsely embed into any Lp -space, but do not measured weakly contain any mea-
+sured asymptotic expanders. Consequently, we obtain that the rigidity problem
+holds for such box spaces by Lemma 2.8 and Theorem 6.13.
+34                      KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+  To this end, we need the following key ingredient, which is a measured asymp-
+totic analogue of [4, Proposition 2]:
+Proposition 7.3. Let {Gn }n∈N be a sequence of finitely generated groups with generating
+sets {Sn }n∈N such that |Sn | ≤ k for all n ∈ N. We assume that for each n ∈ N, we have a
+short exact sequence
+                                  1 → N n → Gn → Q n → 1
+such that:
+    • The sequence (Nn )n∈N equipped with the induced metric coarsely embeds into a
+       Hilbert space;
+    • The sequence (Qn )n∈N equipped with the word metric associated to the projection
+       Tn of Sn coarsely embeds into a Hilbert space.
+                                      F
+Then the coarse disjoint union G := n∈N Gn does not measured weakly contain any
+measured asymptotic expanders with uniformly bounded geometry.
+
+ Before we prove Proposition 7.3, we need the following lemma, which is the
+measured analogue of [4, Lemma 2.1 and Corollary 2.2]:
+Lemma 7.4. Let p ∈ [1, ∞), α ∈ (0, 1] and c > 0. If {(Vn , En , mn )}n∈N is a sequence of
+c-measured expander graphs with valency uniformly bounded by K ≥ 1 such that all mn
+have full support with uniformly bounded measure ratio s ∈ (0, 1) on adjacent vertices,
+then there exists D > 0 depending only on p, α, c, K and s such that for any n ∈ N, any
+A ⊆ Vn with mn (A) ≥ α · mn (Vn ) and any 1-Lipschitz map f from A to an Lp -space, we
+have
+                          X                      mn (u)mn (v)
+(7.2)                          k f (u) − f (v)kp          2
+                                                              ≤ D.
+                         u,v∈A
+                                                  m  n (A)
+                                                                                        1
+In particular, there exists x0 ∈ A such that the set {v ∈ A : k f (x0 ) − f (v)k ≤ (2D) p } has
+measure greater than mn (A)/2 for every n ∈ N.
+
+Proof. We will follow the same scheme as the proof of [4, Lemma 2.1] with minor
+modifications. There are two cases: α = 1 and α ∈ (0, 1).
+   If α = 1, then A = Vn because mn has full support. Let f be any 1-Lipschitz map
+from Vn to an Lp -space. By Corollary 5.3, there exists a positive constant c′ only
+depending on c, s, p, K such that
+  X                       mn (u)mn (v)        1           X                          (1 + s)K
+        k f (u) − f (v)kp              ≤  ′
+                                                                 (mn (u) + mn (v)) ≤          .
+ u,v∈V
+                           mn (Vn )2     c · mn (Vn ) u,v∈V :u∼ v                       sc′
+     n                                                  n   En
+
+                                          (1+s)K
+In this case, we simply choose D :=         sc′
+                                                 so that (7.2) holds.
+  If α ∈ (0, 1), then 1 − α ∈ (0, 1). By Lemma 4.20, there exists a c1−α > 0 depending
+only on c and α such that
+                   n mn (∂Vn B)                                              o
+       hnα := min               : B ⊆ Vn with 0 < mn (B) ≤ (1 − α) · mn (Vn ) > c1−α
+                      mn (B)
+for all n ∈ N.
+  Given A ⊆ Vn with mn (A) ≥ α · mn (Vn ). For every i ∈ N, set Ui := Ni (A)c and
+Wi := Ui \ Ui+1 . As (∂Vn Ui+1 ) ⊔ Ui+1 ⊆ Ui , and mn (Ui+1 ) ≤ (1 − α) · mn (Vn ) for every
+          MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                        35
+
+i ∈ N, it follows that
+                 mn (Ui ) ≥ mn (∂Vn Ui+1 ) + mn (Ui+1 ) ≥ (1 + hnα ) · mn (Ui+1 ).
+Thus, for every i ∈ N
+                                                mn (U1 )    mn (Vn )
+                                mn (Ui+1 ) ≤         n i
+                                                         <              .
+                                               (1 + hα )   (1 + c1−α )i
+    Now we extend f from A to all of X as follows: for any x ∈ Ac , we choose a point
+ax ∈ A such that dn (x, A) = dn (x, ax ) and we set f (x) := f (ax ). If x, y ∈ Ac with x ∼En y,
+then dn (ax , ay ) ≤ dn (x, A) + dn (y, A) + 1. Thus, we deduce that dn (ax , ay ) ≤ 2i + 4
+for every x ∈ Wi and every y ∈ Vn with x ∼En y. As f is 1-Lipschitz      F          on A, then
+k f (x) − f (y)k ≤ 2i + 4 for every x ∈ Wi with x ∼En y. As Ac = i∈N Wi , we have that
+                         X X
+                                        k f (u) − f (v)kp (mn (u) + mn (v))
+                         u∈Ac v∈Vn : u∼En v
+                              XX              X
+                         ≤                          (2i + 4)p (mn (u) + mn (v))
+                              i∈N u∈Wi v∈Vn : u∼En v
+                              X         (1 + s)K
+                         ≤        (2i + 4)p       mn (Wi )
+                           i∈N
+                                            s
+                           (1 + s)K          X (2i + 4)p
+                         <          mn (Vn )                  i−1
+                                                                  ,
+                               s              i∈N
+                                                  (1 + c 1−α )
+       P      (2i+4)p
+where i∈N (1+c1−α )i−1 is clearly convergent and its limit denotes by θ(p, c, α). More-
+over, we have k f (x) − f (y)k ≤ 2 if x ∈ A and x ∼En y. Hence, it follows that
+          X X                                                      (1 + s)K
+                          k f (u) − f (v)kp (mn (u) + mn (v)) ≤ 2p          mn (Vn ).
+          u∈A v∈V : u∼ v
+                                                                       s
+                   n     En
+
+Combining them together, we conclude that
+                 X
+                        k f (u) − f (v)kp (mn (u) + mn (v))
+                   u,v∈Vn :u∼En v
+
+                        (1 + s)K            (1 + s)K
+                    < 2p         mn (Vn ) +           · θ(p, c, α) · mn (Vn )
+                            s                   s
+                      (1 + s)K p
+                    =          (2 + θ(p, c, α)) · mn (Vn ).
+                          s
+  Now Corollary 5.3 provides us a positive constant c′ depending only on p, K, s
+and c so that
+               X                       mn (u)mn (v)
+                     k f (u) − f (v)kp
+              u,v∈Vn
+                                        mn (Vn )2
+                        1           X
+              ≤ ′                           k f (u) − f (v)kp (mn (u) + mn (v))
+                  c · mn (Vn ) u,v∈V :u∼ v
+                                           n   En
+
+                       (1 + s)K p
+                  <            (2 + θ(p, c, α)).
+                          c′ s
+                                                                (1+s)K
+                                                                                      
+As mn (A) ≥ α · mn (Vn ), we conclude that (7.2) holds for D := α2 c′ s 2p + θ(p, c, α) .
+As for the last statement, we simply apply the pigeonhole principle to (7.2) as in
+the proof of Proposition 7.1.                                                          
+36                      KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+Proof of Proposition 7.3. We assume that there is a sequence of measured asymp-
+totic expanders with uniformly bounded geometry which could be measured
+weakly embedded into G. From Corollary 4.21, we obtain a sequence of c-
+measured expander graphs {(Vn , En , mn )}n∈N with valency uniformly bounded by
+K ≥ 1 such that all mn have full support with uniformly bounded measure ratio
+s ∈ (0, 1) on adjacent vertices such that the sequence {(Vn , En , mn )}n∈N measured
+weakly embeds into G. If {gn : (Vn , En , mn ) → G}n∈N is such a measured weak em-
+bedding, then for every y ∈ G the preimages g−1   n (y) , ∅ for only finitely many n’s
+by Lemma 6.9. Since all (Vn , En ) are connected graphs and all gn are M-Lipschitz
+for some M > 0, we may remove finitely many Vn ’s if necessary so that every
+Vn in the remaining sequence is mapped into a single piece Gkn for some kn ∈ N.
+Using Lemma 6.9 again, we may (after taking a subsequence if necessary) assume
+that each gn maps Vn into Gn for all n ∈ N.
+  We reach a contradiction with the fact that {gn }n∈N is a measured weak em-
+bedding by following the proof of [4, Proposition 2] step by step, except we use
+Lemma 7.4 instead of [4, Corollary 2.2], and replace the counting measure by
+mn .                                                                           
+     Now we are able to strengthen [4, Theorem 1] as follows:
+Theorem 7.5. There exists a box space X of a finitely generated residually finite group
+such that X does not coarsely embed into any Lp -space for 1 ≤ p < ∞20, yet does not
+measured weakly contain any measured asymptotic expanders with uniformly bounded
+geometry.
+Proof. The proof is identical to the proof of [4, Theorem 7.1] except that we use
+Proposition 7.3 instead of [4, Proposition 2] at the very end of the proof. For this
+reason, we shall not repeat the argument.                                         
+   In fact, the graphs constituting the box space X in Theorem 7.5 can be addition-
+ally required to have unbounded girth (i.e., the length of the shortest cycle). For
+this, we need the following stronger version of [16, Proposition 2.4], whose proof
+is the same except that we use Proposition 7.3 instead of [4, Proposition 2] therein.
+To avoid too much word repetition, we omit its proof here.
+Corollary 7.6. Let G be a finitely generated, residually finite group and let {Nn }n∈N be a
+sequence of nested finite index normal subgroups of G with trivial intersection. If {Mn }n∈N
+is another sequenceFof finite index normal subgroups of G with Nn > Mn for all n ∈ N
+F the box space n∈N G/Nn coarsely embeds into a Hilbert space, then the box space
+and
+   n∈N G/Mn does not measured weakly contain any measured asymptotic expanders with
+uniformly bounded geometry.
+     Now we are ready to generalise [16, Theorem 4.5] in the following way:
+Theorem 7.7. There exists a box space X of the free group F3 such that X does not
+coarsely embed into any Lp -space for 1 ≤ p < ∞, yet does not measured weakly contain
+any measured asymptotic expanders with uniformly bounded geometry.
+
+Proof. We refer to the proof of [16, Theorem 4.5] for details. In the proof, we have
+to apply our Corollary 7.6 instead of [16, Proposition 2.4] herein in order to obtain
+     20
+    The box space X also does not coarsely embed into any uniformly curved Banach space (see [4,
+Definition 6.1] for the definition).
+           MEASURED ASYMPTOTIC EXPANDERS AND RIGIDITY FOR ROE ALGEBRAS                             37
+
+the second part of the statement, while the first part follows from the last remark
+in [16, Section 5]21.                                                             
+
+
+                                           References
+ [1] Noga Alon. Eigenvalues and expanders. Combinatorica, 6(2):83–96, 1986.
+ [2] Noga Alon and Vitali D. Milman. λ1 , isoperimetric inequalities for graphs, and superconcen-
+     trators. J. Combin. Theory Ser. B, 38(1):73–88, 1985.
+ [3] Goulnara Arzhantseva, Erik Guentner, and Ján Špakula. Coarse non-amenability and coarse
+     embeddings. Geom. Funct. Anal., 22(1):22–36, 2012.
+ [4] Goulnara Arzhantseva and Romain Tessera. Relative expanders. Geom. Funct. Anal.,
+     25(2):317–341, 2015.
+ [5] Goulnara Arzhantseva and Romain Tessera. Admitting a coarse embedding is not preserved
+     under group extensions. Int. Math. Res. Not. IMRN, (20):6480–6498, 2019.
+ [6] Florent P. Baudier, Bruno de Mendonça Braga, Ilijas Farah, Ana Khukhro, Alessandro Vignati,
+     and Rufus Willett. Uniform Roe algebras of uniformly locally finite metric spaces are rigid.
+     arXiv:2106.11391, 2021.
+ [7] Bachir Bekka, Pierre de la Harpe, and Alain Valette. Kazhdan’s property (T), volume 11 of New
+     Mathematical Monographs. Cambridge University Press, Cambridge, 2008.
+ [8] Bruno M. Braga, Yeong Chyuan Chung, and Kang Li. Coarse Baum-Connes conjecture and
+     rigidity for Roe algebras. J. Funct. Anal., 279(9):108728, 2020.
+ [9] Bruno M. Braga and Ilijas Farah. On the rigidity of uniform Roe algebras over uniformly
+     locally finite coarse spaces. Trans. Amer. Math. Soc., 374(2):1007–1040, 2021.
+[10] Bruno M. Braga, Ilijas Farah, and Alessandro Vignati. Embeddings of uniform Roe algebras.
+     Comm. Math. Phys., 377(3):1853–1882, 2020.
+[11] Bruno M. Braga, Ilijas Farah, and Alessandro Vignati. Uniform Roe coronas. Adv. Math.,
+     389:Paper No. 107886, 2021.
+[12] Bruno M. Braga and Alessandro Vignati. On the uniform Roe algebra as a Banach algebra
+     and embeddings of ℓp uniform Roe algebras. Bull. Lond. Math. Soc., 52(5):853–870, 2020.
+[13] Lawrence G. Brown, Philip Green, and Marc A. Rieffel. Stable isomorphism and strong Morita
+     equivalence of C∗ -algebras. Pacific J. Math., 71(2):349–363, 1977.
+[14] Xiaoman Chen, Qin Wang, and Guoliang Yu. The maximal coarse Baum-Connes conjecture
+     for spaces which admit a fibred coarse embedding into Hilbert space. Adv. Math., 249:88–130,
+     2013.
+[15] Yeong Chyuan Chung and Kang Li. Rigidity of ℓp Roe-type algebras. Bull. Lond. Math. Soc.,
+     50(6):1056–1070, 2018.
+[16] Thiebout Delabie and Ana Khukhro. Box spaces of the free group that neither contain ex-
+     panders nor embed into a Hilbert space. Adv. Math., 336:70–96, 2018.
+[17] Jintao Deng, Qin Wang, and Guoliang Yu. The coarse Baum-Connes conjecture for certain
+     extensions and relative expanders. arXiv preprint arXiv:2102.10617, 2021.
+[18] Jozef Dodziuk. Difference equations, isoperimetric inequality and transience of certain ran-
+     dom walks. Trans. Amer. Math. Soc., 284(2):787–794, 1984.
+[19] Martin Finn-Sell. Fibred coarse embeddings, a-T-menability and the coarse analogue of the
+     Novikov conjecture. J. Funct. Anal., 267(10):3758–3782, 2014.
+[20] Mikhael Gromov. Random walk in random groups. Geom. Funct. Anal., 13(1):73–146, 2003.
+[21] Erik Guentner and Jerome Kaminker. Geometric and analytic properties of groups. In Non-
+     commutative geometry, volume 1831 of Lecture Notes in Math., pages 253–262. Springer, Berlin,
+     2004.
+[22] N. Higson, V. Lafforgue, and G. Skandalis. Counterexamples to the Baum-Connes conjecture.
+     Geom. Funct. Anal., 12(2):330–354, 2002.
+[23] Ana Khukhro, Kang Li, Federico Vigolo, and Jiawen Zhang. On the structure of asymptotic
+     expanders. Adv. Math., 393:Paper No. 108073, 35, 2021.
+
+  21
+      The authors claimed in this remark that their box space does not coarsely embed into ℓp , but it
+is straightforward to check that it actually cannot coarsely embed into any Lp -space for 1 ≤ p < ∞
+by the complex interpolation method as in the proof of [4, Proposition 4]).
+38                        KANG LI, JÁN ŠPAKULA, AND JIAWEN ZHANG
+
+[24] Kang Li, Piotr Nowak, Ján Špakula, and Jiawen Zhang. Quasi-local algebras and asymptotic
+     expanders. Groups Geom. Dyn., 15(2):655–682, 2021.
+[25] Kang Li, Federico Vigolo, and Jiawen Zhang. A Markovian and Roe-algebraic approach to
+     asymptotic expansion in measure. arXiv:2008.12572, 2020.
+[26] Kang Li, Federico Vigolo, and Jiawen Zhang. Asymptotic expansion in measure and strong
+     ergodicity. arXiv:2005.05697, to appear in Journal of Topology and Analysis, 2020.
+[27] Kang Li, Ján Špakula, and Jiawen Zhang. Measured expanders. arXiv:2104.06052, to appear in
+     Journal of Topology and Analysis, 2021.
+[28] Kang Li, Zhijie Wang, and Jiawen Zhang. A quasi-local characterisation of Lp -Roe algebras.
+     J. Math. Anal. Appl., 474(2):1213–1237, 2019.
+[29] Alexander Lubotzky. High dimensional expanders. In Proceedings of the International Congress
+     of Mathematicians—Rio de Janeiro 2018. Vol. I. Plenary lectures, pages 705–730. World Sci. Publ.,
+     Hackensack, NJ, 2018.
+[30] Jiřı́ Matoušek. On embedding expanders into lp spaces. Israel J. Math., 102:189–197, 1997.
+[31] Piotr W. Nowak. On coarse embeddability into lp -spaces and a conjecture of Dranishnikov.
+     Fund. Math., 189(2):111–116, 2006.
+[32] John Roe. An index theorem on open manifolds. I, II. J. Differential Geom., 27(1):87–113, 115–
+     136, 1988.
+[33] John Roe. Index theory, coarse geometry, and topology of manifolds, volume 90 of CBMS Regional
+     Conference Series in Mathematics. Published for the Conference Board of the Mathematical
+     Sciences, Washington, DC; by the American Mathematical Society, Providence, RI, 1996.
+[34] John Roe. Lectures on coarse geometry, volume 31 of University Lecture Series. American Math-
+     ematical Society, Providence, RI, 2003.
+[35] Robert Michael Tanner. Explicit concentrators from generalized N-gons. SIAM J. Algebraic
+     Discrete Methods, 5(3):287–293, 1984.
+[36] Ján Špakula and Aaron Tikuisis. Relative commutant pictures of Roe algebras. Comm. Math.
+     Phys., 365(3):1019–1048, 2019.
+[37] Ján Špakula and Rufus Willett. On rigidity of Roe algebras. Adv. Math., 249:289–310, 2013.
+[38] Ján Špakula and Jiawen Zhang. Quasi-locality and Property A. J. Funct. Anal., 278(1):108299,
+     25, 2020.
+[39] Stuart White and Rufus Willett. Cartan subalgebras in uniform Roe algebras. Groups Geom.
+     Dyn., 14(3):949–989, 2020.
+[40] Rufus Willett and Guoliang Yu. Higher Index Theory. 189. Cambridge University Press, 2020.
+[41] Wolfgang Woess. Random walks on infinite graphs and groups, volume 138 of Cambridge Tracts
+     in Mathematics. Cambridge University Press, Cambridge, 2000.
+[42] Guoliang Yu. The coarse Baum-Connes conjecture for spaces which admit a uniform embed-
+     ding into Hilbert space. Invent. Math., 139(1):201–240, 2000.
+
+  (K. Li) Department of Mathematics, Friedrich-Alexander-University Erlangen–Nuremberg,
+Cauerstrasse 11, 91058 Erlangen, Germany.
+     Email address: kang.li@fau.de
+
+  (J. Špakula) School of Mathematics, University of Southampton, Highfield, SO17 1BJ, United
+Kingdom.
+     Email address: jan.spakula@soton.ac.uk
+
+  (J. Zhang) School of Mathematical Sciences, Fudan University, 220 Handan Road, Shanghai
+200433, P. R. China.
+     Email address: jiawenzhang@fudan.edu.cn

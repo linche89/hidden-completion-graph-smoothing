@@ -1,0 +1,2207 @@
+Journal of Mathematical Biology (2022) 85: 35
+https://doi.org/10.1007/s00285-022-01799-z                      Mathematical Biology
+
+
+Vertex results for the robust analysis of uncertain
+biochemical systems
+
+Franco Blanchini1 · Patrizio Colaneri2,3 · Giulia Giordano4                      · Irene Zorzan5,6
+
+Received: 17 November 2021 / Revised: 6 July 2022 / Accepted: 27 August 2022 /
+Published online: 19 September 2022
+© The Author(s) 2022
+
+
+Abstract
+We consider the problem of assessing the sensitivity of uncertain biochemical systems
+in the presence of input perturbations (either constant or periodic) around a stable
+steady state. In particular, we propose approaches for the robust sensitivity analysis
+of systems with uncertain parameters assumed to take values in a hyper-rectangle. We
+highlight vertex results, which allow us to check whether a property is satisfied for
+all parameter choices in the hyper-rectangle by simply checking whether it is satisfied
+for all parameter choices at the vertices of the hyper-rectangle. We show that, for
+a vast class of systems, including (bio)chemical reaction networks with mass-action
+kinetics, the system Jacobian has a totally multiaffine structure (namely, all minors of
+the Jacobian matrix are multiaffine functions of the uncertain parameters), which can be
+exploited to obtain several vertex results. We consider different problems: robust non-
+singularity; robust stability of the steady-state; robust steady-state sensitivity analysis,
+in the case of constant perturbations; robust frequency-response sensitivity analysis, in
+
+
+
+B Giulia Giordano
+    giulia.giordano@unitn.it
+    Franco Blanchini
+    blanchini@uniud.it
+    Patrizio Colaneri
+    patrizio.colaneri@polimi.it
+    Irene Zorzan
+    irene.zorzan@unipd.it
+
+1   Dipartimento di Scienze Matematiche, Informatiche e Fisiche, University of Udine, Udine, Italy
+2   Dipartimento di Elettronica, Informazione e Bioingegneria, Politecnico di Milano, Milan, Italy
+3   IEIIT-CNR, Turin, Italy
+4   Department of Industrial Engineering, University of Trento, Trento, Italy
+5   Department of Information Engineering, University of Padova, Padua, Italy
+6   Present Address: Systems Biology, School of Biosciences and Medicine, Faculty of Health and
+    Medical Sciences, University of Surrey, Guildford, United Kingdom
+
+
+                                                                                            123
+35   Page 2 of 43                                                           F. Blanchini et al.
+
+
+the presence of periodic perturbations; and robust adaptation analysis. The developed
+theory is then applied to gain insight into some examples of uncertain biochemical
+systems, including the incoherent feed-forward loop, the coherent feed-forward loop,
+the Brusselator oscillator and the Goldbeter oscillator.
+
+Keywords Biochemical systems · Robustness · Steady-state sensitivity · Vertex
+algorithm
+
+Mathematics Subject Classification 34A34 · 92C40 · 92C42 · 92E20 · 93B35 · 93D09
+
+
+1 Introduction
+
+In spite of inherent variations and fluctuations in the environment where they operate,
+leading to huge uncertainties in the parameter values of the associated models, living
+systems robustly preserve some crucial properties and keep reliably performing their
+specific task. The extraordinary robustness of biological processes has been observed
+in remarkable case studies, such as bacterial chemotaxis (Alon et al. 1999; Barkai
+and Leibler 1997) and circadian rhythms (Stelling et al. 2004). The pioneering study
+by Barkai and Leibler (1997), later confirmed experimentally by Alon et al. (1999),
+showed that the tumbling frequency that characterises the chemotaxis of Escherichia
+coli is robustly regulated: although it can rapidly change due to a variation in the
+concentration of a chemical stimulant, it then gradually adapts back precisely to its
+pre-stimulus value; this perfect adaptation property is shown to be insensitive to the
+precise values of the biochemical parameters, because it is a direct consequence of the
+network’s architecture.
+   The general principles underlying biological robustness have been discussed from
+various perspectives: Kitano (2004), Stelling et al. (2004) and Streif et al. (2016) high-
+light the importance of redundancy, feedback control, decoupling and modularity of
+cellular networks so as to ensure their robust functioning; Lesne (2008) surveys possi-
+ble mechanisms that enable robust behaviours, focusing on the different meanings of
+robustness in the physical sciences and in the life sciences, and on the specificities of
+biological systems; Whitacre (2012) provides an overview of paradigms and system
+principles that enable biological robustness, pointing to their similarities across vari-
+ous levels and scales; Khammash (2016) adopts an engineering viewpoint to propose
+the notion of robustness as a unifying principle behind the complexity in both bio-
+logical and engineered systems, and emphasises the importance of perfect adaptation
+(Khammash 2021) to guarantee robustness.
+   A variety of quantitative and numeric approaches have been used to robustly assess
+various properties of interest for different types of biological models with uncertain
+parameters. A widely investigated property is stability: Chesi (2011) has proposed
+methods based on optimisation and linear matrix inequalities to assess the robust sta-
+bility of genetic regulatory networks including mRNAs and proteins; Waldherr and
+Allgöwer (2011) have leveraged polynomial programming to robustly assess stability
+and instability of biochemical networks; Hara et al. (2019) have applied transfer-
+function methods for the robust stability analysis of linear systems with generalised
+
+123
+Vertex results for the robust analysis…                                   Page 3 of 43   35
+
+
+frequency variables to the case of cyclic gene regulatory networks. The property of
+concentration robustness in chemical reaction networks has been assessed by pro-
+viding network-imposed sensitivity bounds to evaluate the robustness of equilibrium
+species concentrations against fluctuations in reactant supply (Shinar et al. 2009) and
+by identifying topological principles that help robustly keep the concentration of active
+signalling compounds within tightly defined bounds in spite of perturbations (Steuer
+et al. 2011), while Shinar et al. (2007) have identified a network mechanism that guar-
+antees robust input-output relation regardless of changes in the concentration of the
+system components. Kim et al. (2006) and Ma and Iglesias (2002) have integrated
+bifurcation analysis, structural-singular-value μ-analysis and hybrid optimisation to
+assess the robust stability of limit cycles in a model of the molecular network under-
+lying cAMP oscillations in fields of chemotactic Dictyostelium discoideum cells. All
+these works very efficiently solve specific problems with dedicated tools.
+   This paper is different in spirit. Motivated by a significant class of biochemical
+systems and several relevant problems, we propose a framework for the robustness
+analysis of dynamical systems with a special uncertainty structure: multiaffine, i.e.,
+affine in each uncertain parameter, while the other parameters are kept constant. Our
+methodologies build upon a consolidated approach to parametric robustness intro-
+duced by Barmish (1994): the main aim of the paper is to build a bridge between a
+class of relevant problems in mathematical biology and a class of powerful vertex
+results for robustness analysis developed within the realm of control theory, which
+offer valuable tools to assess the robustness of biological systems.
+   In particular, we deal with a vast class of uncertain nonlinear dynamical systems,
+including the interesting case of generic biochemical reaction networks, for which the
+uncertain parameters are assumed to take values in a hyper-rectangle and the system
+Jacobian is a totally multiaffine matrix with respect to the uncertain parameters, i.e.,
+each minor of the Jacobian is a multiaffine function of the uncertain parameters.
+   Systems with totally multiaffine uncertainties include, as a special case, B DC-
+decomposable systems (Blanchini and Giordano 2014, 2017, 2019; Giordano et al.
+2016), whose Jacobian matrix can be written as a linear combination of the uncertain
+parameters,
+
+                                                    
+                                          J (δ) =       δk Jk ,
+                                                    k
+
+
+where Jk are rank-one matrices: then, the Jacobian matrix can be decomposed as
+J = B DC, where D is a diagonal matrix carrying the uncertain parameters δk on
+the diagonal, while B and C are constant matrices such that Jk = Bk Ck , where Bk
+denotes the kth column of B and Ck the kth row of C. This class of models embraces
+biochemical systems with generic monotonic reaction rates, as well as general flow
+systems in engineering. Not only B DC-decomposable systems represent a proper sub-
+set of systems with totally multiaffine uncertainties: here we show that also chemical
+reaction networks with mass-action kinetics have a totally multiaffine Jacobian.
+   As a first main contribution, we provide a characterisation of totally multiaffine
+matrices, which allows us to simply check whether a matrix is totally multiaffine just
+
+                                                                              123
+35   Page 4 of 43                                                           F. Blanchini et al.
+
+
+by inspecting its entries and the matrix derivatives with respect to each of the uncertain
+parameters.
+   We then consider the steady-state sensitivity analysis for systems with totally
+multiaffine uncertainties. As is known, this type of analysis can be approached by
+considering the linearised system and computing the input-output steady-state char-
+acteristic. For systems with parametric uncertainties, the problem can be faced via
+robustness analysis (Barmish 1994) and solved through the solution of nonlinear sys-
+tems with parametric rank-one uncertainties (Mohsenizadeh et al. 2014; Polyak and
+Nazin 2004). These approaches have been recently exploited to deal with the struc-
+tural steady-state sensitivity analysis of B DC-decomposable systems affected by a
+persistent input perturbation, providing vertex results to assess the structural sign of
+steady-state influences (Blanchini and Giordano 2019; Giordano et al. 2016).
+   A vertex property is a property that holds for all parameter choices in the hyper-
+rectangle if and only if it holds for all parameter choices at the vertices of the hyper-
+rectangle. Vertex properties are therefore extremely convenient from a computational
+standpoint, since they can be checked for a whole continuum space (all possible
+realisations of the uncertain system) just by checking them at a finite set of points (the
+realisations associated with the vertices of the parameter space).
+   Here, we consider the broader class of systems with totally multiaffine uncertainties
+and we provide vertex results to perform their sensitivity analysis when the parameters
+are bounded in a hyper-rectangle.
+   In particular, given the totally multiaffine Jacobian J (δ), where δ is the vector
+stacking the uncertain parameters, each bounded in a given interval, as well as the
+input matrix E and the output matrix H , we present the following main results.
+
+
+ – Important classes of systems, including not only B DC-decomposable systems but
+   also chemical reaction networks with mass-action kinetics, have a totally multi-
+   affine uncertainty structure.
+ – Robust non-singularity of J (δ) can be checked by assessing its determinant at the
+   vertices of the parameter space.
+ – When the system is affected by a constant perturbation, robust lower and upper
+   bounds for the input-output sensitivity Σ(δ) = −H J (δ)−1 E (where H is the
+   output matrix and E is the input matrix) can be computed just by assessing Σ(δ)
+   at the vertices of the parameter space; the obtained bounds are tight.
+ – Robust stability can be assessed resorting to the Zero Exclusion Theorem by
+   Barmish (1994), once stability has been shown to hold for a nominal value of
+   the parameters. To assess the stability of the nominal system, a vertex type of test
+   (well known for systems with affine uncertainties: see the work by Garofalo et al.
+   (1993)) can be adopted to check whether a given positive definite function, either
+   smooth or convex, is a Lyapunov function.
+ – When the system is affected by a periodic perturbation, robust lower and upper
+   bounds for the magnitude and the phase of the system transfer function W (s, δ) =
+   H (s I − J (δ))−1 E can be computed, by leveraging vertex results.
+ – Potential oscillatory frequencies for the uncertain system can be robustly deter-
+   mined through a vertex result, which holds also in the presence of explicit delays.
+
+123
+Vertex results for the robust analysis…                                             Page 5 of 43   35
+
+
+ – Vertex results can be obtained also to robustly assess adaptation for uncertain sys-
+   tems, as preliminarily reported in the conference work by Blanchini et al. (2020).
+   When a positive persistent perturbation is applied, the output is adaptive if it ini-
+   tially increases and then, after a transient, it decreases so as to asymptotically
+   recover a value that is closer to its pre-perturbation steady state. We provide a
+   formal definition and we show that the property can be checked robustly through
+   vertex tests.
+
+   Finally, we illustrate the proposed methodologies by applying them to chemical
+reaction networks, as well as biological systems taken from the literature.
+
+
+2 Systems with totally multiaﬃne uncertainties
+
+Consider the generic nonlinear continuous-time system
+                                          
+                                              ẋ(t) = f (x(t), u(t)),
+                                              y(t) = h(x(t)),
+
+where f : Rn × R → Rn and h : Rn → R are continuously differentiable functions,
+the system state is x(t) ∈ Rn , u(t) ∈ R is a scalar, which can be either an external
+input signal or a system parameter, and y(t) ∈ R is a scalar output. Assume that, given
+a constant input ū, the system reaches the asymptotically stable steady-state x̄ such
+that f (x̄, ū) = 0, which corresponds to the output steady-state value ȳ = h(x̄), where
+x̄ = x̄(ū).
+   We wish to assess how the steady-state output ȳ = h(x̄) changes due to variations
+in the constant input ū. More precisely, let v be the perturbation affecting the input,
+or parameter, and denote by w the corresponding perturbation affecting the output.
+We aim to infer (or provide bounds on) the output value ȳ + w corresponding to the
+perturbed input (or parameter) ū + v.
+   We consider input perturbations that are small enough to ensure that the stability
+of the steady state x̄(u) is preserved (recall that the eigenvalues of the Jacobian matrix
+are continuous functions of its entries, which are in turn continuous functions of u).
+Then, we consider the linearisation of   the system at the stable equilibrium     x̄. Upon
+                                                                            
+defining the column vector E = ∂∂uf           and the row vector H = ∂∂hx x̄ , as well as
+                                                    (x̄,ū)
+the shifted state z = x − x̄, input v = u − ū and output w = y − ȳ, this boils down
+to considering the linearised system
+                                      
+                                          ż(t) = J (δ)z(t) + Ev(t),
+                                                                                                   (1)
+                                          w(t) = H z(t),
+
+                    
+                    
+where J (δ) = ∂∂ xf              is the Jacobian evaluated at the equilibrium (x̄, ū) and depends
+                        (x̄,ū)
+on the vector of uncertain parameters δ = (δ1 , . . . , δm ). The input-output sensitivity
+
+                                                                                        123
+35   Page 6 of 43                                                             F. Blanchini et al.
+
+
+(Giordano et al. 2016) is then defined as:
+
+                                       ∂w
+                               Σ=         = −H J (δ)−1 E.                                   (2)
+                                       ∂v
+   Although here we neglect the possible dependency of E and H on δ, uncertain
+input and output matrices E = E(δ) and H = H (δ) can be considered under suitable
+assumptions; see Remark 6 in the following.
+   Henceforth, we consider totally multiaffine uncertainties: we steadily assume that
+the system Jacobian matrix J (δ) is totally multiaffine, a special structure that encom-
+passes a large class of biological models.
+   We recall that a polynomial is multiaffine if it is affine in each variable (while
+the other variables are kept constant). For instance, the polynomial p1 (δ1 , δ2 , δ3 ) =
+2δ1 δ2 + 3δ2 δ3 − δ3 + 4δ2 + 2 is multiaffine, while p2 (δ1 , δ2 ) = δ12 + δ2 + 3 is not
+multiaffine.
+   We assume that the Jacobian J (δ) is a polynomial matrix in δ = (δ1 , . . . , δm ) with
+all entries Ji j (δ) being multiaffine functions of δ = (δ1 , . . . , δm ). Then, we say that
+system (1) has totally multiaffine uncertainties if J (δ) is a totally multiaffine matrix,
+as now defined.
+
+Definition 1 (Totally multiaffine matrix.) Matrix J (δ) is totally multiaffine if any minor
+(i.e., the determinant of any square submatrix of J (δ)) is a multiaffine function of
+δ = (δ1 , . . . , δm ).                                                                   
+
+2.1 Motivation for totally multiaffine uncertainties: BDC-decomposable systems
+
+A vast class of systems endowed with the property that the Jacobian matrix is totally
+multiaffine is represented by generic flow systems of the form
+                              
+                                  ẋ(t) = Sg(x(t)) + Eu(t),
+                                                                                            (3)
+                                  y(t) = H x(t),
+
+where S captures the topology of the flow network and the vector function g stacks
+components that are monotonic in each argument and represent flow rates. The class
+of systems in (3) is general enough to embrace (bio)chemical reaction networks, gene
+networks and metabolic networks, ecological networks and food webs, as well as
+compartmental systems and flow systems in engineering. In the case of a chemical
+reaction network (CRN), S is the stoichiometric matrix representing the structure of
+the interactions among chemical species, while the components of the vector function
+g represent reaction rates. For all systems within this class, the Jacobian matrix admits
+the B DC-decomposition introduced by Blanchini and Giordano (2014) and Giordano
+et al. (2016), namely it can be written as
+
+                                     J (x) = B D(x)C,
+
+where matrices B ∈ Rn×m , D(x) ∈ Rm×m and C ∈ Rm×n are constructed as follows:
+
+123
+ Vertex results for the robust analysis…                                            Page 7 of 43   35
+
+
+  i) D(x) is a diagonal matrix whose m diagonal entries are the absolute values of all
+     the (nonzero) partial derivatives ordered as δk = |∂ gi /∂ x j |, k = 1, . . . , m;
+ ii) the kth column of B, Bk , is the ith column of S;
+iii) the kth row of C, Ck , has sign(∂ gi /∂ x j ) in the jth position and zero elsewhere,
+     namely, it is either the jth row vector of the canonical basis or its opposite, ±ej .
+ Equivalently, J (x) can be written as the positive linear combination of rank-one matri-
+ ces Bk Ck , i.e.,
+                                         m
+                                J (x) =       Bk Ck δk (x).                         (4)
+                                                   k=1
+ In general, the components of the vector function g can be considered as unknown
+ monotonic functions, hence the diagonal entries δk of matrix D are uncertain param-
+ eters and we can see the Jacobian matrix computed at the equilibrium, J (δ), as a
+ function of δ = (δ1 , . . . , δm ). Then, the input-output sensitivity Σ is the ratio of two
+ multivariate polynomials that are both multiaffine in δ = (δ1 , . . . , δm ) (Blanchini and
+ Giordano 2019).
+ Remark 1 For a B DC-decomposable system, all the entries of the Jacobian matrix
+ J (x) = B D(x)C are linear functions of the diagonal elements δ1 , . . . , δm of D(x),
+ and hence B DC-decomposable systems have a totally multiaffine Jacobian in view of
+ the rank-one property, as we will see from Proposition 2. The implication is one-sided,
+ since there exist totally multiaffine matrices that are not B DC-decomposable.       
+    As we will see, the multiaffinity property is key to enable the efficient compu-
+ tation of the sensitivity Σ; this motivates us to consider a more general class of
+ parameter-dependent matrices, totally multiaffine matrices, of which the class of
+ B DC-decomposable matrices represents a proper subset.
+ Example 1 As an example of BDC-decomposable system, consider the chemical reac-
+ tion network
+           g1              g2                        g12                  g13          g3
+          X 1, ∅ −
+        ∅−         X 2,                   X 1 + X 2 − X 3 ,   X 1 + X 3 − ∅,         ∅,
+                                                                                    X3 −
+
+ corresponding to the system of ordinary differential equations
+                           ⎧
+                           ⎪
+                           ⎨ẋ1 = g1 − g12 (x1 , x2 ) − g13 (x1 , x3 )
+                             ẋ2 = g2 − g12 (x1 , x2 )
+                           ⎪
+                           ⎩
+                             ẋ3 = g12 (x1 , x2 ) − g13 (x1 , x3 ) − g3 (x3 )
+
+ Its Jacobian matrix can be decomposed as
+                                                        ⎡            ⎤⎡        ⎤
+         ⎡                                   ⎤   ⎡    ⎤ δ1 0 0 0 0       1 0 0
+         −(δ1 + δ3 ) −δ2   −δ4                          ⎢            ⎥ ⎢
+                                         −1 −1 −1 −1 0 ⎢ 0 δ2 0 0 0 ⎥ ⎢0 1 0 ⎥ ⎥
+    J = ⎣ −δ1        −δ2    0       ⎦ = ⎣−1 −1 0 0 0 ⎦ ⎢ 0 0 δ3 0 0 ⎥ ⎢1 0 0 ⎥,
+                                                        ⎢            ⎥⎢        ⎥
+          δ1 − δ3    δ2 −(δ4 + δ5 )       1 1 −1 −1 −1  ⎣ 0 0 0 δ4 0 ⎦ ⎣ 0 0 1⎦
+                                                      0 0 0 0 δ       0 0 1
+                                               =B                  5
+                                                                         
+                                                                            =D(x)           =C
+
+
+                                                                                        123
+35   Page 8 of 43                                                                      F. Blanchini et al.
+
+
+where
+
+                    ∂ g12         ∂ g12         ∂ g13         ∂ g13         ∂ g3
+         δ1 :=            , δ2 :=       , δ3 :=       , δ4 :=       , δ5 :=      ,
+                    ∂ x1          ∂ x2          ∂ x1          ∂ x3          ∂ x3
+
+and is totally multiaffine in δ1 , δ2 , δ3 , δ4 , δ5 .                                                 
+
+2.2 Motivation for totally multiaffine uncertainties: mass-action-kinetics systems
+
+Another important class of systems that have a totally multiaffine Jacobian is
+represented by chemical reaction networks (CRNs) with mass-action kinetics. A mass-
+action CRN involving n s species and nr reactions is described by a system of the form
+                                     r           s     ν
+                              ẋ(t) = nj=1 S j κ j nh=1 x h j h + Eu(t),
+                                                                                                     (5)
+                              y(t) = H x(t),
+
+where S j is the jth column of the stoichiometric matrix, κ j ≥ 0 is the rate of the jth
+reaction, and ν j h ∈ Z is the stoichiometric coefficient of the hth species in the jth
+reaction. Let us define the reaction rates as
+
+                                            
+                                            ns
+                                                    ν
+                               φj = κj            xh j h ,     j = 1, . . . , nr
+                                            h=1
+
+and the reciprocal variables, defined for x h = 0, as
+
+                                            1
+                                     ξh =      ,         h = 1, . . . , n s .
+                                            xh
+
+We can prove that a mass-action CRN has a totally multiaffine Jacobian in the reaction
+rates and the reciprocal variables.
+Proposition 1 (Total multiaffinity of mass-action CRNs.) The Jacobian matrix of a
+mass-action CRN of the form (5) is totally multiaffine in the reaction rates and the
+reciprocal variables.                                                             
+
+Proof For simplicity, let us consider exclusively reactions with two reagents; the gen-
+eralisation to the case of an arbitrary number of reagents is straightforward. Consider
+                                    p q
+                               κ j xi x
+a reaction p X i + q X −−−− X r , and let S j be the column of S associated with this
+                                p q
+reaction. Denote as φ j = κ j xi x the reaction rate associated with the jth reaction.
+If, for the moment being, we do not consider the other reactions of the network, the
+only non-zero columns of the Jacobian J are the ith and th ones, i.e.,
+                                                                                            
+         J = 0n s ×(i−1) pS j κ j xip−1 x q 0n s ×( −i−1) q S j κ j xip x q−1 0n s ×(n s − )
+                                                                        
+                              φ                       φ
+           = 0n s ×(i−1) pS j x j 0n s ×( −i−1) q S j x j 0n s ×(n s − )
+                                i
+
+
+123
+Vertex results for the robust analysis…                                                 Page 9 of 43   35
+
+                                                                                
+              = 0n s ×(i−1) pS j φ j ξi 0n s ×( −i−1) q S j φ j ξ 0n s ×(n s − )
+                                                                       
+              = φ j 0n s ×(i−1) pS j 0n s ×( −i−1) q S j 0n s ×(n s − ) diag(ξ1 , . . . , ξn s )
+              .
+              = φjSjΞ
+
+where Ξ = diag(ξ1 , . . . , ξn s ) is the diagonal matrix whose diagonal entries are the
+reciprocal variables, and S j is a matrix computed from the stoichiometric matrix S and
+the stoichiometric coefficients p, q. Notice that multiplication by Ξ is effective only
+on the ith and th columns of S j , since all other columns of S j are null. Repeating the
+argument for all reactions in the network, the Jacobian can be written as
+                                                    ⎛        ⎞
+                                     
+                                     nr              nr
+                               J=           φjSjΞ = ⎝    φjSj⎠ Ξ.
+                                      j=1                 j=1
+
+
+We first show that the determinant of J is a multiaffine function of φ1 , . . . , φnr , ξ1 , . . . ,
+ξn s . For every j = 1, . . . , nr , matrix S j has rank equal to 1, because all of its columns
+are proportional to the column vector S j , i.e., S j = S j sj , for some row vector sj .
+Then, we can resort to the matrix determinant lemma: given a square matrix A, column
+vectors b and c, and a scalar α, det(A+αbc ) = det(A)+αc adj(A)b, where adj(A)
+    transpose of the cofactor matrix of A. Exploiting the lemma, the determinant
+is the
+         nr
+of       j=1 φ j S j can be computed as
+
+                           ⎛                ⎞       ⎛         ⎞             ⎛         ⎞
+     ⎛             ⎞
+      n r
+                           ⎜        
+                                    n r
+                                            ⎟       ⎜n r
+                                                              ⎟             ⎜n r
+                                                                                      ⎟
+ det ⎝     φ j S j ⎠ = det ⎜
+                           ⎝φk Sk +     φjSj⎟       ⎜
+                                            ⎠ = det ⎝     φjSj⎟            ⎜
+                                                              ⎠ + φk sk adj ⎝     φjSj⎟
+                                                                                      ⎠ Sk
+        j=1                               j=1                   j=1                      j=1
+                                          j=k                  j=k                     j=k
+
+
+and hence it is multiaffine in φ1 , . . . , φnr . The determinant of J is then given by
+                            ⎛            ⎞               ⎛        ⎞
+                             nr                          nr       
+                                                                    ns
+              det(J ) = det ⎝    φ j S j ⎠ det(Ξ ) = det ⎝    φjSj⎠    ξh ,
+                                  j=1                                  j=1        h=1
+
+
+which is multiaffine in ξ1 , . . . , ξn s too. Finally, to show that J is totally multiaffine,
+just note that any of its square submatrices has the form
+                                               ⎛             ⎞
+                                                nr
+                                          Jˆ = ⎝    φ j Ŝ j ⎠ Ξ̂
+                                                  j=1
+
+
+where Ξ̂ is a diagonal matrix of appropriate size and Ŝ j is a submatrix of S j hav-
+ing appropriate size, and hence its determinant is multiaffine in reaction rates and
+reciprocal variables.
+
+
+                                                                                                123
+35    Page 10 of 43                                                                               F. Blanchini et al.
+
+
+Example 2 Consider again the CRN in Example 1, where now the reaction rate func-
+tions are assumed to follow mass-action kinetics. Define the flow variables
+
+     φ1 := g12 (x1 , x2 ) = k12 x1 x2 ,      φ2 := g13 (x1 , x3 ) = k13 x1 x3 ,      φ3 := g3 (x3 ) = k3 x3 ,
+
+and the reciprocal variables
+
+                                          1                1                  1
+                              ξ1 :=          ,    ξ2 :=       ,       ξ3 :=      .
+                                          x1               x2                 x3
+
+Then, the Jacobian matrix
+                                 ⎡                               ⎤
+                               −(φ1 + φ2 )ξ1 −φ1 ξ2   −φ2 ξ3
+                          J = ⎣ −φ1 ξ1       −φ1 ξ2     0        ⎦
+                                (φ1 − φ2 )ξ1 φ1 ξ2 −(φ2 + φ3 )ξ3
+
+is totally multiaffine in φ1 , φ2 , φ3 , ξ1 , ξ2 , ξ3 .                                                           
+
+Remark 2 Assuming uncertainty bounds on the elements of the Jacobian, rather than
+on the original reaction rate parameters and species concentrations, may introduce
+some conservatism. Consider for instance a reaction rate described by the law of
+mass-action as κab, with bounds κ − ≤ κ ≤ κ + on the reaction rate constant, and
+bounds a − ≤ a ≤ a + and b− ≤ b ≤ b+ on the species concentrations. The partial
+derivatives, i.e. the entries of the Jacobian, are bounded within the set
+            "                                                                                  #
+       B : = (κa, κb) : κ − a − ≤ κa ≤ κ + a +                    and      κ − b− ≤ κb ≤ κ + b+ ,
+
+and all the values in this hyper-rectangle are possible. However, since the Jacobian is
+evaluated at an equilibrium point, the parameters and the species concentrations are
+subject to the equilibrium conditions. This means that, in general, the actual set of
+values that the parameters and the species concentrations can take is a subset of B.
+This is a well-known issue in parametric robustness analysis.
+Conversely, no conservatism is introduced when taking the reciprocal concentrations,
+namely 1/a instead of a, since the former is confined exactly in 1/a + < 1/a < 1/a − .
+Also, no conservatism is introduced when considering generic monotonic reaction
+rate functions, as in Example 1. Indeed, if we only know that g(a, b) is an increasing
+function of both its arguments, and we assume that, in a suitable domain, the partial
+derivatives are bounded as δa− ≤ ∂ g/∂a ≤ δa+ and δb− ≤ ∂ g/∂b ≤ δb+ , then the
+equilibrium condition g(ā, b̄) = r̄ does not introduce any restriction: any value of the
+derivatives within the given intervals is still possible. Even if r̄ is subject to constraints,
+the Jacobian is not affected.
+
+2.3 Total multiaffinity: a general characterisation
+
+We can provide the following characterisation of totally multiaffine matrices.
+
+123
+Vertex results for the robust analysis…                                                     Page 11 of 43   35
+
+
+Proposition 2 (Characterisation of totally multiaffine matrices.) Matrix J (δ) is totally
+multiaffine in δ = (δ1 , . . . , δm ) if and only if each entry Ji j (δ) is multiaffine in δ and
+                                   $            %
+                                  ∂ J (δ)
+                             rank                   = 1, ∀ k = 1, . . . , m.
+                                   ∂δk
+
+                                                                                                            
+
+Proof Sufficiency. Let M(δ) be any square submatrix of J (δ). If all the entries of J (δ)
+are multiaffine in δ, then for each δk , k = 1, . . . , m, matrix M(δ) can be written as
+
+                                                    ∂ M(δ)
+                                       M(δ) =              δk + M̃k ,                                       (6)
+                                                      ∂δk
+
+where neither ∂ M(δ)/∂δk nor M̃k depend on δk . Since ∂ M(δ)/∂δk has rank at most
+1 by assumption, column vectors m, n exist such that ∂ M(δ)/∂δk = mn . Then, by
+applying the matrix determinant lemma, the determinant of M(δ) can be computed as
+
+                               det(M(δ)) = det( M̃k ) + δk n adj( M̃k )m
+
+and hence it is affine in δk . Repeating the argument for all k = 1, . . . , m shows that
+det(M(δ)) is multiaffine in δ.
+   Necessity. Clearly, a necessary condition for J (δ) being multiaffine in δ is mul-
+tiaffinity of all its entries Ji j (δ). Assume by contradiction that ∂ J (δ)/∂δk has rank
+greater than 1 for some k. This implies that there exists a minor M(δ) of size k̄ > 1
+for which ∂ M(δ)/∂δk is invertible (and hence has non-zero determinant). Then, con-
+sidering again (6), we have
+                      $           %         &          $            %−1         '       $          %
+                ∂ M(δ)                                     ∂ M(δ)                         ∂ M(δ)
+det(M(δ)) = det                        det δk Ik̄ +                       M̃k       = det              p(δk ),
+                  ∂δk                                        ∂δk                            ∂δk
+
+where p(δk ) = det[δk Ik̄ + (∂ M(δ)/∂δk )−1 M̃k ] is the characteristic polynomial, eval-
+uated at s = δk , of matrix − (∂ M(δ)/∂δk )−1 M̃k , which has dimension greater than
+1. Hence, p(δk ) cannot be affine in δk .
+
+   Proposition 2 allows us to test very simply whether a given matrix is multiaffine
+or not. Consider for instance the Jacobian of Example 2, whose entries are clearly
+multiaffine in the parameters, and compute its component-wise derivative with respect
+to φ1 :
+                                                ⎡           ⎤
+                                                  −ξ1 −ξ2 0
+                                          ∂J
+                                              = ⎣−ξ1 −ξ2 0⎦ .
+                                          ∂φ1      ξ   ξ 0
+                                                       1     2
+
+                               ∂J
+It is immediate to verify that ∂φ1
+                                   has rank 1.
+
+                                                                                                 123
+35   Page 12 of 43                                                           F. Blanchini et al.
+
+
+3 Sensitivity analysis for totally multiaﬃne uncertain systems
+
+In the following, we assume that each of the uncertain parameters δk , k = 1, . . . , m,
+is lower and upper bounded by δk− and δk+ respectively, i.e., δk− ≤ δk ≤ δk+ . Then, the
+uncertain parameter vector δ = (δ1 , . . . , δm ) belongs to the hyper-rectangle D, which
+we define as:           "                                           #
+                   D = δ ∈ Rm : δk ∈ [δk− , δk+ ], k = 1, . . . , m .                 (7)
+
+We denote by D̂ the set of vertices of the hyper-rectangle D:
+                         (               "         #                  )
+                     D̂ = δ̂ ∈ Rm : δ̂k ∈ δk− , δk+ , k = 1, . . . , m .                   (8)
+
+The number of vertices of D, i.e., cardinality of the set D̂, is 2m : |D̂| = 2m .
+   Is it possible to check whether a property holds for all possible parameters in D,
+just by checking whether the property holds for all choices of the parameters in D̂? We
+denote as vertex property a property that is satisfied for all parameter choices in the
+hyper-rectangle if, and only if, it is satisfied for all parameter choices at the vertices
+of the hyper-rectangle: from a computational standpoint, checking a vertex property
+requires looking just at a finite set of parameter choices among all possible (infinite)
+choices.
+   Our first result concerns the robust non-singularity of multiaffine systems.
+Theorem 1 (Robust non-singularity.) Assume that J (δ) is totally multiaffine in δ. Then,
+J (δ) is non-singular for all δ ∈ D if and only if det (−J (δ)) has the same sign (either
+positive or negative) for all δ̂ ∈ D̂, namely on all the vertices of D.                
+
+Proof Sufficiency. Since J (δ) is totally multiaffine, det(−J (δ)) is a multiaffine func-
+tion of δ as well. Sufficiency follows from the fact that a multiaffine function defined on
+a hyper-rectangle takes its maximum and minimum values at the vertices of the hyper-
+rectangle (see, e.g., Lemma 14.5.5 by Barmish (1994)): if the function det(−J (δ)) is
+positive (or negative) at all the vertices in D̂, then it must be non-zero inside the whole
+hyper-rectangle D.
+   Necessity. By contradiction, assume that the function det(−J (δ)) takes values of
+opposite sign on two different vertices: det(−J (δ̂ (1) )) > 0 and det(−J (δ̂ (2) )) < 0,
+with δ̂ (1) , δ̂ (2) ∈ D̂. Then, being the determinant a continuous function of the matrix
+entries, there must exist some δ (3) ∈ D such that det(−J (δ (3) )) = 0.
+
+   Theorem 1 provides a vertex result that allows to easily check whether a system
+with totally multiaffine uncertainties is robustly non-singular. When this is the case,
+tight bounds on the input-output sensitivity of the system can be derived, again just
+by looking at the vertices of the parameter hyper-rectangle.
+
+Theorem 2 (Robust sensitivity bounds.) Given the linearised system (1), assume that
+J (δ) is totally multiaffine in δ and robustly non-singular for all δ ∈ D. Then, the
+input-output sensitivity Σ(δ) = −H J (δ)−1 E is lower and upper bounded as
+
+                            Σ − ≤ Σ(δ) ≤ Σ + ,       ∀ δ ∈ D,
+
+123
+Vertex results for the robust analysis…                                   Page 13 of 43   35
+
+
+where
+
+                          Σ − = min Σ(δ) and Σ + = max Σ(δ),
+                                    δ∈D̂               δ∈D̂
+
+
+and the bounds are tight (i.e., they are the actual minimum and maximum of Σ(δ)). 
+
+Proof In view of the robust non-singularity assumption, we can write the input-output
+sensitivity Σ(δ) as
+                                                *           +
+                                                 −J (δ) −E
+                                             det
+                                                    H     0     q(δ)
+                     Σ(δ) = −H J (δ)−1 E =                    =
+                                               det (−J (δ))     p(δ)
+
+and notice that, since J (δ) is totally multiaffine in δ, both the numerator q(δ) and the
+denominator p(δ) are multiaffine polynomials of the parameters δ1 , . . . , δm . We prove
+the result for the lower bound Σ − ; the proof for the upper bound Σ + follows the same
+steps.
+    Assume without restriction that p(δ) > 0 for all δ (if this is not the case, we can
+change sign to both q and p). Define the function ρ(δ) = q(δ) − kp(δ), where k ∈ R
+is fixed. Then, q(δ)/ p(δ) ≥ k for all δ ∈ D if and only if ρ(δ) ≥ 0 for all δ ∈ D. In
+view of the multiaffinity of q(δ) and p(δ), the function ρ(δ) is multiaffine in δ, too.
+Therefore, ρ(δ) ≥ 0 for all δ ∈ D if and only if ρ(δ) ≥ 0 for all δ ∈ D̂, which is in
+turn equivalent to the vertex condition q(δ)/ p(δ) ≥ k for all δ ∈ D̂. Moreover, the
+condition holds when k equals the smallest value that the function q(δ)/ p(δ) takes at
+the vertices δ ∈ D̂, i.e., k = Σ − , and hence the bound is tight.
+
+Remark 3 Assuming robust non-singularity of the system Jacobian matrix is not
+restrictive. In fact, since the equilibrium around which we assess the sensitivity needs
+to be asymptotically stable, det[−J (δ)] > 0 must hold for all δ, which implies robust
+non-singularity. Also, robust non-singularity of J (δ) is necessary for the sensitivity
+to be well-defined and for the result in Theorem 2 to hold: for instance, in the scalar
+case with J (δ) = δ1 − δ2 , E = H = 1 and bounds 0.1 ≤ δ1 , δ2 ≤ 1, the resulting
+sensitivity Σ(δ) = (δ2 − δ1 )−1 is unbounded and not even defined for δ1 = δ2 . Actu-
+ally, the stability requirement could be relaxed to just requiring the non-singularity
+of the Jacobian at the equilibrium. Provided that the Jacobian is non-singular, we can
+well estimate the magnitude of the equilibrium shift under constant perturbations (by
+defining a steady-state map and computing its derivative) and thus perform sensitivity
+analysis even in the case of a possibly unstable equilibrium.                          
+
+3.1 Some remarks about stability analysis
+
+Our sensitivity analysis relies on the assumption that the steady state is stable. Vertex-
+type approaches are available to robustly check whether such an assumption is actually
+satisfied.
+
+                                                                               123
+35    Page 14 of 43                                                             F. Blanchini et al.
+
+
+     In fact, for systems of the form (1), we can write the characteristic polynomial as
+
+                                p(s, δ) = det[s I − J (δ)]
+
+and check the stability of the system, for a given value δ ∗ , by ensuring that all the roots
+of p(s, δ ∗ ) have negative real part. Then, the Zero Exclusion Theorem by Barmish
+(1994) (Sect. 7.3) ensures that robust stability holds if and only if the set
+
+                            V(iω) = {s = p(iω, δ), δ ∈ D}
+
+does not include the origin, for all frequencies ω ≥ 0.
+   Drawing this set in the complex plane is hard. However, the Mapping Theorem
+by Barmish (1994) (Sect. 14.6) ensures that V(iω) is in the convex hull of the vertex
+points p(iω, δ̂), namely,
+                                    (                    )
+                        V(iω) ⊂ conv s = p(iω, δ), δ ∈ D̂ .                                   (9)
+
+  This provides a sufficient criterion for robust stability, which can therefore be
+checked via the following procedure:
+1. check stability for an arbitrary value δ ∗ ∈ D     (                    )
+2. check the exclusion for the convex hull: 0 ∈ / conv s = p(iω, δ), δ ∈ D̂ .
+  The stability analysis at step 1 can be based, for instance, on Lyapunov functions:
+we have the following vertex result.
+Theorem 3 (Lyapunov-based stability analysis.) Let V (z) be a positive definite radi-
+ally unbounded function, which is either smooth or convex. Denote by D + V (z) the
+generalised Dini derivative of V (z). Then, V (z) is a Lyapunov function for system (1),
+in the sense that
+
+                        D + V (z, δ) ≤ −βV (z), for all δ ∈ D,
+
+if and only if
+
+                        D + V (z, δ) ≤ −βV (z), for all δ ∈ D̂.
+
+Proof Necessity follows from the fact that D̂ is a subset of D. We now prove sufficiency.
+If V (z) is smooth, the proof is simple, because for any z
+
+                                 ψ(z, δ) := ∇V (z)J (δ)z
+
+is a multilinear function of δ1 , . . . , δq , hence it takes its maximum value at the vertices
+of D̂. Therefore, denoting by ψ + (z) = maxδ∈D̂ ψ(z, δ), we have that, if D + V (z, δ) ≤
+−βV (z) for all δ ∈ D̂, then
+
+               D + V (z, δ) = ∇V (z)J (δ)z + ∇V (z)Ev
+
+123
+Vertex results for the robust analysis…                                      Page 15 of 43     35
+
+
+                              ≤ ψ + (z) + ∇V (z)Ev ≤ −βV (z) for all δ ∈ D.
+
+For quadratic functions the result was shown by Garofalo et al. (1993). For non-
+smooth but convex functions, including polyhedral Lyapunov functions (Blanchini
+and Giordano 2014, 2017) and piecewise-linear in rates Lyapunov functions (Al-
+Radawi and Angeli 1999), the proof can be carried out along the same lines, but it is
+more involved because one must resort to the subgradient.
+
+
+4 Complex sensitivity and frequency response for totally multiaﬃne
+  uncertain systems
+
+In this section, we consider the case when the perturbation acting on the input ū is
+a periodic signal of the form v(t) = μ cos(ωt). Standard notions from dynamical
+systems theory tell us that, under robust stability assumptions (i.e., stability for all
+δ ∈ D), the steady-state output is
+
+                                    y(t) = Aω μ cos(ωt + φω ),
+
+where the magnitude amplification factor Aω and the phase shift φω are the magnitude
+and phase, respectively, of the system transfer function evaluated at the perturbation
+frequency ω.
+   Denote by W (s, δ) the parameter-dependent transfer function of the system:
+
+                                                  H adj (s I − J (δ)) E    q(s, δ)
+           W (s, δ) = H (s I − J (δ))−1 E =                             :=         ,
+                                                    det (s I − J (δ))      p(s, δ)
+
+where q(s, δ) is the numerator polynomial and p(s, δ) is the denominator polyno-
+mial corresponding to the characteristic polynomial of the system. The magnitude
+amplification factor Aω = Aω (δ) and the phase shift φω = φω (δ) are then given by
+                                                            
+                                                            
+                               Aω (δ) = H (iωI − J (δ))−1 E  ,                             (10)
+                                                                
+                               φω (δ) = ∠ H (iωI − J (δ))−1 E .                              (11)
+
+Clearly, when the perturbation signal is constant (i.e., ω̃ = 0), the phase shift φω̃ (δ)
+is 0 for every δ ∈ D, and the amplification factor Aω̃ (δ) reduces to the input-output
+sensitivity (i.e., Aω̃ (δ) = Σ(δ)), for which tight bounds are provided in Theorem 2.
+   We now aim to generalise the analysis of Sect. 3 (which is focused on constant
+input perturbations) so as to investigate how periodic input perturbations affect the
+system output.
+   Given a complex number s ∈ C, we define Q(s) as the convex hull of the 2m
+(complex) vertex points q(s, δ), i.e.,
+                                             (               )
+                                  Q(s) = conv q(s, δ), δ ∈ D̂ .                              (12)
+
+                                                                                  123
+35   Page 16 of 43                                                         F. Blanchini et al.
+
+
+Similarly, for the 2m vertex points p(s, δ) we denote by P(s) their convex hull, i.e.,
+                                      (               )
+                           P(s) = conv p(s, δ), δ ∈ D̂ .                               (13)
+
+Definition 2 (Numerator/denominator critical values.) A complex number s ∈ C
+is numerator critical (resp. denominator critical) if the convex polygon Q(s) (resp.
+P(s)) includes the origin; otherwise it is numerator non-critical (resp. denominator
+non-critical).                                                                     
+
+Proposition 3 (Numerator/denominator non-critical values and total multiaffinity.)
+Assume that J (δ) is totally multiaffine in δ, and let s̄ ∈ C be a numerator (resp.
+denominator) non-critical value. Then, for any δ ∈ D, s̄ cannot be a root of q(s, δ)
+(resp. p(s, δ)).                                                                  
+
+Proof Since the convex polygon Q(s̄) does not include the origin, there is a vector
+    
+ α β , with α, β > 0, that defines on the complex plane C = {s : s = x + i y, x, y ∈
+R} a separation line αx + β y = γ > 0 such that
+
+                      αx + β y > γ ,      ∀ s = x + i y ∈ Q(s̄).
+
+Now let q(s̄, δ) = [q(s̄, δ)] + i[q(s̄, δ)], with δ ∈ D, where [·] denotes the real
+part and [·] denotes the imaginary part of a complex number. A key observation is
+that both [q(s̄, δ)] and [q(s̄, δ)] are multiaffine functions of δ. Then, consider the
+optimisation problem
+
+     min α[q(s̄, δ)] + β[q(s̄, δ)] = min α[q(s̄, δ)] + β[q(s̄, δ)] > γ ,           (14)
+     δ∈D                                 δ∈D̂
+
+where the equality holds because the objective function is multiaffine in δ, and hence
+takes its minimum in the vertex set D̂, while the inequality is due to the fact that all
+points q(s̄, δ) belong to Q(s̄). Since γ > 0, q(s̄, δ) = 0 for all δ ∈ D, namely q(s, δ)
+cannot have a root at s̄. The proof for p(s, δ) is identical.
+
+Remark 4 Proposition 3 restates well-known results about value-set analysis: the proof
+is reported for completeness, yet a different proof could be given in terms of the
+Mapping Theorem by Barmish (1994) (Section 14.6).                                    
+
+   We separately consider the numerator and denominator polynomials, q(s, δ) and
+p(s, δ), and provide bounds on their magnitude and phase by exploiting the fact that
+they are multiaffine functions of δ. Again, we can exploit vertex results.
+
+Theorem 4 (Magnitude and phase of numerator/denominator polynomials.) Assume
+that J (δ) is totally multiaffine in δ and let s̄ ∈ C be a numerator non-critical value.
+Then, for every δ ∈ D, the following inequalities hold:
+                                           .
+                           ∠q(s̄, δ) ≤ θq+ = max ∠q(s̄, δ),
+                                                δ∈D̂
+
+
+123
+Vertex results for the robust analysis…                                    Page 17 of 43   35
+
+Fig. 1 Example of a set
+{q(s̄, δ), δ ∈ D} (drawn with a
+thick black boundary and filled
+with diagonal lines) and its
+convex( hull Q(s̄) =                        )
+conv q(s, δ), δ ∈ D̂ = {δ1 , δ2 , δ3 , δ4 }
+(represented as a blue square),
+where δ1 , δ2 , δ3 ,δ4 are the
+vertices of the hyper-rectangle
+D. Note that the minimum
+modulus of q(s̄, δ) for δ ∈ D is
+smaller than the modulus at the
+vertices: this justifies the lower
+bound in Theorem 4, which is
+possibly conservative, as in this
+case. Indeed, minσ ∈Q(s̄) σ  ≤
+minδ∈D |q(s̄, δ)| ≤
+minδ∈D̂ |q(s̄, δ)| (color figure
+online)
+
+                                                   .
+                                   ∠q(s̄, δ) ≥ θq− = min ∠q(s̄, δ),
+                                                      δ∈D̂
+                                                    .
+                                   |q(s̄, δ)| ≤ μq+ = max |q(s̄, δ)|,
+                                                      δ∈D̂
+                                                    .
+                                   |q(s̄, δ)| ≥ μq− = min σ .
+                                                      σ ∈Q(s̄)
+
+
+The first three bounds are tight, while the last, computed as the minimum Euclidean
+norm of the points in Q(s̄), is conservative in general. If s̄ ∈ C is a denominator
+non-critical value, then analogous bounds hold for p(s, δ).                      
+
+Proof Recall that, since J (δ) is totally multiaffine in δ, the numerator q(s, δ) of the
+transfer function is multiaffine in δ too (and the same holds true for the denominator
+p(s, δ)). The thesis then follows as an application of the Mapping Theorem by Barmish
+(1994) (Section 14.6), which guarantees that the convex hull of the set of q(s̄, δ), δ ∈ D,
+is the convex hull of the vertex points q(s̄, δ), δ ∈ D̂, i.e.,
+                                              (                )
+                 conv {q(s̄, δ), δ ∈ D} = conv q(s̄, δ), δ ∈ D̂ = Q(s̄).
+
+In particular, the minimum and maximum values of the phase of q(s̄, δ), for δ ∈ D,
+are obtained at the vertices, for some δ ∈ D̂. The same holds true for the maximum
+value of the modulus of q(s̄, δ). The minimum value of the modulus of q(s̄, δ), for
+δ ∈ D, is lower bounded by the minimum value in the convex hull, minσ ∈Q(s̄) σ ,
+which is in general smaller or equal to minδ∈D̂ |q(s̄, δ)|; see, for instance, the example
+in Fig. 1. However, this fourth bound is not tight: as shown in the example in Fig. 1,
+the true minimum minδ∈D |q(s̄, δ)| is between these two values: minσ ∈Q(s̄) σ  ≤
+minδ∈D |q(s̄, δ)| ≤ minδ∈D̂ |q(s̄, δ)|.
+
+  We are now ready to evaluate magnitude and phase of the transfer function, as an
+immediate consequence of Theorem 4.
+
+                                                                                123
+35    Page 18 of 43                                                         F. Blanchini et al.
+
+
+Theorem 5 (Bounds on magnitude and phase of the transfer function.) Assume that
+J (δ) is totally multiaffine in δ and let iω be both numerator non-critical and denomi-
+nator non-critical. Then, for every δ ∈ D, the following inequalities hold:
+
+                                   μq−            μq+
+                                      ≤ A ω (δ) ≤     ,                                 (15)
+                                   μ+
+                                    p             μ−p
+                            θq− − θ p+ ≤ φω (δ) ≤ θq+ − θ p− .                          (16)
+
+                                                                                            
+
+Remark 5 Bounds (15)-(16) are in general conservative. The only tight bounds are
+those achieved on the phase shift φω (δ) when the numerator is a constant. We point
+out that these bounds are valid for small enough input signals: in this case, the lin-
+ear approximation is valid and our results transfer to the original nonlinear system.
+However, for large signals, the prediction capability could be lost. For instance, large
+signals could drive some system components into saturations and, in this case, the
+resulting amplitude and phase could be different from those estimated by our analysis.
+                                                                                       
+
+4.1 Bounds on magnitude and phase plots of the transfer function
+
+The tools developed in this section allow us to derive bounds on the Bode plot of the
+system transfer function, which represents the magnitude and the phase of the transfer
+function W (iω, δ) as a function of the frequency ω. More precisely, plotting the bounds
+(15) and (16) as a function of the perturbation frequency ω provides the admissible
+intervals for magnitude and phase plots, respectively. Since these bounds are not tight,
+we introduce the concept of inner and outer bounds to assess how conservative they
+are.
+
+Definition 3 (Outer bounds for magnitude and phase.) Functions A−             +
+                                                                 out (ω) and Aout (ω)
+are outer lower and upper bounds for the output magnitude amplification factor Aω (δ)
+if, for every ω ≥ 0, it holds
+
+                      A−                   +
+                       out (ω) ≤ Aω (δ) ≤ Aout (ω),           ∀ δ ∈ D.                  (17)
+              −            +
+Functions φout   (ω) and φout (ω) are outer lower and upper bounds for the output phase
+shift φω (δ) if, for every ω ≥ 0, it holds:
+                        −                   +
+                       φout (ω) ≤ φω (δ) ≤ φout (ω),          ∀ δ ∈ D.                  (18)
+
+                                                                                            
+
+     Clearly, the bounds in (15) and (16) intended as functions of the frequency ω, i.e.,
+
+                                   μq− (ω)                    μq+ (ω)
+                      A−
+                       out (ω) =             ,   A+
+                                                  out (ω) =
+                                   μ+
+                                    p (ω)                     μ−
+                                                               p (ω)
+
+
+123
+Vertex results for the robust analysis…                                        Page 19 of 43   35
+
+
+and
+                 −
+                φout (ω) = θq− (ω) − θ p+ (ω),       +
+                                                    φout (ω) = θq+ (ω) − θ p− (ω),
+
+are outer lower and upper bounds for the output magnitude amplification factor and
+the output phase shift, respectively. As already remarked, these intervals are in general
+conservative. To evaluate the degree of conservatism, we can introduce inner lower
+and upper bounds, so as to derive sub-intervals that are necessarily included in the
+outer intervals, as per the following vertex result.
+
+Proposition 4 (Inner bounds for magnitude and phase.) Assume that J (δ) is totally
+multiaffine in δ and introduce the following functions of the frequency ω ≥ 0:
+                       −                                    +
+                      Ain (ω) = min Aω (δ),                Ain (ω) = max Aω (δ),
+                                  δ∈D̂                               δ∈D̂
+                       −                                    +
+                      φin (ω) = min φω (δ),                φin (ω) = max φω (δ),
+                                δ∈D̂                                 δ∈D̂
+
+where Aω (δ) and φω (δ) are defined as in (10) and (11), respectively. Then, for every
+ω ≥ 0 and for every δ ∈ D, the following inclusions hold:
+                               −        +                          
+                              Ain (ω), Ain  (ω) ⊆ A−          +
+                                                   out (ω), Aout (ω)
+                               −        +       −         +
+                                                                     
+                               φin (ω), φin (ω) ⊆ φout (ω), φout (ω)
+
+                                                                                               
+                      −         +        −            +
+Proof The values Ain    (ω), Ain  (ω), φin (ω) and φin  (ω) are actually achieved for
+some vertex δ ∈ D̂, hence the corresponding bounds cannot be tightened. There-
+                        −        +
+fore, the inclusions [Ain  (ω), Ain (ω)] ⊆ [A−         +              −        +
+                                             out (ω), Aout (ω)] and [φin (ω), φin (ω)] ⊆
+  −         +
+[φout (ω), φout (ω)] hold.
+
+Remark 6 All the results we have presented so far can be extended to the case in which
+                           
+E = ∂∂uf     and H = ∂∂hx x̄ are also uncertain, provided that the matrix
+            (x̄,ū)
+                                          *             +
+                                           −J (δ) −E(δ)
+                                            H (δ)  0
+
+is totally multiaffine in δ. Then, the transfer function can be written as
+                                                          *                  +
+                                                           s I − J (δ) −E(δ)
+                                                    det
+                                                               H (δ)      0      q̃(s, δ)
+      W̃ (s, δ) = H (δ)(s I − J (δ))−1 E(δ) =                                  =
+                                                           det(s I − J (δ))      p̃(s, δ)
+
+and Theorem 5 holds true without changes, as well as all the results in Sect. 4. Also
+all the results in Sect. 3 remain valid: in fact, the sensitivity in Theorem 2 corresponds
+to the transfer function computed at s = 0.                                              
+
+                                                                                     123
+35   Page 20 of 43                                                            F. Blanchini et al.
+
+
+4.2 Self-sustained oscillations: what do the critical frequencies tell us?
+
+Critical frequencies are fundamental when analysing oscillators. If, for a certain value
+of the parameters, an equilibrium point becomes marginally stable with two complex
+eigenvalues on the imaginary axis, the imaginary part of these eigenvalues is expected
+to provide a good estimate of the oscillating frequency ω. This reasoning is heuristic
+in the following sense. The onset of oscillations requires the presence of a negative
+loop with sufficiently high loop gain (see, e.g., the work by Blanchini et al. 2014;
+Domijan and Pécou 2011; Gouze 1998; Snoussi 1998 and the references therein). If
+all the eigenvalues lie to the left of the imaginary axis, oscillations cannot be per-
+sistent. If the eigenvalues are exactly on the imaginary axis, the oscillations of the
+linear (linearised) systems are persistent, but, if these eigenvalues cross the imaginary
+axis (even slightly, due to a perturbation), then the oscillatory trajectories diverge in
+principle. However, unavoidable saturations in the original nonlinear system cause a
+“virtual gain reduction", which keeps the oscillations bounded. This situation can be
+seen as due to the reduction of the critical gain, namely the gain value corresponding
+to purely imaginary eigenvalues. An approximate guess of the oscillating frequency
+can therefore be obtained as follows.
+
+Definition 4 (Potential oscillatory frequency.) The value ω is a potential oscillatory
+frequency if p(iω, δ) = 0 for some δ ∈ D.                                            
+
+   The next vertex result, a corollary to Proposition 3, allows us to identify potential
+oscillatory frequencies.
+
+Theorem 6 (Potential oscillatory frequencies and denominator critical values.) A
+potential oscillatory frequency ω must be such that s̄ = iω is a denominator critical
+value as per Definition 2, namely, the convex polygon P(s̄) = conv{ p(s̄, δ), δ ∈ D̂}
+includes the origin.                                                               
+
+   The opposite is not true in general: if iω is a denominator critical value, it still
+could be that no parameter value exists in the admissible bounds for which there are
+imaginary roots. In fact, the convex hull P(s̄) = conv{ p(s̄, δ), δ ∈ D̂} is larger than the
+                                                                      / { p(s̄, δ), δ ∈ D}.
+actual set { p(s̄, δ), δ ∈ D}, and it may happen that 0 ∈ P(s̄) but 0 ∈
+Still, the polygon P(s̄) provides good indications about the oscillation frequency we
+can expect.
+   The previous considerations can be applied also to the case of a stable system with
+a negative loop including delays that cause the onset of oscillations.
+   Consider the system with y(s) = W (s)u(s) and a delay τ in the closed loop,
+u(t) = y(t − τ ), hence u(s) = e−sτ y(s). To analyse its oscillatory behaviour, we
+need to study the quasi-polynomial
+
+                          Ψ (s, τ, δ) = q(s, δ)e−sτ + p(s, δ)
+
+and the existence of possible roots in iω. For any fixed ω, the set of all Ψ (iω, τ, δ)
+enjoys the same property of the polynomials q(s, δ) and p(s, δ): the convex hull of the
+set is the convex hull of the vertices. Therefore, the previous analysis holds unchanged.
+
+123
+Vertex results for the robust analysis…                                                    Page 21 of 43     35
+
+                                                                 non-adaptive output
+                     input
+                                                                        adaptive output
+
+
+                                                                        over-adaptive output
+
+
+
+
+Fig. 2 System with non-adaptive (orange), adaptive (green) and over-adaptive (blue) responses to a step
+input (red) (color figure online)
+
+
+
+5 Robust adaptation analysis for uncertain systems
+
+In this section, we report vertex results to assess adaptation to a persistent constant
+input (step input), a remarkable property of several biological systems (Alon 2006; Ma
+et al. 2009). An input-output dynamical system exhibits adaptation if, after a persistent
+input has been applied, the output initially increases and, after a transient, eventually
+decreases so as to get close(r) to its pre-perturbation value. Adaptation includes perfect
+adaptation (El-Samad et al. 2002; Giordano et al. 2016; Khammash 2021; Kim et al.
+2014; Yi et al. 2000), which is achieved when the output asymptotically recovers
+exactly its pre-perturbation value and can be formally associated with the system
+transfer function W (s) vanishing for s = 0.
+    Adaptation is difficult to define formally and then to assess, even more so in the
+case of systems with uncertain parameters; see the discussion by Blanchini et al.
+(2020). It roughly requires the step response to be (essentially) first increasing and then
+decreasing: temporary trend changes and oscillations can occur during the transient,
+but the response must be predominantly decreasing for large values of t. For instance,
+consider the three output signals shown in Fig. 2 in response to a step perturbation (red
+signal): we call the orange one, which does not eventually decrease, non-adaptive; the
+green one, which first increases and then decreases, adaptive; the blue one, which first
+increases and then decreases so much that it changes sign, over-adaptive.
+    Throughout this section, we consider the following standing assumption.
+Assumption 1 Consider system (1), with δ ∈ D. The step response ys (t) correspond-
+                                                                                 . d
+ing to the input u(t) = ū is initially positive (i.e. ∃ τ > 0 such that ẏs (t) = dt ys (t) > 0
+for 0 < t ≤ τ ) and limt→∞ ys (t) is finite.                                                   
+The sign of ū is therefore implicitly chosen to ensure that ys (t) is initially positive. We
+can say that the system is adaptive if ys (t) is essentially increasing for small values
+of t and essentially decreasing for larger values of t. In order to provide a formal
+definition, we consider the weighted integral
+                                                 , ∞
+                                          Ia =         eat ẏs (t)dt.                                      (19)
+                                                 0
+
+Then, the abscissa of convergence, σ , is the largest value of a for which the integral
+in (19) is finite:
+                              σ = sup{a : |Ia | < ∞}.                              (20)
+
+                                                                                                123
+35   Page 22 of 43                                                            F. Blanchini et al.
+
+
+Note that, when a = 0, the integral in (19) is equal to limt→∞ ys (t) in view of the
+Final Value Theorem, hence it is finite according to Assumption 1. We can then provide
+a formal definition of adaptation (which does not require linearity of the system in
+general; see Blanchini et al. 2020).
+Definition 5 (Adaptive step response.) Given the weighted integral Ia defined in (19),
+the response ys (t) to the step input ū, starting from zero initial conditions, is adaptive
+if there exists ā < σ such that
+
+                                Ia > 0 for a < ā,
+                                Ia < 0 for ā < a < σ.
+
+More precisely, we say it is partially adaptive if ā > 0; perfectly adaptive if ā = 0;
+over-adaptive if ā < 0. Given the uncertain system (1) with step response ys (t, δ),
+adaptation is robust if the property holds for all ū and all δ ∈ D.                  
+    The idea is that, when a < 0, the values of ẏs (t) at earlier times (mainly positive
+in an adaptive system) are weighed more, while when a > 0 the values of ẏs (t) at
+later times (mainly negative in an adaptive system) are weighed more; the larger is a
+in absolute value, the more visible such an effect is.
+    Perfect adaptation corresponds to ẏs (t) having zero mean on the interval [0, ∞),
+i.e., limt→∞ ys (t) = I0 = 0. Partial adaptation corresponds to ẏs (t) having zero
+mean on the interval [0, ∞) if weighted by an increasing exponential eāt (ā > 0);
+namely, limt→∞ ys (t) = I0 > 0. Over-adaptation corresponds to ẏs (t) having zero
+mean on the interval [0, ∞) if weighted by a decreasing exponential eāt (ā < 0);
+namely, limt→∞ ys (t) = I0 < 0. Finally, sign-definiteness of ẏs (t) (either positive
+or negative) implies the lack of adaptation (but the converse is not true: there are
+non-adaptive systems for which ẏs (t) is not sign-definite).
+    Consider system (1) with impulse response ẏs (t), namely, the rational transfer
+function W (s) is the Laplace transform of ẏs (t) for ū = 1. Then, the abscissa of
+convergence of W (s) is σ , defined in (20), while −σ is the spectral abscissa, namely,
+the largest among the real parts of the poles of W (s) (recall that the poles of a transfer
+function are the roots of its denominator polynomial). Given the complex numbers
+w1 and w2 , we say that w1 dominates w2 if (w1 ) > (w2 ). Then, the following
+proposition characterises adaptation as the presence of a single dominant real zero,
+larger than the spectral abscissa.
+Proposition 5 (Characterisation of adaptive step response.) Let W (s) = H (s I −
+J )−1 E = q(s)/ p(s) be the rational, strictly proper transfer function of the linear
+asymptotically stable system (1). The system step response is adaptive if and only if
+there exists exactly one real zero, −ζ , such that ζ < σ . Partial adaptation corresponds
+to ζ > 0, perfect adaptation to ζ = 0, over-adaptation to ζ < 0.                       
+                             - ∞ at
+Proof When a < σ , Ia = 0 e ẏs (t)dt = lims→0 W (s − a) = W (−a). Then, the
+threshold value is ā = ζ , where −ζ is a real zero, which must be the only zero in the
+open interval (−σ, ∞) in order to prevent other sign changes.
+  Now, given the uncertain system (1), we wish to check whether it has a robustly
+adaptive response. To this aim, we consider the system transfer function W (s, δ) =
+
+123
+Vertex results for the robust analysis…                                         Page 23 of 43   35
+
+
+H (s I − J (δ))−1 E = q(s, δ)/ p(s, δ). Then, for all admissible values of δ, we evaluate
+both the position of its real zeros (real roots of q(s, δ)) and the spectral abscissa −σ
+(i.e., the largest real part of all poles, namely, of all roots of p(s, δ)). If, for all possible
+values of the uncertain parameters, there is a single real zero −ζ with ζ < σ , this
+reveals robust adaptation.
+    We approach this problem through vertex algorithms and graphical methods based
+on the theory of parametric robustness and the Mapping Theorem by Barmish (1994).
+    In particular, the spectral abscissa −σ can be robustly evaluated as follows.
+
+Proposition 6 (Robust spectral abscissa.) The value −a is a robust spectral abscissa,
+namely, a < σ (δ) for all δ ∈ D, if
+
+                                      / P(iω − a), ∀ω ≥ 0,
+                                     0∈
+
+with P(iω − a) defined as in (13).                                                              
+
+    In fact, the spectral abscissa −σ is less than −a if and only if all the roots of the
+characteristic polynomial p(s, δ) have real parts less than −a, which is equivalent to
+p(s − a, δ) being Hurwitz for all δ ∈ D. Since the convex hull of { p(s − a, δ), δ ∈ D}
+is equal to P(iω−a), the convex hull of { p(s −a, δ), δ ∈ D̂}, the proposition provides
+a sufficient condition. For a fixed a, the condition can be checked in practice by plotting
+via computer graphics the set P(iω − a) for a finite frequency range, sufficiently large
+and sufficiently densely sampled.
+    As an alternative, one can also check whether p(s − a, δ) is Hurwitz through the
+solution of a convex optimisation problem, as done by Blanchini et al. (2019): this
+approach is harder to implement, but it is non-conservative.
+    The position of the real zeros and poles can be robustly evaluated based on a vertex
+result.
+
+Proposition 7 (Characterisation of zeros and poles.) The real λ is a zero of the transfer
+function W (s, δ), i.e. q(λ, δ) = 0, for some δ ∈ D if and only if functions
+                 (                )                               (                )
+    ϕ − (λ) = min q(λ, δ), δ ∈ D̂             and    ϕ + (λ) = max q(λ, δ), δ ∈ D̂
+
+have opposite sign.
+   Analogously, the real λ is a pole of the transfer function W (s, δ), i.e. p(λ, δ) = 0,
+for some δ ∈ D if and only if functions
+                (                )                                (                )
+   ψ − (λ) = min p(λ, δ), δ ∈ D̂              and    ψ + (λ) = max p(λ, δ), δ ∈ D̂
+
+have opposite sign.
+  Functions ϕ − (λ) and ϕ + (λ) (resp. ψ − (λ) and ψ + (λ)) provide tight bounds,
+namely, for each real λ they provide the actual minimum and maximum value of
+q(λ, δ) (resp. p(λ, δ)) over δ ∈ D.                                            
+
+
+                                                                                     123
+35    Page 24 of 43                                                            F. Blanchini et al.
+
+
+Proof Given a fixed λ, the polynomial q(λ, δ) is multiaffine in δ, so it does achieve
+both its minimum, ϕ − (λ), and its maximum, ϕ + (λ), on some vertex of the hyper-
+rectangle D. Therefore, if ϕ − (λ) and ϕ + (λ) have the same sign, also q(λ, δ) has the
+same sign. Conversely, if these extrema have different sign, i.e. ϕ − (λ) ≤ 0 ≤ ϕ + (λ),
+then continuity implies the existence of some δ ∗ such that q(λ, δ ∗ ) = 0. The proof for
+the pole case is identical.
+   The previous result entails that we can draw the exact envelope of the real plot of
+the polynomials p(λ, δ) and q(λ, δ) as a function of λ, which we call robust real plot.
+Drawing the two functions ϕ − (λ) and ϕ + (λ) (resp. ψ − (λ) and ψ + (λ)) is enough to
+locate the real zeros (resp. real poles) of the uncertain system.
+   In order to assess robust adaptation for an uncertain system, we need to check
+whether the system has a real dominant zero for all possible values of the uncertain
+parameters. First of all, we need to verify that Assumption 1 holds robustly: this can
+be done through a vertex test.
+Lemma 1 (Robust vertex check.) Assumption 1 holds for all δ ∈ D if and only if the
+leading coefficient of q(s, δ) is positive for all δ ∈ D̂.                      
+Proof The step response is positive in a right neighbourhood of 0 due to Assump-
+tion 1. Hence, the first non-zero derivative of ẏs (t), of order r (relative degree of
+W (s, δ), namely, difference between the degree of the denominator and the degree of
+                                                                                    (r )
+the numerator), must be positive. The initial value theorem yields limt→0 ys (t) =
+lims→∞ s r W (s, δ) > 0, hence the leading coefficient qn−r (δ) of q(s, δ) must be pos-
+itive for all δ ∈ D. Since qn−r (δ) is a multiaffine function, its minimum is achieved at
+the vertices δ ∈ D̂. Then, it is necessary and sufficient that all the values at the vertices
+are positive.
+Definition 6 (Robust real zero dominance.) If −σ < 0 is a robust spectral abscissa
+(i.e., it dominates all poles for all δ ∈ D ), the system with transfer function W (s, δ)
+is robustly real zero dominant if, for all δ ∈ D, there exists a real zero that dominates
+−σ .                                                                                    
+     Robust real zero dominance can be checked through a vertex result.
+Proposition 8 (Checking robust real zero dominance.) Let −σ be a robust spectral
+abscissa for the transfer function W (s, δ), δ ∈ D. Then the system has the robust
+real zero dominance property if ϕ + (−σ ) < 0. Furthermore, the real dominant zero is
+unique if q  (λ, δ), the derivative of q(λ, δ) with respect to λ, is positive for all δ̂ ∈ D̂
+and for all λ ∈ [−σ, ∞).                                                                    
+Proof The leading coefficient of q(s, δ) is positive under Assumption 1, hence q(λ, δ)
+converges to +∞ as λ → +∞. If ϕ + (−σ ) < 0, then q(−σ, δ) < 0 for all δ, hence
+there is at least one real root to the right of −σ , i.e. a dominant real zero. The root is
+unique if, for all λ ∈ [−σ, ∞), q  (λ, δ) > 0 for all δ, which is implied by q  (λ, δ̂) > 0
+for all δ̂ ∈ D̂ due to the multi-affinity of the derivative.
+   The presence of at least one dominant real zero suggests that there is adaptation,
+but is not enough: the dominant real zero must be unique in view of Proposition 5. We
+need therefore to establish robust uniqueness, again through a vertex result.
+
+123
+Vertex results for the robust analysis…                                    Page 25 of 43   35
+
+
+Proposition 9 (Checking robust root uniqueness.) Let [c L , c R ] be an interval where
+ϕ − (λ) and ϕ + (λ) have opposite sign and ϕ + (c L ) = 0 and ϕ − (c R ) = 0 (or the other
+way round). Each point in the interval is a root of q(s, δ) for some δ ∈ D. The root is
+unique for all δ ∈ D if all the vertex derivative polynomials q  (s, δ), δ ∈ D̂, have the
+same sign (either positive or negative) in this interval.                               
+
+Proof The intersection of q(s, δ) with the interval [c L , c R ] is unique for all δ ∈ D if
+the derivative q  (s, δ) does not change sign in the interval for all δ ∈ D. Since the
+derivative q  (s, δ) is a multiaffine function of δ, its maximum and minimum value are
+on the extrema, δ ∈ D̂.
+
+   An important issue, which we now briefly discuss, is the perfect or partial adaptation
+to non-constant signals, for instance sinusoidal signals. To achieve perfect adaptation
+to a sinusoidal signal, a system must satisfy the so-called internal model principle
+(Sontag 2003), as it has been highlighted in the literature (see for instance the work
+by Bin et al. (2021), Mucci et al. (2020) and the references therein). In our context,
+perfect adaptation to a sinusoidal signal of frequency ω is equivalent to the condition
+Aω (δ) ≡ 0, namely, it is equivalent to considering (17) with A+     out (ω) = 0. This
+condition is quite restrictive to be ensured. Hence, we can consider adaptation, not
+perfect, just by requiring that A+out (ω) ≤ , where  > 0 is a small enough tolerance
+parameter. An advantage of our proposed approach is that it allows us to perform the
+analysis on a whole assigned interval of frequencies, rather than on a fixed one.
+
+
+6 Case studies of biological systems
+
+We present in this final section some case studies of biological systems, to which we
+apply the techniques we have illustrated in the previous sections.
+
+6.1 Incoherent Feed-Forward Loop with first-order enzyme reactions
+
+The incoherent Feed-Forward Loop (i-FFL) is a circuit where the input triggers the
+output response and also activates a negative controller, which eventually suppresses
+the output. It is known that, when the input is a ramp, the i-FFL exhibits a pulse
+response, while it exhibits an oscillatory output in response to a periodic input (Mangan
+and Alon 2003; Krishnan and Floros 2019). Here, we consider an implementation of
+the i-FFL realised through a synthetic transcriptional circuit (Kim et al. 2014), and we
+investigate to what extent small periodic perturbations of the constant input can affect
+the output. We let the parameters of the circuit take values in a hyper-rectangle centered
+around the desired nominal values. This situation reflects the fact that precisely tuning
+the parameters of a synthetic circuit is rarely possible.
+   The transcriptional i-FFL designed by Kim et al. (2014) is composed of two RNA
+species, a and b, whose production is controlled by the common input u and which
+hybridise to form the complex c. Within the complex, RNase catalyses the degradation
+of b, while it poorly catalyses the degradation of a; for this reason, when c degrades,
+only a, but not b, is released (see Kim et al. 2014 for details). A mathematical model
+
+                                                                                123
+35    Page 26 of 43                                                           F. Blanchini et al.
+
+
+of the circuit is provided by Kim et al. (2014), and the same model is adopted by
+Krishnan and Floros (2019) (see model KI14) to examine the response of adaptive
+circuits to a variety of stimuli. Assuming first-order enzyme reactions for a, b, c and
+zero-order reactions for the input u, the circuit is described by the following ordinary
+differential equations:
+                           ⎧
+                           ⎪
+                           ⎨ȧ = u − g1 (a) − g2 (a, b, c)
+                             ḃ = κ2 u − g3 (a, b)                                        (21)
+                           ⎪
+                           ⎩
+                             ċ = g2 (a, b, c)
+
+where g1 (a) := a is the degradation term, g2 (a, b, c) := κ1 (ab−c) describes hybridi-
+sation of a and b and the release of free a upon degradation of c, g3 (a, b) = κ2 ab
+describes hybridisation of a and b. The RNA species b represents the output of the
+circuit.
+   When the input is a constant signal u(t) ≡ ū, the circuit reaches the unique equilib-
+rium (aeq , beq , ceq ) = (ū, 1, ū). Around the equilibrium, the dynamics of the circuit
+is described by the linearised system:
+                               
+                                   ẋ(t) = J x(t) + Ev(t)
+                                   y(t) = H x(t)
+
+                                           
+where x := a b c , E := 1 κ2 0 , H := 0 1 0 , and J is the Jacobian at the
+equilibrium, i.e. J = J (aeq , beq , ceq ) with
+                                      ⎡                         ⎤
+                                     −1 − κ1 b       − κ1 a κ 1
+                      J (a, b, c) = ⎣ −κ2 b          −κ2 a 0 ⎦ .
+                                       κ1 b           κ1 a −κ1
+
+With respect to the partial derivatives of the functions g1 , g2 and g3 , the Jacobian
+J (a, b, c) admits the B DC-decomposition:
+                                                 ⎡                        ⎤⎡          ⎤
+                                       α               0    0   0   0   0     1   0 0
+                   ⎡                ⎤⎢ 0               β    0   0   0   0⎥  ⎢0    1 0⎥
+                     −1 −1 −1 −1 0 0 ⎢
+                                     ⎢0
+                                                                          ⎥⎢          ⎥
+                                                       0    γ   0   0   0⎥  ⎢
+                                                                          ⎥⎢ 0    0 −1⎥
+     J (a, b, c) = ⎣ 0 0 0 0 −1 −1⎦ ⎢⎢0
+                                                                                      ⎥
+                                                       0    0   ρ   0   0 ⎥⎢
+                                                                          ⎥
+                                                                            ⎢1    0 0⎥
+                      1 1 1 0 0 0 ⎢  ⎣0
+                                                                                      ⎥
+                                                       0    0   0   ε   0 ⎦⎣ 1    0 0⎦
+                                       0               0    0   0   0   η     0   1 0
+
+where:
+                                                                 
+           ∂ g2                   ∂ g2                      ∂ g2 
+       α:=      = κ1 b        β:=      = κ1 a              
+                                                       γ :=       = |−κ1 | = κ1
+           ∂a                     ∂b                          ∂c 
+           ∂ g1                   ∂ g3                     ∂ g3
+       ρ:=      =1            ε:=      = κ2 b          η:=        = κ2 a
+           ∂a                     ∂a                         ∂b
+
+123
+Vertex results for the robust analysis…                                              Page 27 of 43   35
+
+
+
+
+Fig. 3 Bounds on the Bode plots of magnitude and phase of the transfer function of the i-FFL model (21).
+Red curves represent outer bounds (see Theorem 5 and Definition 3), while blue curves represent inner
+bounds (see Proposition 4) (color figure online)
+
+
+
+   Let the nominal values of the parameters be κ1 = 0.01 and κ2 = 200, as reported
+in the Supplementary Material of the work by Krishnan and Floros (2019), and let
+the nominal input be ū = 0.1. Assume uncertainty bounds of ±50% on κ1 , κ2 . Then,
+                                                                               
+the vector δ that collects the diagonal
+                                  − +entries
+                                             of matrix D, i.e. δ = α β γ ρ ε η ,
+belongs to the hyper-rectangle δ , δ , where
+
+                                                              
+                            δ − : = 0.005 0.0005 0.005 1 100 10 ,
+                                                              
+                            δ + : = 0.015 0.0015 0.015 1 300 30 .
+
+ Note that the fourth element of δ, i.e. ρ, inherently has value 1 because, by definition,
+ρ := ∂∂ag1
+           and ∂∂a
+                 g1
+                    = 1 because the model variables are non-dimensional (see the work
+by Kim et al. (2014) for details). Finally, let v(t) = μ cos(ωt) be a small periodic
+perturbation acting on the input ū.
+    By exploiting the results of Sect. 4, we can examine how, depending on the pertur-
+bation frequency ω, the output b is affected by the perturbation v. Figure 3 shows
+lower and upper bounds on the Bode plots of the transfer function W (iω, δ) =
+H (iωI − J )−1 E: these bounds have been computed as in Theorem 5 and Propo-
+sition 4, and indicate, for each frequency ω, the admissible values of the magnitude
+amplification factor and the phase shift of the output b.
+    Now assume uncertainty bounds of ±50% on the nominal value of the input ū, too.
+With respect to κ1 , κ2 and ū, the Jacobian at the equilibrium
+
+                                                    ⎡                  ⎤
+                                                    −1 − κ1 −κ1 ū κ1
+                        J = J (aeq , beq , ceq ) = ⎣ −κ2 −κ2 ū 0 ⎦
+                                                      κ1     κ1 ū −κ1
+
+is not B DC-decomposable.
+   However, since J is totally multiaffine in κ1 , κ2 and ū, the vertex arguments and the
+results of Sect. 4 can still be applied. Let the amplitude and the frequency of the periodic
+perturbation v be μ = 0.05 and ω1 = 0.5, respectively, so that v(t) = 0.05 cos(0.5t).
+
+                                                                                           123
+35   Page 28 of 43                                                             F. Blanchini et al.
+
+
+   The computation of the numerator and denominator polynomials of the transfer
+function W (s) = H (s I − J )−1 E = q(s)/ p(s) yields:
+
+     q (s, κ1 , κ2 ) : = κ2 s 2 + 2κ1 κ2 s                                                 (22)
+ p (s, κ1 , κ2 , ū) : = s + (1 + 2κ1 + κ2 ū) s + (κ1 + κ2 ū + κ1 κ2 ū) s + κ1 κ2 ū (23)
+                          3                         2
+
+
+Plotting of the polygons Q(iω1 ) and P(iω1 ), which are reported in Fig. 4, shows that
+neither Q(iω1 ) nor P(iω1 ) includes the origin, and hence s = iω1 is both a numerator
+and denominator non-critical value. Then, bounds on magnitude and phase of each
+polynomial can be computed as in Theorem 4, which yields:
+
+      θq− = 3.0817            θq+ = 3.1216         μq+ = 75.1349         μq− = 25.0050
+      θ p− = 2.0157           θ p+ = 2.1245        μ+
+                                                    p = 25.1702          μ−
+                                                                          p = 2.8098
+
+ Finally, in view of Theorem 5, the amplification factor Aω and the phase shift φω of
+the output b satisfy the following inequalities:
+
+                              μq−                          μq+
+                                 = 0.9934 ≤A ω ≤ 26.7403 =                                 (24)
+                              μ+
+                               p                           μ−p
+                      θq− − θ p+ = 0.9572 ≤φω ≤ 1.1059 = θq+ − θ p−                        (25)
+
+Figure 5 reports the perturbed input signal ū + v(t) and the output b(t). The interval
+between the maximum and minimum values of the output allowed by the bounds (24)
+is indicated by the gray area: as it can be seen, the bounds on the output amplitude are
+indeed satisfied.
+    To investigate the degree of conservatism of the bounds (24), N = 1000 sets of
+parameters have been randomly sampled within the given hyper-rectangle and, for each
+set of parameters, the amplification factor of the output has been computed. Figure 6
+shows the parameters sampled within the hyper-rectangle (left panel) and a histogram
+of the amplification factors (right panel), where the red dashed lines indicate the bounds
+(24). Black diamonds indicate the vertices of the hyper-rectangle (left panel) and the
+corresponding amplification factors (right panel).
+
+6.2 Coherent Feed-Forward Loop with Hill dynamics
+
+In a coherent Feed-Forward Loop (c-FFL), activation of the most downstream element
+x3 of the circuit occurs both directly from the most upstream element x1 and indirectly,
+via the intermediate element x2 , which is, in turn, activated by x1 . A c-FFL with Hill-
+type dynamics is described by the following set of equations (see the work by Ghafari
+and Mashaghi (2017)):
+                              ⎧
+                              ⎪
+                              ⎨ẋ1 = u − g1 (x1 )
+                                ẋ2 = H1+ (x1 ) − g2 (x2 )                                 (26)
+                              ⎪
+                              ⎩
+                                ẋ3 = H2+ (x2 ) · H1+ (x1 ) − g3 (x3 )
+
+123
+Vertex results for the robust analysis…                                                  Page 29 of 43   35
+
+
+
+
+Fig. 4 Left panel: polygon Q(iω1 ) for the numerator polynomial (22) of the transfer function of the i-FFL
+model (21). Right panel: polygon P(iω1 ) for the denominator polynomial (23) of the transfer function of
+the i-FFL model (21) (color figure online)
+
+
+
+
+Fig. 5 Left panel: input signal ū + v(t). The periodic perturbation is v(t) = 0.05 cos(ω1 t) with ω1 = 0.5.
+Right panel: output b(t). The gray area indicates the interval between the maximum and minimum values
+of the output allowed by the bounds (24) (color figure online)
+
+
+
+
+Fig. 6 Left panel: N = 1000 sets of values for κ1 , κ2 and ū, randomly sampled within the hyper-rectangle
+whose vertices are indicated by the black diamonds. Right panel: histogram of the output amplification
+factors corresponding to the randomly sampled parameters. Black diamonds indicate the amplification
+factors corresponding to the vertices of the hyper-rectangle. Red dashed lines indicate the bounds (24)
+(color figure online)
+
+
+
+                                                            xn
+where u is the external input, Hi+ (xi ) = Vi x n +K  i
+                                                        n , i = 1, 2, is the activating Hill
+                                                   i    iA
+function, and gi (xi ) := γi xi , i = 1, 2, 3 are the degradation terms. The downstream
+element x3 is taken as output of the circuit.
+
+                                                                                               123
+35   Page 30 of 43                                                                      F. Blanchini et al.
+
+
+   When the input is a constant signal u(t) ≡ ū, the circuit reaches the unique equi-
+librium:
+
+                      ū                  H1+ (x1eq )                H2+ (x2eq )H1+ (x1eq )
+          x1eq =         ,       x2eq =               ,     x3eq =
+                      γ1                      γ2                              γ3
+
+ Around the equilibrium, the dynamics of the circuit is described by the linearised
+system                      
+                              ẋ(t) = J x(t) + Ev(t)
+                              y(t) = H x(t)
+                                      
+where x := x1 x2 x3 , E := 1 0 0 , H := 0 0 1 , and the Jacobian is given by
+                                           ⎡                                         ⎤
+                                             −γ1                    0             0
+      J := J (x1eq , x2eq , x3eq ) = ⎣     a1 (x1eq )             −γ2             0 ⎦
+                                        +                    +
+                                       H2 (x2eq )a1 (x1eq ) H1 (x1eq )a2 (x2eq ) −γ3
+
+where we have set:
+
+                                 ∂Hi+ (xi )                x n−1
+                ai (xi ) :=                 = nVi K inA n i n 2 ,            i = 1, 2
+                                   ∂ xi                (xi + K i A )
+
+ Upon definig α := a1 (x1eq ), β := H1+ (x1eq )a2 (x2eq ) and ε := H2+ (x2eq )a1 (x1eq ),
+the Jacobian admits the B DC-decomposition:
+                                        ⎡             ⎤⎡       ⎤
+                                         γ1 0 0 0 0 0     100
+                        ⎡             ⎤ ⎢ 0 γ2 0 0 0 0⎥ ⎢0 1 0⎥
+                         −1 0 0 0 0 0 ⎢               ⎥⎢
+                                        ⎢ 0 0 γ3 0 0 0⎥ ⎢0 0 1⎥
+                                                               ⎥
+                        ⎣             ⎦
+                     J = 0 −1 0 1 0 0 ⎢ ⎢             ⎥ ⎢      ⎥
+                                        ⎢ 0 0 0 α 0 0⎥⎥
+                                                        ⎢1 0 0 ⎥
+                                                        ⎢      ⎥
+                          0 0 −1 0 1 1 ⎣
+                                          0 0 0 0 β 0⎦ ⎣0 1 0⎦
+                                          0 0 0 0 0ε      100
+
+ Since J is B DC-decomposable, it is multi-affine in γ1 , γ2 , γ3 , α, β and ε. Indeed,
+computation of the transfer function W (s) = H (s I − J )−1 E = q(s)/ p(s) shows
+that both numerator and denominator polynomials are multi-affine:
+
+                         q(s, γ2 , α, β, ε) : = εs + αβ + δγ2                                       (27)
+                             p(s, γ1 , γ2 , γ3 ) : = (s + γ1 )(s + γ2 )(s + γ3 )                    (28)
+
+ Let the nominal values of the parameters be γ1 = γ2 = γ3 = 1, V1 = 0.6, V2 = 0.5,
+K 1A = K 2 A = 1, n = 2 (biologically plausible values are provided e.g. by Ghafari and
+Mashaghi 2017; Smolen et al. 2000; Mangan and Alon 2003), and let the nominal input
+be ū = 1. Then, the nominal vector δ that collects the diagonal entries of matrix D is
+                                                  
+δ = γ1 γ2 γ3 α β ε = 1 1 1 0.3 0.0758 0.0124 . Assume uncertainty bounds
+
+123
+Vertex results for the robust analysis…                                              Page 31 of 43   35
+
+
+
+
+Fig. 7 Bounds on the Bode plots of the transfer function of the c-FFL model (26). Red curves represent
+outer bounds (see Theorem 5 and Definition 3), while blue curves represent inner bounds (see Proposition
+4) (color figure online)
+
+
+
+equal
+ − to  ±50% on the entries of δ, namely assume that δ belongs to the hyper-rectangle
+ δ , δ + , where
+
+                                                                 
+                           δ − : = 0.5 0.5 0.5 0.15 0.0379 0.0062
+                                                                 
+                           δ + : = 1.5 1.5 1.5 0.45 0.1136 0.0186
+
+Let v(t) = μ cos(ωt) be a small periodic perturbation acting on the input ū. By
+applying the results of Sect. 4, we can examine the effects of the periodic perturbation
+v on the output x3 . The bounds on the Bode plots of the transfer function W (iω, δ) =
+H (iωI − J )−1 E are reported in Fig. 7: they provide, for each perturbation frequency
+ω, admissible intervals for the amplification factor and the phase shift of the output
+x3 .
+    Now let the amplitude and the frequency of the periodic perturbation v be μ = 0.05
+and ω1 = 0.55, respectively, namely let v(t) = 0.05 cos(0.55t). We investigate, in
+two different scenarios, the degree of conservatism of the bounds on the amplification
+factor.
+    In the first scenario, we assume uncertainty bounds of ±20% on all entries of the
+vector δ. Plotting of the polygons Q(iω1 ) and P(iω1 ), which are reported in Fig. 8,
+shows that neither Q(iω1 ) nor P(iω1 ) includes the origin, and hence s = iω1 is both
+a numerator and denominator non-critical value. Then, bounds on the amplification
+factor of the output x3 can be computed by exploiting Theorem 4 and Theorem 5.
+Figure 9 reports the perturbed input signal ū + v(t) and the output x3 (t) together with
+the interval values allowed by the bounds. To investigate the degree of conservatism
+of the computed bounds, we randomly sample the parameters γ1 , γ2 , γ3 , V1 , V2 , K 1A ,
+K 2 A , and we retain N = 500 sets of parameters for which the bounds of ±20%
+on the entries of δ are satisfied. Then, for each set of parameters, we compute the
+amplification factor of the simulated output. A histogram of the amplification factors
+is reported in Fig. 10.
+    In the second scenario, we fix γ1 , γ2 , and γ3 to the nominal values, and we assume
+bounds of ±20% on entries α, β, and ε of the vector δ. In this case, the denomina-
+tor polynomial p(s, γ1 , γ2 , γ3 ) is not subject to uncertainty. Plotting of the polygon
+Q(iω1 ), which is reported in Fig. 11, shows that Q(iω1 ) does not include the origin,
+
+                                                                                           123
+35   Page 32 of 43                                                                           F. Blanchini et al.
+
+
+
+
+Fig. 8 Left panel: polygon Q(iω1 ) for the numerator polynomial (27) of the transfer function of the c-FFL
+model (26). Right panel: polygon P(iω1 ) for the denominator polynomial (28) of the transfer function of
+the c-FFL model (26) (color figure online)
+
+
+
+
+Fig. 9 Left panel: input signal ū + v(t). The periodic perturbation is v(t) = 0.05 cos(ω1 t) with ω1 = 0.55.
+Right panel: output x3 (t). The gray area indicates the interval between the maximum and minimum values
+of the output allowed by the bounds computed as in Theorem 4 and Theorem 5 (color figure online)
+
+
+
+
+Fig. 10 Histogram of the output amplification factors corresponding to N = 500 sets of parameters γ1 , γ2 ,
+γ3 , V1 , V2 , K 1A , K 2 A , for which the bounds of ±20% on the entries of δ are satisfied. Red dashed lines
+indicate the bounds computed as in Theorem 4 and Theorem 5 (color figure online)
+
+
+
+
+123
+Vertex results for the robust analysis…                                                   Page 33 of 43   35
+
+
+
+
+Fig. 11 Polygon Q(iω1 ) for the numerator polynomial (27) of the transfer function of the c-FFL model
+(26) (color figure online)
+
+
+
+
+Fig. 12 Left panel: input signal ū +v(t). The periodic perturbation is v(t) = 0.05 cos(ω1 t) with ω1 = 0.55.
+Right panel: output x3 (t). The gray area indicates the interval between the maximum and minimum values
+of the output allowed by the bounds computed as in Theorem 4 and Theorem 5 (color figure online)
+
+
+
+
+and hence s = iω1 is both a numerator and denominator non-critical value. Then,
+bounds on the amplification factor of the output x3 can be computed by exploiting
+Theorem 4 and Theorem 5. Figure 12 reports the perturbed input signal ū +v(t) and the
+output x3 (t) together with the computed bounds (note that, with respect to Fig. 9, the
+input and the output signals are the same, while the bounds are different). It can be seen
+that the output stays within the gray area. To investigate the degree of conservatism,
+we randomly sample the parameters V1 , V2 , K 1A , and K 2 A , we retain N = 1000 sets
+of parameters for which the bounds of ±20% on α, β, and ε are satisfied, and we
+compute, for each set of parameters, the amplification factor of the simulated output.
+Figure 13 shows the values of α, β, and ε for the retained sets of sampled parameters
+and a histogram of the amplification factors.
+
+                                                                                                123
+35   Page 34 of 43                                                                         F. Blanchini et al.
+
+
+
+
+Fig. 13 Left panel: values of α, β and ε for N = 500 randomly sampled values of V1 , V2 and K 1A = K 2 A .
+Right panel: histogram of the values of the magnitude amplification factor on the simulated output x3 (color
+figure online)
+
+
+
+6.3 The Brusselator oscillator
+
+Consider the well-known Brusselator oscillator as described for instance by Epstein
+and Pojman (1998). The model consists of the following two differential equations:
+                                  
+                                      ẋ = −ax + bx 2 y − cx + u
+                                                                                                       (29)
+                                      ẏ = +ax − bx 2 y
+
+The Jacobian of the system is:
+                                              *                +
+                                           −a + 2bx y − c bx 2
+                             J (a, b, c) =                       .
+                                            +a − 2bx y −bx 2
+
+At the equilibrium, it holds a = bxeq yeq and the Jacobian is therefore:
+                                              *        2 +
+                                               a − c bxeq
+                                         J=             2 .
+                                                −a −bxeq
+
+To perform our analysis, we re-parameterise the problem adopting the parameters
+δ1 = a, δ2 = c and δ3 = bxeq   2 , on which we impose the uncertainty bounds. The
+
+Jacobian can thus be written as:
+                                     *           +
+                                      δ1 − δ2 δ3
+                                 J=                ,
+                                        −δ1 −δ3
+
+whose characteristic polynomial is p(s, δ1 , δ2 , δ3 ) = s 2 + (−δ1 + δ2 + δ3 )s + δ2 δ3 .
+We assume uncertainty bounds of 0.4 ≤ δi ≤ 1, i = 1, 2, 3. By applying Theorem 6,
+we can identify potential oscillatory frequencies of the system. To this aim, we plot
+some polygons P(iω) of the polynomial p(s, δ1 , δ2 , δ3 ): Fig. 14 shows some polygons
+P(iω) for frequency ω in the interval [0.4, 0.55]. Since each of these polygons includes
+the origin, we can conclude that all frequencies ω with 0.4 ≤ ω ≤ 0.55 are potential
+oscillatory frequencies.
+
+123
+Vertex results for the robust analysis…                                                 Page 35 of 43   35
+
+
+
+
+Fig. 14 Polygons P(iω) for the characteristic polynomial p(s, δ1 , δ2 , δ3 ) of the Brusselator model (29).
+The frequency is ω = 0.4 (upper, left panel), ω = 0.45 (upper, right panel), ω = 0.5 (bottom, left panel),
+and ω = 0.55 (bottom, right panel). Parameters values: a = 0.95, b = 0.5, c = 0.4 u = 0.4 (color figure
+online)
+
+
+   To verify that the system exhibits oscillations in this range of frequencies, let us
+consider for numerical purposes the following data: a = 0.95, b = 0.5, c = 0.4
+(reaction rate constants) and u = 0.4 (input). These are proper parameters for the
+model; to perform our analysis, we consider the parameters δi , on which the uncertainty
+bounds are imposed. With these values of the original parameters, the bounds 0.4 ≤
+δi ≤ 1 are satisfied; indeed, it results: δ1 = 0.95, δ2 = 0.4 and δ3 = 0.5. Simulation
+of the model, reported in Fig. 15, shows that, with this set of parameters, the system
+exhibits sustained oscillations, and the frequency of oscillation is about ω ≈ 0.44,
+consistently with the fact that the polygon P(i0.44) includes the origin.
+
+6.4 The Goldbeter oscillator
+
+The Brusselator was a very simple, illustrative example of oscillator. In this section,
+we consider a more complex oscillator, which describes the circadian oscillations
+of PER protein in Drosophila. The system is based on multiple phosphorylation of
+
+                                                                                              123
+35   Page 36 of 43                                                                      F. Blanchini et al.
+
+
+
+
+Fig. 15 Simulation of the Brusselator model (29). The parameter values are the same as in Fig. 14 (color
+figure online)
+
+PER and on the negative feedback implemented by the nuclear form of PER on the
+transcription of the per gene. A mathematical description of the system was proposed
+by Goldbeter (1995). The Goldbeter oscillator model includes five state variables: M
+denotes the concentration of mRNA transcripts from per gene; P0 , P1 and P2 denote
+the concentration of PER protein in the unphosphorylated, monphosphorylated and
+biphosphorylated form, respectively; PN denotes the concentration of the nuclear form
+of PER. The system is described by the following five differential equations:
+               ⎧                     Kn
+               ⎪
+               ⎪ Ṁ     = vs K n +P
+                                  I
+                                    n − vm K +M
+                                             M
+               ⎪
+               ⎪                 I        N m
+               ⎪
+               ⎪        = ks M − V1 K 1P+P   + V2 K 2P+P
+               ⎪
+               ⎨ Ṗ0
+                                        0
+                                          0
+                                                      1
+                                                        1
+                 Ṗ1            P0           P1
+                        = V1 K 1 +P0 − V2 K 2 +P1 − V3 K 3P+P
+                                                           1
+                                                               + V4 K 4P+P
+                                                                        2
+                                                                                                    (30)
+               ⎪
+               ⎪
+                                                             1            2
+               ⎪
+               ⎪
+               ⎪
+               ⎪ Ṗ2    = V3 K 3P+P
+                                 1
+                                     − V4 K 4P+P
+                                              2
+                                                  − k1 P2 +k2 PN − vd K dP+P
+                                                                          2
+               ⎪
+               ⎩                   1            2                           2
+                 ṖN    = k1 P2 − k2 PN
+
+ The total concentration of PER protein, denoted by Pt , is computed as Pt := P0 +
+P1 + P2 + PN .
+   Straightforward computations show that the Jacobian of the system takes the fol-
+lowing form:
+                        ⎡                                      ⎤
+                             −α 0     0          0         −ρ
+                        ⎢    ks −γ    β          0          0 ⎥
+                        ⎢                                      ⎥
+                     J =⎢
+                        ⎢    0   γ −(β + ε)      φ          0 ⎥⎥                                    (31)
+                        ⎣    0   0    ε     −(φ + ν + k1 ) k2 ⎦
+                             0   0    0          k1        −k2
+
+where the Greek letters denote the partial derivatives of the Michaelis-Menten and
+Hill functions, specifically:
+
+            vm K m                       V1 K 1                 V2 K 2                     V3 K 3
+ α:=                        γ :=                     β:=                        ε:=
+         (K m + M)2                   (K 1 + P0 )2           (K 2 + P1 )2               (K 3 + P1 )2
+
+123
+Vertex results for the robust analysis…                                            Page 37 of 43     35
+
+
+              V4 K 4                    vd K d               nvs K In PNn−1
+ φ:=                         ν:=                     ρ:=
+           (K 4 + P2 )2              (K d + P2 )2            (K In + PNn )2
+
+Since the Jacobian is multi-affine in α, β, γ , ε, φ, ν, ρ, ks , k1 , k2 , we can apply the results
+of Sect. 4.2 to identify potential oscillatory frequencies. Let the nominal values of the
+parameters be the values adopted by Goldbeter (1995), namely: vs = 0.76μMh −1 ,
+vm = 0.65μMh −1 , K m = 0.5μM, ks = 0.38h −1 , vd = 0.95μMh −1 , k1 = 1.9h −1 ,
+k2 = 1.3h −1 , K d = 0.2μM, n = 4, K I = 1μM, K 1 = 2μM, K 2 = 2μM,
+K 3 = 2μM, K 4 = 2μM, V1 = 3.2μMh −1 , V2 = 1.58μMh −1 , V3 = 5μMh −1 ,
+V4 = 2.5μMh −1 . Consider as working point of the system the rough values around
+which M, P0 , P1 , P2 and PN are known to oscillate (Goldbeter 1995), namely: M̄ =
+1.75μM, P̄0 = 1.1μM, P̄1 = 0.67μM, P̄2 = 0.58μM, P̄N = 0.85μM. For the
+nominal values of the parameters and the considered working point, the Jacobian is:
+                                 ⎡                          ⎤
+                                  −0.06 0     0     0 −0.81
+                                ⎢ 0.38 −0.68 0.44   0    0 ⎥
+                                ⎢                           ⎥
+                           J¯ = ⎢
+                                ⎢  0    0.68 −1.85 0.75  0  ⎥
+                                                            ⎥
+                                ⎣ 0      0   1.41 −2.96 1.3 ⎦
+                                   0     0    0    1.9 −1.3
+
+ Assume rough uncertainty bounds of ±50% on each non-zero entry of the Jacobian,
+namely on α, β, γ , ε, φ, ν, ρ, ks , k1 , k2 . To identify potential oscillatory frequencies
+of the system, we compute the characteristic polynomial of the Jacobian (31), and we
+plot the polygon P(iω), which is the convex hull of the value set, in a large range
+of frequencies. As seen from Fig. 16, P(iω) includes the origin for frequencies ω
+in the interval [ωmin , ωmax ] = [0.14, 0.42]. These frequencies represent potential
+oscillatory frequencies of the system. The corresponding oscillation period ranges
+from Tmin = 2π/ωmax = 14.96h to Tmax = 2π/ωmin = 44.88h. As reported in
+Fig. 17, this is fully consistent with the numerical simulations proposed by Goldbeter
+(1995).
+
+6.5 Adaptation analysis
+
+The biochemical reaction network
+
+      k1           k2                     g12   g3                 g14        g2          g4
+   ∅ − X 1 , ∅ − X 2 , X 1 + X 2 −− X 3 − X 4 , X 1 + X 4 −− ∅, X 2 − ∅, X 4 − ∅
+
+can be associated with a system of differential equations, describing the time evolution
+                                                                     
+of the species concentrations, having state vector x = x1 x2 x3 x4 :
+                             ⎧
+                             ⎪
+                             ⎪ ẋ1 = k1 − g12 (x1 , x2 ) − g14 (x1 , x4 )
+                             ⎪
+                             ⎨ ẋ2 = k2 − g12 (x1 , x2 ) − g2 (x2 )
+                                                                                                   (32)
+                             ⎪
+                             ⎪ ẋ3 = g12 (x1 , x2 ) − g3 (x3 )
+                             ⎪
+                             ⎩
+                               ẋ4 = g3 (x3 ) − g14 (x1 , x4 ) − g4 (x4 )
+
+                                                                                        123
+35    Page 38 of 43                                                                  F. Blanchini et al.
+
+
+
+
+Fig. 16 Polygons P(iω) of the characteristic polynomial of the Jacobian (31) for frequencies ω in the
+interval [ωmin , ωmax ] = [0.14, 0.44] (color figure online)
+
+
+
+
+Fig. 17 Dynamic evolution of the Drosophila oscillator model (30). Numerical values of the parameters
+are the nominal ones adopted by Goldbeter (1995) (color figure online)
+
+
+
+     Linearisation yields a B DC-decomposable system with Jacobian J = B DC, where
+                  ⎡               ⎤
+                −1 −1 0 −1 −1 0 0
+              ⎢−1 −1 0 0 0 −1 0 ⎥
+            B=⎢
+              ⎣ 1 1 −1 0 0 0 0 ⎦ ,
+                                  ⎥
+
+                0 0 1 −1 −1 0 −1
+
+123
+Vertex results for the robust analysis…                                                  Page 39 of 43   35
+
+
+
+
+Fig. 18 Robust real plot with lower and upper bounding functions for the numerator, left, and the denom-
+inator, right, in Example 6.5. The real pole and zero intervals are disjoint and the zero dominates the pole
+(color figure online)
+
+
+
+
+Fig. 19 The set P(iω − a) in the example in Sect. 6.5 for a = 0.133 and ω ∈ [0.01, 0.05], left, along with
+a zoom-in panel to better visualise the neighbourhood of the origin, right (color figure online)
+
+
+                     .                                       /
+                       ∂ g12 ∂ g12 ∂ g3 ∂ g14 ∂ g14 ∂ g2 ∂ g4 .
+            D = diag        ,     ,    ,     ,     ,    ,      = diag(δ),
+                       ∂ x1 ∂ x2 ∂ x3 ∂ x1 ∂ x4 ∂ x2 ∂ x4
+                ⎡               ⎤
+                  1001000
+                ⎢0 1 0 0 0 1 0 ⎥
+            C =⎢                ⎥
+                ⎣0 0 1 0 0 0 0 ⎦ .
+                  0000101
+
+
+We consider an additive input on x1 , namely E = [1 0 0 0] , and we take x3 as
+output, namely H = [0 0 1 0]. The lower and upper bounds on δ are given as δ − =
+[1 1 1 1 1 0.0 3] and δ + = [2 2 2 2 2 0.1 4]. For δ6 = 0, it can be seen that the
+system has perfect adaptation: the transfer function has a zero at the origin. We wish
+to assess whether adaptation (although non-perfect) is robustly maintained for small
+values of δ6 ? The robust real plot is shown in Fig. 18 and shows that the dominant zero
+interval [−0.1, −0.0] is to the right of the dominant pole interval, [−0.79, −0.133].
+Therefore, we have robust real zero dominance. The same conclusion can be drawn
+by noticing that −a = −0.133 is a robust spectral abscissa, since the origin does not
+belong to the set P(iω − a) as can be seen in Fig. 19, and that ψ + (−a) < 0.
+
+                                                                                               123
+35   Page 40 of 43                                                            F. Blanchini et al.
+
+
+7 Concluding discussion
+
+This paper aims at building a connection between robustness analysis problems that
+arise in systems biology and a class of powerful robustness analysis tools developed
+within the realm of control theory (Barmish 1994). Although the general principles of
+biological robustness have been thoroughly discussed from a variety of perspectives
+(Khammash 2016; Kitano 2004; Lesne 2008; Stelling et al. 2004; Streif et al. 2016;
+Whitacre 2012) and several dedicated tools have been adopted to perform the robust-
+ness analysis of specific models, or classes of models, as discussed in the introduction,
+we are still lacking a general framework that allows us to robustly assess properties
+of interest for biological models in a systematic way.
+    For the first time to our knowledge, this work proposes to leverage the vertex-
+type results developed in the 90s in the control community (Barmish 1994) for the
+robustness analysis of a vast class of biological models that turn out to have a totally
+multiaffine uncertainty structure: the class we consider includes generic biochemical
+reaction networks, as well as chemical reaction networks with mass-action kinetics.
+For this class of systems, building upon the work by Barmish (1994), we derive vertex
+results that allow us to robustly assess the input-output sensitivity, in the presence of
+input perturbations that can be either constant or periodic, in the neighbourhood of an
+equilibrium state. Besides being useful for the robust steady-state sensitivity analysis in
+the presence of constant perturbations and for the robust frequency-response sensitivity
+analysis in the presence of sinusoidal disturbances, vertex-type algorithms also enable
+to robustly assess non-singularity, stability, and adaptation.
+    Our analysis has two main limitations. First, it is based on linearisation: all our char-
+acterisations do transfer from the linear approximation to the original nonlinear system
+when small input signals are considered, but the prediction capability may be lost for
+large inputs. Second, the analysis requires in general a re-parametrisation, namely,
+it considers uncertain parameters that may be functions of the original parameters:
+as a consequence, providing uncertainty bounds is not always straightforward, and a
+certain degree of conservatism is introduced, which we have numerically quantified
+in some case studies.
+    A benefit of the approach is that it allows us to resort to very effective methods
+available in the literature, which are shown to be applicable to study biologically
+relevant models and provide a critical insight into their robustness analysis.
+    A potentially interesting alternative approach to the robustness analysis of biologi-
+cal systems relies on the probabilistic methods and randomised algorithms introduced
+by Tempo et al. (2005), which tackle uncertain systems by assessing their properties in
+probability, through sampling (Monte Carlo) techniques. These approaches have the
+advantage of being quite flexible, since they do not require special structures (e.g. mul-
+tiaffinity) and they can fruitfully support other methodologies, as shown for instance
+in the case study by Kim et al. (2006). However, they have two main drawbacks: the
+number of samples required to get to a conclusion with a given confidence may be
+huge, and their outcome is heavily distribution-dependent, so that different sample
+distributions for the system parameters can result in completely different conclusions
+on the system properties. A possible future research direction is that of systemati-
+
+
+123
+Vertex results for the robust analysis…                                                  Page 41 of 43   35
+
+
+cally combining probabilistic and classic approaches for the robustness analysis of
+biological models.
+
+Acknowledgements FB and PC are supported by the Italian grant PRIN 2017 ‘Monitoring and Control
+Underpinning the Energy-Aware Factory of the Future: Novel Methodologies and Industrial Validation’ (ID
+2017YKXYXJ). GG acknowledges financial support through the Strategic Grant MOSES at the University
+of Trento. IZ is supported by Project PROACTIVE 2017 ‘From Single-Cell to Multi-Cells Information
+Systems Analysis’, Department of Information Engineering, University of Padova.
+
+Funding Open access funding provided by Università degli Studi di Trento within the CRUI-CARE Agree-
+ment.
+
+Declarations
+Conflict of interest The authors declare that they have no conflict of interest.
+
+Open Access This article is licensed under a Creative Commons Attribution 4.0 International License, which
+permits use, sharing, adaptation, distribution and reproduction in any medium or format, as long as you give
+appropriate credit to the original author(s) and the source, provide a link to the Creative Commons licence,
+and indicate if changes were made. The images or other third party material in this article are included
+in the article’s Creative Commons licence, unless indicated otherwise in a credit line to the material. If
+material is not included in the article’s Creative Commons licence and your intended use is not permitted
+by statutory regulation or exceeds the permitted use, you will need to obtain permission directly from the
+copyright holder. To view a copy of this licence, visit http://creativecommons.org/licenses/by/4.0/.
+
+
+
+References
+Alon U (2006) An Introduction to Systems Biology: Design Principles of Biological Circuits. Chapman &
+     Hall/CRC
+Alon U, Surette MG, Barkai N, Leibler S (1999) Robustness in bacterial chemotaxis. Nature 397(6715):168–
+     171
+Al-Radhawi MA, Angeli D (2016) New approach to the stability of chemical reaction networks: Piecewise
+     linear in rates Lyapunov functions. IEEE Trans Autom Control 61(1):76–89
+Barkai N, Leibler S (1997) Robustness in simple biochemical networks. Nature 387(6636):913–917
+Barmish BR (1994) New Tools for Robustness of Linear Systems. Macmillan
+Bin M, Huang J, Isidori A, Marconi L, Mischiati M, Sontag E (2021) Internal Models in Control, Bioengi-
+     neering, and Neuroscience. Robotics, and Autonomous Systems, Annual Review of Control
+Blanchini F, Giordano G (2014) Piecewise-linear Lyapunov functions for structural stability of biochemical
+     networks. Automatica 50(10):2482–2493
+Blanchini F, Giordano G (2017) Polyhedral Lyapunov functions structurally ensure global asymptotic
+     stability of dynamical networks iff the Jacobian is non-singular. Automatica 86(12):183–191
+Blanchini F, Giordano G (2019) BDC-decomposition for global influence analysis. IEEE Control Systems
+     Letters 3(2):260–265
+Blanchini F, Franco E, Giordano G (2014) A structural classification of candidate oscillatory and multista-
+     tionary biochemical systems. Bull Math Biol 76(10):2542–2569
+Blanchini F, Chesi G, Colaneri P, Giordano G (2019) Checking structural stability of BDC-decomposable
+     systems via convex optimisation. IEEE Control Systems Letters 4:205–210
+Blanchini F, Colaneri P, Giordano G, Zorzan I (2020) Predicting adaptation for uncertain systems with
+     robust real plots. 59th IEEE Conference on Decision and Control (CDC), 5861-5866
+Chesi G (2011) Robustness analysis of genetic regulatory networks affected by model uncertainty. Auto-
+     matica 47(6):1131–1138
+Domijan M, Pécou E (2011) The interaction graph structure of mass-action reaction networks. J Math Biol
+     51(8):1–28
+
+
+
+
+                                                                                               123
+35   Page 42 of 43                                                                         F. Blanchini et al.
+
+
+El-Samad H, Goff JP, Khammash M (2002) Calcium homeostasis and parturient hypocalcemia: an integral
+      feedback perspective. J Theor Biol 214:17–29
+Epstein IR, Pojman JA (1998) Chemical Dynamics: Oscillations, Waves, Patterns, and Chaos. Oxford
+      University Press, New York
+Garofalo F, Celentano G, Glielmo L (1993) Stability robustness of interval matrices via Lyapunov quadratic
+      forms. IEEE Trans Autom Control 38(2):281–284
+Ghafari M, Mashaghi A (2017) On the role of topology in regulating transcriptional cascades. Phys Chem
+      Chem Phys 19(36):25168–25179
+Giordano G, Cuba Samaniego C, Franco E, Blanchini F (2016) Computing the structural influence matrix
+      for biological systems. J Math Biol 72(7):1927–1958
+Goldbeter A (1995) A model for circadian oscillations in the Drosophila period protein (PER). Proceedings
+      of the Royal Society of London B 261:319–324
+Gouze J-L (1998) Positive and negative circuits in dynamical systems. J Biol Syst 6:11–15
+Hara S, Iwasaki T, Hori Y (2019) Robust stability analysis for LTI systems with generalized frequency
+      variables and its application to gene regulatory networks. Automatica 105:96–106
+Khammash M (2016) An engineering viewpoint on biological robustness. BMC Biol 14:22
+Khammash M (2021) Perfect adaptation in biology. Cell Syst 12(6):509–521
+Kim J, Bates DG, Postlethwaite I, Ma L, Iglesias PA (2006) Robustness analysis of biochemical network
+      models. IEE Proceedings-Systems Biology 153(3):96–104
+Kim J, Khetarpal I, Sen S, Murray RM (2014) Synthetic circuit for exact adaptation and fold-change
+      detection. Nucleic Acids Res 42(9):6078–6089
+Kitano H (2004) Biological robustness. Nat Rev Genet 5(11):826–837
+Krishnan J, Floros I (2019) Adaptive information processing of network modules to dynamic and spatial
+      stimuli. BMC Systems Biology 13(1):1–26
+Lesne A (2008) Robustness: confronting lessons from physics and biology. Biol Rev 83:509–532
+Ma L, Iglesias P (2002) Quantifying robustness of biochemical network models. BMC Bioinformatics
+      3(1):1–13
+Ma W, Trusina A, El-Samad H, Lim WA, Tang C (2009) Defining network topologies that can achieve
+      biochemical adaptation. Cell 138(4):760–773
+Mangan S, Alon U (2003) Structure and function of the feed-forward loop network motif. Proceedings of
+      the National Academy of Sciences of the USA 100(21):11980–11985
+Mohsenizadeh DN, Keel LH, Bhattacharyya SP (2014) An extremal result for unknown interval linear
+      systems. Proceedings of the 19th IFAC World Congress, Cape Town, South Africa
+Mucci V, Indovina I, Browne CJ, Blanchini F, Giordano G, Marinelli L, Burlando B (2020) Mal de Debar-
+      quement Syndrome: a matter of loops? Front Neurol 11:1387
+Polyak BT, Nazin SA (2004) Interval solutions for interval algebraic equations. Mathematics and Computers
+      in Simulation
+Shinar G, Alon U, Feinberg M (2009) Sensitivity and robustness in chemical reaction networks. SIAM J
+      Appl Math 69(4):977–998
+Shinar G, Milo R, Rodrìguez Martìnez M, Alon U (2007) Input-output robustness in simple bacterial
+      signaling systems. Proceedings of the National Academy of Sciences of the USA 104, 19,931–199,935
+Smolen P, Baxter DA, Byrne JH (2000) Modeling transcriptional control in gene networks-methods, recent
+      results, and future directions. Bull Math Biol 62(2):247–292
+Snoussi E (1998) Necessary conditions for multistationarity and stable periodicity. J Biol Syst 6:3–9
+Sontag ED (2003) Adaptation and regulation with signal detection implies internal model. Syst Control
+      Lett 50:119–126
+Stelling J, Sauer U, Szallasi Z, Doyle F III, Doyle J (2004) Robustness of cellular functions. Cell 118:675–
+      685
+Steuer R, Waldherr S, Sourjik V, Kollmann M (2011) Robust signal processing in living cells. PLoS Com-
+      putational Biology 7(11):e1002218
+Streif S, Kim K, Rumschinski P, Kishida M, Shen DE, Findeisen R, Braatz RD (2016) Robustness analysis,
+      prediction, and estimation for uncertain biochemical networks: An overview. J Process Control 42:14–
+      34
+Tempo R, Calafiore G, Dabbene F (2005) Randomized Algorithms for Analysis and Control of Uncertain
+      Systems. Springer, London
+Waldherr S, Allgöwer F (2011) Robust stability and instability of biochemical networks with parametric
+      uncertainty. Automatica 47(6):1139–1146
+
+
+
+123
+Vertex results for the robust analysis…                                              Page 43 of 43   35
+
+
+Whitacre JM (2012) Biological robustness: paradigms, mechanisms, and systems principles. Front Genet
+    3:67
+Yi TM, Huang Y, Simon MI, Doyle J (2000) Robust perfect adaptation in bacterial chemotaxis through
+    integral feedback control. Proceedings of the National Academy of Sciences of the USA 97(9):4649–
+    4653
+
+
+Publisher’s Note Springer Nature remains neutral with regard to jurisdictional claims in published maps
+and institutional affiliations.
+
+
+
+
+                                                                                          123

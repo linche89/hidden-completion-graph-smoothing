@@ -1,0 +1,1478 @@
+Electronic Transactions on Numerical Analysis.                                                    ETNA
+Volume 28, pp. 16-39, 2007.                                                                  Kent State University
+Copyright  2007, Kent State University.                                                      etna@mcs.kent.edu
+ISSN 1068-9613.
+
+
+
+
+          DECAY BOUNDS AND O(n) ALGORITHMS FOR APPROXIMATING
+                     FUNCTIONS OF SPARSE MATRICES∗
+                                    MICHELE BENZI† AND NADER RAZOUK†
+
+                    Dedicated to Gene Golub on the occasion of his 75th birthday
+
+    Abstract. We establish decay bounds for the entries of f (A), where A is a sparse (in particular, banded) n × n
+diagonalizable matrix and f is smooth on a subset of the complex plane containing the spectrum of A. Combined
+with techniques from approximation theory, the bounds are used to compute sparse (or banded) approximations to
+f (A), resulting in algorithms that under appropriate conditions have linear complexity in the matrix dimension.
+Applications to various types of problems are discussed and illustrated by numerical examples.
+
+    Key words. Matrix functions, sparse and banded matrices, decay rates, linear time algorithms, Chebyshev
+polynomials, Faber polynomials, density matrix, trace, determinant
+
+     AMS subject classifications. Primary 65F10, 65F30. Secondary 15A.
+
+
+      1. Introduction. This paper is devoted to the problem of computing approximations to
+matrix functions f (A), where A is a large, sparse (in particular, banded) matrix of order n
+and f is smooth on a region containing the eigenvalues of A. We are motivated by the current
+need for fast algorithms for approximating a wide class of matrix functions that occur in im-
+portant areas of computational science and engineering, like electronic structure calculations
+in quantum chemistry and nanoscience. Our approach is based on the study and careful ex-
+ploitation of certain decay properties exhibited by the entries of f (A). We show that in many
+cases the entries of f (A) decay very quickly in magnitude outside some band or sparsity
+pattern. In other words, the entries of f (A) tend to be strongly localized, an observation that
+opens the door to the possibility of approximating relevant matrix functions in O(n) time.
+Localization phenomena of this kind are well-known to physicists and chemists, especially
+those working on electronic structure calculations. With few exceptions, numerical analysts
+have so far largely neglected this property and its impact on the design of fast approximation
+algorithms. There is also a need for numerical analysts to analyze existing O(n) algorithms
+developed by physicists and to develop new, more efficient ones. This paper intends to be a
+first step towards the realization of such a program.
+      The paper is organized as follows. In section 2 we provide some background on ma-
+trix functions and make a few observations on related work. In section 3, after recalling
+some basic notions from approximation theory, we study localization phenomena in matrix
+functions. In particular, we prove very general decay bounds for the entries of matrix func-
+tions. Our results generalize and unify several previous results known in the literature. This
+theory can be used, in principle, to determine the bandwidth or sparsity pattern outside of
+which the entries of f (A) are guaranteed to be so small that they can be neglected with-
+out exceeding a prescribed error tolerance. In section 4 we discuss approximation methods
+based on classical approximation theory, including Chebyshev and Newton polynomials, and
+related approaches. Together with truncation strategies for neglecting small elements, these
+techniques form the basis for the approximation algorithms we use. Preliminary numerical
+experiments illustrating the promising behavior of the approximation schemes are presented
+in section 5. Finally, in section 6 we give our conclusions.
+
+   ∗ Received March 12, 2007. Accepted for publication May 10, 2007. Recommended by A. Wathen. Work
+
+supported by National Science Foundation grant DMS-0511336.
+     † Department of Mathematics and Computer Science, Emory University, Atlanta, Georgia 30322, USA
+
+({benzi,nrazouk}@mathcs.emory.edu).
+                                                        16
+                                                                                     ETNA
+                                                                                Kent State University
+                                                                                 etna@mcs.kent.edu
+
+
+
+               DECAY BOUNDS AND O(n) ALGORITHMS FOR MATRIX FUNCTIONS                              17
+
+      2. Functions of matrices. Unless otherwise specified, all matrices considered in this
+paper are square and complex. Given a matrix A and a function f defined on a subset of
+the complex plane containing the spectrum of A, it is possible to give several (equivalent)
+definitions of the matrix function f (A); see, e.g., [31, 39, 43, 46, 68]. For instance, when f
+is analytic, f (A) can be defined by a power series expansion, or by a contour integral (using
+Cauchy’s Theorem). Other definitions of f (A) can be given in terms of canonical forms, like
+the Jordan canonical form or the Schur triangular form. In this paper we limit ourselves to
+the case where A is diagonalizable, with A = XDX −1 where D = diag(λ1 , λ2 , . . . , λn ),
+so that f (A) = Xf (D)X −1 with f (D) = diag(f (λ1 ), f (λ2 ), . . . , f (λn )). Another useful
+definition is given by f (A) = r(A), where r denotes the Lagrange–Hermite interpolation
+polynomial that interpolates f (and, in case of multiple eigenvalues, certain of its derivatives)
+at the eigenvalues of A. This last definition shows that every matrix function of A is a polyno-
+mial in A; the coefficients of the polynomial, of course depending on A (and not just on f ).
+For the purpose of the theoretical part of this paper, the most useful definitions are those in
+terms of spectral decompositions and of power series expansions.
+      We are concerned here with the fundamental problem of computing approximations to
+matrix functions f (A), where A is a large, sparse (in particular, banded) n × n matrix. Al-
+though the problem of computing matrix functions has received considerable attention in the
+literature on numerical linear algebra and differential equations, we intend to address prob-
+lems and issues that so far have been largely neglected in the numerical analysis literature and
+yet are of considerable importance for applications and also in their own right. To explain
+how our approach differs from the large body of existing work, we point out that much of the
+literature on the approximation of matrix functions falls into two broad classes:
+       1. Algorithms designed for the “exact” (i.e., high-accuracy) computation of f (A),
+          where A is a dense matrix of moderate size; here f is often some elementary func-
+          tion such as the exponential, the sine (or cosine), the p-th root, or the sign function.
+          See, e.g., [12, 23, 39, 41, 43, 53, 62].
+       2. Algorithms designed for the computation of the vector f (A)v, where v is a given
+          vector and A is a large, sparse matrix. This problem is especially important in
+          the numerical integration of large systems of time-dependent differential equations,
+          parabolic PDEs, etc.; see, e.g., [10, 11, 13, 19, 20, 21, 25, 26, 28, 35, 44, 45, 51, 57,
+          69]. Most of these papers are concerned with the computation of the action of the
+          exponential operator exp(−tA) on a vector v, where t > 0 and the eigenvalues of A
+          have positive real part.
+In contrast, we focus on the problem of finding approximations (to within a prescribed tol-
+erance and for an appropriate choice of the error metric, usually dictated by the underlying
+application) to the actual entries of f (A) when A is large and banded or sparse. The ultimate
+goal is to develop reliable algorithms with guaranteed accuracy and optimal complexity, when
+feasible. For a sparse or banded n × n matrix A, a lower bound for the best possible complex-
+ity is O(n) arithmetic work and storage: i.e., the cost of the approximation, in terms of time
+and storage, scales at least linearly in the size of the problem. Generally speaking, attainment
+of this lower bound rules out the computation of f (A) by reduction to diagonal or triangular
+(Schur) form. Also, the straightforward use of algorithms for computing f (A)v applied to
+the case where v = ei (the ith column of the identity matrix, with i = 1 : n) is likely to result
+in O(n2 ) complexity, although careful implementations of inexact (“sparse-sparse”) variants
+of this approach may work in some cases.
+      Clearly, O(n) algorithms are feasible only if f (A) can be well-approximated, in some
+representation, by a banded or sparse matrix, with an error that is independent of n (see sec-
+tion 3). It is also worth noting that in many applications not all the entries of f (A) are needed,
+                                                                                   ETNA
+                                                                              Kent State University
+                                                                               etna@mcs.kent.edu
+
+
+
+18                           MICHELE BENZI AND NADER RAZOUK
+
+
+but only selected ones. For instance, it may happen that only an estimate of the trace (sum of
+the diagonal elements) of f (A) is required. Another scalar function that is sometimes neces-
+sary to estimate is the determinant det[f (A)], and in some cases it is possible to approximate
+this quantity without computing all the entries of f (A). Also, in many applications very high
+accuracy is not required or warranted.
+     One approach that has been used in the literature to approximate selected entries of ma-
+trix functions is the method based on Gaussian quadrature rules developed by Golub and
+collaborators over the years; see [38], and [4, 5, 8] for further details and some applications.
+While the original method was developed for real symmetric matrices, nonsymmetric exten-
+sions have been since developed; see, e.g., [15] for an approach based on the Arnoldi process.
+This methodology is quite different from that used in the present paper.
+     The key idea of the paper is to exploit the fact that for large classes of matrices A and
+functions f , the “important” entries of f (A) are highly localized; for instance, the entries
+of f (A) exhibit exponentially fast off-diagonal decay. We emphasize that the vast majority
+of the algorithms currently in vogue among numerical analysts for the computation of f (A)
+do not exploit this property. Among the few exceptions, see [4, 6, 7, 21, 47, 67]; however,
+these papers all address some very special problems, and a systematic treatment of sparsity
+in matrix functions is lacking. We also mention that chemists and physicists who work in
+the field of electronic structure calculations have observed the exponential decay property
+in the density matrix (a function of the Hamiltonian) for non-metallic systems, see [3, 37,
+42, 52, 59]. (For metallic systems, the decay is algebraic rather than exponential, see [36].)
+Physicists have exploited this property by developing “sparsified” iterative algorithms for the
+approximation of density matrices. Partial results and a few algorithms tailored to specific
+matrix functions can be found scattered in the literature, but no general theory or rigorous
+foundations for many of the algorithms developed by physicists exist. There is, in other
+words, little available theory for such approximation algorithms; moreover, error estimates
+and safe stopping criteria have yet to be developed, and optimality results are also missing.
+Finally, the existing O(n) algorithms are applicable to the Hermitian case only, and there
+is an interest for methods that can handle non-Hermitian matrices as well. In this paper we
+begin to address some of these questions.
+
+     3. Decay bounds. Many physical phenomena are characterized by strong localization,
+that is, rapid decay outside of a small spatial or temporal region. Frequently, such localization
+can be expressed as decay in the entries of a function f (A) of an appropriate sparse or banded
+matrix A that encodes a description of the system under study. In this section we survey the
+current state of knowledge on this topic and contribute some new results that extend and
+unify previously known ones. We begin with a simple graph-theoretical result on the sparsity
+pattern of f (A), according to which such a matrix is generally full. Then we consider banded
+approximations to matrices that exhibit exponential off-diagonal decay of the entries and
+discuss situations where O(n) approximations are feasible. Next, we provide some necessary
+background on approximation theory and finally we prove new exponential decay bounds for
+a wide class of functions f and matrices A.
+
+     3.1. A structural result. Let A = [aij ] be an n × n matrix. We associate to A a digraph
+G(A) = (V, E) in the standard way (we refer to [24] for basic background on graph theory).
+The vertex set V consists of the integers from 1 to n and the edge set E contains all ordered
+pairs (i, j) with aij 6= 0. Recall that for i, j ∈ V the distance d(i, j) between i and j is
+the length of the shortest directed path connecting node i to node j; the maximum distance
+between any two nodes in G(A) is the diameter of the digraph. Proposition 3.1 states a simple
+                                                                                       ETNA
+                                                                                Kent State University
+                                                                                 etna@mcs.kent.edu
+
+
+
+                DECAY BOUNDS AND O(n) ALGORITHMS FOR MATRIX FUNCTIONS                             19
+
+structural result about f (A) for a large class of analytic functions f .
+     P ROPOSITION 3.1. Let f be an analytic function of the form
+                                 ∞
+                                                              f (k) (z0 )
+                                X                                        
+                                                  k
+                        f (z) =      ak (z − z0 )      ak =                 ,
+                                                                  k!
+                                 k=0
+
+where z0 ∈ C and the power series expansion has radius of convergence r > 0. Let A have
+an irreducible sparsity pattern with nonzero diagonal entries and let l (1 ≤ l ≤ n − 1) be the
+diameter of G(A). Assume further that there exists k ≥ l such that f (k) (z0 ) 6= 0. Then it is
+possible to assign values to the nonzero entries of A in such a way that f (A) is defined and
+structurally full.
+     Proof. We first observe that it is always possible to assign numerical values to the entries
+of A so that the spectrum of A lies inside the circle of convergence of the power series.
+Indeed, any matrix can be shifted and scaled so that the eigenvalues λi of the resulting matrix
+satisfy |λi − z0 | < r, for i = 1 : n. Note that shifting and scaling does not affect the
+irreducibility of the sparsity pattern. Thus, the power series
+
+              a0 I + a1 (A − z0 I) + a2 (A − z0 I)2 + · · · + ak (A − z0 I)k + · · ·
+
+with ak = f (k) (z0 )/k! converges to f (A). Since A is irreducible, there is a directed path
+in the digraph of A from any node i to any other node j. From the assumption that the
+maximum distance between any two nodes has length l we conclude that (A − z0 I)k for
+k ≥ l is structurally full, since there is an entry for each i, j with d(i, j) ≤ l in G(A). Finally,
+the assumption that f (k) (z0 ) 6= 0 for at least one k ≥ l implies that f (A) is structurally
+full.
+      The above result means that barring fortuitous cancellation, all entries of f (A) are nonzero
+when A is irreducible (with a nonzero diagonal) and f is a “generic” analytic function, by
+which we mean an analytic function with at least one non-vanishing derivative of sufficiently
+high order. We note that this result generalizes a well-known fact about the inverse of an
+irreducible matrix [27].
+      Thus, it would seem that the quest for O(n) algorithms for approximating f (A) is
+doomed from the start. However, as we will see, it is often the case that most of the en-
+tries in f (A) are very small in magnitude, thus making banded or sparse approximations
+possible.
+      3.2. Banded approximations to highly localized matrices. Here we consider approx-
+imating a dense matrix with certain decay properties by means of a banded matrix. The prob-
+lem is important for several reasons. First, there are situations where the matrix A itself is
+completely dense, but has rapidly decaying entries; matrices of this kind are sometimes called
+pseudosparse. For example, a matrix representing a differential operator with respect to a ba-
+sis made of globally supported but highly localized functions will typically be pseudosparse.
+It is common practice to replace A with a banded matrix Ã obtained by “sparsifying” (or
+“truncating”) the matrix outside a certain band, or by dropping entries whose magnitude falls
+under a certain (small) threshold. As a preliminary condition for developing linear scaling
+algorithms, it is essential to show that the sparsification error kA − Ãk may be bounded, for
+an appropriate norm, by a quantity independent of the order n of the matrix; here we show
+that this is indeed the case when the entries of A satisfy a certain exponential decay condition.
+Also, in order to approximate a matrix function f (A), we actually compute an approximation
+of f (Ã). How far this is from the actual f (A) depends on several factors, including of course
+on how far Ã is from A; see [50] for a general theory of condition estimation for matrix
+functions. It is therefore desirable to bound the sparsification error in terms of the rate of
+                                                                                           ETNA
+                                                                                     Kent State University
+                                                                                      etna@mcs.kent.edu
+
+
+
+20                                MICHELE BENZI AND NADER RAZOUK
+
+
+decay of the entries of A. Furthermore, the bounds are useful in estimating the error in the
+approximation of the generally full matrix f (Ã) by a sparse or banded matrix.
+     We say that an n × n matrix A = [aij ] has the exponential off-diagonal decay property
+if there is a constant c > 0 such that
+
+(3.1)                            |aij | ≤ cλ|i−j| ,   where    0 < λ < 1,
+
+for all i, j = 1 : n. Corresponding
+                       h      i     to the matrix A we then define for a nonnegative integer
+                 (m)      (m)
+m the matrix A       = aij defined as follows:
+                                              
+                                      (m)         aij , if |i − j| ≤ m;
+                                     aij =
+                                                  0,    otherwise.
+
+The matrix A(m) is m-banded, with m being the bandwidth of A(m) ; according to this defi-
+nition, diagonal matrices have zero bandwidth, tridiagonal ones have bandwidth m = 1, etc.
+Note that we do not require the matrix to be symmetric here, we only assume (for simplicity)
+that the same pattern of nonzero off diagonals is present on either side of the main diagonal.
+The following simple result provides an estimate of the rate at which the sparsification error
+decreases as the bandwidth m of the approximation increases. In addition, it establishes n-
+independence when the constants c and λ in (3.1) are independent of n. For convenience, we
+work with the 1-norm.
+     P ROPOSITION 3.2. Let A be a matrix with entries aij satisfying (3.1) and let A(m) be
+the corresponding m-banded approximation. Then for any ε > 0 there is an m such that
+kA − A(m) k1 ≤ ε for m ≥ m.
+     Proof. We have
+                                    n                       n               ∞
+                                    X              (m)
+                                                            X               X              cλm+1
+        kA − A(m) k1 = max                |aij − aij | ≤           cλk ≤           cλk =         .
+                            1≤j≤n
+                                    i=1
+                                                                                            1−λ
+                                                           k=m+1           k=m+1
+
+Since 0 < λ < 1, for any given ε > 0 we can always make
+
+                                                  cλm+1
+                                                        ≤ε
+                                                   1−λ
+by taking m sufficiently large.
+      The result of Proposition 3.2 also holds for matrices with other types of decay behavior,
+for instance algebraic decay of the form |aij | ≤ c|i − j|−p with p > 1. Moreover, the
+argument can be adapted to handle sparse matrices rather than banded ones, along the lines
+to be discussed in section 3.4.
+      Clearly, Proposition 3.2 is not very useful when applied to a single n × n matrix A since
+it is obvious that taking m = n always results in a zero error. The result, however, shows
+that if we have a sequence {An } of matrices of increasing dimension n, with entries [An ]ij
+satisfying a uniform exponential off-diagonal decay property of the type
+
+        |[An ]ij | ≤ cλ|i−j| ,   where      0 < λ < 1,     with c and λ independent of n,
+
+then for any given ε > 0 it is possible to find a bandwidth m independent of n such that the
+                               (m)            (m)
+m-banded approximations An satisfy kAn − An k1 < ε, for all n.
+     We mention that although in this section we have limited our discussion to absolute errors
+relative to a certain matrix norm, in practice we adopt relative error measures when assessing
+the distance of a computed approximation from a desired quantity.
+                                                                                       ETNA
+                                                                                  Kent State University
+                                                                                   etna@mcs.kent.edu
+
+
+
+              DECAY BOUNDS AND O(n) ALGORITHMS FOR MATRIX FUNCTIONS                                 21
+
+     3.3. Faber polynomials and series. In this section we provide some background on
+approximation theory that will be needed in proving general decay bounds for the entries of
+functions of sparse or banded matrices. Our treatment follows closely that in [58], but see
+also [18, 75]. In the following, F denotes a continuum containing more than one point. By
+a continuum we mean a nonempty, compact and connected subset of C. Let G∞ denote the
+component of the complement of F containing the point at infinity. Note that G∞ is a simply
+connected domain in the extended complex plane C̄ = C ∪ {∞}. By the Riemann Mapping
+Theorem there exists a function w = Φ(z) which maps G∞ conformally onto a domain of
+the form |w| > ρ > 0 satisfying the normalization conditions
+                                                      Φ(z)
+(3.2)                           Φ(∞) = ∞,              lim = 1;
+                                                   z→∞ z
+
+ρ is the logarithmic capacity of F . Given any integer N > 0, the function [Φ(z)]N has a
+Laurent series expansion of the form
+                                                                  (N )
+                       N        N      (N ) N −1            (N ) α−1
+(3.3)            [Φ(z)]    =z       + αN −1 z    + · · · + α0 +        + ···
+                                                                           z
+at infinity. The polynomials
+                                                (N )                     (N )
+                           ΦN (z) = z N + αN −1 z N −1 + · · · + α0
+
+consisting of the terms with nonnegative powers of z in the expansion (3.3) are called the
+Faber polynomials generated by the continuum F .
+     Let Ψ be the inverse of Φ. By CR we denote the image under Ψ of a circle |w| = R > ρ.
+The (Jordan) region with boundary CR is denoted by I(CR ). By Theorem 3.17, p. 109 of
+[58], every function f (z) analytic on I(CR0 ) with R0 > ρ can be expanded in a series of
+Faber polynomials:
+                                                ∞
+                                                X
+(3.4)                                 f (z) =          αk Φk (z),
+                                                k=0
+
+where the series converges uniformly inside I(CR0 ). The coefficients are given by
+                                     1         f (Ψ(w))
+                                        Z
+                              αk =                       dw,
+                                    2πi |w|=R wk+1
+
+where ρ < R < R0 . We denote the partial sums of the series in (3.4) by
+                                                  N
+                                                  X
+(3.5)                                ΠN (z) :=           αk Φk (z).
+                                                  k=0
+
+Each ΠN (z) is a polynomial of degree at most N , since each Φk (z) is of degree k. We are
+now ready to state a result that will be instrumental in our proof of the decay bounds.
+     T HEOREM 3.3. (Bernstein’s Theorem) Let f be a function defined on F . Then given
+any ε > 0 and any integer N ≥ 0, there exists a polynomial ΠN of degree at most N and a
+positive constant c(ε) such that
+
+(3.6)                 |f (z) − ΠN (z)| < c(ε)(q + ε)N               (0 < q < 1)
+
+for all z ∈ F if and only if f is analytic on the domain I(CR0 ), where R0 = ρ/q. In this
+case, the sequence {ΠN } converges uniformly to f inside I(CR0 ) as N → ∞.
+                                                                                    ETNA
+                                                                               Kent State University
+                                                                                etna@mcs.kent.edu
+
+
+
+22                             MICHELE BENZI AND NADER RAZOUK
+
+
+     In the special case where F is a disk of radius ρ centered at z0 , Theorem 3.3 states that
+for any function f analytic on the disk of radius ρ/q centered at z0 , where 0 < q < 1, there
+exists a polynomial ΠN of degree at most N and a positive constant c(ε) such that for any
+ε > 0,
+
+                                   |f (z) − ΠN (z)| < c(ε)(q + ε)N ,
+
+for all z ∈ F . We are primarily concerned with the sufficiency part of Theorem 3.3. Note that
+the choice of q (with 0 < q < 1) depends on the region where the function f is analytic. If
+f is defined on a continuum F with logarithmic capacity ρ then we can pick q bounded away
+from 1 as long as the function is analytic on I(Cρ/q ). Therefore, the rate of convergence is
+directly related to the properties of the function f , such as the location of its poles (if there
+are any). Following [58], the constant c(ε) can be estimated as follows. Let R0 , q and ε be
+given as in Theorem 3.3. Furthermore, let R′ and R be chosen such that ρ < R′ < R < R0
+and
+                                              R′
+                                                 = q + ε,
+                                              R
+then we define
+
+                                        M (R) = max |f (z)|.
+                                                   z∈CR
+
+An estimate for the value of c(ε) is asymptotically (i.e., for sufficiently large N ) given by
+                                              3          q+ε
+                                     c(ε) ≈     M (R)             .
+                                              2       1 − (q + ε)
+It may be necessary to replace the above expression for c(ε) by a larger one to obtain validity
+of the bound (3.6) for all N . However, for certain regions F it is possible to obtain an explicit
+constant valid for all N ≥ 0; see [29] and section 3.7 below.
+     3.4. General decay bounds. Simple numerical experiments in M ATLAB reveal that if
+A is a band symmetric matrix (e.g., tridiagonal) and f is a smooth function on an interval con-
+taining the spectrum of A, then most of the (relatively) large entries of f (A) are concentrated
+on or near the nonzero diagonals of A; outside the band, the entries of f (A) tend to drop off
+rather quickly, albeit perhaps non-monotonically, and far from the main diagonal their magni-
+tude becomes negligible. In other words, f (A) exhibits the off-diagonal decay property. Sim-
+ilar behavior is observed for matrices with more general sparsity patterns, with most of the
+large entries in f (A) located near the nonzero entries of A. This phenomenon is well-known
+to physicists, who have referred to it as the nearsightedness principle, see [52]. Further exper-
+iments suggest that a similar phenomenon holds for other types of diagonalizable matrices,
+including non-normal ones and often even for matrices whose eigenvectors are very far from
+being orthogonal. In Figs. 3.1–3.2 we display “city plots” demonstrating the rapid decay in
+the square root and logarithm of two sparse symmetric positive definite matrices, nos4 and
+bcsstk03, available from the Matrix Market (http://math.nist.gov/MatrixMarket/). Prior to
+the computations, the matrices have been divided by their largest element and reordered with
+reverse Cuthill–McKee.
+     In the mathematical literature, the decay property has been first noticed for the inverse of
+banded, symmetric positive definite matrices; the seminal paper is [22], but see also [9, 40,
+49, 60, 65]. The main result is an exponentially decaying upper bound of the form
+
+         |[A−1 ]ij | ≤ cλ|i−j| ,     where     c > 0 and     0 < λ < 1 (1 ≤ i, j ≤ n).
+                                                                                                                 ETNA
+                                                                                                       Kent State University
+                                                                                                        etna@mcs.kent.edu
+
+
+
+              DECAY BOUNDS AND O(n) ALGORITHMS FOR MATRIX FUNCTIONS                                                      23
+
+
+
+
+                  1
+
+
+                0.8
+
+
+                0.6
+
+
+                0.4
+
+
+                0.2
+
+
+                  0
+                100
+                        80                                                                                 100
+                                   60                                                           80
+                                          40                                          60
+                                                                           40
+                                                20                 20
+                                                       0   0
+
+
+
+
+                                    F IG . 3.1. City plot for the square root of nos4.
+
+
+
+
+                15
+
+
+
+
+                10
+
+
+
+
+                 5
+
+
+
+
+                 0
+                  100
+                             80                                                                      100
+                                     60                                                    80
+                                           40                                    60
+                                                                          40
+                                                20                20
+                                                       0   0
+
+
+
+
+                                  F IG . 3.2. City plot for the logarithm of bcsstk03.
+
+
+
+Here c and λ depend on the bandwidth and extreme eigenvalues of A, with decay being
+faster when the bandwidth is small and the matrix well-conditioned. The decay bound can be
+generalized to some extent to nonsymmetric (diagonalizable) matrices as well. Similar decay
+results have also been obtained for the resolvent (zI − A)−1 , the inverse square root A−1/2 ,
+and the exponential exp(A); see [48, 49, 66, 74]. In [8], Gene Golub and the first author have
+obtained a general decay result of the form
+
+                |[f (A)]ij | ≤ cλ|i−j| ,             where c > 0 and 0 < λ < 1 ,
+                                                                                     ETNA
+                                                                                Kent State University
+                                                                                 etna@mcs.kent.edu
+
+
+
+24                           MICHELE BENZI AND NADER RAZOUK
+
+
+where A is banded symmetric and f is analytic on an ellipse containing the spectrum of A.
+This result is based on a classical result of Bernstein (different from Theorem 3.3) combined
+with the spectral theorem. The constants c and λ depend on the bandwidth of A and on the pa-
+rameters of the ellipse and can be estimated explicitly. Some generalizations and applications
+of this result can be found in the quantum information processing literature; see [16, 17, 72].
+We further mention the decay bounds for functions of banded skew-symmetric matrices given
+in [21, 56] which, however, were obtained using different techniques from ours.
+     In the next sections we provide some further generalizations of these known results that
+extend and unify most existing bounds, using as our basic tool Theorem 3.3 above.
+     3.5. Decay rates for the entries of diagonalizable matrices. The decay bounds are
+obtained by translating Bernstein’s Theorem 3.3 in terms of matrices, via matrix diagonal-
+ization. Our treatment follows closely the ones in [8, 22]. Let A = [aij ] be a diagonalizable
+matrix and let G(A) = (V, E) be the digraph associated with A. Recall that for i, j ∈ V ,
+d(i, j) denotes the length of the shortest directed path connecting node i with node j. (If
+there is no directed path from i to j, we set d(i, j) = ∞.) We note that this graph-theoretic
+‘distance’ d(i, j) is not necessarily a true distance, since in general d(i, j) 6= d(j, i), unless
+A is structurally symmetric. Clearly, whenever d(i, j) > 1 we have that aij = 0. More
+                                    (k)                                                        (k)
+generally, it is easy to see that aij = 0 whenever d(i, j) > k for k = 0, 1, . . ., where aij
+                                         k
+denotes the (i, j) entry in the matrix A . To show this, we use induction over k and note that
+the situation is trivial for k = 1. Consider now the following identity:
+                                      (k+1)
+                                                  X (k)
+                                     aij      =    ail alj .
+                                                   l
+
+                                                       (k)
+For pairs (i, l) such that d(i, l) > k we have that ail = 0, by the inductive hypothesis. For
+pairs with d(i, l) ≤ k we have that
+
+                       k + 1 < d(i, j) ≤ d(i, l) + d(l, j) ≤ k + d(l, j)
+
+and therefore d(l, j) > 1, hence alj = 0.
+     We are now in a position to state our general decay result. In the following, σ(A) denotes
+the spectrum of A.
+     T HEOREM 3.4. Let A be diagonalizable and assume that σ(A) is contained in a con-
+tinuum F . Let κ(X) denote the spectral condition number of the matrix X of eigenvectors
+of A. Let f be a function defined on F . Furthermore, assume that f is analytic on I(CR0 )
+(⊃ σ(A)), where R0 = ρq with 0 < q < 1 and ρ is the logarithmic capacity of F . Then there
+are positive constants K and 0 < λ < 1 such that
+
+(3.7)                 |[f (A)]ij | < κ(X)Kλd(i,j)      for all i, j = 1 : n.
+
+
+    Proof. From Theorem 3.3 we know that for any ε > 0 there exists a sequence of polyno-
+mials Πk of degree k which satisfies for all z ∈ F
+
+                   |f (z) − Πk (z)| < c(ε)(q + ε)k ,         where 0 < q < 1.
+
+We therefore have, since A = XDX −1 , that
+
+          kf (A) − Πk (A)k2 ≤ κ(X) max |f (z) − Πk (z)| < κ(X)c(ε)(q + ε)k ,
+                                        z∈σ(A)
+                                                                                  ETNA
+                                                                             Kent State University
+                                                                              etna@mcs.kent.edu
+
+
+
+                 DECAY BOUNDS AND O(n) ALGORITHMS FOR MATRIX FUNCTIONS                         25
+
+where 0 < q < 1. For i 6= j we can write
+                                        d(i, j) = k + 1
+and therefore, observing that [Πk (A)]ij = 0 for d(i, j) > k, we have
+
+  |[f (A)]ij | = |[f (A)]ij − [Πk (A)]ij | ≤ kf (A) − Πk (A)k2 < κ(X)c(ε)(q + ε)d(i,j)−1 .
+Hence, choosing ε > 0 such that λ = q + ε < 1 and letting K0 = c(ε)/(q + ε) we obtain
+                                |[f (A)]ij | < κ(X)K0 λd(i,j) .
+If i = j then |[f (A)]ii | ≤ kf (A)k2 and therefore, letting K = max{K0 , kf (A)k2 }, we see
+that inequality (3.7) holds for all i, j.
+     It is clear that when the matrix A is dense, the bound (3.7) is not very meaningful since
+the digraph G(A) will be dense as well. Hence, in practice the result is of some interest
+only in the (pseudo)sparse case. Also note that if A is normal, then X can be chosen to be
+unitary and therefore κ(X) = 1. This covers for example the Hermitian and skew-Hermitian
+cases; we have thus obtained a single proof for results that had been previously proved using
+different tools. It should be clear from the proof of this result that in general one should not
+expect the bound to be very sharp. In particular, when A is highly non-normal (in the sense
+that κ(X) ≫ 1) the bound can be a severe overestimate of the actual size of the elements of
+f (A), and in this case other tools, such as for example pseudospectra, may be better suited to
+characterize the actual decay behavior; see [78, 79].
+     3.6. The banded case. We now specialize the result to the case of band matrices. As A
+is not assumed to have symmetric structure, it is necessary to account for the fact that for a
+nonsymmetric matrix, the rate of decay can be different above and below the main diagonal.
+For instance, A could have different numbers of nonzero diagonals below and above the
+main diagonal. An extreme case is when A is an upper (lower) Hessenberg matrix, in which
+case f (A) typically exhibits fast decay below (above) the main diagonal, and generally no
+decay above (below) it. In Figure 3.3 we display on the left the magnitude of the entries
+of f (A) = cos(A) where A is a band matrix with one nonzero diagonal below and four
+nonzero diagonals above the main diagonal. The matrix is diagonalizable, but the condition
+number κ(X) of the eigenvector matrix is of the order of 1010 . The plot on the right shows
+the magnitude of the entries on the 50th row of cos(A).
+     We establish the appropriate decay results next. We give the proof of the bound for
+entries in the lower part of f (A) only; the proof for the entries in the upper part of f (A) is
+identical, with the obvious changes.
+     We say that a matrix A has lower bandwidth p > 0 if aij = 0 whenever i − j > p
+and upper bandwidth s > 0 if aij = 0 whenever j − i > s. We note that if A has lower
+bandwidth p then Ak has lower bandwidth kp for k = 0, 1, 2, . . ., and similarly for the upper
+bandwidth s.
+     T HEOREM 3.5. Let A be diagonalizable with upper bandwidth p and lower bandwidth
+s. Assume that σ(A) is contained in a continuum F . Let f be a function defined on F .
+Furthermore, assume that f is analytic on I(CR0 ) (⊃ σ(A)), where R0 = ρq with 0 < q < 1
+and ρ is the logarithmic capacity of F . Then there are positive constants K, C and 0 <
+λ, η < 1 such that for i ≥ j,
+(3.8)                            |[f (A)]ij | < κ(X)Kλi−j ,
+and for i < j,
+(3.9)                             |[f (A)]ij | < κ(X)Cη j−i .
+                                                                                          ETNA
+                                                                                     Kent State University
+                                                                                      etna@mcs.kent.edu
+
+
+
+26                               MICHELE BENZI AND NADER RAZOUK
+
+
+                                                            25
+
+  40                                                        20
+
+                                                            15
+  20
+                                                            10
+
+   0
+ 100                                                         5
+                                                100
+            50
+                                    50                       0
+                     0 0                                     −50                 0                    50
+
+                             F IG . 3.3. Cosine of a nonsymmetric band matrix.
+
+
+
+
+     Proof. Observe first that for k = 0, 1, . . . the matrix Πk (A) has lower bandwidth kp for
+all polynomials Πk (z) of degree at most k. From Bernstein’s Theorem we know that for any
+ε > 0 there exists a sequence of polynomials Πk (z) of degree k which satisfies for all z ∈ F
+                     |f (z) − Πk (z)| < c(ε)(q + ε)k ,           where 0 < q < 1.
+We therefore have since A = XDX −1 that
+            kf (A) − Πk (A)k2 ≤ κ(X) max |f (z) − Πk (z)| < κ(X)c(ε)(q + ε)k ,
+                                           z∈σ(A)
+
+where 0 < q < 1. For i > j write
+                                 i − j = kp + l       for   l = 1, . . . , p;
+then we have that
+                                            i−j
+                                                −1≤k
+                                             p
+and hence observing that [Πk (A)]ij = 0 for i − j > pk,
+                                                                                              i−j
+     |[f (A)]ij | = |[f (A)]ij − [Πk (A)]ij | ≤ kf (A) − Πk (A)k2 < κ(X)c(ε)(q + ε) p −1 .
+                             1
+Hence, letting λ = (q + ε) p and K0 = c(ε)/(q + ε) we obtain
+                                    |[f (A)]ij | < κ(X)K0 λi−j .
+If i = j then |[f (A)]ii | ≤ kf (A)k2 and therefore, letting K = max{K0 , kf (A)k2 }, we see
+that inequality (3.8) holds for all i ≥ j.
+     An immediate corollary of Theorem 3.5 is the following.
+     C OROLLARY 3.6. Let A be a banded diagonalizable matrix. Assume that σ(A) is
+contained in a continuum F . Let f be a function defined on F . Furthermore, assume that f
+is analytic on I(CR0 ) (⊃ σ(A)), where R0 = ρq with 0 < q < 1 and ρ is the logarithmic
+capacity of F . Then there are positive constants K and 0 < λ < 1 such that for all i,j=1:n,
+                                    |[f (A)]ij | < κ(X)Kλ|i−j| .
+
+
+       We note that for A real and symmetric, this is essentially Theorem 2.2 in [8].
+                                                                                  ETNA
+                                                                             Kent State University
+                                                                              etna@mcs.kent.edu
+
+
+
+               DECAY BOUNDS AND O(n) ALGORITHMS FOR MATRIX FUNCTIONS                           27
+
+    3.7. More refined bounds. The bounds obtained in the previous section can be im-
+proved by using sharper estimates on the Faber polynomials, provided that some (fairly rea-
+sonable) additional conditions are imposed on the continuum F . As already mentioned at the
+end of section 3.3, in [29] the author presents more quantitative estimates on the N th Faber
+polynomial for certain choices of F . Specifically, assume that F is a closed Jordan region.
+By a Jordan region we mean a region F that is bounded and whose boundary Γ consists of
+pairwise disjoint closed Jordan curves. If Γ is rectifiable, there exists at almost every point
+z ∈ Γ a tangent vector that makes an angle Θ(z) with the positive real axis. We say that Γ
+has bounded total rotation V if
+                                         Z
+                                    V =     |dΘ(z)| < ∞.
+                                            Γ
+
+It is apparent that V ≥ 2π and equality holds if F is convex. In the case where F degenerates
+to a Jordan arc, the following results remain valid; we refer the reader to [29] for details.
+      T HEOREM 3.7. Let F be a Jordan region whose boundary Γ is of bounded total rota-
+tion V . Then the following holds:
+      (a) For N ≥ 1,
+
+                                            kΦN k∞ ≤ ρN V /π.
+
+         This bound holds with equality when F coincides with the interval [−1, 1].
+
+     (b) Let f be analytic on the closed region CR , R > ρ, then for N ≥ 0 we have
+
+                                                     M (R)V (ρ/R)N +1
+                                  kf − ΠN k∞ ≤                        ,
+                                                        π    1 − ρ/R
+
+          where M (R) = maxz∈CR |f (z)| and ΠN (z) are the polynomials defined by equa-
+          tion (3.5).
+     These bounds can be used to improve our earlier estimates in the case when F and f
+satisfy the conditions of Theorem 3.7. If in addition A satisfies the conditions of Theorem 3.4,
+we can obtain the following bound for the entries of f (A):
+
+(3.10)                   |[f (A)]ij | ≤ κ(X)Kλd(i,j) ,
+                 n                     o
+                              M (R)V
+where now K = max kf (A)k2 , π(1−ρ/R)    and λ = ρ/R.
+     We now compare the above bound on the entries of f (A) with the magnitude of the actual
+entries [f (A)]ij , for i < j, in a special case. The matrix A is tridiagonal, with spectrum in
+F = [−1, 1]. In this case ρ = 1/2 and since F is convex, we have that V = 2π. The function
+f must be analytic on the ellipse
+
+                                   x2                 y2
+                                          2 +              2 = 1.
+                                 R     ρ            R     ρ
+                                 2ρ + 2R            2ρ − 2R
+
+
+This is an ellipse with foci at ±1, the sum of whose semiaxes is R/ρ. For our experiment we
+take f (z) = ez , which is entire and therefore satisfies our assumptions. The constant M (R)
+is then given by
+                                                        1
+                                        M (R) = eR+ 4R .
+                                                                                                       ETNA
+                                                                                                  Kent State University
+                                                                                                   etna@mcs.kent.edu
+
+
+
+28                              MICHELE BENZI AND NADER RAZOUK
+
+
+                 linear scale                                                     log scale
+                                                            50
+  7                   exp(A)                                                          exp(A)
+                      upper bound                                                     upper bound
+  6                                                           0
+  5
+                                                           −50
+  4
+  3                                                      −100
+  2
+                                                         −150
+  1
+  0                                                      −200
+      0   20     40        60       80       100                  0    20        40          60         80      100
+
+                      F IG . 3.4. Upper bound (3.10) vs. the entries of exp(A), first row.
+
+
+
+It is important to note that (3.10) gives us a bound that changes with R. We can use small
+values of R to estimate the elements on the first few off-diagonals, and increase R as we
+move away from the diagonal. This adaptive strategy allows us to obtain sharper bounds than
+those described in the previous section. In Figure 3.4 we show the upper bound compared
+to the actual magnitude of the off-diagonal entries in the first row of f (A) = exp(A), in
+both linear and logarithmic scales. Clearly, the bound does a good job capturing the decay
+behavior, especially as one moves away from the main diagonal.
+      The decay bounds obtained so far can be used to predict a minimum bandwidth (more
+generally, sparsity pattern) for the computed approximation to f (A) to satisfy a prescribed
+error tolerance; if the rate of decay, expressed in terms of the various quantities entering the
+upper bound, does not depend on n, then an O(n) approximation is feasible. A sufficient
+condition is that the n × n matrix sequence {An } is such that for all n, the spectra σ(An )
+are all contained in a region that is bounded and bounded away from the singularities of f
+(if any); furthermore, the condition numbers of the corresponding eigenvector matrices must
+be bounded independent of n. Although these conditions seem rather restrictive, they are
+satisfied by large classes of matrices and functions that arise in applications, for example
+when f is entire and {An } is a sequence of normal (e.g., Hermitian) matrices with bounded
+spectra. If f is not entire (for example if f (z) = z −1 , f (z) = z −1/2 , or f (z) = log(z))
+then the spectra of the {An } must remain bounded away from the singularities of f . As
+an example, O(n) approximation of the inverse A−1      n is possible if there is a compact set
+that contains all the spectra σ(An ) and has positive distance from z = 0, provided that the
+eigenvector matrices have condition numbers that remain bounded as n → ∞.
+     4. Approximation algorithms. In this section we give a description of the algorithms
+we use to compute approximations to functions of sparse or banded matrices. As an integral
+part of the approach used, we also describe a procedure that can be used to determine a
+sparsity pattern or bandwidth for the approximation that captures all the relevant entries to a
+prescribed tolerance. In the following, when we write f (A) we are implicitly assuming that
+the function f (z) is defined on the spectrum of the matrix A and therefore the matrix function
+f (A) is well defined.
+     To approximate f (A) we consider algorithms that are based upon polynomial approx-
+imation. The problem is thus reduced to that of finding a rapidly converging polynomial
+approximation to the scalar function f (z) on a domain in the complex plane. This problem
+has been extensively studied in the approximation theory and numerical analysis literature;
+see, e.g., [30, 33, 73]. Depending on the location of the spectrum, different approaches can
+                                                                                      ETNA
+                                                                                 Kent State University
+                                                                                  etna@mcs.kent.edu
+
+
+
+               DECAY BOUNDS AND O(n) ALGORITHMS FOR MATRIX FUNCTIONS                               29
+
+be used. If the eigenvalues of A lie on a line segment in C, and estimates for the endpoints
+of the segment are available, it is possible to scale and shift the matrix A so that the resulting
+matrix has its spectrum in the interval [−1, 1]. For instance, let A have real spectrum with
+a = λmin (A) and b = λmax (A). The affine linear function
+
+                                                             2λ − (a + b)
+                       ξ : C −→ C       given by    ξ(λ) =
+                                                                b−a
+                                                                                   2       a+b
+satisfies ξ([a, b]) = [−1, 1], and therefore the spectrum of B = ξ(A) = b−a           A − b−a  I
+is contained in [−1, 1]. Hence, we can use the well known three-term recurrence relation
+to generate the (optimal) Chebyshev polynomials and obtain an approximation to f (B) by
+truncating the Chebyshev series. The approximation for the original matrix function f (A)
+can then be easily obtained from that of f (ξ −1 (B)) by inverting ξ. For simplicity of notation,
+we will assume that the matrix A has already been scaled and shifted so that its spectrum is
+contained in the interval [−1, 1].
+     For more general matrices, whose eigenvalues lie within a region F ⊂ C more compli-
+cated than a line segment, it is possible to generalize the method above to some extent by
+means of Faber polynomials; see, e.g., [10, 63, 64]. For certain domains F the Faber polyno-
+mials satisfy a three-term recurrence relation similar to that of the Chebyshev polynomials;
+for instance, this is the case when the spectrum lies in the interior of an ellipse on which f
+is analytic. However, for more general regions F the kth Faber polynomial satisfies a k-term
+recurrence relation. From the point of view of storage requirements, this is a serious draw-
+back. Some truncation and restarting strategies have been considered in the literature; here we
+consider instead an alternative approximation technique based on Newton-type interpolation,
+already used in [76].
+     4.1. Chebyshev expansion. Expansion in the Chebyshev basis has long been a popular
+approach for computing approximations to the density matrix in electronic structure calcu-
+lations; see, e.g., [2, 37]. The method can be used to approximate a wide variety of matrix
+functions, as long as the matrix can be easily transformed to one whose eigenvalues lie in
+[−1, 1]; e.g., if A is Hermitian or skew-Hermitian. We start by recalling the matrix version of
+the classical three-term recurrence relation for the Chebyshev polynomials:
+
+(4.1)               Tk+1 (A) = 2ATk (A) − Tk−1 (A),            k = 1, 2, . . .
+
+(with T0 (A) = I, T1 (A) = A). These matrices can be used to obtain an approximation
+                         ∞                         N
+                         X                   c1    X            c1
+               f (A) =         ck Tk (A) −      I≈   ck Tk (A) − I =: PN (A)
+                                             2                  2
+                         k=1                       k=1
+
+to f (A) by truncating the Chebyshev series expansion after N terms. The coefficients ck in
+the expansion only depend on f (not on A) and can be easily computed numerically at a cost
+independent of n using the approximation
+                                       M
+                                   2 X
+                           ck ≈          f (cos(θj )) cos((k − 1)θj ),
+                                   M j=1
+
+where θj = π(j − 12 )/M . Thus, most of the computational work is performed in (4.1). The
+basic operation in (4.1) is the matrix–matrix multiply. If the initial matrix A is m-banded,
+then after k iterations the matrix Tk+1 (A) will be km-banded. In order to have a linear scaling
+algorithm, it is essential to fix a maximum bandwidth for the approximation PN (A), which
+                                                                                        ETNA
+                                                                                   Kent State University
+                                                                                    etna@mcs.kent.edu
+
+
+
+30                            MICHELE BENZI AND NADER RAZOUK
+
+
+must not depend on n. Then the cost is dominated by the matrix–matrix multiplies, and this
+is an O(n) operation provided that the maximum bandwidth remains bounded as n → ∞.
+Similar conclusions apply for more general sparsity patterns, which can be determined by
+using the structure of successive powers Ak of A. Alternatively, dropping elements by size
+using a drop tolerance is often used, although rigorous justification of this procedure is more
+difficult.
+     Let us now consider the error incurred by the series truncation:
+
+(4.2)                           keN (A)k = kf (A) − PN (A)k,
+
+where k · k is, for instance, the matrix 2-norm. We limit our discussion to the banded case, but
+the same arguments apply in the case of general sparsity patterns as well. Since |Tk (x)| ≤ 1
+for all x ∈ [−1, 1] and k = 1, 2, . . ., we have that kTk (A)k ≤ 1 for all k, since σ(A) ⊂
+[−1, 1]. Using this well-known property to bound the error in (4.2), we obtain that
+                                            ∞
+                                            X                     ∞
+                                                                  X
+                        keN (A)k =                 ck Tk (A) ≤            |ck |.
+                                         k=N +1                  k=N +1
+
+The last inequality shows that the error defined by (4.2) only depends on the sum of the ab-
+solute values of the coefficients ck for k = N + 1, N + 2, . . ., but these in turn do not depend
+on n, the dimension of the matrix we are approximating. Hence if we have a sequence of
+P×
+n    n matrices {An } with σ(An ) ⊂ [−1, 1] for all n, we can use an estimate of the quantity
+   ∞
+   k=N +1 |ck | and use that to prescribe a sufficiently large bandwidth (sparsity pattern) to
+ensure a prescribed accuracy of the approximation. As long as the bandwidth of the approx-
+imation does not exceed the maximum prescribed bandwidth, the error is guaranteed to be
+n-independent. In practice, however, we found that this strategy is too conservative. Because
+of the rapid decay outside of the bandwidth of the original matrix, it is usually sufficient
+to prescribe a much smaller maximum bandwidth than the one predicted by the truncation
+error. This means that numerical dropping is necessary (see section 4.3 below for our rec-
+ommended dropping strategy), since the bandwidth of PN (A) rapidly exceeds the maximum
+allowed bandwidth. Because of dropping, the simple error estimate given above is no longer
+rigorously valid. Our numerical experiments, however, suggest that n-independence (and
+therefore linearly scaling complexity and storage requirements) is maintained.
+     4.2. General polynomial approximation. We now turn to the problem of approximat-
+ing f (A) when the spectrum of A is contained in an arbitrary continuum F ⊂ C; for a more
+detailed description of the technique we use, see [76]. The (Newton) interpolation polynomial
+we use is of the form
+
+PN (A) = c0 I + c1 (A − z0 I) + c2 (A − z0 I)(A − z1 I) + · · · + cN (A − z0 I) . . . (A − zN −1 I),
+
+where ck is the divided difference of order k, i.e.,
+
+                            ck = f [z0 , . . . , zk ],   k = 0, . . . , N.
+
+For k = 0, . . . , N − 1, the interpolation points are chosen as zk = Ψ(ωk ), where ωk are
+the N roots of the equation ω N = ρ and Ψ(z) is the inverse of the map Φ(z) that maps
+the complement of F to the outside of a disk with radius ρ and satisfies the normalization
+conditions (3.2). This method does not require the computation of Faber polynomials and
+their coefficients. However, it does require knowledge of the map Ψ(z). For specific domains
+F this map can be determined analytically, see for example [10, 76]. In addition, Ψ(z) may
+                                                                                   ETNA
+                                                                              Kent State University
+                                                                               etna@mcs.kent.edu
+
+
+
+               DECAY BOUNDS AND O(n) ALGORITHMS FOR MATRIX FUNCTIONS                            31
+
+require information on the convex hull of the eigenvalues of A. For more general domains one
+may have to resort to numerical approximations to compute Ψ(z); see [77]. Once again, the
+approximation algorithm requires mostly matrix–matrix multiplies with banded (or sparse)
+matrices and appropriate sparsification is generally required to keep the cost within O(n) as
+the problem size n grows. A rigorous error analysis that takes dropping as well as truncation
+into account is currently being attempted.
+     4.3. Dropping. We combine the above approaches with a dropping strategy. The idea
+applies to more general sparsity patterns, but we restrict our discussion to the case where A
+is a banded matrix with bandwidth m. In this case we only keep elements inside a prescribed
+bandwidth m̂ in every iteration. For given ρ and R we choose m̂ a priori so as to guarantee
+that
+                                       (ρ/R)m̂ ≈ ε/C,
+where C > 0 is the constant for the bounds on [f (A)]ij (with i 6= j) discussed in section 3.7
+and ε > 0 is a prescribed tolerance. Note that C is independent of the norm of f (A) since we
+do not expect the diagonal elements to be insignificant.
+     As already noted, if A is banded with bandwidth m, then Ak has bandwidth km. This
+means that if we want the approximation to have a fixed bandwidth m̂, where m̂ is (say) an
+integer multiple of m corresponding to a prescribed approximation error ε, then we ought to
+truncate the expansion at the N ∗ th term, with N ∗ = m̂/m. It may happen, however, that
+this value of N is actually too small to reduce the error below the prescribed threshold. In
+this case it is necessary to add extra terms to the Chebyshev expansion; but this would lead to
+an increase of the bandwidth beyond the prescribed limit. A solution that has been used by
+physicists is simply to continue the recurrence but ignoring all entries in positions outside the
+prescribed bandwidth; see, e.g., [2, 37, 71]. The important fact is that by restricting all the
+terms in the three-term recurrence (4.1) to have a fixed bandwidth (independent of n and N )
+we obtain an approximation scheme whose cost scales linearly in the size n of the problem.
+     4.4. Stopping criteria. In alternative to strategies that fix the number of terms in the
+polynomial expansion a priori (with or without dropping), one could decide to continue to add
+additional terms to the approximation to f (A) until some convergence criterion is satisfied. In
+other words, a dynamic criterion rather than a static, a priori one could be used. For instance,
+with the Chebyshev expansion method one can monitor the size of the coefficients ck and
+stop iterating when these are sufficiently small. Also, for some matrix functions a natural
+notion of residual exists. For example in the case of f (A) = A−1 , stopping criteria could be
+formulated on the basis of the size (in some appropriate norm) of the matrix R = I − AM (or
+R = I −M A), where M is the current computed approximation. For f (A) = A1/2 , where A
+is Hermitian and positive definite, one can use kRk = kA − M 2 k, and kRk = kI − M AM k
+for f (A) = A−1/2 . Relative versions of these residuals can also be used, if an estimate of
+kf (A)k is available.
+     For many other types of matrix functions, however, no natural notion of residual seems
+to be readily available. In this case one may decide to stop the approximation process if
+significant progress is no longer being made. A possibility would be to stop iterating when
+the norm of the difference kMnew − Mold k between two successive approximations is be-
+low a prescribed threshold δ > 0. Another possibility, which makes sense in some appli-
+cations, could be to monitor the change in the trace; that is, the process is stopped when
+|trace(Mnew ) − trace(Mold )| < δ. Such criteria may fail in case of temporary stagnation;
+see [32] for some discussion of this issue, although in a somewhat different context. A rigor-
+ous justification of such criteria, however, is still lacking, and more work is needed to devise
+reliable dynamic stopping criteria.
+                                                                                   ETNA
+                                                                              Kent State University
+                                                                               etna@mcs.kent.edu
+
+
+
+32                           MICHELE BENZI AND NADER RAZOUK
+
+
+     5. Numerical experiments. In this section we present the results of a few preliminary
+numerical experiments aimed at illustrating the performance of the approximation algorithms
+discussed in section 4, with particular attention to linear scaling behavior. We performed sev-
+eral tests involving different types of matrices and functions. We regard our approximation
+schemes as iterative methods, with each new iteration consisting of the inclusion of an addi-
+tional term in the polynomial expansion. In our computations we exploit the decay property
+of the entries in f (A) to keep a fixed number m̂ of off–diagonals in every iteration. By N
+we denote the number of terms in the expansion that were necessary to obtain the indicated
+error. The errors were obtained by comparing the computed approximation to the exact com-
+putation via M ATLAB’s funm command. Unless otherwise specified, we measure the relative
+error in the Frobenius norm.
+     As a first example we consider the matrix function known as Fermi–Dirac density matrix
+(FDM), which is fundamental to computational quantum chemistry:
+                                                                     1
+                         P = f (A),     where     f (z) =                 .
+                                                            1 + eβ(z−µ)
+Here A is the Hamiltonian and µ is a shift parameter, called the chemical potential, which
+can be chosen so as to have trace[f (A)] = Ne , the number of electrons (occupied states) in
+the system. The parameter β is called the inverse temperature; see, e.g., [2]. The exponential
+off-diagonal decay property of the density matrix, which is closely related to the localization
+of the eigenvectors of the Hamiltonian, is well-established in the physics literature; see, e.g.,
+[1, 37, 42, 52, 59]. Since the early 1990s, this property has been exploited in the development
+of O(n) methods for electronic structure calculation [14, 34, 37, 52, 55, 61, 70, 71]. Here
+we note that since P = f (A) is a smooth function of a sparse symmetric matrix A (the
+Hamiltonian is usually well-localized for a suitable choice of the basis set), the decay property
+also follows from Theorem 2.2 in [8]. The city plot in Figure 5.1 shows the rapid decay in the
+Fermi–Dirac density matrix corresponding to a “one-dimensional Anderson model”; see [1].
+That is, the matrix function is f (A) = (exp(β(A − µI)) + I)−1 where A is a 200 × 200
+symmetric tridiagonal matrix with random entries on the main diagonal (drawn from the
+uniform distribution on [0, 1]) and with the remaining nonzero entries equal to −1. In this
+example we used β = 2 and µ = 0.5.
+     In Table 5.1 we show results for the approximation of the Fermi–Dirac density matrix for
+different values of n, µ, and β. Under “cost/n” we report the cost per unknown, i.e., the total
+number of arithmetic operations divided by n. The results clearly show the n-independent
+behavior (and hence, linear scaling complexity) of the algorithm. The total cost of the ap-
+proximation as a function of problem size for the two test cases is shown in Fig. 5.2.
+                                              TABLE 5.1
+                                                           1
+                                 Results for f (z) = 1+exp(β(z−µ))
+
+
+                           µ = 2, β = 2.13                 µ = 0.5, β = 1.84
+              n      error    N m̂ cost / n            error   N m̂ cost / n
+             100    9e−06 18 20           6129        6e−06 18 22          6129
+             200    4e−06 19 20           6498        9e−06 18 22          6129
+             300    4e−06 19 20           6498        5e−06 20 22          6867
+             400    6e−06 19 20           6498        8e−06 20 22          6867
+             500    8e−06 19 20           6498        8e−06 20 22          6867
+
+    We now discuss how the values of N and m̂ were determined. Note that since the Fermi–
+Dirac density matrix is an approximation of an orthogonal projector of known rank, special
+                                                                                                                       ETNA
+                                                                                                                  Kent State University
+                                                                                                                   etna@mcs.kent.edu
+
+
+
+                               DECAY BOUNDS AND O(n) ALGORITHMS FOR MATRIX FUNCTIONS                                                33
+
+
+
+
+                                                  F IG . 5.1. City plot for a Fermi–Dirac density matrix.
+
+                                      6
+                                   x 10
+                             3.5
+                                           mu = 2, beta = 2.13
+                              3            mu = 0.5, beta = 2.84
+           # of operations
+
+
+
+
+                             2.5
+
+                              2
+
+                             1.5
+
+                              1
+
+                             0.5
+                               100          150         200        250        300       350        400      450        500
+                                                                               n
+
+
+
+                                     F IG . 5.2. Flop count as a function of n for Fermi–Dirac matrix functions.
+
+
+
+stopping criteria can be used in this case. However, rather than using such criteria we adopted
+a more general strategy. The choice of the number N of terms to include in the Chebyshev
+series expansion is an easy matter, since the magnitude of the coefficients can be monitored.
+Note that if f is analytic, the coefficients ck decay exponentially fast. Once the sum of the
+absolute values of three consecutive coefficients is sufficiently small, no additional terms are
+added; here we used the rather conservative tolerance of 1e−15. Although not very sophisti-
+cated, this criterion gave good results in practice. We obtained the a priori bandwidth m̂ = 20
+as follows. We first note that |f (z)| ≤ 1 for all z, therefore the constant M (R) in the bounds
+for |[f (A)]ij | can be neglected. To perform the computation in the Chebyshev basis we scale
+and shift the matrix A so that its spectrum lies in [−1, 1]. To obtain the approximation to
+f (A) with the original A we shift and scale back the coefficients in the Chebyshev series.
+                                                                         1
+The logarithmic capacity of [−1, 1] is given by ρ = 1/2, and V π(1−ρ/R)       = 4 when R = 1.
+The entries (i, j) in f (A), where i and j are such that |i − j| ≥ 20, have magnitude at most
+3e−06 and can therefore be neglected. For the second case (µ = 0.5, β = 1.84) we had to
+slightly increase N and m̂ to achieve a comparable a priori error. As a rule, it is a good idea
+to use values of m̂ that are slightly greater than those predicted by the theory, also in view
+of the effects of dropping. We further note that in this example, the maximum bandwidth m̂
+was actually never reached, so no dropping was performed. This shows, incidentally, that for
+                                                                                        ETNA
+                                                                                   Kent State University
+                                                                                    etna@mcs.kent.edu
+
+
+
+34                           MICHELE BENZI AND NADER RAZOUK
+
+
+this example the a priori estimate for m̂ was quite accurate, since the actual final bandwidth
+is very close to m̂.
+     We performed many more experiments with the Chebyshev method and obtained ex-
+cellent results whenever f is an entire function. If f has singularities, however, we found
+that the method can converge quite slowly, especially when the singularities are close to the
+spectrum of A. In these cases, the approach described in section 4.2 was found to be much
+better. Therefore, in the remaining tables we use the interpolation approach. The results in
+Table 5.2 were obtained by interpolating the “entropy” function f (z) = z log(z) to obtain an
+approximation to f (A) = A log(A). As before, the values of N and m̂ that are guaranteed
+to result in a given error can be estimated a priori from knowledge of the parameters ρ and
+R. Note that in this case, the estimated bandwidth is about twice the final one, suggesting
+that the decay bounds used to estimate m̂ can sometimes be conservative. The matrix A is a
+tridiagonal matrix with random diagonal entries, shifted so as to be diagonally dominant (and
+therefore positive definite, so that the logarithm is well-defined). We also report the absolute
+error in the trace of the matrix function. Once again, the linear scaling behavior is clear.
+                                             TABLE 5.2
+                                    Results for f (z) = z log (z)
+
+                                A log (A)    trace[A log (A)]
+                        n         error            error             m̂       N
+                       100       5e−07            3e−04              20       9
+                       200       6e−07            8e−04              20       9
+                       300       1e−07            3e−04              20       10
+                       500       2e−07            5e−04              20       10
+
+     For Table 5.3 we use a pseudosparse matrix A with entries given by aij = e−α|i−j| ,
+where α > 0. This is a convenient way to generate matrices with a given rate of decay. Note
+that in the limiting case α = 0, the matrix is “flat” (there is no decay). As α is increased,
+the rate of decay also increases. It is known that A−1 is a tridiagonal M -matrix, hence A
+is positive definite. To compute f (A) = log(A), we first sparsify A by keeping enough
+diagonals to make the sparsification error kA − Ãk smaller than a prescribed accuracy and
+then we approximate log(Ã). The reported errors are relative to the matrix function log(A)
+computed on the full A. For the first test we use α = 2 and we keep m = 15 off-diagonals
+above and below the main diagonal. Again, the linear scaling behavior is apparent.
+                                             TABLE 5.3
+                                     Results for f (z) = log (z)
+
+                                  log (A)    trace[log (A)]
+                           n       error          error             m̂    N
+                          100     4e−07          7e−06              10    9
+                          200     4e−07          1e−05              10    9
+                          300     4e−07          2e−05              10    9
+                          500     4e−07          3e−05              10    9
+
+    Next we consider some non-Hermitian examples. In Table 5.4 we show results for the
+exponential, the sine and the cosine. The matrix A has entries aij = e−α(i−j) for i ≥ j and
+aij = e−β(j−i) for i < j with α, β > 0. To obtain a non-symmetric matrix we choose α = 1
+and β = 1.5. We sparsify the matrix by keeping 25 off–diagonals on either side of the main
+diagonal. The reported errors are relative to the “exact” computation using the full A.
+                                                                                            ETNA
+                                                                                     Kent State University
+                                                                                      etna@mcs.kent.edu
+
+
+
+               DECAY BOUNDS AND O(n) ALGORITHMS FOR MATRIX FUNCTIONS                                   35
+                                              TABLE 5.4
+                             Results for f (z) = exp (z), cos (z), sin (z)
+
+                         exp (A)                 cos (A)                   sin (A)
+              n      error    m̂ N           error    m̂       N       error    m̂     N
+             100    6e−08 30 12             4e−07 30           11     9e−07 30         11
+             300    6e−08 30 12             4e−07 30           11     3e−08 30         12
+             500    4e−08 30 11             2e−08 30           11     2e−07 30         10
+
+
+     In Table 5.5 we show results for the exponential function for a non-symmetric matrix
+with A generated as above, with α = 1 and β = 2. Now we keep only 15 off–diagonals on
+either side of the main diagonal. Again, we observe n-independence of the results.
+                                             TABLE 5.5
+                                     Results for f (z) = exp (z)
+
+                                             exp (A)
+                                    n        error   m̂         N
+                                   100      3e−07 25            10
+                                   300      4e−07 25             9
+                                   500      4e−07 25             9
+                                  1000      4e−07 25             9
+
+    For the results in Table 5.6 we use two examples of banded non-symmetric matrices from
+the Matrix Market. Again, we show results for the exponential, the sine and the cosine. The
+matrices where scaled by dividing through by the largest eigenvalue.
+                                              TABLE 5.6
+                             Results for f (z) = exp (z), cos (z), sin (z)
+
+                       f (A)          A             n        error      m̂   N
+                      exp(A)     Bai/olm100        100      3e−06       12   8
+                      exp(A)     Bai/olm500        500      2e−06       12   9
+                      sin(A)     Bai/olm100        100      3e−06       12   8
+                      sin(A)     Bai/olm500        500      1e−06       12   9
+                      cos(A)     Bai/olm100        100      4e−06       12   8
+                      cos(A)     Bai/olm500        500      2e−06       12   9
+
+     Additional possible applications of the theory and methods discussed in the present paper
+include fast algorithms for approximating the determinant of a large, sparse symmetric posi-
+tive definite matrix; see [6, 47, 54, 67] for motivation and background. One possible approach
+is the reduction of the computation of the determinant to that of the trace of a matrix function;
+for instance, one could exploit the straightforward identity det(A) = exp(trace[log (A)]). If
+the smallest eigenvalue of A is not too close to zero, approximating the trace of log (A) is
+not difficult and good results can be expected. In Table 5.7 we give results for the approx-
+imation of the determinant of two symmetric positive definite matrices obtained using the
+identity det(A) = exp(trace[log(A)]). For the first example we use the matrix A with en-
+tries aij = e−2|i−j| as above. Prior to computing the approximation of the logarithm we
+truncate A symmetrically to fifteen off-diagonals. For the second example we use a banded
+diagonally dominant matrix with sixteen nonzero diagonals. The (relative) errors reported in
+the table compare the computed approximation with the actual value of the determinant of A.
+                                                                                     ETNA
+                                                                                Kent State University
+                                                                                 etna@mcs.kent.edu
+
+
+
+36                            MICHELE BENZI AND NADER RAZOUK
+
+                                             TABLE 5.7
+                                    Approximation of the determinant
+
+                                Toeplitz matrix           Banded matrix
+                         n      error    N m̂             error  N m̂
+                        100    7e−06 10 9                2e−06 14 45
+                        200    1e−05 10 9                5e−06 14 45
+                        300    2e−05 10 9                7e−06 14 45
+                        500    4e−05 10 9                1e−05 14 45
+
+
+     Finally, we consider banded approximations to f (A) = A−1 as preconditioners for the
+conjugate gradient method applied to linear systems Ax = b where A = T +D is a symmetric
+positive definite “Toeplitz-plus-diagonal” matrix. We note that no fast solvers are available
+for this problem unless D is nearly a multiple of the identity, but see the recent paper [66]
+for an approach that yields reasonable results. Here T has entries tij = e−0.1|i−j| and D is a
+random diagonal matrix with entries in the interval (5, 6). The right-hand side b is a random
+vector and x0 = 0 is used as the initial guess. We stop the preconditioned conjugate gradient
+(PCG) iteration when the residual norm is reduced to at least 1e−07. The preconditioners
+are constructed as follows. We first truncate A to obtain a matrix with bandwidth m = 20,
+then we run a fixed number N = 10 of iterations of the polynomial approximation method
+for f (z) = z −1 to construct a banded approximate inverse to the truncated matrix. We fix
+the bandwidth of the approximate inverse to m̂ = 40, i.e., we allow the approximate inverse
+to have twice the bandwidth of the truncated matrix. Of course, the original matrix A is used
+for the matrix–vector multiplies in the PCG iteration. The results in Table 5.8 show that this
+simple preconditioner works quite well. Note that with an FFT-based implementation the
+cost of each matrix–vector multiply with A in the conjugate gradient method is O(n log n),
+whereas the cost of forming and applying the preconditioner in each iteration is just O(n). In
+contrast, application of a circulant-plus-diagonal preconditioner costs O(n log n) in general.
+
+                                            TABLE 5.8
+                                       Number of PCG iterations
+
+                                                          n
+               Precond.       100      200     600     800 1000        2000   3000
+                None           37      56      73       82  85          86     95
+               M ≈ A−1         8       12      13       13  14          14     16
+
+
+     6. Conclusions. In this paper we have proved some general theoretical results on decay
+phenomena in functions of sparse matrices, and we have investigated some algorithms, based
+on polynomial approximation, for approximating matrix functions. Our decay bounds extend
+and unify several results that were known from the literature, and help understand various
+localization phenomena observed by physicists. Moreover, our results show that O(n) ap-
+proximation is possible in many cases of practical interest. Of course, much work remains
+to be done. In this paper we have illustrated the theory by some simple M ATLAB experi-
+ments involving mostly band matrices of fairly small size. Although this was enough for
+our purpose, which was to illustrate the decay behavior of f (A) and the O(n) scaling of the
+approximation algorithms, we plan to investigate more realistic problems in the near future.
+This includes larger matrices with general sparsity structure, and more complicated matrix
+functions.
+                                                                                                ETNA
+                                                                                           Kent State University
+                                                                                            etna@mcs.kent.edu
+
+
+
+                 DECAY BOUNDS AND O(n) ALGORITHMS FOR MATRIX FUNCTIONS                                       37
+
+    Acknowledgment. The authors are indebted to Sandro Graffi, Nick Higham and two
+anonymous referees for useful suggestions.
+
+                                                REFERENCES
+
+ [1] P. W. A NDERSON, Absence of diffusion in certain random lattices, Phys. Review, 109 (1958), pp. 1492–1505.
+ [2] R. BAER AND M. H EAD -G ORDON, Chebyshev expansion methods for electronic structure calculations on
+           large molecular systems, J. Chem. Phys., 107 (1997), pp. 10003–10013.
+ [3]          , Sparsity of the density matrix in Kohn–Sham density functional theory and an assessment of linear
+           system-size scaling methods, Phys. Rev. Lett., 79 (1997), pp. 3962–3965.
+ [4] Z. BAI , M. FAHEY AND G. H. G OLUB, Some large-scale matrix computation problems, J. Com-
+           put. Appl. Math., 74 (1996), pp. 71–89.
+ [5] Z. BAI , M. FAHEY, G. H. G OLUB , M. M ENON AND E. R ICHTER, Computing partial eigenvalue sums in
+           electronic structure calculations, Tech. Report SCCM-98-03, Stanford University, 1998.
+ [6] Z. BAI AND G. H. G OLUB, Bounds for the trace of the inverse and the determinant of symmetric positive
+           definite matrices, Ann. Numer. Math., 4 (1997), pp. 29–38.
+ [7] C. B EKAS , E. KOKIOPOULOU , AND Y. S AAD, An estimator for the diagonal of a matrix, Appl. Nu-
+           mer. Math., to appear.
+ [8] M. B ENZI AND G. H. G OLUB, Bounds for the entries of matrix functions with applications to precondition-
+           ing, BIT, 39 (1999), pp. 417–438.
+ [9] M. B ENZI AND M. T ŮMA, Orderings for factorized sparse approximate inverse preconditioners, SIAM
+           J. Sci. Comput., 21 (2000), pp. 1851–1868.
+[10] L. B ERGAMASCHI , M. C ALIARI AND M. V IANELLO, Efficient approximation of the exponential operator
+           for discrete 2D advection-diffusion problems, Numer. Linear Algebra Appl., 10 (2003), pp. 271–289.
+[11] L. B ERGAMASCHI AND M. V IANELLO, Efficient computation of the exponential operator for large, sparse,
+           symmetric matrices, Numer. Linear Algebra Appl., 7 (2000), pp. 27–45.
+[12] D. A. B INI , N. J. H IGHAM AND B. M EINI, Algorithms for the matrix pth root, Numer. Algorithms, 39
+           (2005), pp. 349–378.
+[13] A. B ORIÇI, A Lanczos approach to the inverse square root of a large and sparse matrix, J. Comput. Phys.,
+           162 (2000), pp. 123–131.
+[14] D. R. B OWLER AND M. J. G ILLAN, Density matrices in O(N ) electronic structure calculations: theory and
+           applications, Comp. Phys. Comm., 120 (1999), pp. 95–108.
+[15] D. C ALVETTI , S.-M. K IM AND L. R EICHEL, Quadrature rules based on the Arnoldi process, SIAM J. Matrix
+           Anal. Appl., 26 (2005), pp. 765–781.
+[16] M. C RAMER AND J. E ISERT, Correlations, spectral gap and entanglement in harmonic quantum systems on
+           generic lattices, New J. Phys., 8 (2006), Art. No. 71.
+[17] M. C RAMER , J. E ISERT, M. B. P LENIO AND J. D REISSIG, Entanglement-area law for general bosonic
+           harmonic lattice systems, Phys. Rev. A, 73 (2006), Art. No. 012309.
+[18] J. H. C URTISS, Faber polynomials and the Faber series, Amer. Math. Monthly, 78 (1971), pp. 577–596.
+[19] P. I. DAVIES AND N. J. H IGHAM, Computing f (A)b for matrix functions f , in A. Boriçi, A. Frommer,
+           B. Joo, A. Kennedy and B. Pendleton, eds., QCD and Numerical Analysis III, Lect. Notes Comput. Sci.
+           Eng., Vol. 47, Springer-Verlag, Berlin, 2005, pp. 15–24.
+[20] N. D EL B UONO AND L. L OPEZ, A survey on methods for computing matrix exponentials in numerical
+           schemes for ODEs, Lecture Notes in Comput. Sci., 2658 (2003), pp. 111–120.
+[21] N. D EL B UONO , L. L OPEZ AND R. P ELUSO, Computation of the exponential of large sparse skew-symmetric
+           matrices, SIAM J. Sci. Comput., 27 (2005), pp. 278–293.
+[22] S. D EMKO , W. F. M OSS AND P. W. S MITH, Decay rates for inverses of band matrices, Math. Comp., 43
+           (1984), pp. 491–499.
+[23] L. D IECI , B. M ORINI AND A. PAPINI, Computational techniques for real logarithms of matrices, SIAM
+           J. Matrix Anal. Appl., 17 (1996), pp. 570–593.
+[24] R. D IESTEL, Graph Theory, Springer-Verlag, Berlin, 2000.
+[25] V. L. D RUSKIN AND L. A. K NIZHNERMAN, Two polynomial methods for computing functions of symmetric
+           matrices, Comput. Math. Math. Phys., 29 (1989), pp. 112–121.
+[26]          , Extended Krylov subspaces: approximation of the matrix square root and related functions, SIAM
+           J. Matrix Anal. Appl., 19 (1998), pp. 755–771.
+[27] I. S. D UFF , A. M. E RISMAN , C. W. G EAR , AND J. K. R EID, Sparsity structure and Gaussian elimination,
+           SIGNUM Newsletter, Association for Computing Machinery, New York, 23 (1988), pp. 2–8.
+[28] M. E IERMANN AND O. E RNST, A restarted Krylov subspace method for the evaluation of matrix functions,
+           SIAM J. Numer. Anal., 44 (2006), pp. 2481–2504.
+[29] S. W. E LLACOTT, Computation of Faber series with application to numerical polynomial approximation in
+           the complex plane, Math. Comp., 40 (1983), pp. 575–587.
+                                                                                                   ETNA
+                                                                                             Kent State University
+                                                                                              etna@mcs.kent.edu
+
+
+
+38                                MICHELE BENZI AND NADER RAZOUK
+
+
+[30] L. F OX AND I. B. PARKER, Chebyshev Polynomials in Numerical Analysis, Oxford University Press, London,
+          1968.
+[31] A. F ROMMER AND V. S IMONCINI, Matrix functions, Tech. Report, Dipartimento di Matematica, Università
+          di Bologna, 2006.
+[32]         , Stopping criteria for rational matrix functions of Hermitian and symmetric matrices, Tech. Report,
+          Dipartimento di Matematica, Università di Bologna, 2007.
+[33] D. G AIER, Lectures on Complex Approximation, Birkhäuser, Boston, 1987.
+[34] G. G ALLI, Large-scale electronic structure calculations using linear scaling methods, Phys. Stat. Sol. B, 217
+          (2000), pp. 231–249.
+[35] E. G ALLOPULOS AND Y. S AAD, Efficient solution of parabolic equations by Krylov subspace methods, SIAM
+          J. Sci. Stat. Comput., 13 (1992), pp. 1236–1264.
+[36] S. G OEDECKER, Decay properties of the finite-temperature density matrix in metals, Phys. Rev. B, 58 (1998),
+          pp. 3501–3502.
+[37]         , Linear scaling electronic structure methods, Rev. Mod. Phys., 71 (1999), pp. 1085–1123.
+[38] G. H. G OLUB AND G. M EURANT, Matrices, moments, and quadratures, in Numerical Analysis 1993,
+          D. F. Griffiths and G. A. Watson, eds., Pitman Research Notes in Mathematics, vol. 303, Essex, England,
+          UK, 1994, pp. 105–156.
+[39] G. H. G OLUB AND C. F. VAN L OAN, Matrix Computations, 3rd edition, Johns Hopkins University Press,
+          Baltimore, MD, 1996.
+[40] K. G R ÖCHENIG AND M. L EINERT, Symmetry and inverse-closedness of matrix algebras and functional
+          calculus for infinite matrices, Trans. Amer. Math. Soc., 358 (2006), pp. 2695–2711.
+[41] G. I. H ARGREAVES AND N. J. H IGHAM, Efficient algorithms for the matrix cosine and sine, Numer. Algo-
+          rithms, 40 (2005), pp. 383–400.
+[42] L. H E AND D. VANDERBILT, Exponential decay properties of Wannier functions and related quantities,
+          Phys. Rev. Lett., 86 (2001), pp. 5341–5344.
+[43] N. J. H IGHAM, Functions of matrices, in L. Hogben, ed., Handbook of Linear Algebra, Chapman and
+          Hall/CRC, Boca Raton, FL, 2006.
+[44] M. H OCHBRUCK AND C. L UBICH, On Krylov subspace approximations to the matrix exponential operator,
+          SIAM J. Numer. Anal., 34 (1997), pp. 1911–1925.
+[45]         , Exponential integrators for large systems of differential equations, SIAM J. Sci. Comput., 19 (1998),
+          pp. 1552–1574.
+[46] R. A. H ORN AND C. R. J OHNSON, Topics in Matrix Analysis, Cambridge University Press, Cambridge,
+          1994.
+[47] I. C. F. I PSEN AND D. J. L EE, Determinant approximations, Tech. Report, Department of Mathematics,
+          North Carolina State University, Raleigh, NC, 2006.
+[48] A. I SERLES, How large is the exponential of a banded matrix?, New Zealand J. Math., 29 (2000), pp. 177–
+          192.
+[49] S. JAFFARD, Propriétés des matrices “bien localisées” près de leur diagonale et quelques applications,
+          Ann. Inst. H. Poincaré Anal. Non Linéaire, 7 (1990), pp. 461–476.
+[50] C. S. K ENNEY AND A. J. L AUB, Condition estimates for matrix functions, SIAM J. Matrix Anal. Appl., 10
+          (1989), pp. 191–209.
+[51] L. A. K NIZHNERMAN, Calculation of functions of unsymmetric matrices using Arnoldi’s method, Com-
+          put. Math. Math. Phys., 31 (1991), pp. 5–9.
+[52] W. KOHN, Density functional and density matrix method scaling linearly with the number of atoms,
+          Phys. Rev. Lett., 76 (1996), pp. 3168–3171.
+[53] P. L AASONEN, On the iterative solution of the matrix equation AX 2 − I = 0, Math. Tables Other Aids
+          Comp., 12 (1958), pp. 109–116.
+[54] D. J. L EE AND I. C. F. I PSEN, Zone determinant expansions for nuclear lattice simulations, Phys. Rev. C, 68
+          (2003), pp. 064003-1/8.
+[55] X.-P. L I , R. W. N UNES AND D. VANDERBILT, Density-matrix electronic-structure method with linear
+          system-size scaling, Phys. Rev. B, 47 (1993), pp. 10891–10894.
+[56] L. L OPEZ AND A. P UGLIESE, Decay behaviour of functions of skew-symmetric matrices, in Proceedings
+          of HERCMA 2005, 7th Hellenic-European Conference on Computer Mathematics and Applications,
+          September 22-24, 2005, Athens, E. A. Lipitakis, ed., Electronic Editions LEA, Athens.
+[57] L. L OPEZ AND V. S IMONCINI, Analysis of projection methods for rational function approximations to the
+          matrix exponential, SIAM J. Numer. Anal., 44 (2006), pp. 613–635.
+[58] A. I. M ARKUSHEVICH, Theory of Functions of a Complex Variable, Vol. III, Prentice-Hall, Englewood Cliffs,
+          NJ, 1967.
+[59] P. E. M ASLEN , C. O CHSENFELD , C. A. W HITE , M. S. L EE AND M. H EAD -G ORDON, Locality and sparsity
+          of ab initio one-particle density matrices and localized orbitals, J. Phys. Chem. A, 102 (1998), pp. 2215–
+          2222.
+[60] G. M EURANT, A review on the inverse of symmetric tridiagonal and block tridiagonal matrices, SIAM J. Ma-
+                                                                                                    ETNA
+                                                                                              Kent State University
+                                                                                               etna@mcs.kent.edu
+
+
+
+                 DECAY BOUNDS AND O(n) ALGORITHMS FOR MATRIX FUNCTIONS                                           39
+
+          trix Anal. Appl., 13 (1992), pp. 707–728.
+[61] J. M. M ILLAM AND G. E. S CUSERIA, Linear scaling conjugate gradient density matrix search as an alterna-
+          tive to diagonalization for first principles electronic structure calculations, J. Chem. Phys., 106 (1997),
+          pp. 5569–5577.
+[62] C. M OLER AND C. VAN L OAN, Nineteen dubious ways to compute the exponential of a matrix, twenty-five
+          years later, SIAM Rev., 45 (2003), pp. 3–49.
+[63] I. M ORET AND P. N OVATI, The computation of functions of matrices by truncated Faber series, Nu-
+          mer. Funct. Anal. Optim., 22 (2001), pp. 697–719.
+[64]         , Interpolating functions of matrices on zeros of kernel polynomials, Numer. Linear Algebra Appl., 11
+          (2005), pp. 337–353.
+[65] R. NABBEN, Decay rates of the inverse of nonsymmetric tridiagonal and band matrices, SIAM J. Matrix
+          Anal. Appl., 20 (1999), pp. 820–837.
+[66] M. K. N G AND J. PAN, Approximate inverse circulant-plus-diagonal preconditioners for Toeplitz-plus-
+          diagonal matrices, Tech. Report, Department of Mathematics, Hong Kong Baptist University, 2006.
+[67] A. R EUSKEN, Approximation of the determinant of large sparse symmetric positive definite matrices, SIAM
+          J. Matrix Anal. Appl., 23 (2002), pp. 799–818.
+[68] R. F. R INEHART, The equivalence of definitions of a matric function, Amer. Math. Monthly, 62 (1955),
+          pp. 395–414.
+[69] Y. S AAD, Analysis of some Krylov subspace approximations to the matrix exponential operator, SIAM J. Nu-
+          mer. Anal., 29 (1992), pp. 209–228.
+[70] V. E. S ACKSTEDER, Linear Algebra with Disordered Sparse Matrices that have Spatial Structure: Theory
+          and Computation, PhD thesis, Department of Physics, Università degli Studi di Roma “La Sapienza,”
+          Rome, Italy, 2004.
+[71]         , O(N ) algorithms for disordered systems, Numer. Linear Algebra Appl., 12 (2005), pp. 827–838.
+[72] N. S CHUCH , J. I. C IRAC AND M. M. W OLF, Quantum states on harmonic lattices, Comm. Math. Phys., 267
+          (2006), pp. 65–92.
+[73] V. I. S MIRNOV AND N. A. L EBEDEV, Functions of a Complex Variable: Constructive Theory, MIT Press,
+          Cambridge, MA, 1968.
+[74] D. T. S MITH, Exponential decay of resolvents and discrete eigenfunctions of banded infinite matrices, J. Ap-
+          prox. Theory, 66 (1991), pp. 83–97.
+[75] P. K. S UETIN, Fundamental properties of Faber polynomials, Russian Math. Surveys, 19 (1964), p. 121–149.
+[76] H. TAL -E ZER, Polynomial approximation of functions of matrices and applications, J. Sci. Comput., 4 (1989),
+          pp. 25–60.
+[77] L. N. T REFETHEN, Numerical computation of the Schwarz–Christoffel transformation, SIAM
+          J. Sci. Stat. Comput., 1 (1980), pp. 82–102.
+[78] L. N. T REFETHEN , M. C ONTEDINI AND M. E MBREE, Spectra, pseudospectra, and localization for random
+          bidiagonal matrices, Comm. Pure Appl. Math., 54 (2001), pp. 595–623.
+[79] L. N. T REFETHEN AND M. E MBREE, Spectra and Pseudospectra: The Behavior of Nonnormal Matrices
+          and Operators, Princeton University Press, Princeton, NJ, 2005.

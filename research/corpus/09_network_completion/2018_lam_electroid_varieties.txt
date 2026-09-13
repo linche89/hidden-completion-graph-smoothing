@@ -1,0 +1,2038 @@
+                                           ELECTROID VARIETIES AND A COMPACTIFICATION OF THE
+                                                     SPACE OF ELECTRICAL NETWORKS
+
+                                                                                  THOMAS LAM
+arXiv:1402.6261v4 [math.CO] 31 Aug 2018
+
+
+
+
+                                              Abstract. We construct a compactification of the space of circular planar electrical net-
+                                              works studied by Curtis-Ingerman-Morrow [CIM] and Colin de Verdière-Gitler-Vertigan
+                                              [CGV], using cactus networks. We embed this compactification as a linear slice of the
+                                              totally nonnegative Grassmannian, and relate Kenyon and Wilson’s grove measurements
+                                              to Postnikov’s boundary measurements. Intersections of the slice with the positroid
+                                              stratification leads to a class of electroid varieties, indexed by matchings. The uncross-
+                                              ing partial order on matchings arising from electrical networks is shown to be dual to a
+                                              subposet of affine Bruhat order. The analogues of matroids in this setting are certain
+                                              distinguished collections of non-crossing partitions.
+
+
+
+
+                                                                                    Contents
+                                          1. Introduction                                                                                   2
+                                          1.1. Circular planar electrical networks and groves                                               2
+                                          1.2. Cactus networks and the compactification En                                                  3
+                                          1.3. An embedding into the totally nonnegative Grassmannian                                       3
+                                          1.4. Electroid varieties and positroid varieties                                                  4
+                                          2. Circular planar electrical networks                                                            5
+                                          2.1. Electrical networks and response matrices                                                    5
+                                          2.2. Groves                                                                                       6
+                                          2.3. Boundary spikes and boundary edges                                                           8
+                                          2.4. Electrically-equivalent transformations of networks                                          8
+                                          2.5. Medial graphs                                                                                9
+                                          2.6. Main results for circular planar electrical networks                                        11
+                                          3. Planar bipartite graphs and the totally nonnegative Grassmannian                              11
+                                          3.1. TNN Grassmannian                                                                            12
+                                          3.2. Matchings for bipartite graphs in a disk                                                    12
+                                          3.3. Gauge equivalences and local moves                                                          13
+                                          3.4. Bounded affine permutations and Grassmann necklaces                                         13
+                                          3.5. Positroids and positroid varieties                                                          14
+                                          3.6. A reduction result                                                                          15
+                                          3.7. Bridges in planar bipartite graphs                                                          17
+                                          4. Compactifying the space of circular planar electrical networks                                18
+                                          4.1. Cactus networks                                                                             18
+                                          4.2. Grove measurements as projective coordinates                                                19
+                                          4.3. The compactified space of circular planar electrical networks                               20
+
+                                          T.L. was supported by NSF grant DMS-1160726.
+                                                                                          1
+2                                      THOMAS LAM
+
+    4.4. The bottom cells of En                                                          21
+    4.5. Uncrossing partial order on matchings                                           22
+    4.6. Matching partial order and Bruhat order                                         23
+    4.7. Catalan subsets and Catalan necklaces                                           25
+    5. Electroid varieties                                                               26
+    5.1. From electrical networks to bipartite graphs                                    26
+    5.2. Electroid varieties                                                             27
+    5.3. From groves to matchings                                                        29
+    5.4. Electrical generators acting on the Grassmannian                                31
+    5.5. Electrical strata to positroid strata                                           32
+    5.6. Proof of the injectivity part of Theorem 5.8                                    34
+    5.7. Reductions used in proof of Theorem 5.6                                         34
+    5.8. Proof of Theorem 5.6                                                            37
+    5.9. Closure partial order on electroid strata                                       37
+    5.10. Proof of realizability part of Theorem 5.8                                     38
+    5.11. Electroids and partition necklaces                                             38
+    5.12. Quadratic relations for grove measurements                                     42
+    References                                                                           43
+
+
+
+                                    1. Introduction
+1.1. Circular planar electrical networks and groves. A circular planar electrical
+network is a weighted undirected graph Γ embedded into a disk, with distinguished
+boundary vertices on the boundary of the disk. Each edge is thought of as a resistor, and
+the weight of the edge is the conductance of that resistor. The electrical properties of Γ
+are encoded in a response matrix
+                       Λ(Γ) : R#boundary vertices → R#boundary vertices
+which sends a vector of voltages at the boundary vertices, to the vector of currents induced
+through the same vertices. Two electrical networks are electrically-equivalent if they have
+the same response matrix. Circular planar electrical networks were studied thoroughly
+by Curtis-Ingerman-Morrow [CIM] and Colin de Verdière-Gitler-Vertigan [CGV], who
+classified such Γ up to electrical-equivalence, and showed that the space of their response
+matrices decomposes into a disjoint union of cells Rd>0 .
+   In [KW], Kenyon and Wilson studied grove measurements Lσ (Γ), which count span-
+ning subforests of Γ inducing a particular boundary partition σ. Our point of view is that
+the grove measurements can be used as projective coordinates on the space of electrical
+networks, giving a map
+                                 L : Γ 7→ (Lσ (Γ)) ∈ PN C n
+where PN C n is the projective space with coordinate labeled by non-crossing partitions
+N C n on n objects, where n is the number of boundary vertices. A natural question is:
+what is the closure En (in the Hausdorff topology) of the image in PN Cn , and does it
+possess a natural stratification?
+                                                                             3
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+1.2. Cactus networks and the compactification En . Roughly speaking, a cactus
+network is an electrical network where some boundary vertices have been identified
+according to a non-crossing partition (so the boundary now looks like a cactus). We show
+(Theorem 4.9) that each point in En is uniquely represented by an electrical-equivalence
+class of cactus networks. The space of cactus networks has a stratification
+                                              G
+                                       En =      Eτ
+                                             τ ∈Pn
+
+into cells Eτ labeled by the set Pn of medial pairings (that is, matchings) on 2n objects.
+Each point L ∈ Eτ has the same vanishing and non-vanishing pattern of grove coordinates
+Lσ . In other words, the electroid
+                           E(L) := {σ ∈ N C n | Lσ 6= 0} ⊂ N C n
+is constant in each Eτ . We remark that the (noncompact) space of circular planar electrical
+networks studied in [CIM] and [CGV] has a stratification indexed by only some matchings,
+which is combinatorially unnatural.
+1.3. An embedding into the totally nonnegative Grassmannian. There is a well
+known analogy between the properties of the space of electrical networks, and spaces
+of totally positive matrices. We amplify this analogy by constructing an embedding
+(Theorem 5.8)
+                                 ι : En ֒→ Gr(n − 1, 2n)≥0
+of the space of electrical networks into the totally nonnegative Grassmannian of (n − 1)-
+planes in 2n-space, studied by Postnikov [Pos]. On the level of graphs, the map is induced
+by a version of the generalized Temperley’s trick of Kenyon, Propp, and Wilson
+[KPW], adapted to our situation. For each cactus network Γ on n boundary vertices, we
+obtain a planar bipartite graph N(Γ) embedded into a disk with 2n boundary vertices.
+   The space of electrical networks is essentially generated by the combinatorial opera-
+tions of adding boundary spikes and boundary edges, studied by Curtis-Ingerman-Morrow
+[CIM], and by Lam and Pylyavskyy [LP]. Under the above embedding, these operations
+correspond to adding boundary bridges to N(Γ). This observation gives rise to a new
+representation (Proposition 5.13) of the electrical braid relation studied in [LP].
+   We give (Theorem 5.10) linear relations between Postnikov’s boundary measure-
+ments ∆I (N(Γ)), that count almost perfect matchings in N(Γ), and the grove measure-
+ments Lσ (Γ):                                   X
+                                 ∆I (N(Γ)) =         Lσ (Γ)
+                                              σ∈E(I)
+where E(I) ⊂ N C n denotes the set of non-crossing partitions that are concordant (de-
+                                        [2n]
+                                             
+fined in Section 5.2) with a subset I ∈ n−1 . Thus we obtain
+                             ι(En ) ⊂ Gr(n − 1, 2n) ∩ H =: X
+                  [2n]
+where H ⊂ P(n−1) is a linear subspace of Plücker space. One of our main theorems
+(Theorem 5.8) is that ι(En ) = X ∩ Gr(n − 1, 2n)≥0 , so that each totally nonnegative point
+in X is representable by a cactus network. The Plücker relations for the Grassmannian
+also give rise to new quadratic relations (Proposition 5.35) for grove measurements. These
+relations suffice to cut out the Zariski-closure of En from PN Cn , set-theoretically.
+4                                        THOMAS LAM
+
+1.4. Electroid varieties      F and positroid varieties. The Grassmannian has a stratifica-
+tion Gr(n − 1, 2n) = f Π̊f by positroid varieties studied by Postnikov [Pos], and by
+Knutson, Lam, and Speyer [KLS]. Positroid varieties are labeled by a set Bound(n−1, 2n)
+of affine permutations called bounded affine permutations. Each matching τ ∈ Pn
+naturally gives rise to a bounded affine permutation fτ ∈ Bound(n − 1, 2n). We define
+the electroid varieties by
+                                            X̊fτ := X ∩ Π̊fτ
+and show (Theorem 5.6) that the intersections of X with other positroid strata are empty.
+The totally nonnegative part (X̊fτ )≥0 := X̊fτ ∩ Gr(n − 1, 2n)≥0 of the electroid variety is
+identified with Eτ . The partial order on matchings Pn induced by the closure order on the
+Eτ has been studied by Alman, Lian and Tran [ALT], by Kenyon [Ken] and by Huang,
+Wen and Xie [HWX]. We show (Theorem 4.16) that this partial order is dual to an
+induced subposet of affine Bruhat order. In [Lam15], we use this result to show that the
+poset P̂n , obtained from Pn by adjoining a minimum element, is Eulerian.
+   Bounded affine permutations f ∈ Bound(n − 1, 2n) are in bijection with sequences
+(I1 , I2 , . . . , I2n ) of subsets called Grassmann necklaces [Pos]. Similarly, matchings
+τ ∈ Pn on [2n] are in bijection with sequences Σ(τ ) = (σ (1) , . . . , σ (2n) ) of non-crossing
+partitions, called partition necklaces (Section 5.11). Non-crossing partitions are in bi-
+jection with Dyck paths, and inherit a dominance partial order that corresponds to one
+Dyck path always staying underneath another. In analogy with a theorem of Oh [Oh]
+concerning positroids (those matroids that arise from the totally nonnegative Grassman-
+nian), we show (Theorem 5.32) that the electroid E(τ ) is an intersection of a number of
+cyclically rotated order ideals on N C n , with respect to this partial order. In summary,
+we have the following list of analogies:
+
+           Planar bipartite graph N                              Cactus network Γ
+         Almost perfect matchings in N                             Groves in Γ
+                               [n]
+              Plücker space P( k )                     Non-crossing partition space PN Cn
+                                      [n]
+         Grassmannian Gr(k, n) ⊂ P( k )               Zariski closure of En ⊂ PN Cn
+           Alternating strand diagram                          Medial graph
+         Bounded affine permutations f                         Matchings τ
+ Bruhat order on bounded affine permutations “Uncrossing” partial order on matchings
+                 Subsets I ∈ [n]
+                                 
+                               k
+                                                    Non-crossing partitions σ ∈ N C n
+                                 [n]
+                                    
+              Positroids M ⊂ k                             Electroids E ⊂ N C n
+      Grassmann necklaces I = (I1 , . . . , In ) Partition necklaces Σ = (σ (1) , . . . , σ (2n) )
+                      GL2n                              electrical Lie group EL2n
+   Our work is related to Henriques and Speyer’s work [HS] on the cube recurrence and
+isotropic Grassmannian via Fock and Goncharov’s cluster A-X -variety duality, studied in
+a situation related to ours by Goncharov and Kenyon [GK]. We shall return to this point
+in future work.
+
+  Acknowledgements. This project began after several long conversations with Alex
+Postnikov, who impressed upon me the naturality of indexing cells in the space of electrical
+networks with all medial pairings, not just some of them. The idea that the boundary
+                                                                             5
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+spike and boundary edge generators that I studied with Pylyavskyy could be interpreted
+in terms of the TNN Grassmannian was obtained in conversations with him.
+   My thinking about electrical networks has to a large extent been shaped by the ideas of
+Pasha Pylyavskyy, and I am grateful to him for all the ideas he has shared. I also benefitted
+greatly from a number of conversations with Rick Kenyon, and from the hospitality of
+ICERM which led to these conversations.
+   I also thank David Speyer for a number of comments on an earlier version of this work,
+and Yu-tin Huang for explaining the relation to ABJM scattering amplitudes.
+                   2. Circular planar electrical networks
+  We will use the notation [n] := {1, 2, . . . , n}, and [n]
+                                                            
+                                                          k
+                                                              will mean the set of k-element
+subsets of [n].
+  We refer the reader to [CIM, CGV, KW] for the material of this section.
+2.1. Electrical networks and response matrices. For our purposes, a circular pla-
+nar electrical network (or just electrical network) is a finite weighted undirected graph
+Γ embedded into a disk, where the vertex set is divided into the boundary vertices and
+the interior vertices. The boundary vertices are denoted 1̄, 2̄, . . . , n̄ and are arranged in
+clockwise order on the boundary of a disk.
+Example 2.1. A circular planar electrical network on {1̄, 2̄, 3̄, 4̄, 5̄}. Unlabeled edges are
+assumed to have weight 1.
+                                                   4̄
+                                  3̄
+
+
+                                           5               5̄
+
+
+                                  2̄           2
+                                                   1̄
+  The weight w(e) of an edge is to be thought of as the conductance of the corresponding
+resistor, and is generally taken to be a positive real number. Note that if w(e) = 0, we
+may just remove the edge, and if w(e) = ∞ we may glue together the endpoints of the
+edge.
+   We will think of electrical current as flowing along edges, and each vertex to have a
+voltage. The axioms of electricity can be summarized by two laws. Kirchhoff ’s law says
+that for any interior vertex the total current that flows into the vertex is equal to the
+total current that flows out. Ohm’s law says that if e = (u, v) is an edge then we have
+                                 w(e)(V (u) − V (v)) = I(e)
+where w(e) is the conductance of the edge, V (u), V (v) are the voltages of the vertices,
+and I(e) is the current flowing from u to v.
+  The response matrix Λ(Γ) is the n × n matrix defined as follows. If v ∈ Rn is a
+vector of voltages assigned to the boundary nodes, then Λ(Γ) is the vector of currents
+6                                               THOMAS LAM
+
+flowing into the network at each of the boundary nodes. This vector of currents can be
+determined using Ohm’s law and Kirchhoff’s law by solving a system of linear equations.
+We declare Γ and Γ′ to be electrically-equivalent if Λ(Γ) = Λ(Γ′ ).
+
+
+
+
+2.2. Groves. A grove F on Γ is a spanning subforest (that is, an acyclic subgraph that
+uses all the vertices) such that each component Fi ⊂ F is connected to the boundary.
+The boundary partition σ(F ) is the set partition of {1̄, 2̄, . . . , n̄} which specifies which
+boundary vertices lie in the same component of F . Note that since Γ is planar, σ(F ) must
+be a non-crossing partition, also called a planar set partition. We will often write
+                                                                                       ¯ f¯ḡ|h̄). Let
+                                           ¯ ē|f¯, ḡ|h̄) or more simply just (āb̄c̄|dē|
+set partitions in the form σ = (ā, b̄, c̄|d,
+N C n denote the set of non-crossing partitions on [n̄].
+   Each non-crossing partition σ on [n̄] has a dual non-crossing partition on [ñ] where by
+convention ĩ lies between ī and i + 1. For example (1̄, 4̄, 6̄|2̄, 3̄|5̄) is dual to (1̃, 3̃|2̃|4̃, 5̃|6̃).
+
+
+                                                     2̃
+                                           2̄                   3̄
+
+                                     1̃                                 3̃
+
+
+                                1̄                                           4̄
+
+
+                                     6̃                                 4̃
+
+                                           6̄                   5̄
+                                                     5̃
+
+
+  Let |σ| denote the number of parts of σ. In the above example |σ| = 3 and |σ̃| = 4.
+The following result is straightforward.
+
+
+Lemma 2.2. If σ and σ̃ are dual non-crossing partitions, then |σ| + |σ̃| = n + 1.
+
+
+   If σ is a non-crossing partition on [n̄] we get a non-crossing matching τ (σ) on [2n].
+The matching τ (σ) separates σ from σ̃. We fix labellings as follows: the vertex 2i − 1 in
+τ (σ) lies between i]       − 1 and ī; the vertex 2i lies between ī and ĩ. For our above example,
+σ = (1̄, 4̄, 6̄|2̄, 3̄|5̄) gives τ (σ) = {(1, 12), (2, 7), (3, 6), (4, 5), (8, 11), (9, 10)}.
+                                                                             7
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+                                            4           5
+                                  3                               6
+
+
+                           2                                               7
+
+
+                           1                                               8
+
+
+                                  12                              9
+                                           11           10
+
+Lemma 2.3. σ 7→ τ (σ) gives a bijection between N C n and non-crossing matchings on
+[2n]. Thus the number of non-crossing partitions on n vertices is equal to the Catalan
+         1  2n
+number n+1   n
+               .
+
+  For a non-crossing partition σ, we define
+                                                    X
+                                   Lσ (Γ) :=                 wt(F )
+                                                F |σ(F )=σ
+
+where the summation is over all groves with boundary partition σ, and wt(F ) is the
+product of weights of edges in F .
+                                                        4̄
+                                      3̄
+
+
+                                                5                     5̄
+
+
+                                      2̄            2
+                                                 1̄
+                    a grove F with σ(F ) = (1̄5̄|2̄4̄|3̄) and wt(F ) = 2
+
+  Let “uncrossed” denote the boundary partition where each vertex is in its own part.
+The following result is essentially due to Kirchhoff. See Kenyon and Wilson [KW].
+
+Proposition 2.4. We have
+                               L(i,j|rest singletons) (Γ)
+                                                          = −Λi,j (Γ).
+                                   Luncrossed (Γ)
+  Thus the grove measurements determine the response matrix. As shorthand, we write
+Lij for L(i,j|rest singletons) .
+8                                      THOMAS LAM
+
+2.3. Boundary spikes and boundary edges. Given an odd integer 2k − 1, for k =
+1, 2, . . . , n and a nonnegative real number t, we define v2k−1 (t)(Γ) to be the electrical
+network obtained from Γ by adding a new edge from a new vertex v to k̄, with weight 1/t,
+followed by treating k̄ as an interior vertex, and the new vertex v as a boundary vertex
+(now named k̄).
+   Given an even integer 2k, for k = 1, 2, . . . , n, and a nonnegative real number t, we
+define v2k (t)(Γ) to be the electrical network obtained from Γ by adding a new edge from
+k̄ to k + 1 (indices taken modulo n + 1), with weight t.
+   These operations are called adjoining a boundary spike, and adjoining a bound-
+ary edge respectively. Our notation suggests, as explained in Theorem 2.8 below, that
+there is some symmetry between these two types of operations.
+                                  new 1̄
+                                        1/t
+            1̄        2̄                                            1̄                2̄
+                                                                             t
+
+                 Γ                            Γ                              Γ
+
+
+
+                                         v1 (t) · Γ                      v2 (t) · Γ
+
+Lemma 2.5. Λ(vi (a) · Γ) depends only on Λ(Γ), giving an operation vi (t) on response
+matrices.
+2.4. Electrically-equivalent transformations of networks. The following proposi-
+tion is well-known and can be found for example in [CGV].
+                                                                 a
+   b                                                a
+                ab
+                        a       b        a+b
+   a           a+b
+
+
+Proposition 2.6. Series-parallel transformations, removing loops, and removing interior
+degree 1 vertices (pendant removal), do not change the response matrix of a network.
+    The following theorem is attributed to Kennelly [Kenn].
+Theorem 2.7 (Y − ∆, or star-triangle transformation). Assume that parameters a,b,c
+and A,B,C are related by
+                             bc               ac              ab
+                    A=             , B=            , C=            ,
+                         a+b+c             a+b+c           a+b+c
+or equivalently by
+               AB + AC + BC           AB + AC + BC           AB + AC + BC
+          a=                    , b=                   , c=                  .
+                     A                        B                      C
+Then switching a local part of an electrical network between the two options shown does
+not change the response matrix of the whole network.
+                                                                             9
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+
+
+                                a                              C
+                                        b           B
+                                c                              A
+
+                                    Γ                     Γ′
+
+  In [LP], we showed with Pylyavskyy that Theorem 2.7 implies
+Theorem 2.8. The generators vi (t) acting on response matrices satisfies the electrical
+braid relations
+   (1) vi (a)vi (b) = vi (a + b) for each i,
+   (2) vi (a)vj (b) = vj (b)vi (a) for |i − j| ≥ 2, and
+   (3) vi (a)vi±1 (b)vi (c) = vi±1 (bc/(a + c + abc))vi (a + c + abc)vi±1 (ab/(a + c + abc)).
+Here the index i of vi is taken modulo 2n.
+Remark 2.9. The matrices
+                                                                  
+                                 1 a 0                         1 0 0
+                      x1 (a) =  0 1 0             x2 (a) =  0 1 a 
+                                 0 0 1                         0 0 1
+satisfy the Lusztig braid relation
+                  x1 (a)x2 (b)x1 (c) = x2 (bc/(a + c))x1 (a + c)x2 (ab/(a + c)).
+The electrical braid relation can be thought of as a deformation of this, see [LP]. The
+matrices xi (a) will play an important role later, see Section 3.6.
+2.5. Medial graphs. Let Γ be an electrical network. The medial graph G(Γ) is defined
+as follows, and only depends on the underlying unweighted graph of Γ. First place vertices
+t1 , t2 , . . . , t2n on the boundary of the disk, so that in circular order we have t1 < 1̄ < t2 <
+t3 < 2̄ < · · · . Next add a vertex te for each edge e ∈ E(Γ). Now join te with te′ if e and
+e′ share a vertex and are incident to the same face. For boundary vertices t2i−1 or t2i , we
+draw an edge to te where e is the “closest” edge incident to vertex i of Γ. If vertex i of
+Γ is isolated, t2i−1 and t2i are joined by an edge. Note that each vertex te is four-valent,
+and each vertex ti has degree 1. A strand or wire of a medial graph G(Γ) is a maximal
+sequence of edges in G such that we always go straight through any four-valent vertex
+encountered. We will often write T for a strand, or Ti for the strand with one endpoint
+at ti . Medial strands either join boundary vertices to boundary vertices, or forms a cycle
+in the interior of the disk. Thus a medial graph induces a matching on the set [2n], which
+we will call the medial pairing τ (Γ) of Γ. Usually, we will only talk about the medial
+pairing τ (Γ) when Γ is critical, to be defined below. We will sometimes think of medial
+pairings as set partitions, and sometimes as involutions on [2n]. For example, the set
+partition {(1, 4), (2, 5), (3, 6)} corresponds to the involution τ (i) = i + 3 mod 6.
+    The electrical network Γ can be recovered from the medial graph as follows: the graph
+G divides the interior of the disk into regions. The regions can be colored with two colors
+black and white, so that regions sharing an edge have different colors. By convention,
+10                                      THOMAS LAM
+
+regions containing boundary vertices in their boundary are colored white. To reconstruct
+Γ, place a vertex inside each white region (if this is a boundary region, then this vertex
+is just the boundary vertex), and join vertices with edges in Γ when the corresponding
+white regions share a common vertex in G.
+Remark 2.10. Note that in general we do not draw medial graphs with straight lines, but
+we draw edges as curves, giving an embedding of the graph into the interior of the disk.
+Example 2.11. In the following picture, the medial graph of the electrical network from
+Section 2.1 is shown in dashed lines. One of the medial strands is drawn extra thick. The
+medial pairing is {(1, 7), (2, 9), (3, 8), (4, 10), (5, 6)}.
+                                           t7
+                                                     4̄
+                                  t6
+                                                             t8
+                            3̄
+                                                                  t9
+                       t5
+
+                                                                        5̄
+                       t4
+                                                                  t10
+                            2̄
+                                                             t1
+                                  t3
+                                           t2        1̄
+
+  A lens in a medial graph consists of two edge disjoint arcs [x, x′ ]p and [x, x′ ]q of wires
+p and q between two vertices x, x′ that lie on both wires:
+
+
+
+                                           A lens
+  A medial graph is lensless if every wire begins and ends on the boundary of the disk, no
+wire has a self intersection, and there are no lens. An electrical network Γ is critical, or
+reduced if its medial graph is lensless. For τ a medial pairing of a lensless medial graph
+G, let c(τ ) denote the number of crossings of the medial pairing τ . (This number does
+not depend on the actual choice of medial graph, only that it is lensless.). For example,
+the medial pairing of Example 2.11 has c(τ ) = 5. The number c(τ ) is also equal to the
+number of edges in the corresponding critical electrical network.
+Proposition 2.12. If Γ and Γ′ are related by Y − ∆ moves, then G(Γ) and G(Γ′ ) are
+related by Yang-Baxter (or star-triangle) moves (see Figure 2.1). If Γ and Γ′ are related by
+the reduction moves of Proposition 2.6, then G(Γ) and G(Γ′ ) are related by lens removals
+or loop removals (see Figures 2.2 and 2.3).
+                                                                            11
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+
+
+
+              Figure 2.1. The Yang-Baxter, or star-triangle transformation
+
+
+
+
+                                    Figure 2.2. Lens removal
+
+
+
+
+                                    Figure 2.3. Loop removal
+
+2.6. Main results for circular planar electrical networks. Let A be an n×n matrix,
+and suppose I = {i1 , . . . , ir } and J = {j1 , . . . , jr } are disjoint subsets that index a subset of
+rows and columns respectively. We call AI,J a circular minor if after a cyclic permutation
+the sequence (i1 , i2 , . . . , ir , jr , . . . , j1 ) is in order.
+Theorem 2.13 ([CIM, CGV]).
+  (1) Any circular planar electrical network is electrically equivalent to some critical
+      network.
+  (2) Any two circular planar electrical networks having the same response matrix can be
+      connected by simple local transformations: series-parallel, loop removal, pendant
+      removal, and star-triangle transformations. Furthermore, if both networks are
+      critical, then only star-triangle transformations are required.
+  (3) The edge conductances of a critical circular planar electrical network can be recov-
+      ered uniquely from the response matrix.
+  (4) The response matrices realizable by circular planar networks is the space of n × n
+      symmetric matrices such that each row sum is equal to 0, and (−1)r det(AI,J ) ≥ 0
+      for any r × r circular minor AI,J .
+  (5) The space En′ ofF response matrices of circular planar networks has a stratification
+      by cells En′ = Ci where each Ci ≃ Rd>0     i
+                                                   can be obtained as the set of response
+      matrices for a fixed critical network with varying edge weights.
+
+Remark 2.14. Not every matching on [2n] can arise from electrical networks. But in
+Section 4.1, we will compactify the space to get all possible matchings on [2n].
+ 3. Planar bipartite graphs and the totally nonnegative Grassmannian
+   In this section, we recall Postnikov’s theory [Pos] of the totally nonnegative (TNN)
+Grassmannian. We follow the approach using planar bipartite graphs and matchings
+developed in [Lam14]. The connection between the matchings approach and Postnikov’s
+is explained in the works of Talaska [Tal] and Postnikov, Speyer, and Williams [PSW].
+12                                      THOMAS LAM
+
+Though our approach is different, most of the results stated here are due to Postnikov,
+and we have also drawn from work of Oh [Oh] and Knutson, Lam, and Speyer [KLS].
+Some of the statements in Sections 3.6 are new.
+3.1. TNN Grassmannian. In this section, we fix integers k, n and consider the real
+Grassmannian Gr(k, n) of (linear) k-planes in Rn . Recall that each X ∈ Gr(k, n) has
+Plücker coordinates ∆I (X) labeled by k-element subsets I ⊂ [n], defined up to a single
+common scalar. The TNN Grassmannian Gr(k, n)≥0 is the subset of Gr(k, n) consisting
+of points X represented by nonnegative Plücker coordinates ∆I (X) ≥ 0 for all I ∈ [n]
+                                                                                       
+                                                                                     k
+                                                                                         .
+                                                  [n]
+                                                     
+The Plücker coordinates {∆I (X) | I ∈ k } satisfy quadratic relations known as Plücker
+relations, see [Ful].
+   The cyclic group acts on Gr(k, n)≥0 with generator χ acting by the map
+                       χ : (v1 , v2 , . . . , vn ) → v2 , . . . , vn , (−1)k−1 v1
+                                                                                  
+
+where vi are columns of some k × n matrix representing X.
+3.2. Matchings for bipartite graphs in a disk. Let N be a weighted bipartite network
+embedded in the disk with n boundary vertices, labeled 1, 2, . . . , n in clockwise order. Each
+vertex (including boundary vertices) is colored either black or white, and all edges join
+black vertices to white vertices. We let d be the number of interior white vertices minus
+the the number of interior black vertices. Furthermore, we let d′ ∈ [n] be the number of
+white boundary vertices. Finally, we assume that all boundary vertices have degree 1,
+and that edges cannot join boundary vertices to boundary vertices.
+Remark 3.1. Since the graph is bipartite, this last condition ensures that the coloring of
+the boundary vertices is determined by the interior part of the graph. So sometimes we
+will pretend that boundary vertices are not colored, and usually will omit the color of
+boundary vertices from pictures.
+  An almost perfect matching Π is a subset of edges of N such that
+   (1) each interior vertex is used exactly once
+   (2) boundary vertices may or may not be used.
+The boundary subset I(Π) ⊂ {1, 2, . . . , n} is the set of black boundary vertices that are
+used by Π union the set of white boundary vertices that are not used. By our assumptions
+we have |I(Π)| = k := d′ + d.
+  Define the boundary measurement, or dimer partition function as follows. For
+I ⊂ [n] a k-element subset,
+                                               X
+                                 ∆I (N) :=           wt(Π)
+                                             Π:I(Π)=I
+
+where wt(Π) is the product of the weight of the edges in Π.
+Theorem 3.2. Suppose N has nonnegative real weights, and that almost perfect matchings
+of N exist. Then the homogeneous coordinates (∆I (N))I∈([n]) ) defines a point M(N) in the
+                                                         k
+Grassmannian Gr(k, n)≥0 . Furthermore, every X ∈ Gr(k, n)≥0 is realizable X = M(N)
+by a planar bipartite graph.
+     The first statement of Theorem 3.2 is essentially due to Kuo [Kuo].
+                                                                            13
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+3.3. Gauge equivalences and local moves. The material of this subsection is not used
+essentially in the sequel. We suggest the reader unfamiliar with this material to skip this
+section.
+   Let N be a planar bipartite graph. If e1 , e2 , . . . , er are adjacent to an interior vertex
+v, we can multiply all of their edge weights by the same constant c ∈ R>0 to get a new
+graph N ′ , and we have M(N ′ ) = M(N). This is called a gauge equivalence.
+   We also have the following local moves:
+ (M1) Spider move or square move [Pos, GK]: assuming the leaf edges of the spider have
+        been gauge fixed to 1, the transformation is
+                      a                b                      c                d
+              a′ =             b′ =             c′ =                  d′ =
+                   ac + bd          ac + bd               ac + bd           ac + bd
+
+                                                             c′     d′
+                               a           b
+
+                               d           c
+                                                             b′     a′
+
+ (M2) Valent two vertex removal. If v has degree two, we can gauge fix both incident
+      edges (v, u) and (v, u′) to have weight 1, then contract both edges (that is, we
+      remove both edges, and identify u with u′ ). Note that if v is a valent two-vertex
+      adjacent to boundary vertex b, with edges (v, b) and (v, u), then removing v pro-
+      duces an edge (b, u), and the color of b flips.
+ (R1) Multiple edges with same endpoints is the same as one edge with sum of weights.
+ (R2) Leaf removal. Suppose v is leaf, and (v, u) the unique edge adjacent to it. Then
+      we can remove both v and u, and all edges adjacent to u. However, if there is a
+      boundary edge (b, u) where b is a boundary vertex, then that edge is replaced by
+      a boundary edge (b, w) where w is a new vertex with the same color as v.
+ (R3) Dipoles (two degree one vertices joined by an edge) can be removed.
+Proposition 3.3. Each of these relations preserves M(N).
+  A planar bipartite graph N is reduced if it has the minimal number of faces in its
+move-equivalence class, and in addition, there are no leaves in N connected to interior
+vertices.
+Theorem 3.4. Suppose N and N ′ are planar bipartite graphs with M(N) = M(N ′ ).
+Then N and N ′ are related by local moves and gauge equivalences. Suppose N and N ′
+are reduced planar bipartite graphs with M(N) = M(N ′ ). Then N and N ′ are related by
+square moves, valent two vertex removals/additions, and gauge equivalences.
+3.4. Bounded affine permutations and Grassmann necklaces. A bounded affine
+permutation, or bounded juggling pattern of type (k, n) is a bijection f : Z → Z
+satisfying:
+    (1) i ≤ f (i) ≤ i + n
+    (2) f (i + n) = f (i) + n for all i ∈ Z
+14                                       THOMAS LAM
+
+    (3) ni=1 (f (i) − i) = kn
+        P
+
+A bijection satisfying only (2) and (3) is called an affine permutation. The affine per-
+mutations of type (k, n) are denoted S̃nk . The bounded affine permutations of type (k, n)
+are denoted Bound(k, n). Bounded affine permutations inherit a length function, and a
+Bruhat order from the set of all affine permutations. See [KLS, BB] for full details. It is
+often convenient to think of f as a juggling pattern: f (i) = j says that the ball thrown
+at time i lands at time j. Since f is determined by its values on [n], we sometimes give
+f in window notation: f = [f (1), f (2), . . . , f (n)].
+   A (k,n)-Grassmann necklace is a collection of k-element subsets I = (I1 , I2 , . . . , In )
+satisfying the following property: for each a ∈ [n]:
+    (1) Ia+1 = Ia if a ∈/ Ia
+    (2) Ia+1 = Ia − {a} ∪ {a′ } if a ∈ Ia .
+   For each f ∈ Bound(k, n) we define I(f ) = (I1 , I2 , . . . , In ) by
+                        Ia := {f (b) | b < a and f (b) ≥ a}       mod n.
+Here “ mod n” means that we take representatives in [n].
+    We write ≤a for the ordering a <a a + 1 <a · · · <a n <a 1 <a · · · <a a − 1 on [n]. We
+define the dominance ordering on [n]    k
+                                            by I = {i1 < i2 < · · · < ik } ≤ J = {j1 < j2 <
+· · · < jk } if ir ≤ jr for all r. We also have the cyclically rotated version I ≤a J: order
+the elements of I and J using ≤a , and then compare them (in order) using ≤a . Define a
+partial order on Grassmann necklaces by I ≤ I ′ if Ia ≤a Ia′ for each a.
+Theorem 3.5. The map f 7→ I(f ) is a bijection between bounded affine permutations of
+type (k, n) and (k, n)-Grassmann necklaces. We have f ≤ f ′ in Bruhat order if and only
+if I(f ) ≤ I(f ′ ).
+Example 3.6. Let k = 2 and n = 6.              Suppose f = [2, 4, 6, 5, 7, 9]. Then I(f ) =
+(13, 23, 34, 46, 56, 16).
+  Suppose N is a reduced planar bipartite graph. We define a bounded affine permutation
+fN as follows. At each boundary vertex i ∈ [n] we produce a path starting at i, called
+the trip Ti , as follows. Travel along the unique outgoing edge at i and at each interior
+black vertex, turn maximally towards the right, while at each interior white vertex turn
+maximally towards the left. The trip Ti ends when we reach a boundary vertex j ∈ [n].
+We then define fN by fN (i) = j mod n. There is a special case: when Ti ends at i. This
+can only happen (for a reduced planar bipartite graph) if i is connected to a leaf. In
+this case, we declare fN (i) = i if i is connected to a black leaf, and fN (i) = i + n if i is
+connected to a white leaf.
+3.5. Positroids and positroid varieties. Let X ∈ Gr(k, n). Define fX by
+(3.1)               fX (i) := min{j ≥ i | vi ∈ span{vi+1 , vi+2 , . . . , vj }}
+where vi are the columns of a representative of X, and we extend these columns periodi-
+cally by defining vi+n := vi .
+Proposition 3.7. Suppose N is a reduced planar bipartite graph. Then fM (N ) = fN .
+  Define I(X) := (I1 , I2 , . . . , In ) by setting Ia (X) to be the lexicographically minimal
+non-vanishing Plücker coordinate of X with respect to the order ≤a .
+                                                                            15
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+Proposition 3.8. Let X ∈ Gr(k, n). Then fX is a bounded affine permutation of type
+(k, n) and I(X) is a (k, n)-Grassmann necklace. We have I(fX ) = I(X).
+   We shall consider matroids of rank k on [n]. The matroid M(X) of a point X ∈ Gr(k, n)
+is the collection                                       
+                                         [n]
+                                    I∈       | ∆I (X) 6= 0 .
+                                          k
+A positroid is the matroid     of a point X ∈ Gr(k, n)≥0 .
+                       [n]
+                          
+   Let SI = {J ∈ k | I ≤ J} be the Schubert matroid with minimal element I. Let
+SI,a = {J ∈ [n]
+                  
+                k
+                    | I ≤a J}. For f ∈ Bound(k, n) define a matroid
+                                               n
+                                               \
+(3.2)                               M(f ) :=         SIa ,a .
+                                               a=1
+
+  For f ∈ Bound(k, n), define the open positroid variety
+                            Π̊f := {X ∈ Gr(k, n) | fX = f }.
+                               F
+Obviously, we have Gr(k, n) = f ∈Bound(k,n) Π̊f .
+Theorem 3.9.
+  (1) The closed positroid varieties are given by
+                                           G
+                              Πf := Π̊f =      Π̊f ′
+                                                 f ′ ≥f
+                                                                 k(n−k)−ℓ(f )
+   (2) The intersection (Π̊f )>0 := Π̊f ∩Gr(k, n)≥0 is a cell R>0               . Each X ∈ (Π̊f )>0
+       has the same positroid M(f ).
+  To summarize, there are bijections between bounded affine permutations, Grassmann
+necklaces, and positroids.
+3.6. A reduction result. The group GLn acts on Gr(k, n) by right multiplication. For
+a ∈ R and 1 ≤ i ≤ n − 1, the element xi (a) ∈ GL2n is the elementary matrix differing
+from the identity matrix by an entry a in the i-th row and (i + 1)-st column. Similarly
+yi (a) has an entry a in the (i + 1)-st row and i-th column. For example, for n = 2,
+                                                        
+                                             1 0 0 0
+                                           0 1 0 0 
+                                           0 a 1 0 .
+                                 y2 (a) =               
+                                             0 0 0 1
+The generator xi (a) acts on Gr(k, n) by adding a times the i-th column to the (i + 1)-
+st, and we define the action of xn (a) by using the signed cyclic action: xn (a) · X =
+(χ ◦ x1 (a) ◦ χ−1 ) · X. We may also think of xn (a) ∈ GLn as the matrix that differs from
+the identity by an entry in the n-th row and first column. Similarly, yi (a) acts by adding
+the a times the (i + 1)-st column to the i-th column.
+   We shall need the following dual Grassmann necklace. Let f ∈ Bound(k, n). Define
+J (f ) = (J1 , J2 , . . . , Jn ) by
+                       Jb (f ) := {a < b | f (a) ≥ b}      mod n ⊂ [n].
+16                                        THOMAS LAM
+
+Thus J (f ) keeps track of where balls are thrown instead of where they land. The same
+arguments as for Grassmann necklaces show that J (f ) consists of k-element subsets of
+[n], and that f 7→ J (f ) is injective.
+Proposition 3.10.
+  (1) Suppose X ∈ Π̊f and i < f (i) < f (i + 1) < i + n + 1. If
+                               a = ∆Ii+1 (X)/∆Ii+1∪{i}−{i+1} (X)
+         is well-defined (that is, ∆Ii+1 ∪{i}−{i+1} (X) 6= 0) then X ′ = X · xi (−a) ∈ Π̊f ′ where
+         f ′ = f si > f . Furthermore, a is always well-defined if X ∈ Gr(k, n)≥0 . In this
+         case X ′ also lies in Gr(k, n)≥0 .
+     (2) Suppose X ∈ Π̊f and i − n < f −1 (i) < f −1 (i + 1) < i + 1. If
+                               a = ∆Ji+1 (X)/∆Ji+1∪{i+1}−{i} (X)
+         is well-defined (that is, ∆Ji+1 ∪{i+1}−{i} (X) 6= 0) then X ′ = X · yi (−a) ∈ Π̊f ′ where
+         f ′ = si f > f . Furthermore, a is always well-defined if X ∈ Gr(k, n)≥0 . In this
+         case X ′ also lies in Gr(k, n)≥0 .
+Proof. We only prove (1), as (2) is similar. Let vi be the columns of a k × n matrix which
+represents X.
+  Suppose a is well defined. Now X ′ is obtained from X by adding −a times vi to vi+1 .
+So for any J we have
+                        (
+                         ∆J (X) − a∆J−{i+1}∪{i} (X) if i + 1 ∈ J and i ∈   /J
+(3.3)       ∆J (X ′ ) =
+                         ∆J (X)                         otherwise.
+The formulae above are the minors of this specific representative of X ′ ; the Plücker
+coordinates of the actual point in the Grassmannian are only determined up to a scalar.
+   Let vi′ be the columns for the matrix obtained from vi by right multiplication by xi (−a).
+                                                               ′
+Then span(vi ) = span(vi′ ) and span(vi , vi+1 ) = span(vi′ , vi+1 ), so fX ′ (r) = fX (r) unless
+                                                         ′
+r ∈ {i, i + 1} mod n. But fX ′ 6= fX since ∆Ii+1 (X ) = 0. Thus fX ′ must be obtained
+from fX by swapping the values of f (i) and f (i + 1), so f ′ = f si > f .
+   Now suppose that X ∈ Gr(k, n)≥0 . If f (i) = i + 1, then by (3.1), the columns vi and
+vi+1 are parallel, and since f (i + 1) 6= i + 1 both vi and vi+1 are non-zero. In this case a
+is just the ratio vi+1 /vi , and X ′ is what we get by changing the (i + 1)-st column to 0.
+All the claims follow.
+   We now assume that f (i) > i + 1. Let f (i) = j and f (i + 1) = k. Since f (i) ∈  / {i, i + n},
+we have i ∈ Ii and i ∈  / Ii+1 . We also have i + 1 ∈ Ii ∩ Ii+1 . We let Ii = {i, i + 1} ∪ I,
+Ii+1 = (i + 1) ∪ I ∪ {j}, and Ii+2 = I ∪ {j, k} for some I ⊂ [n] − {i, i + 1}. Note that if
+k = n + i, then Ii+2 = I ∪ {j, i}; this immediately gives ∆i∪I∪j 6= 0.
+   Suppose k 6= n + i. Then we have a Plücker relation
+                   ∆i∪I∪j ∆(i+1)∪I∪k = ∆i∪I∪k ∆(i+1)∪I∪j + ∆i∪(i+1)∪I ∆I∪j∪k
+where all subsets are ordered according to ≤i . (The easiest way to see that the signs are
+correct is just to take i = 1.) Since the RHS is positive, ∆i∪I∪j 6= 0. We have shown that
+a is well defined.
+   Using (3.3) and Lemma 3.11 below, we see that X ′ ∈ Gr(k, n)≥0 .                     
+                                                                            17
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+Lemma 3.11. Let X ∈ Gr(k, n)≥0 be as in Proposition 3.10, with f (i) > i + 1. For
+simplicity of notation suppose i = 1. Write I2 = 2 ∪ I ∪ j. Suppose J ⊂ {3, . . . , n}
+satisfies 1 ∪ J ∈ MX . Then ∆1∪I∪j (X)∆2∪J (X) ≥ ∆1∪J (X)∆2∪I∪j (X).
+Proof. Let M be the positroid of X. We let I1 = {1, 2} ∪ I, I2 = 2 ∪ I ∪ {j}, and
+I3 = I ∪ {j, k}, as in the proof of Proposition 3.10. We have already shown in the proof
+of Proposition 3.10 that (1 ∪ I ∪ j) ∈ M.
+   We proceed by induction on the size of r = |(I ∪ j) \ J|. The case r = 0 is tautological.
+So suppose r ≥ 1. We may assume that 1 ∪ J ∈ M for otherwise the claim is trivial.
+Applying the exchange lemma to 1 ∪ J the element a = max(J \ (I ∪ j)) ∈ J and the
+other base 1 ∪ I ∪ j, we obtain L = J − {a} ∪ {b} such that 1 ∪ L ∈ M.
+   We claim that b < a. To see this, note that I1 ≤ (1 ∪ J), which implies that a > I \ J.
+So the only way that b could be greater than a is if b = j, and a < j. But by assumption
+we also have I3 = I ∪ {j, k} ≤3 (1 ∪ J) with k ≥2 j. This is impossible since both k and
+j are greater than a, but we have J \ I ⊂ [3, a] – the only element of (1 ∪ J) \ I that is
+greater than j or k in ≤3 order is 1. Thus b < a.
+   So by induction we have that ∆2∪L /∆1∪L ≥ ∆2∪I /∆1∪I , where in particular we have
+(1 ∪ L), (2 ∪ L) ∈ M. It suffices to show that ∆2∪J /∆1∪J ≥ ∆2∪L /∆1∪L .
+   We apply the Plücker relation to ∆2∪J ∆1∪L , swapping L with (k − 1) of the indices in
+2 ∪ J to get
+                  ∆1∪L ∆2∪J = ∆1∪J ∆2∪L + ∆12j1 j2 ···â···jk−1 ∆ℓ1 ℓ2 ···a···ℓk−1 .
+We note that ℓ1 < ℓ2 < · · · < a < · · · < ℓk−1 is actually correctly ordered, since L is
+obtained from J by changing a to a smaller number. So all factors in the above expression
+are nonnegative. The claim follows.                                                     
+
+3.7. Bridges in planar bipartite graphs. By adding degree two vertices to a planar
+bipartite graph N, we can always assume that a boundary vertex is the color we want it
+to be. If i and i + 1 are two adjacent boundary vertices, we can add a bridge between
+the two edges leaving i and i + 1. There are two different kinds of bridges depending on
+which color is assigned to which vertex of the added edge. For simplicity, we for example
+just say we are adding “a bridge with white at i + 1 and black at i” for the following
+picture.
+
+                                         i+1
+                                                      a
+                                             i
+
+  These are the network analogues of the Chevalley generator actions xi (a) and yi (b).
+Lemma 3.12. Let N be a network. Now let N ′ be obtained by adding a bridge with
+edge weight a from i to i + 1 which is white at i and black at i + 1. Then we have
+M(N) = xi (a) · M(N), and the boundary measurements change as follows:
+                         (
+                          ∆I (N) + a∆I−{i+1}∪{i} (N) if i + 1 ∈ I but i ∈
+                                                                        /I
+             ∆I (N ′ ) =
+                          ∆I (N)                     otherwise.
+18                                         THOMAS LAM
+
+If the bridge is black at i and white at i + 1, then we have M(N) = yi (a) · M(N), and
+                           (
+                            ∆I (N) + a∆I−{i}∪{i+1} (N) if i ∈ I but i + 1 ∈
+                                                                          /I
+               ∆I (N ′ ) =
+                            ∆I (N)                       otherwise.
+
+     4. Compactifying the space of circular planar electrical networks
+   In this section we construct a compactification of the space of circular planar electrical
+networks from Section 2. The section is organized as follows: in Section 4.1 we define
+cactus networks and in Section 4.2 we discuss grove coordinates on cactus networks. The
+compactified space En of circular planar electrical networks is defined in Section 4.3. We
+discuss the 0-dimensional cells of En (a Catalan object) in Section 4.4. We introduce
+the uncrossing partial order on matchings in Section 4.5 and prove that it is dual to an
+induced subposet of affine Bruhat order in Section 4.6. In Section 4.7, we observe that
+Grassmann necklaces of electrical affine permutations are special necklaces that we call
+Catalan necklaces.
+4.1. Cactus networks. Let S be a circle with n boundary points labeled [n̄], as usual.
+Let σ be a non-crossing partition on [n̄]. Then identifying the boundary points according
+to the parts of σ gives a hollow cactus Sσ : it is a union of circles, glued together at the
+identified points. (Note that it is possible for three or more circles to be glued together
+at the same point.) We can still think of the interior of Sσ : this is a union of open disks.
+The interior of Sσ , together with Sσ itself will be called a cactus. We caution that our
+cacti are not identical to the similar notion in the theory of real stable curves.
+   A cactus network is a weighted graph Γ embedded into a cactus. We may think
+of a cactus network as obtained from a usual circular planar network by declaring some
+boundary vertices (specified by σ) to have infinite conductance between them. A cactus
+network also decomposes into a union of circular planar networks (with differing sets
+of boundary vertices) for each disk component of the cactus. Any cactus network has a
+medial graph with the convention that medial strands/wires always stay completely within
+one disk. Sometimes it is convenient to draw the medial strands of a cactus network in a
+disk, rather than in a cactus.
+Example 4.1. The hollow cactus Sσ where σ = (1̄|2̄, 13, 14|3̄, 7̄|4̄, 6̄|5̄|8̄|9̄, 12|10|11).
+                                         1̄
+
+
+
+                        11           14 2̄
+                                  12 13         3̄          4̄
+                                                                           5̄
+                                   9̄           7̄          6̄
+                        10               8̄
+
+  There is a natural notion of the response matrix Λ(Γ) of a cactus network: we specify
+voltages at boundary vertices such that vertices belonging to the same part of σ are
+                                                                            19
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+assigned the same voltage. Two cactus networks are electrically equivalent if they have
+the same response matrices. We shall call σ the shape of the cactus network Γ.
+Proposition 4.2.
+  (1) Each cactus network Γ is electrically equivalent to one whose medial graph is lens-
+      less. Such cactus networks are called critical or reduced.
+  (2) Any two electrically equivalent reduced cactus networks are related by Y − ∆ trans-
+      formations.
+  (3) Any matching on [2n] can be obtained as the medial pairing of some cactus network.
+Proof. (1) and (2) are proved in exactly the same way as the corresponding statement for
+circular planar electrical networks. (3) is proved by construction: let τ be a matching on
+[2n] and G any lensless medial graph with that medial pairing. The strands of G cuts the
+disk up into regions. We glue together boundary vertices [n̄] if they belong to the same
+such region. This recovers the shape of the cactus network. In each disk component of
+the cactus, we now have a matching (on a smaller number of vertices), and this matching
+arises from a critical electrical network in that disk.                                  
+  The number of medial pairings of cactus networks is just the number of matchings on
+2n objects, that is (2n − 1) · (2n − 3) · · · 3 · 1.
+                                                         t3          t4
+
+               t2                      t5               t2                      t5
+                          t3t4
+
+
+
+               t1         t8t7         t6               t1                      t6
+  A cactus network and its medial graph                   t8           t7
+                                               The same medial graph drawn in the disk
+
+4.2. Grove measurements as projective coordinates. Recall that we have defined
+grove counting measurements Lσ (Γ) for Γ a planar electrical network and σ a non-crossing
+partition. The combinatorial definition of Lσ (Γ) naturally extends to cactus networks Γ.
+  Let PN Cn be the projective space with homogeneous coordinates indexed by non-crossing
+partitions. The map
+                                      Γ 7−→ (Lσ (Γ))σ
+sends a cactus network to a point in L(Γ) ∈ PN Cn .
+  Define the electroid of L(Γ) by
+                         E(Γ) := E(L(Γ)) := {σ | Lσ 6= 0} ⊂ N C n .
+Remark 4.3. Our electroids differ from Alman, Lian, and Tran’s electrical positroids [ALT]
+in two different ways: first, we study electroids for cactus networks, while [ALT] only con-
+sider circular planar electrical networks. Second, the elements of their electrical positroids
+are certain pairs of subsets of [n̄], which correspond to non-crossing partitions σ with ex-
+actly two non-singleton parts of equal size. (See [KW] and [Ken] for a discussion of the
+relationship between grove measurements and minors of the response matrix.)
+20                                                    THOMAS LAM
+
+Proposition 4.4. If Γ and Γ′ are electrically equivalent cactus networks, then L(Γ) =
+L(Γ′ ) in PN C n . In particular, E(Γ) = E(Γ′).
+Proof. Use the combinatorial definition of Lσ (Γ), and do a check for each of the local
+electrical equivalences (series-parallel, star-triangle, and so on).                 
+Example 4.5.
+                                  1̄                                      1̄
+
+                                       a                                               C
+
+                                                  b       2̄             B                         2̄
+                                       c                                               A
+
+                                  3̄                                      3̄
+                                           Γ                                     Γ′
+Let L = L(Γ) where Γ is the star, and L′ = L(Γ′ ) where Γ′ is the triangle, as illustrated.
+We have
+        L1̄|2̄|3̄| = a + b + c,          L1̄2̄|3̄ = ab,         L1̄|2̄3̄ = bc,        L1̄3̄|2̄ = ac,    L1̄2̄3̄ = abc
+and
+     L′1̄|2̄|3̄| = 1,   L′1̄2̄|3̄ = C,         L′1̄|2̄3̄ = A,        L′1̄3̄|2̄ = B,        L′1̄2̄3̄ = AB + BC + AC.
+If a, b, c and A, B, C are related as in Theorem 2.7, then L(Γ) = L(Γ′ ) in PN C n .
+Remark 4.6. For a circular planar electrical network Γ, Proposition 4.4 follows immedi-
+ately from the following theorem of Kenyon and Wilson [KW]: for any planar partition
+σ, the ratio Lσ /Luncrossed is an integer coefficient polynomial in the Λi,j of degree equal to
+n − # parts of σ.
+4.3. The compactified space of circular planar electrical networks. Let En′ denote
+the space of electrical networks modulo electrical equivalence, or equivalently, the space
+of response matrices characterized in Theorem 2.13.
+Lemma 4.7. The map Γ → L(Γ) descends to an injection En′ ֒→ PN C n .
+Proof. Proposition 4.4 says that L(Γ) is invariant under electrical equivalence. For Γ a
+planar electrical network, we have that Luncrossed is always non-zero, so the entries of the
+response matrix Λ(Γ) can be computed using Proposition 2.4.                               
+Definition 4.8. The compactified space of circular planar electrical networks
+En := En′ ⊂ PN Cn is defined to be the closure of En′ (in the Hausdorff topology).
+Theorem 4.9. The space En is exactly the set of grove measurements of cactus networks.
+A cactus network Γ is determined, up to electrical equivalence, by L(Γ) ∈ En .
+Proof. By definition any point L in En is the limit of points in En′ which are representable
+by usual circular planar networks. Since the top cell of En′ is dense in En , using Theorem
+2.13(5), we can assume that L is the limit limi→∞ L(Γi ) of circular planar networks Γi ,
+                                                                            21
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+all with the same underlying graph. Since the edge weights of such graphs depend con-
+tinuously on the point L(Γi ), the point L can be obtained from a usual circular planar
+network by sending some of the edge weights to ∞. Such a limit is just a cactus network
+Γ. So L = L(Γ).
+   Now let Γ be a cactus network, and let Γ = r Γ(r) be the decomposition of Γ into a
+                                                     S
+union of circular planar electrical networks, each embedded into a disk. It is clear that
+the shape σ(Γ) is determined by L(Γ). To see that L(Γ) uniquely determines Γ, it suffices
+to recover the response matrices of each Γ(r) . Suppose i, j belong to the same disk of the
+cactus, so that i, j are distinct vertices of Γ(r) . Let σij be obtained from σ by gluing the
+parts containing i and j together. Then by Proposition 2.4 we have
+                                                     Lσij (Γ)
+                                   Λ(Γ(r) )ij = −             .
+                                                     Lσ (Γ)
+                                                                       ′
+We have used that a grove for Γ is just a union of groves for each Γ(r ) : in the above ratio,
+the contribution of groves from components Γ(r ) for r ′ 6= r cancel out. So the response
+                                                 ′
+
+
+matrix of each Γ(r) can be recovered from L(Γ), and hence Γ is determined by L(Γ) up
+to electrical equivalence.                                                                  
+  Define
+                              Eτ := {L(Γ) | τ (Γ) = τ } ⊂ E
+to be those points representable by critical cactus networks with medial pairing τ .
+Proposition 4.10. Each stratum Eτ is parametrized by choosing a criticial cactus net-
+                                                                                 c(τ )
+work Γ with τ (Γ) = τ , and letting the edge weights vary, so that we have Eτ ≃ R>0 .
+Furthermore,                               G
+                                      E=      Eτ .
+                                             τ ∈Pn
+
+
+                                                  S Theorem
+Proof. The first statement just follows from applying       2.13 to each circular planar
+                     (r)                              (r)
+electrical network Γ in the decomposition Γ = r Γ in the proof of Theorem 4.9. The
+second statement follows from Theorem 4.9 and Proposition 4.2.                        
+  Write E(τ ) for the electroid of any L ∈ Eτ . This does not depend on the choice of L,
+by Proposition 4.4. In this paper we will focus on the topological spaces Eτ . In the future
+we hope to consider the algebraic geometry of their Zariski closures in PN Cn .
+4.4. The bottom cells of En . We have defined a decomposition of En into cells. Let Pn
+be the set of medial pairings, or matchings, on [2n].SFor a medial pairing τ , let Eτ ⊂ En
+be the corresponding electrical cell, so that En = τ ∈Pn Eτ . There is a unique top cell
+Eτtop , where τtop is given by the involution τtop (i) = i + n mod 2n. There are Catalan
+number of 0-dimensional cells, corresponding to medial pairings τ that are non-crossing
+matchings.
+  Let pσ denote the point in En with
+                                             (
+                                              1 if σ ′ = σ
+                                 Lσ′ (pσ ) =
+                                              0 otherwise.
+(Recall that the coordinates Lσ are projective coordinates, so the value 1 is not important.)
+22                                     THOMAS LAM
+
+Proposition 4.11. The points pσ are exactly the 0-dimensional cells of En . The point pσ
+is the grove measurement of the cactus network with boundary vertices identified according
+to σ.
+4.5. Uncrossing partial order on matchings. Define a partial order on Pn as follows.
+Let τ be a medial pairing and take any lensless medial graph G representing τ . Now
+uncross any crossing in G in either of two ways:
+
+                                                       or
+
+   This gives a new medial graph G′ . Suppose G′ is also lensless. Then we declare that
+τ (G′ ) ⋖ τ (G) is a cover relation in Pn . The partial order Pn is the transitive closure
+of these relations. This partial order was studied by Alman, Lian, and Tran [ALT], by
+Kenyon [Ken], and also by Huang, Wen and Xie [HWX].
+Lemma 4.12. Let G be a medial graph with τ (G) = τ . Suppose (a, b, c, d) are in cyclic
+order, and τ has strands from a to c and from b to d. Let G′ be obtained by uncrossing
+the intersection point of these strands so that in G′ we have that a is joined to d and b is
+joined to c. Then G′ is lensless if and only if no other medial strand goes from the arc
+(a, b) to the arc (c, d).
+  In particular, the definition of the set of covering relations τ ′ ⋖ τ involving a fixed τ
+can be defined using any lensless medial graph G with τ (G) = τ .
+  As before, the crossing number c(τ ) of a medial pairing τ of a cactus network is
+defined to be the number of crossings in a reduced/lensless representative medial graph.
+Lemma 4.13. Pn is a graded poset with grading given by c(τ ).
+  We shall show later that Pn is the closure partial order on the stratification {Eτ | τ ∈
+Pn } of En . Here is a picture of P3 :
+                                                                            23
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+4.6. Matching partial order and Bruhat order. The partial order Pn on matchings
+is induced from the partial order of the affine symmetric group, as we now explain. To a
+medial pairing τ , we associate a bounded affine permutation gτ by
+                                       (
+                                        τ (i)      if i < τ (i)
+                             gτ (i) :=
+                                        τ (i) + 2n if i > τ (i)
+where τ is thought of as a fixed-point free involution on [2n]. Note that gτ is a bounded
+affine permutation of type (n, 2n). We have g0 := gτtop is given by g0 (i) = i + n, which has
+length 0. The bounded affine permutation g0 plays the role of the identity permutation.
+   Define the (infinite by infinite) affine rank matrix of an affine permutation f by
+                                     r(i, j) := |{a ≤ i | f (a) ≥ j}|.
+This matrix satisfies the periodicity r(i + 2n, j + 2n) = r(i, j).
+Theorem 4.14 ([BB, Theorem 8.3.7]). We have f ≤ f ′ in Bruhat order if and only if
+rf (i, j) ≤ rf ′ (i, j) for all i, j ∈ Z.
+                                                                  P2n
+          0
+    Let S̃2n  denote the affine permutations f : Z → Z satisfying   i=1 (f (i) − i) = 0.
+                 0
+Let ta,b ∈ S̃2n be the transposition swapping a and b, and si = ti,i+1 . We note that
+si g0 = g0 si+n .
+                                                 0
+Lemma 4.15. Let τ ∈ Pn . Then there exists w ∈ S̃2n such that
+(4.1)                                         gτ = wg0w −1
+                 n
+                     
+where ℓ(w) =     2
+                         − c(τ ), and ℓ(gτ ) = 2ℓ(w).
+Proof. The claims are trivially true when τ = τtop and gτ = g0 . Suppose τ ∈ Pn is not
+the top element. Then there exists some i such that gτ (i) > gτ (i + 1). Let τ ′ be obtained
+from τ by swapping i, i + 1 and gτ (i), gτ (i + 1) (all taken modulo 2n). It is clear that
+τ ′ ⋗ τ . But we have
+                                          g τ = si g τ ′ si
+and ℓ(gτ ′ ) = ℓ(gτ ) + 2, and the claim follows by induction.                            
+   Note that the factorization in Lemma 4.15 is not unique. For example, if n = 3, then
+s1 g0 s1 = s3 g0 s3 , so there are multiple choices for w.
+Theorem 4.16. We have ℓ(gτ ) = 2( n2 − c(τ )). The map τ 7→ gτ identifies Pn with an
+                                             
+induced subposet of the dual Bruhat order of bounded affine permutations. In other words,
+gτ ≤ gτ ′ in Bruhat order if and only if τ ′ ≤ τ .
+Proof. The first claim follows from Lemma 4.15.
+    Suppose τ ′ ⋖ τ . By Lemma 4.12, τ ′ is obtained from τ by uncrossing the intersection
+point of strands a ↔ c and b ↔ d so that after uncrossing a is joined to d and b is
+joined to c, where (a, b, c, d) are in cyclic order, and no other medial strand goes from
+the arc (a, b) to the arc (c, d). For simplicity, we suppose that a < b < c < d. Then
+gτ ′ = ta,b tc,d gτ = ta,b gτ ta,b , and it is easy to see that gτ ′ > gτ .
+    Now suppose that gτ ′ > gτ . We know that there exists a < b such that gτ ′ > ta,b gτ ⋗ gτ .
+Let c := gτ (a) and d := gτ (b). It is clear that we also have ta,b gτ ta,b ⋗ tc,d gτ = gτ ta,b ⋗ gτ .
+We claim that gτ ′ > gτ ta,b as well. To see this use Lemma 4.15 to write gτ = wg0w −1 and
+24                                          THOMAS LAM
+
+gτ ′ = vg0 v −1 . Define the group isomorphism ι : S̃n0 → S̃n0 by si 7→ si+n for all i. Then
+gτ ′ > ta,b gτ implies vι(v −1 ) > ta,b wι(w −1 ). Taking inverses we get ι(v)v −1 > ι(w)w −1ta,b ,
+and left multiplying by g0 , we get gτ ′ > gτ ta,b .
+    So gτ ′ is greater than both gτ ta,b and ta,b gτ . We now show that gτ ′ greater than ta,b gτ ta,b .
+We have
+
+(4.2)                                 a < b < c < d < a + 2n.
+
+Let R be the rectangular region with corners at (a, c), (a, d), (b, c), (b, d). Similarly, let R′
+be the rectangular region with corners at (c, a + 2n), (c, b + 2n), (d, a + 2n), (d, b + 2n).
+Then the affine rank matrices of gτ ta,b (resp. ta,b gτ ) and gτ differ only in R (resp. R′ ) and
+the periodic shifts of R (resp. R′ ). The inequalities (4.2) imply that the periodic shifts
+of R and the periodic shifts of R′ never intersect. Applying Theorem 4.14, we see that
+                                                                     
+                  rgτ ′ (i, j) ≥ max rgτ ta,b (i, j), rta,b gτ (i, j) = rta,b gτ ta,b (i, j)
+
+for each i, j ∈ Z, and thus gτ ′ > ta,b gτ ta,b .
+   But ta,b gτ ta,b = gτ ′′ for some τ ′′ ⋖ τ . By induction on ℓ(gτ ′ ) − ℓ(gτ ) we conclude that
+τ′ < τ.                                                                                         
+
+   Let us also define a bounded affine permutation fτ by fτ (i) = gτ (i) − 1. Since i <
+gτ (i) < i + 2n, we have i ≤ fτ (i) ≤ i + 2n − 2. Note that fτ is of type (n − 1, 2n). Define
+an electrical affine permutation to be a bounded affine permutation f with period 2n
+satisfying:
+      (1) i ≤ f (i) ≤ i + 2n − 2
+      (2) if j = f (i) then f (j + 1) ≡ (i − 1) mod 2n.
+Note that (2) and boundedness determines f (j + 1) unless i − 1 = j + 1 + 2n, in which case
+(1) forces f (j + 1) = j + 1. Denote the set of electrical affine permutations by Elec(n).
+We have
+Lemma 4.17. The set of electrical affine permutations is exactly the set {fτ | τ ∈ Pn }.
+     We also have the following corollary of Theorem 4.16.
+
+Corollary 4.18. The following are equivalent:
+      (1) τ ′ ≤ τ
+      (2) fτ ≤ fτ ′ in Bruhat order
+      (3) I(fτ ) ≤ I(fτ ′ )
+Proof. Let τ ∈ Pn . And let I(g) = (J1 , J2 , . . . , J2n ) be the Grassmann necklace of gτ .
+Then a ∈ Ja for each a. Let I(fτ ) = (I1 , I2 , . . . , I2n ). We have that Ia = {b − 1 | b ∈
+Ja \ {a}}. It follows that I(fτ ) ≤ I(fτ ′ ) if and only if I(gτ ) ≤ I(gτ ′ ). The claim then
+follows from Theorem 3.5 and Theorem 4.16.                                                  
+
+  Corollary 4.18 gives a new non-recursive criterion for the partial order Pn , even when
+we consider only matchings that arise from circular planar electrical networks (instead of
+the more general cactus networks).
+                                                                            25
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+4.7. Catalan subsets and Catalan necklaces. The Grassmann necklace I(gτ ) =
+(J1 , . . . , J2n ) can be read off from τ as follows. Draw τ as a medial pairing in the disk.
+For each a ∈ [2n], let us traverse the circle clockwise starting at the boundary vertex a.
+At each boundary vertex, write “U” if the vertex is at the end of a strand we have not
+previously encountered, and write “D” if the vertex is at the end of a strand we have
+previously encountered. The boundary vertices marked with U gives the set Ja . To get
+Ia (fτ ), we remove a (which is always present in Ja ) and shift everything by 1.
+   Let P be a Dyck path of length 2n, thought of as a sequence of U-s and D-s. A sequence
+of n U-s and n D-s is a Dyck path if it satisfies the property that in any initial subsequence
+there is at least as many U-s as there are D-s. Note that a Dyck path must start with a
+U.
+   A Catalan subset I is an (n − 1)-element subset of [2n] such that
+                   {1} ∪ {a + 1 | a ∈ I} = {positions of up steps in P (I)}
+for some Dyck path P (I). More generally, we call I a Catalan subset with respect to ≤a
+if the subset I − a mod 2n is a Catalan subset.
+Lemma 4.19. Let I, J be two Catalan subsets. Then I ≤ J in dominance order if and
+only if the Dyck path P (I) never goes below P (J).
+  The Catalan subset {1, 2, 4, 5, 9} corresponds to the UD-sequence UUUDUUDDDUDD
+and the following Dyck path:
+
+
+
+
+  Define I(τ ) = (I1 , I2 , . . . , I2n ) by I(τ ) = I(fτ ). The previous discussion gives:
+Lemma 4.20. Let τ ∈ Pn . For each a ∈ [2n], the set Ia (τ ) is a Catalan subset with
+respect to ≤a .
+   A Grassmann necklace of type (n − 1, 2n) is a Catalan necklace if each Ia subset
+is an a-shifted Catalan subset. Thus I(τ ) is a Catalan necklace for τ ∈ Pn . We shall
+characterize Catalan necklaces in terms of non-crossing partitions in Proposition 5.31.
+Example 4.21. Let n = 5 and τ = {(1, 7), (2, 9), (3, 8), (4, 10), (5, 6)} ∈ P5 . Then gτ =
+[7, 9, 8, 10, 6, 15, 11, 13, 12, 14] and fτ = [6, 8, 7, 9, 5, 14, 10, 12, 11, 13]. We have I(τ ) =
+(1234, 2346, 3468, 4678, 6789, 6789, 7894, 89(10)4, 9(10)24, (10)124).
+   For a non-crossing partition σ, we shall also write I(σ) for I(τ (σ)). The Grassmann
+necklaces I(σ) have the property that not only does it consist of Catalan subsets, but
+each subset Ia (σ) determines the whole I(σ). The subset Ia (σ) has the following explicit
+description. Suppose σ = (σ1 |σ2 | · · · |σr ) so that σi are the parts of σ, and similarly let
+σ̃ = (σ1 |σ2 | · · · |σr̃ ). Then
+                                                             [
+(4.3)     [2n] \ Ia (σ) = {max σ1 , max σ2 , . . . , max σr } {max σ̃1 , max σ2 , . . . , max σ̃r̃ }.
+                            ≤a       ≤a            ≤a            ≤a       ≤a           ≤a
+26                                       THOMAS LAM
+
+Note that in this equation we have identified [n̄] ∪ [ñ] with [2n]. Thus the order ≤a on
+[2n] induces an order on [n̄] and an order on [ñ] and max≤a is the maximum with respect
+to this order. Also note that the right hand side has cardinality n + 1 by Lemma 2.2. The
+following result is straightforward.
+Lemma 4.22. For each a ∈ [2n], the map σ 7→ Ia (σ) is a bijection between N C n and
+Catalan subsets.
+  The a-shifted dominance order on subsets can be transferred to non-crossing partitions
+via the bijection σ 7→ Ia (σ): we define σ ≤a σ ′ if and only if Ia (σ) ≤a Ia (σ ′ ). Similarly
+there is an a-shifted lexicographic ordering on N C n .
+                                 5. Electroid varieties
+   In this section we define and study an embedding of En into the totally nonnegative
+Grassmannian. The section is organized as follows. In Section 5.1 we explain the con-
+struction of a bipartite graph N(Γ) from an electrical network Γ. In Section 5.2, we define
+a linear slice X of the totally nonnegative Grassmannian and state our main theorems.
+Theorem 5.6 states that the only nonempty intersections of X with the positroid strati-
+fication are with the strata labeled by electrical affine permutations. Theorem 5.8 states
+that En can be identified with the totally nonnegative part X≥0 of X , compatibly with
+the stratifications of all spaces. In Section 5.3 we give linear relations between grove coor-
+dinates on En and boundary measurements on Gr(n − 1, 2n)≥0 . In Section 5.4, we discuss
+the action of the generators of the electrical Lie group on the Grassmannian. In Section
+5.5, we compare the stratifications of En and X≥0 . In Section 5.9 we discuss the closure
+partial order on electroid strata. Sections 5.7 and 5.8 contain the proof of Theorem 5.6.
+Sections 5.6 and 5.10 contain the rest of the proof of Theorem 5.8. In Section 5.11, we
+give further characterizations of electroids, and define non-crossing partition necklaces.
+In Section 5.12 we discuss quadratic relations for grove coordinates.
+5.1. From electrical networks to bipartite graphs. We produce a planar bipartite
+network N = N(Γ), embedded into the disk, for each electrical network N. Our construc-
+tion is a modified version (to take into account boundary vertices) of the generalized
+Temperley’s trick; see [GK, KPW]. If Γ has boundary vertices 1̄, 2̄, . . . , n̄, then N will
+have boundary vertices 1, 2, . . . , 2n, where boundary vertex ī is identified with 2i − 1, and
+a boundary vertex 2i in N lies between ī and i + 1. The boundary vertex 2i can be iden-
+tified with the vertex ĩ used to label dual non-crossing partitions. The planar bipartite
+network N always has boundary vertices of degree 1.
+   The interior vertices of N are as follows: we have a black interior vertex bv for each
+interior vertex v of Γ, and a black interior vertex bF for each interior face F of Γ; we have
+a white interior vertex we placed at the midpoint of each interior edge e of Γ. For each
+vertex ī, we also make a black interior vertex bi . The edges of N are as follows: (1) if v is
+a vertex of an edge e in Γ, then bv and we are joined, and the weight of this edge is equal
+to the weight w(e) of e in Γ, (2) if e borders F , then we is joined to bF by an edge with
+weight 1, (3) the vertex bi is joined (by an edge with weight 1) to the boundary vertex
+2i − 1 in N, and bi is also joined (by an edge with weight 1) to we for any edge e incident
+to ī in Γ, and (4) even boundary vertices 2i in N are joined (by an edge with weight 1)
+to the face vertex wF of the face F that they lie in.
+                                                                            27
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+  The construction is extended to cactus networks as follows: if boundary vertices a1 , a2 , . . . , ar
+are glued together in Γ, then in N(Γ) the vertices ba1 , ba2 , . . . , bar are identified.
+Example 5.1. Consider the Y electrical network from Example 4.5. Using the computa-
+tions in Example 4.5 and directly counting almost perfect matchings, we can compute
+that for N(Γ), we have
+                                 ∆12 = ∆45 = ac = L1̄3̄|2̄
+                                 ∆23 = ∆56 = bc = L2̄3̄|1̄
+                                 ∆34 = ∆16 = ab = L1̄2̄|3̄
+                           ∆13 = ∆35 = ∆15 = abc = L1̄2̄3̄
+                           ∆24 = ∆46 = ∆26 = a + b + c = L1̄|2̄|3̄
+                                       ∆14 = ab + ac = L1̄2̄|3̄ + L1̄3̄|2̄
+                                       ∆25 = ab + bc = L1̄2̄|3̄ + L2̄3̄|1̄
+                                       ∆36 = bc + ac = L1̄3̄|2̄ + L1̄3̄|2̄
+
+                 1̄                                            1                   2
+                                                                   a
+                       a
+                                                                       a
+                                    b          2̄    6                        b        b    3
+                                                                       c
+                       c
+                                                                   c
+
+                 3̄                                            5                   4
+                           Γ                                           N(Γ)
+
+  Let us first observe that the map Γ → N(Γ) is compatible with sending conductances
+to 0 or ∞. For example, if Γ′ is obtained from Γ by deleting an edge e then modulo
+a valent two vertex removal N(Γ′ ) is obtained from N(Γ) by sending the corresponding
+weight to 0.
+
+
+
+                       a       a        a→0
+
+
+
+
+5.2. Electroid varieties. In the following, we will often identify [2n] with {1̄, 1̃, 2̄, 2̃, . . . , n̄, ñ}.
+This is the identification we will use when we compare subsets of [2n] with the vertices of
+partitions σ and dual partitions σ̃. Call an (n − 1)-element subset I ⊂ [2n] concordant
+with a non-crossing partition σ if each part of σ, and each part of the dual partition σ̃,
+28                                          THOMAS LAM
+
+contains exactly one element not in I. In this situation we also say that σ is concordant
+                                                      [2n]
+with I, or that (σ, σ̃) is concordant with I. For I ∈ n−1  , let E(I) ⊂ N C n denote the set
+                                                                             [2n]
+                                                                                  
+of non-crossing partitions concordant with I. For σ ∈ N C n , let M(σ) ⊂ n−1        denote the
+collection of subsets concordant with σ. In Proposition 5.18, we will show that M(σ) is
+actually a positroid.
+
+Example 5.2. Let σ = (1̄, 4̄, 6̄|2̄, 3̄|5̄) so that σ̃ = (1̃, 3̃|2̃|4̃, 5̃|6̃). Then σ is concordant with
+{2, 5, 7, 8, 11} but not concordant with {2, 5, 7, 8, 12}. In the diagram we use black and
+white vertices to indicate elements of σ versus σ̃. This color should not be confused with
+the bipartite coloring of N(Γ).
+
+                       4                                                          4
+            3                      5                                   3                      5
+
+
+     2                                     6                   2                                      6
+
+
+
+1                                              7           1                                                7
+
+
+
+     12                                    8                   12                                     8
+
+
+           11                      9                                  11                      9
+                       10                                                         10
+                 CONCORDANT                                           NOT CONCORDANT
+
+Remark 5.3. It is easy to see that E(I) and M(σ) are always non-empty.         In an earlier
+                                                                 [2n]
+                                                                      
+version of this work we observed that the number of I ∈ n−1 satisfying |E(I)| = 1
+appeared to be the sequence 1, 4, 12, 32, 80, ..., n2n−1 . David Speyer has recently proved
+this numerology.
+
+Remark 5.4. It is not true that for each τ , there exists some I such that τ is the only non-
+crossing matching concordant with I. For example, take n = 6, and τ the non-crossing
+matching {(1, 2), (3, 12), (4, 5), (6, 9), (7, 8), (10, 11)}. Then for each I concordant with τ ,
+we have that I is concordant with at least two non-crossing matchings.
+          [2n]
+  Let P(n−1) be the Plücker projective space in which Gr(n − 1, 2n) is embedded. Define
+a matrix A = (aIσ ) with columns labeled by non-crossing partitions and rows labeled by
+(n − 1)-element subsets of [2n] by
+                                 (
+                                   1 if σ is concordant with I
+                          aIσ =
+                                   0 otherwise.
+                                                                            29
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+             [2n]
+Let H′ ⊂ R(n−1) be the column space of the matrix A (that is, the image of the corre-
+                                                               [2n]
+sponding linear transformation). Let H be the image of H′ in P(n−1) . Define
+                       X = Xn := Gr(n − 1, 2n) ∩ H ⊂ Gr(n − 1, 2n)
+to be the intersection of the Grassmannian with the linear subspace H.
+Definition 5.5. Let f ∈ Bound(n−1, 2n). If X ∩Π̊f is non-empty, we define Xf := X ∩Πf
+                                               ˚f := X ∩ Π̊f to be the open electroid
+to be the electroid variety indexed by f , and X
+variety indexed by f .
+Theorem 5.6. The intersection X ∩ Π̊f is non-empty exactly when f ∈ Elec(n). We
+have                                   G
+                                Xfτ =      X̊fτ ′ .
+                                               τ ′ ≤τ
+
+Remark 5.7. The definitions and Theorem 5.6 also make sense and hold over C.
+  Let X≥0 = X ∩ Gr(n − 1, 2n)≥0, and let (X̊f )≥0 = X̊f ∩ Gr(n − 1, 2n)≥0 .
+Theorem 5.8. The construction Γ 7→ N(Γ) gives an injection ι : En ֒→ Gr(n − 1, 2n)
+that induces a bijection En ≃ X≥0 . Thus every point in X≥0 is realizable by an electrical
+network. Furthermore, ι(Eτ ) = (X̊fτ )≥0 , and we have
+                               G                          G
+                        X̊fτ =   X̊fτ ′      and     Eτ =    Eτ ′
+                                τ ′ ≤τ                         τ ′ ≤τ
+
+where the closures are taken in the Hausdorff topologies on X≥0 and En respectively.
+   We shall also call X≥0 the compactified space of electrical networks, or the space
+of cactus networks. The proofs of Theorems 5.6 and 5.8 will be given in Sections 5.3–
+5.10. Theorem 5.6 is proved in Sections 5.7 and 5.8. Theorem 5.8 is proved in Section
+5.3 (ι(En ) ⊆ X≥0 ), Section 5.5 (ι(Eτ ) = (X̊fτ )≥0 ), Section 5.6 (ι is injective), Section 5.9
+(closure order), and Section 5.10 (ι is surjective).
+5.3. From groves to matchings. Let Γ be an electrical network and N(Γ) the corre-
+sponding bipartite graph. Suppose F ⊂ Γ is a grove in Γ. Let Γ̃ be the planar dual of Γ,
+with vertices given by the faces of Γ, and edges for adjacent faces. Also Γ̃ has boundary
+vertices [ñ] arranged in the same way the vertices of σ̃ are. The spanning forest F induces
+a dual spanning forest F̃ in Γ̃, determined by the condition: an edge e ∈ Γ is present in
+F if and only if the unique dual edge ẽ ∈ Γ̃ intersecting e is absent in F̃ .
+   Let σ be the boundary partition for F and σ̃ the boundary partition of F̃ . (Note that
+σ̃ depends only on σ.) As usual we may think of σ̃ as a boundary partition on the even
+boundary vertices {2, 4, . . . , 2n} of N(Γ). That is, the boundary vertex ī of σ is identified
+with vertex (2i − 1) of N(Γ), and the boundary vertex ĩ of σ̃ is identified with vertex 2i
+of N(Γ).
+   A rooting ξ of (σ, σ̃) is a choice of a boundary vertex, called the root, for each
+component of σ, and each component of σ̃. Given (F, F̃ ) and a rooting ξ of (σ(F ), σ̃(F̃ )),
+we define an almost perfect matching Π = Π(F, ξ) in N(Γ). This is a variant of a
+construction in work of Kenyon, Propp and Wilson [KPW]. Orient each component of
+30                                       THOMAS LAM
+
+F and of F̃ towards the root vertex. We match each interior white vertex we in F or
+F̃ with the black vertex which is at the source of e for this orientation. Any remaining
+unmatched interior vertex is matched with the marked boundary vertex.
+Lemma 5.9. Let Π = Π(F, ξ). Then the boundary partition I(Π) is equal to the set of
+vertices in N that are not roots. Furthermore, |I(Π)| = n − 1.
+Proof. Recall that by convention each boundary vertex is joined to a black interior vertex,
+so that the boundary vertices should be considered to be white. The boundary vertices
+that are used in the matching Π(F, ξ) are exactly the boundary vertices that are roots.
+Since each boundary vertex is white, by definition I(Π) consists of the boundary vertices
+that are not roots. The statement |I(Π)| = n − 1 follows from Lemma 2.2.                 
+
+
+
+
+     Γ in thick lines and Γ̃ in dashed lines   F and a dual forest F̃ with roots chosen
+
+
+
+
+       The planar bipartite graph N(Γ)             The almost perfect matching Π(F, ξ)
+
+Theorem 5.10. We have a bijection between matchings in N(Π) with boundary partition
+I and groves F in Γ with boundary
+                             [2n]
+                                   partition σ concordant with I. Therefore M(N(Π)) ∈
+Gr(n − 1, 2n)≥0 and for I ∈ n−1
+                                             X
+                               ∆I (N(Γ)) =       aIσ Lσ (Γ).
+                                               σ
+                                                                            31
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+In other words, M(N(Γ)) ∈ X≥0 .
+                                                                         [2n]
+                                                                              
+Proof. We describe the map inverse to (F, ξ) 7→ Π(F, ξ). Fix I ∈ n−1            and let Π be a
+matching with boundary partition I. We construct F ⊂ Γ and F̃ ⊂ Γ̃ as follows: if the
+interior vertex we is matched to a black vertex corresponding to a vertex of Γ, then we set
+e ∈ F , otherwise we set e′ ∈ F̃ , where e′ ∈ Γ̃ is the edge dual to e. Note that all interior
+white vertices in N(Γ) are matched with interior black vertices. The remaining edges of
+the matching Π involve boundary vertices, and that determines a the roots ξ (which is
+the same information as the subset I). It only remains to argue that F and F̃ defined
+in this way are trees. If not, then let us suppose F has a cycle, and let R be the region
+inside this cycle. It follows by an induction on the total number of edges and vertices
+inside R that N(Γ) has an odd number of vertices strictly inside R. It is not possible for
+these vertices to be perfectly matched with each other, and hence this situation can never
+arise starting from an almost perfect matching Π.
+   This gives a bijection
+                  {Π | I(Π) = I} ↔ {(σ(F ), σ̃(F̃ )) concordant with I}.
+The stated identity follows by taking weight generating functions.                            
+Corollary 5.11. Suppose Γ and Γ′ are electrically equivalent cactus networks. Then N(Γ)
+and N(Γ′ ) are equivalent via local moves (including gauge equivalences) of planar bipartite
+graphs.
+Proof. Suppose Γ and Γ′ are electrically equivalent. Then by Proposition 4.4, we have
+L(Γ) = L(Γ′ ). By Theorem 5.10, we have M(N(Γ)) = M(N(Γ′ )). By Theorem 3.4, N(Γ)
+and N(Γ′ ) are equivalent via local moves.                                         
+  The claim of Corollary 5.11 could also be checked case-by-case (see Goncharov and
+Kenyon [GK] for a discussion of this check in the absence of boundary vertices).
+
+5.4. Electrical generators acting on the Grassmannian. The operation Γ 7→ N(Γ)
+is also compatible with the operations of adding boundary spikes and boundary edges.
+Note that xi (a)yi−1 (a) = yi−1 (a)xi (a) as matrices.
+Proposition 5.12. The planar bipartite graphs N(vi (a) · Γ) and (xi (a)yi−1 (a)) · N(Γ) =
+(yi−1 (a)xi (a)) · N(Γ) are equivalent up to valent two vertex removals or additions.
+Proof. Checked directly using the definition of N(Γ).                                         
+   This suggests the following simple representation of the electrical braid relations studied
+in [LP] (see Theorem 2.8). This result was obtained jointly with Alex Postnikov.
+Proposition 5.13. For 1 ≤ i ≤ 2n, let ui (a) = xi (a)yi−1 (a) = yi−1 (a)xi (a) ∈ GL2n .
+Then ui (a) satisfy the relations
+   (1) ui (a)ui (b) = ui (a + b)
+   (2) ui (a)uj (b) = uj (b)ui (a) for |i − j| ≥ 2
+   (3)
+     ui (a)ui±1 (b)ui (c) = ui±1 (bc/(a + c + abc))ui (a + c + abc)ui±1 (ab/(a + c + abc)).
+32                                      THOMAS LAM
+
+Remark 5.14. In [LP] it is established that the relations of Proposition 5.13 essentially
+generate the symplectic group. This is however not clear from our current perspective.
+
+Proposition 5.15. Xn is closed under the actions {ui (a)} for i ∈ [2n].
+
+                                ′
+Proof. Let X ∈ Xn and let X   P = ui (a) · X. By definition, there exists a point L = (Lσ ) ∈
+P N Cn
+       , such that ∆I (X) =       aIσ Lσ . Assume that i = 2k − 1 is odd; the case i even is
+similar. If k is isolated in σ, define L′σ by
+
+                                                   X
+                                    L′σ = Lσ + a       Lκ
+                                                   κ
+
+
+
+where the summation is over non-crossing partitions κ obtained from σ by merging k with
+any of the parts of σ. If k is not isolated in σ, then define
+
+
+                                          L′σ = Lσ .
+
+
+We claim that ∆I (X ′ ) =      aIσ L′σ . One way to see this is by directly using the combina-
+                           P
+torial interpretation of aIσ . Another way to see this is to note that the above formulae
+for L′ are what we would get if X is of the form M(N(Γ)) for some electrical network,
+and L′ = L(Γ′ ), where Γ′ = vi (a) · Γ.                                                     
+
+Remark 5.16. It follows from Proposition 5.15 that the electrically nonnegative part
+(EL2n )≥0 of the electrical Lie group of [LP] acts on the compactified space En (or X≥0 )
+of electrical networks.
+
+5.5. Electrical strata to positroid strata. The following proposition proves part of
+Theorem 5.8.
+
+Proposition 5.17. Suppose that Γ is an electrical network on [n̄], and that L(Γ) ∈ Eτ .
+Then M(N(Γ)) ∈ Π̊fτ .
+
+Proof. Suppose Γ is not critical. Then it is electrically equivalent to a critical graph Γ′
+and by Theorem 5.10, we have M(N(Γ)) = M(N(Γ′ )). Thus we may, and will suppose
+that Γ is critical.
+  So it is enough to prove the claim for critical electrical networks Γ, and we may pick
+the electrically equivalent representative that we like. We shall proceed by induction on
+n, followed by induction on the number of edges in Γ. The base case n = 1 is trivial.
+  Now suppose Γ has no edges. Then it is a hollow cactus with some boundary points
+identified. In this case, the claim can be checked directly. For example, take n = 5 and
+the hollow cactus Γ with boundary points 2̄, 3̄, 5̄ identified. Then we have N(Γ) and τ (Γ)
+as illustrated.
+                                                                            33
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+
+                  2            3                                     3
+                                                        2                        4
+        1                                 4
+                                                  1
+                                                                                        5
+
+   10                                         5
+
+                                                  10
+                                                                                       6
+        9                                 6
+                                                       9                        7
+                  8           7                                 8
+            The bipartite graph N(Γ)                   The medial pairing τ (Γ)
+    The reader is encouraged to verify that the bounded affine permutation fN (Γ) = fM (N )
+is equal to fτ (Γ) . For example, the trip T9 turns right at the black vertex and ends at 5,
+so fN (Γ) (9) = 15. (Alternatively, one can compute M(N) using matchings, and then use
+(3.1).)
+    Suppose Γ has an isolated boundary vertex k̄. Then τ (2k − 1) = 2k while fτ (2k −
+1) = 2k − 1 and fτ (2k) = 2k + 2n − 2. Let Γ′ be the critical electrical network on
+1̄, . . . , k − 1, k + 1, . . . , n̄ obtained from Γ by removing k̄. By induction, the claim is true
+for Γ′ . It is straightforward to check that the claim also holds for Γ.
+    In a similar manner, one deals with the case that boundary vertices k̄ and k + 1 are
+glued in Γ.
+    Otherwise, it is easy to see by considering medial graphs that some critical representa-
+tive of the electrical equivalence class of Γ will have a boundary spike at some boundary
+vertex k̄, or a boundary edge between k̄ and k + 1. Let us assume we are in the boundary
+spike case, the other case being similar. Let τ be the medial pairing of Γ and τ ′ be the
+medial pairing of the electrical network Γ′ where this boundary spike is removed. Adding
+a boundary spike at k̄ introduces a crossing between the strands T2k−1 and T2k of τ , so
+fτ = si−1 fτ ′ si , where i = 2k − 1.
+    According to Proposition 5.12, adding a boundary spike to Γ′ corresponds to adding
+two bridges to N(Γ′ ): one which is white at i and black at i + 1, and another one which
+is black at i − 1 and white at i. By (3.1) and Lemma 3.12 (see also the argument in
+Proposition 3.10) we see that fM (N (Γ)) = si−1 fM (N (Γ′ )) si , so by induction we conclude that
+M(N(Γ)) ∈ Π̊fτ .                                                                                  
+  Using this we obtain another characterization of M(σ).
+Proposition 5.18. Let σ ∈ N C n . Then
+                                         M(σ) = M(fτ (σ) )
+is the positroid of fτ (σ) . Equivalently,
+                                   M(σ) = {I | I ≥a Ia for all a}
+34                                          THOMAS LAM
+
+where I(σ) = (I1 , . . . , I2n ) is the Catalan necklace of σ. In particular, Ia (σ) is concordant
+with σ for any a.
+Proof. The point pσ ∈ En has one non-vanishing grove coordinate Lσ . By Proposition
+5.17, ι(pσ ) ∈ Π̊fτ (σ) . The claim then follows from Theorem 5.10 and Theorem 3.9. 
+
+5.6. Proof of the injectivity part of Theorem 5.8. Recall from Section 4.7 that there
+is an a-shifted dominance ordering (and a a-shifted lexicographic order) on non-crossing
+partitions obtained via the bijection σ 7→ Ia (σ). The following proposition establishes the
+injectivity part of Theorem 5.8.
+Proposition 5.19. The map Γ 7→ N(Γ) induces an injection ι : En ֒→ Gr(n − 1, 2n)≥0.
+                                                    P
+Proof. The map is given in coordinates by ∆I = σ Lσ , where the sum is over σ con-
+cordant with I. Let us restrict our attention to Catalan subsets I, that is I = I1 (σ) for
+some σ ∈ N C n . Recall that the map σ 7→ I1 (σ) is injective, and by Proposition 5.18 σ
+is concordant with I1 (σ). But σ ′ can be concordant with I1 (σ) only if I1 (σ ′ ) ≤ I1 (σ) in
+dominance order. It follows that when this transition formula is restricted to Catalan
+subsets, we obtain an invertible triangular system.                                         
+
+5.7. Reductions used in proof of Theorem 5.6. This section contains technical re-
+sults used in the proof of Theorem 5.6. Let X ∈ Xn , and suppose X ∈ Π̊f , where
+f = fτ ∈ Elec(f ) is an electrical affine permutation.
+Lemma 5.20. Suppose f (i) = i for some i. Then ∆I (X) = 0 if i ∈ I or if I ∩ {i − 1, i +
+1} = ∅. Furthermore, we have ∆I = ∆I−{i−1}∪{i+1} whenever i − 1 ∈ I but i + 1 ∈/ I.
+
+Proof. The first claim only uses that X ∈ Π̊f . By (3.1) the column vi of (an (n − 1) × 2n
+matrix representative of) X is the 0-column. Thus ∆I (X) = 0 if i ∈ I. Similarly, vi+1 is
+not in the span of vi+2 , . . . , vi−2 , so ∆I (X) = 0 if I ∩ {i − 1, i + 1} = ∅.
+   The final claim requires that X ∈ H. For simplicity, assume that i = 2k − 1 is odd.
+We note that σ is concordant with some I satisfying i ∈ I if and only if k̄ is not isolated
+in σ. Furthermore σ 7→ Ii (σ) is a bijection between {σ | k̄ is not isolated } and i-shifted
+Catalan subsets I satisfying i ∈ I. Since ∆I (X) = 0 if i ∈ I we deduce in the same way
+as Proposition 5.19 that Lσ (X) = 0 whenever k̄ is not isolated in σ.
+   Let σ be a non-crossing partition where k̄ is isolated. Then (k       ^ − 1) and k̃ must belong
+to the same part of σ̃. Suppose i − 1 ∈ I and i, i + 1 ∈       / I. Then σ and I are concordant
+if and only if σ and I − {i − 1} ∪ {i + 1} are concordant. This proves the claim.               
+Proposition 5.21. Suppose X ∈ Π̊f ∩ Xn , where f (i) = i and f (i + 1) = i + 2n − 1. Then
+as J varies over (n − 2)-element subsets of {1, 2, . . . , i − 1, i + 2, . . . , 2n}, the collection of
+Plücker coordinates
+                                 ∆J (Y ) = ∆J∪{i+1} (X)
+defines a point Y ∈ Xn−1 ⊂ Gr(n − 2, 2n − 2). Furthermore, X can be recovered from Y .
+Proof. As f (i + 1) = i + 2n − 1, we have ∆J (Y ) 6= 0 for some J. Since ∆I (X) satisfy
+the Plücker relations, it is clear that ∆J (Y ) satisfy the Plücker relations as well, so Y ∈
+Gr(n−2, 2n−2). To see that Y ∈ Xn−1 , let us assume for simplicity that i = 2k −1. Then
+                                                                            35
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+we define L′κ = Lκ∪{k̄} , where κ is a non-crossing partition of {1̄, 2̄, . . . , k − 1, k + 1, . . . , n̄}
+and k̄ is isolated in κ ∪ {k̄}. Then ∆J (Y ) = κ aJκ L′κ .
+                                                 P
+  Finally, Lemma 5.20 shows that all ∆I (X) can be recovered from ∆J∪{i+1} (X) for J
+varying over (n − 2)-element subsets of {1, 2, . . . , i − 1, i + 2, . . . , 2n}.                        
+Lemma 5.22. Suppose f ∈ Elec(n). Then
+                                                        G             G
+                  {a + 1 mod 2n | a ∈ Ii+1 (f )}            Ji (f )    {i, i + 1} = [2n].
+Proof. Set I = Ii+1 (f ) and J = Ji (f ). Suppose a ∈ I and f (b) = a where b < i + 1 ≤ a.
+Then f (a + 1) = b + 2n − 1 < i + 2n, so a + 1 mod n ∈       / J. Thus {a + 1 mod n |
+a ∈ I} ∩ J = ∅. Also i − 1, i ∈ / I because f (a) < a + 2n − 1 for all a ∈ Z. Similarly
+{i, i + 1} ∈
+           / J. So the stated union is disjoint, and counting shows that we the union is
+[2n].                                                                                   
+Lemma 5.23. Let f ∈ Elec(n) be an electrical affine permutation. Suppose there exists
+i such that i < f (i) < f (i + 1). Then i + 1 ∈ Ii+1 (f ) and (i − 1) ∈ Ji (f ). Also
+f (i + 1) < i + 2n − 1.
+Proof. Since f ∈ Elec(n), we have f (i + 1) ≤ i + 2n − 1. If f (i + 1) = i + 2n − 1 we would
+get f (i) = i, contradicting the asusmption.
+   Set I = Ii+1 (f ) and J = Ji (f ). We have i + 1 ∈ I since f (i + 1) > i + 1. We repeatedly
+use the definition (Section 4.6) of electrical affine permutation in the following. Suppose
+f (i − 1) = i − 1. Then f (i) = i + 2n − 2. This is impossible since f (i) < f (i + 1) and
+f (i + 1) < i + 2n − 1. So f (i − 1) > i − 1. This gives (i − 1) ∈ J.                       
+  In the situation of Lemma 5.23, define
+                        I = Ii+1 (f )    I ′ = I − {i + 1} ∪ {i}
+(5.1)
+                        J = Ji (f )      J ′ = J − {i − 1} ∪ {i}.
+Recall that M(σ) denotes the collection of subsets concordant with σ, and I(σ) is the
+Grassmann necklace associated with σ. Also recall that E(I) is the set of non-crossing
+partitions concordant with I. If f = fτ ∈ Elec(n), we write E(f ) := E(τ ) to be the
+electroid of Eτ .
+Lemma 5.24. In the above situation, we have
+            E(I) ∩ E(f ) = E(J) ∩ E(f )           and        E(I ′) ∩ E(f ) = E(J ′ ) ∩ E(f ).
+Proof. Suppose σ ∈ E(I) ∩ E(f ). Then I ∈ M(σ), so Ii+1 (σ) ≤i+1 I. But we also
+have I(f ) ≥ I(σ), so I = Ii+1 (f ) ≤i+1 Ii+1 (σ) ≤i+1 I implies that Ii+1 (σ) = I. Thus
+|E(I)∩E(f )| ≤ 1. Similarly, |E(J)∩E(f )| ≤ 1. On the other hand, E(I)∩E(f ) is non-empty
+because any X ∈ X ∩ Π̊f satisfies ∆I (X) 6= 0, so Lσ 6= 0 for some σ ∈ E(I) ∩ E(f ) 6= 0.
+Similarly |E(J) ∩ E(f )| = 1.
+   Let σ be given by Ii+1 (σ) = I. We claim that σ ∈ E(I) ∩ E(f ) (and a similar statement
+holds for J). We show that σ given by Ii+1 (σ) = I also satisfies Ji (σ) = J. Let τ be
+the non-crossing matching corresponding to σ, thought of as a sequence of U-s and D-s
+forming a Dyck path, where i + 1 ∈ [2n] is taken to be the start (and always a U). Then
+τ has U-s at positions
+                                 {i + 1} ∪ {a + 1 | a ∈ I}.
+36                                       THOMAS LAM
+
+Let τ ′ be the non-crossing matching such that Ji (τ ′ ) := Ji (fτ ′ ) = J. Again think of τ ′ as
+a sequence of U-s and D-s starting at i + 1. Then τ ′ has D-s in the positions specified by
+J ∪ {i}. By Lemma 5.22, τ = τ ′ . So we have shown that E(I) ∩ E(f ) = E(J) ∩ E(f ).
+    We now claim that the assumption i < f (i) < f (i + 1) ≤ i + 2n implies that τ has
+the property that i is always joined to i + 1. To see this suppose f = fη . Then the U,
+D-sequence of τ is obtained from η as follows: starting from i + 1 and going clockwise,
+we write a U whenever we encounter an endpoint of a strand in η the first time, and a
+D whenever we encounter the endpoint the second time. The inequalities imply that the
+strands Ti and Ti+1 in η starting at i and i + 1 intersect, from which the claim follows.
+    Now suppose κ ∈ E(I ′) ∩ E(f ). For simplicity, we assume for the rest of the proof that
+i = 2k is even, with the odd case being analogous. The assumptions imply that in the
+electrical cell corresponding to f , we can find a critical electrical network Γ with an edge
+e joining k̄ to k + 1. Since i + 1, i − 1 ∈  / I ′ , but i ∈ I ′ we deduce that k̄ and k + 1 do
+                                           ′
+not belong to the same part of κ. Let κ be obtained by gluing the parts of κ containing
+k̄ and k + 1. We claim that κ′ = σ. Any grove in Γ with boundary partition κ does not
+use the edge e, and adding the edge e gives a grove with boundary partition κ′ . It follows
+that κ′ ∈ E(f ). Furthermore, κ′ ∈ E(I): the new part in κ′ containing k̄ and k + 1, when
+considered as a subset of [2n], intersects [2n] \ I in exactly i−1, while in the dual partition
+κ̃′ the part containing k̃, considered as a subset of [2n], intersects [2n] \ I in exactly i.
+Thus σ is obtained from κ by gluing the parts containing k̄ and k + 1. But σ ∈ E(J), and
+it is clear from this description of κ that κ ∈ E(J ′ ) as well. The other inclusion is proved
+in an identical manner, so we deduce that E(I ′ ) ∩ E(f ) = E(J ′ ) ∩ E(f ).
+    (In fact, τ (κ) is obtained from τ above by replacing edges (i, i + 1), (a < b) of τ by
+edges (i, b), (i + 1, a)).                                                                     
+
+Proposition 5.25. Suppose f ∈ Elec(n) and i < f (i) < f (i + 1), and define I, I ′ , J, J ′
+as in (5.1). Then si−1 f si > si−1 f, f si > f and f ′ = si−1 f si ∈ Elec(n). For X ∈ X ∩ Π̊f ,
+we have
+                      ∆I (X) = ∆J (X)         and       ∆I ′ (X) = ∆J ′ (X).
+If a = ∆∆I′(X)
+           (X)
+               = ∆∆J′(X)
+                     (X)
+                         is well defined then
+         I        J
+
+
+                                 X ′ := ui (−a) · X ∈ X ∩ Π̊f ′ .
+
+Furthermore, if X ∈ X≥0 , then a is always well-defined, and X ′ ∈ X≥0 as well.
+
+Proof. Let j = f (i) and j ′ = f (i + 1). Then i < i + 1 < j + 1 < j ′ + 1 < i + 2n by Lemma
+5.23. We have f (j + 1) = i + 2n − 1 and f (j ′ + 1) = i + 2n. So si−1 f = f tj+1,j ′+1 > f .
+Also, by f (i) < f (i + 1), we have f si > f . Since tj+1,j ′+1 and si commute, we conclude
+that si−1 f si > si−1 f, f si > f .
+   The well-definedness of I ′ and J ′ follow from Lemma 5.23. The equalities ∆I (X) =
+∆J (X) and ∆I ′ (X) = ∆J ′ (X) follow from Lemma 5.24 and the definition of X . Since
+ui (−a) = xi (−a)yi−1 (−a), the statement X ′ ∈ X ∩ Π̊f ′ follows from (two applications of)
+Proposition 3.10 and Proposition 5.15. Note that by Lemma 5.22, i + 1 ∈                   / J′
+                                                                            / J and i + 1 ∈
+so ∆J (X) = ∆J (xi (−a) · X) and ∆J ′ (X) = ∆J ′ (xi (−a) · X).
+   Finally, the last statement just from Proposition 3.10.                                  
+                                                                            37
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+5.8. Proof of Theorem 5.6. Suppose X ∈ X ∩ Π̊f . We shall show that f = fτ for some
+τ . We proceed by induction on the length of f . If ℓ(f ) = 0, then Π̊f is the top positroid
+cell, and we know that f = fτtop .
+   Now suppose ℓ(f ) > 0. Then there is some i such that f (i) > f (i + 1). Then f si < f .
+Let                                (
+                                    si−1 f si if si−1 f si < f si
+                           f′ =
+                                    f si .    otherwise.
+Let X ′ = ui (a) · X for a generic value of a. It follows from (3.1) that X ′ ∈ Π̊f ′ . By
+Proposition 5.15, we have X ′ ∈ X ∩ Π̊f ′ . By the inductive hypothesis f ′ = fτ ′ for some
+τ ′ ∈ Pn .
+    It is easy to check that f ′ satisfies i < f ′ (i) < f ′ (i + 1). By Proposition 5.25 we have
+that ∆I (X ′ ) = ∆J (X ′ ) and ∆I ′ (X ′ ) = ∆J ′ (X ′ ), where the subsets I, J, I ′ , J ′ are as in
+Proposition 5.25 but for f ′ . But then (essentially by our construction of X ′ ) we must
+have a = ∆∆I′(X)    . We conclude that X lies in Π̊si−1 f ′ si where si−1 f ′ si > si−1 f ′ , si f ′ > f ′ .
+              I (X)
+Thus f = si−1 f ′ si , and f = fτ for some τ ∈ Pn .
+    Thus we have a decomposition
+                                                  G
+                                           X =         X̊fτ .
+                                                   τ ∈Pn
+
+5.9. Closure partial order on electroid strata. The following establishes the closure
+partial order claim of Theorem 5.8.
+Proposition 5.26. We have                            G
+                                             Eτ =            Eτ ′ .
+                                                    τ ′ ≤τ
+
+Proof. Suppose τ ′ ≤ τ . Uncrossing a crossing in a medial graph G corresponds to either
+contracting (that is, gluing the endpoints of) an edge e, or deleting that edge. This
+corresponds respectively to taking the edge weight w(e) to ∞, or to 0. It follows easily
+that from the definition of Pn that if τ ′ ≤ τ then Eτ ′ ⊂ Eτ .
+   Now for the converse suppose that L ∈ Eτ . Since ι is injective (Proposition 5.19)
+and continuous, we have ι(L) ∈ ι(Eτ ). By Proposition 5.17, we have ι(Eτ ) ⊂ X̊fτ , and
+ι(L) ∈ X̊fτ ′ for some τ ′ . By Theorem 3.9 we have fτ ′ ≥ fτ . By Corollary 4.18, we have
+τ′ ≤ τ.                                                                                 
+   Recall that Pn is defined using uncrossings of lensless medial graphs that result in a
+lensless medial graph. As a consequence of Proposition 5.26, we can show that more
+general uncrossings of medial graphs also lead to relations in Pn . This result was first
+established by Alman, Lian, and Tran [ALT].
+Corollary 5.27. Let G be a lensless medial graph. Let G′ be obtained from G by uncross-
+ing any number of crossings in G in an arbitrary manner, and then removing lenses using
+loop removals and lens removals. Then τ (G′ ) ≤ τ (G) in Pn .
+Proof. Uncrossing crossings in G corresponds to sending conductances of edges in Γ to 0
+or to ∞. Removing loops and lenses corresponds to using series/parallel reductions, loop
+38                                         THOMAS LAM
+
+removals, and pendant removals. Using Proposition 4.10 we see that Eτ (G′ ) ⊂ Eτ (G) . By
+Proposition 5.26 we have τ (G′ ) ≤ τ (G).                                                   
+                                                                                 F
+  Once we prove that ι(Eτ ) = (X̊fτ )≥0 , we shall immediately obtain that X̊fτ = τ ′ ≤τ X̊fτ ′
+as well.
+5.10. Proof of realizability part of Theorem 5.8. Suppose X ∈ X≥0 . Suppose that
+X ∈ Π̊f , where f = fτ . We need to show that X is realizable by a cactus network. We
+proceed by induction first on n, and then on the codimension of Π̊f .
+   First suppose that f has a fixed point f (i) = i. Again for simplicity we assume
+i = 2k − 1 is odd. Consider the point Y ∈ (Xn−1 )≥0 from Proposition 5.21. By the
+inductive hypothesis, Y is represented by a cactus network Γ′ on 1̄, . . . , k − 1, k + 1, . . . , n̄.
+Define Γ to be the cactus network obtained from Γ′ by adding an isolated new vertex
+labeled k̄ (between k − 1 and k + 1) to Γ′ . Note that if k − 1 and k + 1 are glued together
+in Γ′ , then to obtain Γ we have to make a new cactus disk and place k̄ on the boundary
+of that disk away from k − 1 and k + 1. It is straightforward to check that Γ represents
+X.
+   Now suppose that f has no fixed points. Then we must be able to find i such that
+i < f (i) < f (i + 1). By Proposition 5.25, we have a point X ′ = ui (−a) · X which lies
+in X̊si−1 f si ∩ Gr(n − 1, 2n)≥0 , where si−1 f si ∈ Pn is greater than f . By the inductive
+hypothesis, X ′ is representable by a cactus network Γ′ . By Proposition 5.12, Γ = vi (a) · Γ′
+represents X. This completes the proof of the realizability statement in Theorem 5.8.
+5.11. Electroids and partition necklaces. By Proposition 4.4, the electroid of a crit-
+ical cactus network Γ depends only on the medial pairing τ (Γ). Recall that E(τ ) denotes
+the electroid of any cactus network Γ ∈ Eτ .
+Theorem 5.28. Let η ∈ Pn . Then
+                                      E(η) = {σ | τ (σ) ≤ η}.
+Proof. Let Γ be a cactus network representing L ∈ Eη . Suppose Lσ (Γ) 6= 0. Let F be a
+grove in Γ with boundary partition σ. Removing the edges in in Γ \ F , and contracting
+the edges in F we obtain a cactus network Γ′ with no edges. It is clear that L(Γ′ ) = pσ .
+It follows from Proposition 5.26 that τ (σ) ≤ η. Thus E(L) ⊆ {σ | τ (σ) ≤ η}.
+   Conversely, suppose τ (σ) ≤ η. Then by definition of the partial order Pn there is a way
+to contract and delete edges in Γ to get a cactus network Γ′ such that L(Γ′ ) ∈ Eτ (σ) = pσ .
+We can always find a grove F with boundary partition σ among the contracted edges,
+and it follows that σ ∈ E(L).                                                             
+   For example, if η ∈ Pn is minimal, and τ (σ) = η, then Eη = pσ and the theorem says
+E(pσ ) = {σ}.
+   We now define an analogue of Grassmann necklaces where subsets are replaced by non-
+crossing partitions. Let σ ∈ N C n with parts σ1 , σ2 , . . . , σr . Let σi and σj be two parts.
+We say that a third part σk separates σi from σj if any straight line in the disk from the
+convex hull of σi to the convex hull of σj intersects the convex hull of σk . This condition
+can also be formulated as follows: let (ā, b̄, c̄, d)¯ ⊂ [n̄] be in circular order such that
+       ¯ ā] and σj ⊂ [b̄, c̄] with we have ā, d¯ ∈ σi and b̄, c̄ ∈ σj . (Note that we may have
+σi ⊂ [d,
+                                                                            39
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+                                                                                               ¯ We say
+ā = d¯ or b̄ = c̄.) We define the circular arcs (σi , σj ) := (ā, b̄) and (σj , σi ) := (c̄, d).
+that a third part σk of σ separates σi from σj if σk ∩ (σi , σj ) 6= ∅ and σk ∩ (σj , σi ) 6= ∅.
+In a similar manner, we define what it means for σk to separate σi and σ̃j , where σ̃j is a
+part of the dual non-crossing partition σ̃. We also use the notations (σi , σ̃j ) and (σ̃j , σ̃i )
+for the corresponding circular arcs.
+    Denote the possibly empty set of parts of σ that separate σi from σj (resp. σ̃j ) by
+Sepσ (σi , σj ) (resp. Sepσ (σi , σ̃j )). Note that Sepσ (σi , σj ) (resp. Sepσ (σi , σ̃j )) is linearly
+ordered: there is a part that is closest to σi , and one that is second closest, and so
+on. Note that we will still consider Sepσ (σi , σ̃j ) as a collection of parts of σ (there are
+analogous separating sets Sepσ̃ (σ̃j , σi )).
+    A pair (ā, b̄) is a legal transition of σ if either
+     (1) ā, b̄ belong to the same part σi , and b̄ = max≤ā σi ,or
+     (2) ā ∈ σi and b̄ ∈ σj belong to different parts of σ and we have:
+             (a) |σi | > 1 and σj is contained in the circular interval (ā, max≤ā σi )
+            (b) b̄ = max≤ā σj .
+If (ā, b̄) is legal, we define a new non-crossing partition tāb̄ (σ) := σ ′ =∈ N C n , as follows. If
+ā and b̄ belong to the same part, then σ ′ = σ. Otherwise, let σk1 , σk2 , . . . , σkc ∈ Sepσ (σi , σj )
+be listed in order, with σk1 closest to σi . For each ℓ, let
+                        Aℓ = σkℓ ∩ (σi , σj )       and       Bℓ = σkℓ ∩ (σj , σi )
+so that σkℓ = Aℓ ⊔ Bℓ and both Aℓ and Bℓ are non-empty. Also let A0 = σi ∩ [ā, b̄),
+B0 = σi ∩ (b̄, ā). Define σ ′ by replacing the parts σi , σk1 , σk2 , . . . , σkc , σj by the parts
+                           A0 , A1 ∪ B0 , A2 ∪ B1 , . . . , Ac ∪ Bc−1 , σj ∪ Bc .
+    Similarly, define a pair (ā, b̃) to be a legal transition of σ if the part σ̃j ⊂ [ñ] containing
+b̃ satisfies:
+     (1) σ̃j is contained in the circular interval (ā, max≤ā σi )
+     (2) b̄ = max≤ā σ̃j .
+For a legal transition (ā, b̃), we define tāb̃ (σ) := σ ′ =∈ N C n , as follows. Let σk1 , σk2 , . . . , σkc ∈
+Sepσ (σi , σ̃j ) be listed in order, with σk1 closest to σi . For each ℓ, let
+                        Aℓ = σkℓ ∩ (σi , σ̃j )      and       Bℓ = σkℓ ∩ (σ̃j , σi )
+so that σkℓ = Aℓ ⊔ Bℓ and both Aℓ and Bℓ are non-empty. Also let A0 = σi ∩ [ā, b̃),
+B0 = σi ∩ (b̃, ā). Define σ ′ by replacing the parts σi , σk1 , σk2 , . . . , σkc by the parts
+                              A0 , A1 ∪ B0 , A2 ∪ B1 , . . . , Ac ∪ Bc−1 , Bc .
+  Informally, tāb̄ (σ) (and similarly and tāb̃ (σ)) is obtained by drawing a line from ā to b̄,
+cutting up the parts Sepσ using this line, and then reattaching the parts by a shift.
+Lemma 5.29.
+  (1) For a legal transition (ā, b̄) ,the set partition σ ′ = tāb̄ (σ) is non-crossing satisfying
+      |σ ′ | = |σ|. Furthermore, if Iā (σ) = I then Iã (σ ′ ) = I − {2a − 1} ∪ {2b − 1}.
+  (2) For a legal transition (ā, b̃) ,the set partition σ ′ = tāb̃ (σ) is non-crossing satisfying
+      |σ ′ | = |σ| + 1. Furthermore, if Iā (σ) = I then Iã (σ ′ ) = I − {2a − 1} ∪ {2b}.
+40                                                         THOMAS LAM
+
+Proof. We prove (1); the other claim is similar. The claim concerning the number of parts
+follows immediately from the definitions. If ā and b̄ belong to the same part all the claims
+is trivial, so we assume otherwise. The sets A0 , A1 , . . . , Ac , σj , Bc , Bc−1 , . . . , B1 , B0 are in
+circular order. It follows from this that σ ′ is non-crossing. For the second statement, we
+use (4.3). Set I ′ = I − {2a − 1} ∪ {2b − 1}. We have that
+          max A0 = ā,            max A1 ∪ B0 = max σi , · · · , max Aℓ ∪ Bℓ−1 = max σkℓ , · · ·
+           ≤ã                     ≤ã                         ≤ā               ≤ã                          ≤ā
+
+                       max Ac ∪ Bc−1 = max σkc−1 ,                        max σj ∪ Bc = max σkc .
+                        ≤ã                         ≤ā                    ≤ã                         ≤ā
+                   ′                                                             ′
+Thus ([2n] \ I ) ∩ [n̄] agrees via (4.3) with ([2n] \ Iã (σ )) ∩ [n̄]. A similar computation for
+the dual partition shows that ([2n] \ I ′ ) ∩ [ñ] equals ([2n] \ Iã (σ ′ )) ∩ [ñ].          
+Example 5.30. Let σ = (1̄8̄|2̄6̄7̄|3̄5̄|4̄|9̄). Then Sepσ (1̄8̄, 4̄) = {2̄6̄7̄, 3̄5̄}. The pair (1̄, 4̄) is
+a legal transition. We have
+                              A0 = 1̄, A1 = 2̄, A2 = 3̄, B0 = 8̄, B1 = 6̄7̄, B2 = 5̄
+so that σ ′ = t1̄4̄ (σ) = (1̄|2̄8̄|3̄6̄7̄|4̄5̄|9̄).
+
+                       1̄                                            1̄                                             1̄
+         9̄                                               9̄                                             9̄
+                                   2̄                                                  2̄                                      2̄
+ 8̄                                           8̄                                                 8̄
+
+                                         3̄                                                 3̄                                      3̄
+
+ 7̄                                           7̄                                                 7̄
+                                   4̄                                                  4̄                                      4̄
+         6̄                                               6̄                                             6̄
+                       5̄                                        5̄                                                  5̄
+                                                   cut near the line join-                            shift before rejoining
+          the partition σ
+                                                   ing 1̄ and 4̄                                      to get σ ′ = t1̄4̄ (σ)
+  Now consider the legal transition (1̄, 4̃). Then as before we have Sepσ (1̄8̄, 4̃) = {2̄6̄7̄, 3̄5̄},
+and the same A- and B-sets. But this time that σ ′ = t1̄4̃ (σ) = (1̄|2̄8̄|3̄6̄7̄|4̄|5̄|9̄).
+    For s ∈ [2n], we will define a relation σ →s σ ′ called an s-swap, as follows. First
+suppose s = 2a − 1 is odd.
+     (1) If ā is a singleton in σ, then we must have σ ′ = σ.
+     (2) If not, then we must have σ ′ = tāb̄ (σ) or σ ′ = tāb̃ (σ), where (ā, b̄) or (ā, b̃) is a legal
+            transition.
+Otherwise, s = 2a is even. We then ask for the same condition between σ̃ and σ̃ ′ , with ã
+replacing ā (and using Sepσ̃ in the definitions instead).
+    A partition necklace on [n̄] is a sequence Σ = (σ1 , σ2 , . . . , σ2n ) of non-crossing parti-
+tions on [n̄] such that each σs →s σs+1 is a s-swap for each s.
+    Let I = (I1 , I2 , . . . , I2n ) be a Catalan necklace. Then we may define a necklace Σ(I) =
+(σ (1) , σ (2) , . . . , σ (2n) ) of non-crossing partitions by the condition that σ (s) satisfies Is (σ (s) ) =
+Is .
+                                                                            41
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+Proposition 5.31. The map I 7−→ Σ(I) is a bijection between Catalan necklaces and
+partition necklaces.
+Proof. The inverse map is given by sending Σ = (σ1 , . . . , σ2n ) to the Grassmann necklace
+I(Σ) = (I1 (σ (1) ), I2 (σ (2) ), . . . , I2n (σ (2n) )). By Lemma 5.29, I(Σ) is a Catalan necklace if
+Σ is a partition necklace.
+   It suffices to show that if I = (I1 , . . . , I2n ) is a Catalan necklace then Σ(I) = (σ (1) , . . . , σ (2n) )
+is a partition necklace. Let us consider the s-th subset Is , and set σ = σ (s) and σ ′ = σ (s+1) .
+If s ∈/ Is , then Is+1 = Is and in this case we have σ = σ ′ , and σ →s σ ′ . Otherwise, let us
+assume for simplicity that s = 2a − 1 is odd.
+   Suppose first that Is+1 = Is − {s} ∪ {s′ } where s′ = 2a′ − 1. Obviously ā′ ∈            / Is so by
+                         ′                                                                ′
+(4.3) we have that ā is maximal (with respect to ≤ā ) in its part of σ. If ā and ā are in
+the same part, then σ ′ = σ, and σ →s σ ′ is indeed a s-swap. If ā′ ∈ σj while ā ∈ σi are in
+different parts, and σj is contained in the circular interval (ā, max≤ā σi ), then (ā, ā′ ) is a
+legal transition, so again σ →s σ ′ . Let b̄ = max≤ā σi . Finally, we show that it is impossible
+for ā′ to be contained in the circular interval (b̄, ā). We claim that if this is the case that
+Is+1 is not a (s + 1)-shifted Catalan subset. A counting argument similar to Lemma 2.2
+gives that |Is ∩ [2a − 1, 2b − 1]| = (b − a). If ā′ ∈ (b̄, ā), then |Is+1 ∩ [2a, 2b − 1]| = (b − a − 1)
+but ([2n] \ Is+1 ) ∩ [2a, 2b − 1] = 2(b − a) = |Is+1 ∩ [2a, 2b − 1]| + 2. This would mean that
+Is+1 is not a (s + 1)-shifted Catalan subset.
+   Next, suppose that Is+1 = Is − {s} ∪ {s′ } where s′ = 2a′ . Then ã′ belongs to a part
+σ̃j of σ̃. By (4.3) we have that ã′ is maximal (with respect to ≤ā ) in its part of σ̃. The
+same argument as above shows that σ̃j ⊂ (ā, b̄) where b̄ = max≤ā σi . So (ā, ã′ ) is a legal
+transition, and the claims follow.                                                                        
+   The partition necklace Σ(τ ) = (σ (1) , σ (2) , . . . , σ (2n) ) of τ ∈ Pn is defined as follows. For
+each s, σ (s) is chosen so that Is (σs (τ )) is the s-shifted lexicographically minimal subset in
+{Is (σ) | σ ∈ E(τ )). By definition, σs (τ ) ∈ E(τ ) for each τ . The following characterization
+of electroids is analogous to a theorem of Oh [Oh].
+Theorem 5.32. For each s, we have Is (σs (τ )) = Is (τ ). Thus Σ(τ ) = Σ(I(τ )). The
+electroid of τ is given by
+                                  E(τ ) = {σ | σ ≥s σs (τ ) for all s}
+where ≥s is the s-shifted dominance order on N C n from Section 5.6.
+Proof. Fix s. It is enough to show that if Is (σ) = Is (τ ) then σ ∈ E(τ ). By Theorem 5.28
+and Corollary 4.18, it is enough to show that It (τ ) ≤t It (σ) for all t ∈ [2n].
+   For a circular arc [t, r], let τ [t, r] be the number of strands of τ with both endpoints
+on the arc. Let τ ′ = τ (σ). Then the stated inequalities are equivalent to: τ [t, r] ≤ τ ′ [t, r]
+for every circular arc [t, r]. Note that by considering the complement circular interval, we
+can assume that [t, r] does not contain s.
+   We think of τ ′ as a sequence of U-s and D-s (with the sequence starting at s). Then
+ ′
+τ [t, r] is a consecutive subsequence of this, which we call S. By matching U-s and D-s like
+parentheses, we can count the number of matched pairs in any sequence of U-s and D-s
+(not necessarily a sequence corresponding to a Dyck path). Each strand in τ with both
+endpoints in [t, r] is a pair consisting of a U followed (not immediately) by a D in S. So
+42                                          THOMAS LAM
+
+the claim follows from the following statement: if we add extra letters to a sequence of U-s
+and D-s, the number of matched pairs cannot decrease. This is easy to see directly. 
+  Let Σ = (σ (1) , . . . , σ (2n) ) and Θ = (θ(1) , . . . , θ(2n) ) be two partition necklaces. Then we
+define Σ ≤ Θ if σ (s) ≤s θ(s) for each s ∈ [2n].
+Corollary 5.33. Let τ, τ ′ ∈ Pn . The following are equivalent:
+  (1) τ ′ ≤ τ
+  (2) E(τ ′ ) ⊆ E(τ )
+  (3) Σ(τ ′ ) ≥ Σ(τ ).
+Proof. The equivalence of (1) and (3) follows from Corollary 4.18 and the first statement
+of Theorem 5.32. The equivalence of (2) and (3) follows from the second statement of
+Theorem 5.32.                                                                          
+  Not all partition necklaces are of the form Σ(τ ). The partition necklaces that arise in
+this manner are satisfy the following additional conditions:
+    (1) if ā is a singleton in σā then σ (a+1) = tãa]   (ã)
+                                                       −1 σ , and
+                                                                                       ′
+    (2) if σ (ā) →ā σ (ã) is the swap given by the transition (ā, ā′ ), then σ (ã ) →ã′ σ a +1 is
+                                                                                                  ′
+
+
+        given by the transition (ã′ , a]   − 1), and
+                                                                                                    ]
+    (3) if σ →ā σ is the swap given by the transition (ā, ã′ ), then σ (a +1) →a′ +1 σ a +1
+             (ā)      (ã)                                                         ′                ′
+
+
+        is given by the transition (a′ + 1, a]    − 1), and
+                                       (ā)
+    (4) similar conditions with σ replaced by σ (ã) .
+Example 5.34. Let τ be the matching {(1, 4), (2, 6), (3, 7), (5, 8)}. Then fτ = [3, 5, 6, 8, 7, 9, 10, 12],
+and I(τ ) = (124, 234, 435, 456, 568, 678, 781, 812) and
+        σ(τ ) = ((14|2|3), (24|1|3), (12|34), (13|2|4), (23|1|4), (24|1|3), (12|34), (13|2|4)) .
+We can check that each consecutive pair is given by a s-swap. For example (12|34) →2̄
+(13|2|4) is given by the legal transition (2̄, 3̃). In this case the separating set consists of
+only (3̄4̄).
+5.12. Quadratic relations for grove measurements. The well known Plücker rela-
+tions [Ful] for the Grassmannian gives rise to certain quadratic relations for the grove
+measurements Lσ .
+Proposition 5.35. Suppose L(Γ) ∈ PN Cn is the grove measurement point of a cactus
+network Γ. Then for each 1 ≤ k < n − 1 and each I = {i1 < i2 < · · · < in−1 },
+J = {j1 < j2 < · · · < jn−1 }, we have
+                        X               X        ′ ′
+                                                       X
+                                Lσ Lκ =   (−1)a(I ,J )     Lσ Lκ
+                      σ∈E(I),κ∈E(J)          I ′ ,J ′        σ∈E(I ′ ),κ∈E(J ′ )
+
+where:
+   (1) the summation is over I ′ , J ′ obtained from swapping the first k indices in J with
+       with any k indices in I, keeping the order in both;
+   (2) a(I ′ , J ′ ) is the total number of swaps needed to put both subsets I ′ and J ′ in order.
+     Note that E(I) is taken to be empty set if I has repeated elements.
+                                                                            43
+ELECTROID VARIETIES AND A COMPACTIFICATION OF THE SPACE OF ELECTRICAL NETWORKS
+
+Proposition 5.36. Let p ∈ PN C n be an arbitrary point. Then L ∈ En if and only if
+  (1) Lσ (p) ≥ 0 for each σ ∈ N C n , and
+  (2) Lσ (p) satisfies the relations of Proposition 5.35 (only the relations with k = 1 is
+      sufficient).
+Proof. The “only if” direction is clear. Suppose p ∈ PN Cn satisfies both conditions. Use
+                                                               2n
+the relations in Theorem 5.10 to produce a point Xp ∈ P(n−1)−1 in Plücker projective
+space. A point in Plücker space lies in the Grassmannian if and only if the Plücker
+relations are satisfied with one index swapped (that is k = 1 in Proposition 5.35). Thus
+Condition (2) gives Xp ∈ X . Condition (1) gives Xp ∈ X≥0 . But by the argument in
+Proposition 5.19, ∆I (Xp ) determine Lσ (p), and by the realizability statement in Theorem
+5.8 we must have p ∈ En .                                                                
+
+                                          References
+[ALT] J. Alman, C. Lian, and B. Tran: Circular Planar Electrical Networks: Posets and Positivity.
+       J. Combin. Theory Ser. A 132 (2015), 58–101.
+[BB] A. Björner and F. Brenti: Combinatorics of Coxeter Groups, Graduate Texts in Mathemat-
+       ics, 231. Springer-Verlag, New York, 2005.
+[CIM] E.B. Curtis, D. Ingerman and J.A. Morrow: Circular planar graphs and resistor networks,
+       Linear Algebra Appl., 283 (1998), no. 1-3, 115–150.
+[CGV] Y. Colin de Verdière, I. Gitler, and D. Vertigan: Réseaux électriques planaires. II,
+       Comment. Math. Helv., 71(1) (1996), 144–167.
+[Ful] W. Fulton: Young tableaux. With applications to representation theory and geometry. London
+       Mathematical Society Student Texts, 35. Cambridge University Press, Cambridge, 1997. x+260
+       pp.
+[GK] A. B. Goncharov and R. Kenyon: Dimers and cluster integrable systems, Annales scien-
+       tifiques de l’ENS, 46 (2013), 747–813.
+[HS] A. Henriques and D.E. Speyer: The multidimensional cube recurrence. Adv. Math. 223
+       (2010), no. 3, 1107–1136.
+[HWX] Y.-t. Huang, C. Wen, and D, Xie: The Positive orthogonal Grassmannian and loop ampli-
+       tudes of ABJM. Journal of Physics A: Mathematical and Theoretical. 2014;47 :474008.
+[Kenn] A.E. Kennelly: Equivalence of triangles and stars in conducting networks, Electrical World
+       and Engineer, 34 (1899), 413–414.
+[Ken] R. Kenyon: The Laplacian on planar graphs and graphs on surfaces. Current developments in
+       mathematics, 2011, 1–55, Int. Press, Somerville, MA, 2012.
+[KPW] R. Kenyon, J. Propp, and D. Wilson: Trees and Matchings, Elec. J. Comb. 7 (2000),
+       Research Paper 25.
+[KW] R. Kenyon and D. Wilson: Boundary partitions in trees and dimers, Trans. Amer. Math. Soc.
+       363 (2011), no. 3, 1325–1364.
+[KLS] A. Knutson, T. Lam, and D. Speyer: Positroid Varieties: Juggling and Geometry, Compositio
+       Mathematica 149, 1710–1752.
+[Kuo] E. Kuo: Applications of graphical condensation for enumerating matchings and tilings. Theoret.
+       Comput. Sci. 319 (2004), no. 1-3, 29–57.
+[Lam14] T. Lam: Totally nonnegative Grassmannian and Grassmann polytopes. Current Developments
+       in Mathematics, 2014, 51–152.
+[Lam15] T. Lam: The uncrossing partial order on matchings is Eulerian. J. Combin. Theory Ser. A. 135
+       (2015), 105–111.
+[LP] T. Lam and P. Pylyavskyy: Electrical networks and Lie theory, Algebra and Number Theory
+       9 (2015), 1401–1418.
+[Oh] S. Oh: Positroids and Schubert matroids, J. Combin. Theory Ser. A 118 (2011), 2426–2435.
+44                                       THOMAS LAM
+
+[Pos] A. Postnikov: Total positivity, Grassmannians, and networks, preprint.
+      http://www-math.mit.edu/~apost/papers/tpgrass.pdf
+[PSW] A. Postnikov, D. Speyer, and L. Williams: Matching polytopes, toric geometry, and the
+      non-negative part of the Grassmannian. J. Algebraic Combin. 30 (2009), no. 2, 173–191.
+[Tal] K. Talaska: A formula for Plücker coordinates associated with a planar network. Int. Math.
+      Res. Not. IMRN 2008, Art. ID rnn 081, 19 pp.
+
+  Department of Mathematics, University of Michigan, 2074 East Hall, 530 Church
+Street, Ann Arbor, MI 48109-1043, USA
+  E-mail address: tfylam@umich.edu
+

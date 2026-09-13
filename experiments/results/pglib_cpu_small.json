@@ -1,0 +1,402 @@
+{
+  "schema_version": 1,
+  "environment": {
+    "platform": "Windows-11-10.0.26100-SP0",
+    "python": "3.13.5",
+    "numpy": "2.3.3",
+    "scipy": "1.17.1",
+    "logical_cpus": 32,
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "benchmark_semantics": {
+    "matrix_assembly": "direct COO/CSR; no dense H/J",
+    "central_solver": "SciPy SuperLU factorization and triangular solve",
+    "tail_solver": "sampled transpose sparse solves; no complete inverse",
+    "tail_input": "raw offset-corrected measurements with diagonal R",
+    "dkw_scope": "95% per fixed graph and fixed radius, not simultaneous over radii",
+    "mpi": false
+  },
+  "total_seconds": 0.05833069991786033,
+  "results": [
+    {
+      "case": "pglib_opf_case14_ieee.m",
+      "source_sha256": "bd5c568621de65e4b0922317010868bc7fa94173807faa10ea8fdbbe77c28106",
+      "nodes": 14,
+      "state_dimension": 13,
+      "graph_edges": 20,
+      "measurements": 26,
+      "H_nnz": 61,
+      "J_nnz": 73,
+      "reference_bus_ids": [
+        1
+      ],
+      "measurement_counts": {
+        "branch_flow_from": 20,
+        "bus_injection": 6
+      },
+      "flow_holder_semantics": "from",
+      "timing_seconds": {
+        "parse_seconds": 0.0006300999084487557,
+        "build_seconds": 0.0014600000577047467,
+        "factorization": 6.140000186860561e-05,
+        "central_solve": 9.100069291889668e-06,
+        "sampled_tail_solves_and_masks": 0.0009093999397009611
+      },
+      "rss_bytes_at_checkpoints": {
+        "start": 70090752,
+        "after_build": 70807552,
+        "after_factor": 70807552,
+        "after_tails": 70897664
+      },
+      "rss_checkpoint_max": 70897664,
+      "central_relative_residual": 4.564194435383691e-16,
+      "sampled_roots_with_replacement": [
+        2,
+        7,
+        5,
+        11,
+        1,
+        8,
+        7,
+        5,
+        10,
+        8,
+        8,
+        3,
+        10,
+        8,
+        10,
+        5,
+        6,
+        7,
+        13,
+        5,
+        6,
+        4,
+        1,
+        10,
+        4,
+        13,
+        3,
+        7,
+        8,
+        9,
+        1,
+        9
+      ],
+      "root_sample_count": 32,
+      "dkw_95_halfwidth_per_fixed_radius": 0.24008069782998018,
+      "raw_z_tail_monotone_over_sorted_radii": true,
+      "diameter_zero_tail_check": {
+        "diameter": 5,
+        "max_raw_z_tail": 0.0,
+        "max_state_rhs_tail": 0.0
+      },
+      "tail_summary": [
+        {
+          "radius": 0,
+          "raw_z_tail_mean": 0.0018284101077690215,
+          "raw_z_tail_median": 0.0020000918574564243,
+          "raw_z_tail_max": 0.0028364426117837172,
+          "state_rhs_tail_mean": 7.698521946309547e-06,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 0.78125,
+            "0.01": 0.0
+          }
+        },
+        {
+          "radius": 1,
+          "raw_z_tail_mean": 0.0013403909767376846,
+          "raw_z_tail_median": 0.0014536551271731087,
+          "raw_z_tail_max": 0.0020303963727683933,
+          "state_rhs_tail_mean": 6.074570554223275e-06,
+          "raw_z_tail_exceedance": {
+            "0.0001": 0.90625,
+            "0.001": 0.75,
+            "0.01": 0.0
+          }
+        },
+        {
+          "radius": 2,
+          "raw_z_tail_mean": 0.0008486387061103868,
+          "raw_z_tail_median": 0.0009033370186728078,
+          "raw_z_tail_max": 0.0015306289840624698,
+          "state_rhs_tail_mean": 4.131603941614619e-06,
+          "raw_z_tail_exceedance": {
+            "0.0001": 0.75,
+            "0.001": 0.40625,
+            "0.01": 0.0
+          }
+        },
+        {
+          "radius": 4,
+          "raw_z_tail_mean": 4.552700761493138e-06,
+          "raw_z_tail_median": 0.0,
+          "raw_z_tail_max": 3.64216060919451e-05,
+          "state_rhs_tail_mean": 3.6025731888331003e-07,
+          "raw_z_tail_exceedance": {
+            "0.0001": 0.0,
+            "0.001": 0.0,
+            "0.01": 0.0
+          }
+        }
+      ],
+      "case_total_seconds": 0.003999500069767237,
+      "status": "ok"
+    },
+    {
+      "case": "pglib_opf_case118_ieee.m",
+      "source_sha256": "b1af0833849040c04babc3700631cff0d9afa66b79c5d3e13ae79bdf516cec78",
+      "nodes": 118,
+      "state_dimension": 117,
+      "graph_edges": 179,
+      "measurements": 226,
+      "H_nnz": 518,
+      "J_nnz": 707,
+      "reference_bus_ids": [
+        69
+      ],
+      "measurement_counts": {
+        "branch_flow_from": 186,
+        "bus_angle": 5,
+        "bus_injection": 35
+      },
+      "flow_holder_semantics": "from",
+      "timing_seconds": {
+        "parse_seconds": 0.000955799943767488,
+        "build_seconds": 0.001709700096398592,
+        "factorization": 0.00017010001465678215,
+        "central_solve": 1.1599971912801266e-05,
+        "sampled_tail_solves_and_masks": 0.004655800061300397
+      },
+      "rss_bytes_at_checkpoints": {
+        "start": 70987776,
+        "after_build": 71491584,
+        "after_factor": 71634944,
+        "after_tails": 71655424
+      },
+      "rss_checkpoint_max": 71655424,
+      "central_relative_residual": 1.1936437346708172e-14,
+      "sampled_roots_with_replacement": [
+        21,
+        70,
+        111,
+        37,
+        84,
+        44,
+        76,
+        67,
+        28,
+        13,
+        16,
+        87,
+        105,
+        3,
+        104,
+        3,
+        90,
+        101,
+        74,
+        111,
+        75,
+        40,
+        100,
+        19,
+        51,
+        67,
+        111,
+        34,
+        1,
+        10,
+        13,
+        113
+      ],
+      "root_sample_count": 32,
+      "dkw_95_halfwidth_per_fixed_radius": 0.24008069782998018,
+      "raw_z_tail_monotone_over_sorted_radii": true,
+      "diameter_zero_tail_check": {
+        "diameter": 14,
+        "max_raw_z_tail": 0.0,
+        "max_state_rhs_tail": 0.0
+      },
+      "tail_summary": [
+        {
+          "radius": 0,
+          "raw_z_tail_mean": 0.15358213080827315,
+          "raw_z_tail_median": 0.1778347067391707,
+          "raw_z_tail_max": 0.24819433251249778,
+          "state_rhs_tail_mean": 3.6058218685126256e-06,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 1.0
+          }
+        },
+        {
+          "radius": 1,
+          "raw_z_tail_mean": 0.12724330790653227,
+          "raw_z_tail_median": 0.12737589836012675,
+          "raw_z_tail_max": 0.24819424363324777,
+          "state_rhs_tail_mean": 3.2957839699322458e-06,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 1.0
+          }
+        },
+        {
+          "radius": 2,
+          "raw_z_tail_mean": 0.10213715369579611,
+          "raw_z_tail_median": 0.11636547538668657,
+          "raw_z_tail_max": 0.2138544457627224,
+          "state_rhs_tail_mean": 2.8281220705227217e-06,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 1.0
+          }
+        },
+        {
+          "radius": 4,
+          "raw_z_tail_mean": 0.061190239918362255,
+          "raw_z_tail_median": 0.03156176234843516,
+          "raw_z_tail_max": 0.1745150070484532,
+          "state_rhs_tail_mean": 1.7281830408736248e-06,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 1.0
+          }
+        }
+      ],
+      "case_total_seconds": 0.012279900023713708,
+      "status": "ok"
+    },
+    {
+      "case": "pglib_opf_case300_ieee.m",
+      "source_sha256": "7ecf056d5942135765200ad7ae8791c28f0d35fb1dc888ba2c32dfc950f3c2f5",
+      "nodes": 300,
+      "state_dimension": 299,
+      "graph_edges": 409,
+      "measurements": 499,
+      "H_nnz": 1129,
+      "J_nnz": 1741,
+      "reference_bus_ids": [
+        7049
+      ],
+      "measurement_counts": {
+        "branch_flow_from": 411,
+        "bus_angle": 15,
+        "bus_injection": 73
+      },
+      "flow_holder_semantics": "from",
+      "timing_seconds": {
+        "parse_seconds": 0.0017920000245794654,
+        "build_seconds": 0.003002000041306019,
+        "factorization": 0.00031079992186278105,
+        "central_solve": 1.7900019884109497e-05,
+        "sampled_tail_solves_and_masks": 0.010138200013898313
+      },
+      "rss_bytes_at_checkpoints": {
+        "start": 71667712,
+        "after_build": 72425472,
+        "after_factor": 72622080,
+        "after_tails": 72622080
+      },
+      "rss_checkpoint_max": 72622080,
+      "central_relative_residual": 1.1529327209647054e-13,
+      "sampled_roots_with_replacement": [
+        140,
+        78,
+        33,
+        289,
+        123,
+        207,
+        127,
+        85,
+        168,
+        252,
+        75,
+        35,
+        120,
+        237,
+        8,
+        69,
+        198,
+        115,
+        188,
+        252,
+        283,
+        43,
+        213,
+        280,
+        290,
+        102,
+        149,
+        153,
+        112,
+        76,
+        144,
+        171
+      ],
+      "root_sample_count": 32,
+      "dkw_95_halfwidth_per_fixed_radius": 0.24008069782998018,
+      "raw_z_tail_monotone_over_sorted_radii": true,
+      "diameter_zero_tail_check": null,
+      "tail_summary": [
+        {
+          "radius": 0,
+          "raw_z_tail_mean": 0.24003001254678205,
+          "raw_z_tail_median": 0.1648437666091137,
+          "raw_z_tail_max": 1.1729906264851058,
+          "state_rhs_tail_mean": 1.7255355023786167e-05,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 1.0
+          }
+        },
+        {
+          "radius": 1,
+          "raw_z_tail_mean": 0.23596663768922474,
+          "raw_z_tail_median": 0.16399479167336492,
+          "raw_z_tail_max": 1.1725358718244825,
+          "state_rhs_tail_mean": 1.707833121098548e-05,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 1.0
+          }
+        },
+        {
+          "radius": 2,
+          "raw_z_tail_mean": 0.13094614298452772,
+          "raw_z_tail_median": 0.1364146180542339,
+          "raw_z_tail_max": 0.231095145435694,
+          "state_rhs_tail_mean": 4.892921623089263e-06,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 1.0
+          }
+        },
+        {
+          "radius": 4,
+          "raw_z_tail_mean": 0.11744087006584973,
+          "raw_z_tail_median": 0.1300011423597717,
+          "raw_z_tail_max": 0.1737766972216968,
+          "state_rhs_tail_mean": 2.652147711334892e-06,
+          "raw_z_tail_exceedance": {
+            "0.0001": 1.0,
+            "0.001": 1.0,
+            "0.01": 1.0
+          }
+        }
+      ],
+      "case_total_seconds": 0.015660899924114347,
+      "status": "ok"
+    }
+  ]
+}

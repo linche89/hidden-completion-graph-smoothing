@@ -1,0 +1,1361 @@
+                                                                                                                                                                                              1
+
+
+
+
+                                             Graph Tikhonov Regularization and Interpolation
+                                                      via Random Spanning Forests
+                                                             Yusuf Yiğit Pilavcı, Pierre-Olivier Amblard, Simon Barthelmé, Nicolas Tremblay
+
+
+
+
+                                            Abstract—Novel Monte Carlo estimators are proposed to solve
+                                         both the Tikhonov regularization (TR) and the interpolation
+                                         problems on graphs. These estimators are based on random
+arXiv:2011.10450v3 [cs.DM] 24 Mar 2022
+
+
+
+
+                                         spanning forests (RSF), the theoretical properties of which enable
+                                         to analyze the estimators’ theoretical mean and variance. We also
+                                         show how to perform hyperparameter tuning for these RSF-
+                                         based estimators. TR is a component in many well-known algo-
+                                         rithms, and we show how the proposed estimators can be easily
+                                         adapted to avoid expensive intermediate steps in generalized
+                                         semi-supervised learning, label propagation, Newton’s method
+                                         and iteratively reweighted least squares. In the experiments, we
+                                         illustrate the proposed methods on several problems and provide
+                                         observations on their run time.
+                                            Index Terms—graph signal processing, random spanning
+                                         forests, smoothing, interpolation, semi-supervised learning, la-               Fig. 1: Smoothing (left) and interpolation (right) in discrete 1D signal
+                                         bel propagation, Newton’s method, iteratively reweighted least                 processing can be considered as a graph signal processing problem
+                                         square.                                                                        where the underlying graph is a path graph.
+
+
+                                                                   I. I NTRODUCTION
+                                                                                                                        measurements of a graph signal are known over all vertices.
+                                                RAPHS are ubiquitous models of complex structures,
+                                         G      e.g. social, transportation, sensors or neuronal networks.
+                                         The vertices and edges, the main components of graphs, are
+                                                                                                                        Tikhonov regularization is a smoothing operation and recovers
+                                                                                                                        the underlying signal assuming that it varies slowly between
+                                                                                                                        neighboring vertices in the graph. Under the same assumption,
+                                         natural representations of the elements of a network and the                   interpolation, on the other hand, is the operation of recovering
+                                         links between them, respectively. In many applications, these                  the signal when it is known only over a few vertices (see
+                                         networks often come with data on the elements. For example,                    Fig. 1 for an illustration on the path graph). Both operations
+                                         in a transportation network (the roads and their intersections                 are thoroughly analyzed in [5], [6], [7], [8] and we refer the
+                                         are respectively the nodes and edges), the data can be the                     reader to Section III for formal definitions.
+                                         traffic measured at the intersections; or in a brain network,                  Hyperparameter tuning. As usual in regularization schemes,
+                                         it could be the activity of each individual brain region [1].                  both graph TR and interpolation have hyper-parameters that
+                                         Such type of data over vertices are called graph signals [2], [3].             need to be to tuned. Automatically tuning these parameters
+                                                                                                                        is not a trivial problem. In the classical framework of linear
+                                         Graph Tikhonov regularization and interpolation. Graph                         smoothers [9], there exists many methods such as Akaike and
+                                         signal processing (GSP) is a field of research developed in the                Bayesian information criteria, Marlow’s Cp, leave-one-out
+                                         last decade dedicated to extending classical signal processing                 and generalized cross validations or Stein’s unbiased risk
+                                         tools to graph signals [2], [4]. In this paper, we focus on two                estimator. In this paper, we study possible graph adaptations
+                                         essential operations on graph signals, namely graph Tikhonov                   for some of them to automatically tune hyper-parameters in
+                                         regularization and graph interpolation. In the former, noisy                   graph TR and interpolation.
+                                            This work was partly funded by the French National Research Agency in the
+                                         framework of the ”Investissements d’avenir” program (ANR-15-IDEX-02),          Solving graph TR and interpolation as a building block.
+                                         the LabEx PERSYVAL (ANR-11-LABX-0025-01), the ANR GraVa (ANR-                  The solutions of graph TR and interpolation appear in the
+                                         18-CE40-0005) the ANR GenGP (ANR-16-CE23-0008) the Grenoble Data               intermediate steps of various graph algorithms.
+                                         Institute (ANR-15-IDEX-02) the MIAI@Grenoble Alpes chairs “LargeDATA
+                                         at UGA.” and “Pollutants” (ANR-19-P3IA-0003).                                     Semi-supervised node classification is one problem that
+                                            Yusuf Yiğit Pilavcı, Pierre-Olivier Amblard, Simon Barthelmé and Nico-    naturally boils down to a graph interpolation scheme. A few
+                                         las Tremblay are with CNRS, Univ. Grenoble Alpes, Grenoble INP,                labels are a priori known and the purpose is to infer, via graph
+                                         GIPSA-lab, Grenoble, France. (e-mail: firstname.lastname@gipsa-lab.fr with
+                                         firstname.lastname@ = yusuf-yigit.pilavci@, pierre-olivier.amblard@, si-       interpolation, the labels for all nodes given the structure of
+                                         mon.barthelme@, nicolas.tremblay@)                                             the underlying graph. One solution to this problem is given
+                                            This paper has supplementary downloadable material available at             by a well-known Semi-Supervised Learning (SSL) algorithm,
+                                         http://ieeexplore.ieee.org., provided by the authors. The material includes
+                                         proof of proposition 3 and an illustration for Section IV-C. Contact Yusuf     called label propagation [5], [36]. Label propagation is an iter-
+                                         Yiğit Pilavcı for further questions about this work.                          ative algorithm whose solution converges to the solution of the
+                                                                                                                                                   2
+
+
+
+graph interpolation problem. Along with the connections to the      in this work,
+Dirichlet boundary problem on graphs [10], this solution can           • We extend the theoretical analysis on the RSF-based
+be seen as assigning labels to nodes that smoothly interpolate           estimators proposed in [25]:
+between known labels at the boundary points.                             – Building upon known results on RSFs, we generalize
+   Graph TR, besides its use for graph signal denoising,                    the error analysis to cases where the regularization
+also appears in SSL algorithms for node classification, such                hyperparameter is not constant over the vertices.
+as in the work of Zhou et al. [11], later generalized by                 – We provide a precise expression for the computational
+Avrachenkov et al. [12]. Moreover, graph TR can also be                     cost of the estimators.
+used in graph optimization algorithms. Two examples are
+                                                                       • Using certain statistics of RSFs, we provide a novel
+Newton’s method [13] and iteratively reweighted least squares
+                                                                         scheme to correctly tune the hyperparameters.
+(IRLS) [14]. In both methods, the computationally expensive
+                                                                       • We discuss how these estimators may be leveraged to
+steps can be formulated and solved as graph TR problems.
+                                                                         approximately solve the graph interpolation problem.
+                                                                       • We show that the proposed estimators have versatile use
+Classical approaches. Both graph TR and interpolation have
+                                                                         in other graph-based problems and their solutions such as
+closed-form solutions. However, directly computing these
+                                                                         generalized semi-supervised learning, label propagation,
+solutions requires the inversion of a matrix of size n × n,
+                                                                         Newton’s method and IRLS.
+and thus, up to O(n3 ) elementary operations. For large
+                                                                       • We provide illustrations for different use cases. Tikhonov
+graphs (i.e. with n ≥ 104 ), this is prohibitive and the state-
+                                                                         regularization and Newton’s method are demonstrated in
+of-the-art relies on approximate methods. These approaches
+                                                                         image denoising applications. Graph interpolation and
+may be roughly separated in two groups, iterative methods
+                                                                         generalized SSL algorithms are used to solve classifica-
+(e.g. conjugate gradient method with preconditioning [15])
+                                                                         tion tasks on citation networks.
+and polynomial approximations (e.g. Chebyshev polynomials
+                                                                       • The runtime of the proposed methods are compared with
+[16]). Both classes of methods run in linear time with the
+                                                                         state-of-the-art methods on certain graphs.
+number of edges m.
+                                                                       The Julia code to reproduce this paper’s results is available
+Random processes on graphs. A longstanding and fruitful             on the authors’ website.1
+approach to studying the properties of graphs has been to study
+the properties of random processes on graphs (via random            Organization of the paper. We start with the necessary
+walks, for instance). This paper will take such a perspective       background on graphs and RSFs in Section II. Then, we
+to propose novel estimators for the two problems presented.         introduce the proposed methods in Section III. In Section IV,
+   For instance, a very well-known fact is the link between the     we examine several extensions to different graph-related prob-
+smallest non-null eigenvalue of the graph’s Laplacian matrix        lems. Finally, in Section V, we illustrate the methods and
+and the mixing time of a random walk on the graph (see,             provide a runtime analysis and we conclude in Section VI.
+e.g., [17]). Other examples include properties of electrical net-
+works, such as potential functions or effective resistances, that                       II. BACKGROUND ON RSF S
+can be interpreted in terms of probabilistic quantities defined       This section contains background on graph theory, random
+for random walks such as hitting time probabilities [18].           spanning trees and forests.
+   Closer to our work, Wu et al. [19], [20] study probabilistic
+properties of a particular random process, called partially
+absorbed random walk; and further leverage random walks             A. Graph theory
+to give practical insights into algorithms dedicated to image          A directed weighted graph G = (V, E, w) consists of a set
+retrieval, local clustering and semi-supervised learning.           of vertices V = {1, 2, ..., n} and edges E = {(i, j) ∈ V × V}.
+                                                                    The weight function w : V × V → R+ maps each edge in E to
+Random spanning forests. In this paper, we will focus               a positive weight and others to 0. A graph is called undirected
+on random spanning forests (RSFs): random collections of            if w(i, j) = w(j, i) for all distinct vertices i and j. In the
+disjoint trees that cover all nodes in the graph (a formal          following, unless otherwise specified only undirected graphs
+definition is in Section II). Interestingly, connections between    are considered. Graphs are often represented using matrices,
+graph TR / interpolation and RSFs have been observed by a           and several matrix descriptions are available.
+few authors in the past, such as in [21]. Avena et al. [22], [23]      The weighted adjacency matrix is W = [w(i, j)]i,j ∈
+analyze several aspects of these connections. RSFs not only         Rn×n . The degree                                           n×n
+have a rich theoretical background (they have connections                         P matrix is the diagonal matrix D ∈ R
+                                                                    with Di,i =     j∈N (i) w(i, j) and N (i) is the set of nodes
+with Markov chains, determinantal point processes, spectral         connected to i. The graph Laplacian matrix is defined as
+graph theory), they also come with an efficient sampling            L = D−W. It is semi-positive definite [17] and its eigenvalues
+algorithm [22]: a variant of Wilson’s algorithm [24] based on       and eigenvectors are denoted by 0 = λ1 ≤ λ2 ≤ . . . ≤ λn
+loop-erased random walks.                                           and U = (u1 |u2 | . . . |un ), respectively. The multiplicity of
+                                                                    eigenvalue 0 equals the number of connected components in
+Our contributions. In the conference paper [25], we have al-
+ready presented some preliminary results. Differing from [25],        1 https://gricad-gitlab.univ-grenoble-alpes.fr/pilavciy/rsf sipn codes.git
+                                                                                                                                                     3
+
+
+
+the graph [17]. For undirected graphs, all of these square           Random Spanning Forests. Let F be the set of all rooted
+matrices are symmetric.                                              spanning forests. A random spanning forest (RSF) is a random
+   Another way to represent graphs is via the edge incidence         variable whose outcome space is F. Among many possible
+matrix B = (b1 |b2 | . . . |bm )> ∈ Rm×n where bk ∈ Rn is a          options, we focus on the following parametric distribution for
+vector associated to the k-thpedge (i, j). The only nonzero
+                                                      p     en-      RSFs. For a fixed parameter q > 0, Φq is a random variable
+tries of bk are bk (i) = ± w(i, j) and bk (j) = ∓ w(i, j).           in F verifying:
+In undirected graphs, the signs of the non-zero entries of                                                   Y
+                                                                             ∀φ ∈ F, P(Φq = φ) ∝ q |ρ(φ)|          w(i, j).     (3)
+bk can be arbitrarily chosen as long as they are opposite.
+                                                                                                                          (i,j)∈φ
+Although this matrix seems less natural than the others, it
+often appears in graph theory. One example is the well known         An algorithm [23] to sample from this distribution is derived
+identity L = B> B.                                                   from RandomTreeWithRoot. This algorithm:
+                                                                       1) extends the graph G = (V, E, w) by adding a node called
+                                                                           Γ.
+B. Random spanning trees and Wilson’s algorithm                        2) connects each node i in V to Γ with an edge of weight
+   Let us recall the definition of random spanning trees (RSTs).           w(i, Γ) = q.
+Consider a graph G = (V, E, w). A subgraph of G is a                   3) runs RandomTreeWithRoot by setting Γ as the root
+graph whose vertex and edge sets are subsets of V and E,                   to obtain a spanning tree rooted in Γ in the extended
+respectively, and its edge weights are valued by w. A subgraph             graph.
+contains a cycle whenever there exists a pair of vertices (u, v)       4) deletes the edges incident to Γ in the obtained tree to
+that are connected via (strictly) more than one path. If there             yield a forest in the original graph.
+exists no such pair, the subgraph is called a tree. A spanning       The result is a rooted spanning forest whose root set is formed
+tree τ = (Vτ , Eτ , wτ ) is a tree whose vertex set Vτ is equal      by the nodes which were neighbors of Γ. For every distinct
+to V. A rooted spanning tree τr is a directed spanning tree          spanning tree rooted at Γ, a distinct spanning forest is obtained
+where all edges are directed towards a node called the root.         after removing the root and its incident edges. Using this one-
+See Fig. 2 for illustrations.                                        to-one relation ensures that this algorithm indeed samples from
+   Our work is related to a particular distribution on spanning      the distribution in Eq. (3):
+trees called random spanning trees (RSTs). An RST T is a                                                  Y
+randomly generated spanning tree from the following distri-             P(TΓ = τΓ ) = P(Φq = φ) ∝              w(i, j)
+                                                                                                               (i,j)∈τΓ
+bution:                             Y                                                                            Y              Y
+                   P(T = τ ) ∝          w(i, j).             (1)                                           ∝              q              w(i, j)
+                                (i,j)∈τ                                                                        (i,Γ)∈τΓ       (i,j)∈τΓ
+                                                                                                                                                   (4)
+                                                                                                                               i,j6=Γ
+Note that this distribution becomes uniform over all pos-                                                                 Y
+                                                                                                           ∝ q |ρ(φ)|             w(i, j).
+sible spanning trees whenever the given graph is un-
+                                                                                                                        (i,j)∈φ
+weighted i.e. ∀i, j ∈ V, w(i, j) ∈ {0, 1}:
+                                                                        An implementation of this algorithm is detailed in Algo-
+                                    1                                rithm 1. In the algorithm, rand (line 7) returns a uniform
+                       P(T = τ ) =                            (2)
+                                   |T |                              random value between 0 and 1 and RandomSuccessor
+where T is the set of all spanning trees. In this particular case,   (line 11) returns a random node i from N (u) with probability
+the random tree T is also known as a uniform spanning tree           P w(u,i)          . At termination, the array Next contains all the
+                                                                        j∈N (u) w(u,j)
+(UST) in the literature.                                             necessary information to build the sampled spanning forest.
+    In his celebrated work [24], Wilson proposes an algo-               The expected run time of RandomForest is the expected
+rithm, called RandomTreeWithRoot, that samples a ran-                number of calls of RandomSuccessor before termination.
+dom spanning tree from the set of all spanning trees rooted          For RandomTreeWithRoot, the number of calls equals to
+in node r. Wilson also shows that, in the case of undirected         the mean commute time, i.e., the expected length of a random
+graphs, sampling an unrooted RST amounts to: i/ choosing             walk going from node i to j and back (see theorem 2 in [24]).
+uniformly a root, ii/ running RandomTreeWithRoot, and                In proposition 1 of [26], Marchal rewrites this commute time
+iii/ erasing the orientation.                                        in terms of graph matrices. Adapting his result to the current
+                                                                     setting, the expected run time of RandomForest          can be
+                                                                     shown to equal the trace of (L + qI)−1 (D + qI) , a rough
+C. Random spanning forests
+                                                                     upper-bound of which is n + 2|E|/q, which is linear with the
+   A forest is a set of disjoint trees. When all the trees in        number of edges.
+a forest are rooted, it is called a rooted forest. A rooted
+spanning forest, generically denoted by φ, reaches all the           Varying q over nodes. The original graph can also be
+vertices in the graph. Let ρ be the function that maps any           extended by setting2 w(i, Γ) ← qi ≥0, ∀i ∈ V, that is, by
+rooted spanning forests to its set of roots. The number of roots
+                                                                       2 A requirement when choosing the q ’s is that the extended graph stays
+|ρ(φ)| is between 1 and n. For |ρ(φ)| = 1, φ corresponds to                                                   i
+                                                                     connected: when q is chosen uniform, it thus has to be chosen strictly positive.
+a rooted spanning tree. See Fig. 2 for illustrations.                When q is not chosen uniform, each qi can be chosen positive or null as long
+                                                                     as the extended graph is connected (for instance, all qi ’s cannot be null)
+                                                                                                                                                   4
+
+
+
+
+Fig. 2: From left to right, a graph G, a spanning tree on G, a rooted spanning tree on G and a rooted spanning forest on G (roots are
+colored in red)
+
+
+                                                                                                                              π(φ0 ) = π(φ00 )
+                                                                             φ0 :              φ00 :
+
+
+
+
+Fig. 3: All possible rooted spanning trees associated with a given
+undirected spanning tree. For four vertices, four different rooted trees   Fig. 4: Two different rooted spanning forests (on the left) with the
+exist.                                                                     same corresponding partition (on the right)
+
+
+                                                                           connecting the added node Γ with links of unequal weights.
+                                                                           In this case, the distribution of sampled forests becomes:
+                                                                                                    Y         Y
+Algorithm 1 RandomForest                                                           P(ΦQ = φ) ∝           qi       w(i, j), φ ∈ F      (5)
+ 1: Inputs:                                                                                            i∈ρ(φ)   (i,j)∈φ
+
+        G = (V, E, w)                                                      where Q = {q1 , q2 , . . . , qn } is the collection of parameters.
+        q> 0                                                               Algorithm 1 can easily be adapted by modifying the scalar
+ 2: Initialize:                                                                                                         q          qu
+                                                                           input q to Q = {q1 , q2 , . . . , qn } and q+d[u] to qu +d[u] at line
+        # Initially, the forest is empty
+                                                                           7. In addition, the average        run time in this case becomes
+        ∀i ∈ V, InForest[i] ← false
+                                                                           tr (L + Q)−1 (D + Q) , with Q = diag(q1 , . . . , qn ).
+                                                                                                   
+        ∀i ∈ V, Next[i] P   ← −1
+        ∀i ∈ V, d[i] ← j∈N (i) w(i, j) # Degrees                           Random partitions. A partition of V, denoted by P, is a set of
+ 3: for i ← 1 to |V| do
+                                                                           disjoint subsets whose union equals V. The trees of Φq give
+ 4:     u←i                                                                a random partition of V by splitting it into |ρ(Φq )| disjoint
+ 5:     # Start a random walk to create a forest branch                    subsets. Let us enumerate the trees from 1 to |ρ(Φq )| and
+ 6:     while not InForest[u] do # Stop if u is in the forest              denote the vertex set of the k-th tree as Vk ⊂ V. Let π be a
+                            q
+ 7:         if rand ≤ q+d[u]     then #If true, u becomes a root           function that outputs the partition for a given spanning forest.
+ 8:             InForest[u] ← true # Add u to the forest                   Then, the random partition of V derived from Φq is π(Φq ) =
+ 9:             Next[u] ← −1 # Set next of u to null                       (V1 , . . . , V|ρ(Φq )| ) with |π(Φq )| subsets. Note that this function
+10:         else # If false, continue the random walk                      is a many-to-one mapping because different spanning forests
+11:             Next[u] ← RandomSuccessor(u, G)                            may correspond to the same partition (see Figure 4).
+12:             u ← Next[u]
+13:         end if
+                                                                           D. Useful properties of Φq
+14:     end while
+15:     u ← i # Go back to the initial node                                  Recent studies in [22], [23] have established some
+16:     # Add the newly created branch to the forest                       theoretical properties of Φq that we reproduce here.
+17:     while not InForest[u] do
+18:         InForest[u] ← true                                             The root process. To start with, Proposition 2.2 in [23] states
+19:         u ← Next[u]                                                    that ρ(Φq ) is sampled from a determinantal point process
+20:     end while                                                          (DPP) [27] with marginal kernel:
+21: end for                                                                                            K = (qI + L)−1 qI.                        (6)
+22: return Next
+                                                                           This means that the inclusion probabilities verify:
+                                                                                          ∀S ⊂ V,        P(S ∈ ρ(Φq )) = det KS
+                                                                                                                                                  5
+
+
+
+where KS = [Ki,j |(i, j) ∈ S × S] is the submatrix of K               Graph Tikhonov regularization. For a given graph G =
+reduced to the rows and columns indexed by S.                         (V, E, w) and measurements y = (y1 , y2 , . . . , yn )> on the
+                                                                      |V| = n vertices, the Tikhonov regularization of y reads:
+Cardinality of ρ(Φq ). As a consequence of ρ(Φq ) being a
+                                                                                        x̂ = argmin µ||y − z||2 + z> Lz                       (12)
+DPP, the first two moments of |ρ(Φq )| verify [27]:                                             z∈Rn
+                              X q
+        E[|ρ(Φq )|] = tr(K) =            ,                            where L ∈ Rn×n is the graph Laplacian of G. The solution of
+                               i
+                                 q + λi                               this minimization problem is:
+                                       X       λi q   (7)
+        Var(|ρ(Φq )|) = tr(K − K2 ) =                                                   x̂ = Ky with K = (L + µI)−1 µI.                       (13)
+                                        i
+                                           (q + λi )2
+                                                                      Interestingly, the matrix in this solution also appears in Eq. (6)
+where the λi ’s are the eigenvalues of L.
+                                                                      as the marginal kernel of the root process. This correspondence
+                                                                      plays a significant role for the proposed methods by connecting
+The root probability distribution. Given any rooted spanning
+                                                                      RSFs to the Tikhonov regularization problem.
+forest φ, define the root function rφ : V → ρ(φ) which takes
+                                                                         In some important cases, instead of (L + µI)−1 µI y , the
+as input any node i and outputs the root of the tree which i
+                                                                      generalized solution (L + Q)−1 Q y is required where Q is
+belongs to. In [22], [23], the authors show that the probability,
+                                                                      an entry-wise non-negative diagonal matrix. For example,
+for any node pair (i, j), that i is rooted in j reads:
+                                                                      if we write the Tikhonov regularization of Eq. (12) with
+               ∀i, j ∈ V   P(rΦq (i) = j) = Kij .               (8)   another graph Laplacian such as the random walk Laplacian
+                                                                      Lrw = D−1 L, then the solution reads x̂ = (L+Q)−1 Q y where
+                                                                      Q = µD. Another example occurs when the noise variance is
+                                                                      known to be non-constant over vertices, i.e. heteroscedastic
+Conditioning on a partition. Let t : V → {1, 2, . . . , |ρ(Φq )|}
+                                                                      noise. The measurements may be less reliable at some vertices
+be a random mapping between any node and its tree number
+                                                                      compared to others, meaning that there are different noise
+in Φq . (e.g., t(i) = k if i ∈ Vk ∈ π(Φq )). By conditioning
+                                                                      variances σ1 , . . . , σn . This implies that q1 . . . , qn should be
+the root probability over a fixed partition P, one obtains (see
+                                                                      set proportional to σ11 , . . . , σ1n in the estimation of x̂. This
+Proposition 2.3 in [23]):
+                                                                      again corresponds to the generalized formulation.
+                                               I(j ∈ Vt(i) )
+  ∀i, j ∈ V    P(rΦq (i) = j|π(Φq ) = P) =                      (9)
+                                                  |Vt(i) |            Graph interpolation. Given a connected graph G = (V, E, w),
+                                                                      a parameter µ ≥ 0, and ` ⊂ V a set of nodes where a signal x
+where I is the indicator function (i.e., it outputs 1 if the input
+                                                                      is known, one way of defining the interpolated signal is [8]:
+statement is true and 0 otherwise). In other words, given a
+fixed partition P, the root probability within each subset Vk                            x̂ = argmin z> (L + µI)z
+is uniform over the nodes in Vk .                                                                z∈Rn                                         (14)
+                                                                                              subject to ∀i ∈ `, zi = xi .
+Extending to non-constant q. All of these properties are               Define u = V\` the set of nodes for which x is not known
+adaptable to the case of q varying over nodes (with some              and write L in block form:
+changes). The root process ρ(ΦQ ) is also a DPP. However,                                                 
+                                                                                                 L    L`|u
+the associated marginal kernel becomes:                                                    L = `|`
+                                                                                                 Lu|` Lu|u
+    K = (L + Q)−1 Q with Q = diag(q1 , . . . , qn ).           (10)
+                                                                      where L`|u is the Laplacian reduced to its rows and columns
+Notice that this kernel is not co-diagonalizable with the graph       indexed by ` and u, respectively. The solution of Eq. (14)
+Laplacian L. Thus, the expected number of roots E[|ρ(Φq )|]           reads:
+is not writable in terms of λi ’s, but it is still equal to tr(K).              (
+                                                                                 xi                             if i ∈ `
+Similarly, the root probability P(rΦQ (i) = j) remains Ki,j                x̂ =                 −1
+                                                                                                                             (15)
+whereas the conditional probability in Eq. (9) becomes:                           −(Lu|u + µI) Lu|l x` i        otherwise
+                                          qj I(j ∈ Vt(i) )            where x` ∈ R|`| is the signal x reduced to its entries in `.
+  ∀i, j ∈ V   P(rΦQ (i) = j|π(ΦQ ) = P) = P                .
+                                              k∈Vt(i) qk
+                                                                      This solution can almost always3 be rewritten as:
+                                                         (11)                                   (
+                                                                                                  K = (LG\` + Q)−1 Q
+                                                                               x̂u = Ky with                                  (16)
+                III. RSF BASED ESTIMATORS                                                         y = −Q−1 Lu|` x`
+   In this section, we present our main results. We first recall      where LG\` is the Laplacian of the reduced graph
+the graph Tikhonov regularization and interpolation problems.         obtained by removing the vertices (and the incident
+Then, we describe the RSF-based methods to solve them. We             edges) in `, Q ∈ R|u|×|u| is a diagonal matrix with
+also provide some theoretical analysis of the performance of
+                                                                         3 Q, as defined in the paragraph following Eq. (16), needs to be invertible
+the methods. Finally, we show how to tune hyperparameters
+                                                                      for y to be well-defined. This is always the case if µ > 0. When µ = 0, it
+for the proposed estimators.                                          may not be the case. We will see in Section IV-A what can be done in this
+                                                                      scenario.
+                                                                                                                                                                                         6
+
+
+
+                                                                             1
+                                                                                                      where ||x||2Q = x> Qx.
+                                                                       1           1
+
+             1
+                                                                                                      Proof. For every node i, x̃(i) is an unbiased estimator of x̂(i)
+                                            1           x̃     5       6                 1
+                                                                                                      thanks to the following:
+         2       3       Φq             2       3                  5               6
+                                                                                                                                 X
+ 5       6           4        5         6           4
+                                                                             2.5
+                                                                                                        E [x̃(i)] = E y(rΦQ (i)) =        P(rΦQ (i) = j)y(j)
+                                                         x̄
+     3           1
+                                                                       2.5         2.5                                                                   j
+                                  3             1                                                                                                    X
+                                                               4       3.5               2.5
+                                                                                                                                               =             Kij y(j) = δi> Ky = x̂(i)
+                                                                   4               3.5                                                                   j
+
+Fig. 5: An illustration for the estimators where q is constant over all                               where δi is the Kronecker delta (i.e. δi (i) = 1 and 0 other-
+nodes. In the left, the graph signal is interpreted by both colors and                                wise). This result is prominently due to the root probability of
+numbers. In the middle, a realization of Φq , a forest, is illustrated.
+On this forest, the estimators x̃ and x̄ are illustrated in top-right and                             RSFs given in Eq. (8). Also, the variance of x̃(i) reads:
+bottom right, respectively.                                                                                                              2
+                                                                                                       Var(x̃(i)) = E x̃(i)2 − E [x̃(i)] = δi> Ky(2) − (δi> Ky)2 .
+                                                                                                                             
+
+            P                                                                                         where y (2) (k) = y(k)2 , ∀k ∈ V. Then, the weighted sum
+Qi,i = µ + j∈` w(i, j). Similarly to graph TR, the RSF-
+                                                                                                      reads:
+based estimator for interpolation proposed in this paper draws                                                X
+upon the connection between Eqs. (16) and (10).                                                                    qi Var(x̃(i)) = 1> QKy(2) − y> K> QKy
+                                                                                                              i∈V
+Parameter selection. The solution to graph TR Eq. (13) tends
+                                                                                                      where 1 denotes the all-ones vector. Note that 1> QK =
+to the constant vector (equal to the average of y) as µ → 0,
+                                                                                                      1> K> Q. Moreover, 1 is a left eigenvector of K> with
+and to y for µ → ∞, where it suffers from underfitting and
+                                                                                                      corresponding eigenvalue 1. Then, the first term becomes
+overfitting, respectively. In the interpolation problem, as µ →
+                                                                                                      1> K> Qy(2) = 1> Qy(2) = y> Qy, and, one obtains:
+∞, no prior information gets propagated through the other                                                        X
+vertices, and x̂u tends to the zero vector. The case of µ = 0                                                       qi Var(x̃(i)) = y> (Q − K> QK)y.       (18)
+corresponds to solving the Dirichlet problem [10] which does                                                        i∈V
+not necessarily give the closest inference to the original signal
+x. Due to these reasons, µ needs to be set at a value that
+gives the best approximation to the original signal. In both                                          The second estimator, denoted by x̄, is the expectation of x̃
+problems, choosing µ is a classical hyperparameter selection                                          conditioned on the partition induced by ΦQ :
+problem which can be approached in several ways for the                                                                                       P
+                                                                                                                                                   y(j)qj
+proposed estimators.                                                                                                                                             j∈Vt(i)
+   In the following, we first present the proposed estimators                                                 x̄(i) = E[x̃(i)|π(ΦQ ) = P] =                          P            .   (19)
+                                                                                                                                                                             qj
+for approximating x̂ for a fixed value of µ in Section III-A.                                                                                                      j∈Vt(i)
+Then, we outline in Section III-B several methods that select
+                                                                                                      Due to the law of iterated expectations, this estimator is also
+an appropriate µ automatically. Combining the hyperparameter
+                                                                                                      unbiased, moreover it has a reduced variance compared to x̃(i)
+selection and the RSF based estimators forms an RSF-based
+                                                                                                      due to the law of total variance:
+framework to approximate the solutions of graph Tikhonov
+regularization and graph interpolation.                                                                    Var(x̃(i)) = E[Var(x̃(i)|π(ΦQ ) = P)] + Var(x̄(i))
+
+A. RSF based estimation of x̂ = Ky                                                                    which implies Var(x̃(i)) ≥ Var(x̄(i)). This idea of improving
+                                                                                                      an estimator is often called Rao-Blackwellization [28], [29].
+   We propose two novel Monte Carlo estimators to
+                                                                                                         In practice, we again take a realization of ΦQ and consider
+approximate x̂ = Ky with K = (L + Q)−1 Q. These estimators
+                                                                                                      the corresponding partition π(ΦQ ). Then, we compute the
+leverage the probability distribution of the root process on
+                                                                                                      weighted average of the measurements in each subset of
+RSFs presented in Eq. (8).
+                                                                                                      π(ΦQ ). Then, we finally propagate these averages in each
+The first estimator, denoted by x̃, is defined as follows:                                            subset (see Fig. 5).
+
+                              ∀i ∈ V            x̃(i) = y(rΦQ (i)).                            (17)   Proposition 2. x̄ is an unbiased estimator of x̂:
+
+In practice, a realization of ΦQ is considered. Then, in each                                                                             E[x̄] = x̂
+tree, the measurement of the root is propagated through the                                           Moreover, the weighted expected error reads:
+nodes of the tree. (See top-right in Fig. 5).                                                                          X
+                                                                                                       E ||x̂ − x̄||2Q =    qi Var(x̄(i)) = y> (QK − K> QK)y.
+Proposition 1. x̃ is an unbiased estimator of x̂:
+                                                                                                                                 i∈V
+                                                E [x̃] = x̂.                                                              h
+                                                                                                                              qj I(j∈Vt(i) )
+                                                                                                                                               i
+                                                                                                      Proof. Let S =               P
+                                                                                                                                       qk                be a symmetric random matrix
+Moreover, the weighted expected error of x̃ is:                                                                                k∈Vt(i)
+                                                                                                                                                   i,j
+                  X
+  E ||x̂ − x̃||2Q =    qi Var(x̃(i)) = y> (Q − K> QK)y                                                associated to the random partition π(ΦQ ). A simple matrix
+                                      i∈V
+                                                                                                      product shows that S> QS = QS by definition of S. Moreover,
+                                                                                                                                                  7
+
+
+
+x̄(i) = δi> Sy and the expectation of Si,j over all possible                        All of these methods need to compute a quantity called the
+partitions derived from ΦQ is:                                                   effective number of parameters or the degree of freedom [9],
+                                                                                 which equals tr(K) for linear smoothers of the form Ky.
+                X       qj I(j ∈ Vt(i) )                                         Computing exactly this trace requires the matrix inversion
+E [Si,j ] =                  P           P(π(ΦQ ) = P)                           we wish to avoid from the start. A classical estimator of
+                                  qk
+              P∈π(F )        k∈Vt(i)                                             this quantity is Girard’s estimator [31] (also known as
+                X                                                                Hutchinson’s estimator [32]). We showed in [33] that RSFs
+          =             P(rΦQ (i) = j|π(ΦQ ) = P)P(π(ΦQ ) = P)
+                                                                                 can also be used to efficiently estimate tr(K). In this section,
+              P∈π(F )
+                                                                                 we build upon these preliminary results to show how the
+          = P(rΦQ (i) = j) = Ki,j .                                              SURE and LOOCV methods can be adapted to the proposed
+                                                                        (20)     estimators in order to select a good value of µ. Other methods
+Similarly, the expectation of x̄(i) reads:                                       are adaptable in a similar fashion.
+
+     E[x̄(i)] = E[δi> Sy] = δi> E[S]y = δi> Ky = x̂(i).                 (21)     Stein’s Unbiased Risk Estimator. Given independent noisy
+Thus, x̄ is unbiased. The expected error is also computed in                     measurements y = x +  ∈ Rn with a Gaussian noise
+a similar way:                                                                   i ∼N (0, σ 2 ), let θ(y) be an estimate for the unknown quan-
+                                                                                 tity x. SURE(y, θ(y)) provides an unbiased estimate of the
+                X                                                               expected error E [||θ(y) − x||22 ]. For the linear smoother
+E ||x̂ − x̄||2Q =  qi Var(x̄(i))
+                                                                                 θ(y) = Ky with K = (Q + L)−1 Q, the generic formula of
+                       i∈V
+                       X                                                         SURE in [34] can be adapted as:
+                             qi E[(δi> Sy)2 ] − E[(δi> Sy)]2
+                                                                 
+                   =
+                       i∈V
+                       X                                                           SURE(y, θ(y)) = −nσ 2 + ||y − θ(y)||22 + 2σ 2 tr(K) (23)
+                             y> E qi S> δi δi> S y − qi y> (δi> E[S])2 y
+                                               
+                   =
+                       i∈V                                                       where the degree of freedom term is replaced with tr(K).
+                   = y E S> QS y − y> (E[S]> QE[S])y
+                         >
+                                                                               The theory behind relies on Stein’s lemma on multivariate
+                                                                                 Gaussians [35]. Note that this method requires prior
+                   = y> (E S> QS − K> QK)y.
+                               
+                                                                                 knowledge on the noise variance σ 2 and it outputs an
+                                                                        (22)     unbiased estimation of the error. Then, this error needs to
+Finally, rewriting S> QS = QS, one has:                                          be evaluated for different values of µ and select the value
+                                                                                 yielding the smallest error.
+E ||x̂ − x̄||2Q = y> (E [QS]−K> QK)y = y> (QK−K> QK)y.
+               
+
+                                                                                 SURE for RSF estimators. Similar to x̂, the RSF estimators
+                                                                                 benefit from optimising the value of µ. For this purpose,
+Sample Mean. The sample mean of an unbiased Monte Carlo                          SURE can be used. In the following derivations, we present
+estimator over different realizations has a reduced variance,                    the adapted SURE formula for x̃ and x̄. Moreover, these
+and so, gives a betterP   estimator. Thus, in Pthe rest, we use                  derivations show that numerically computing this formula is
+                           N                     N
+the sample means N1 k=1 x̃Φ(k) and N1 k=1 x̄Φ(k) over                            trivial after sampling N spanning forests.
+                                  Q                     Q                                                                h             i
+N forest realizations as the outputs of the RSF based methods.                      Consider two random matrices S̃ = I(rΦQ (i) = j)         and
+                                                                                        h              i                                 i,j
+                                                                                          q I(j∈V    )
+A remark. Reducing these results to the constant q case (Q =                     S̄ = j P t(i)    qk     (previously defined as S in the proof
+                                                                                                     i,j
+qI), one recovers the preliminary results presented in [25].                             k∈Vt(i)
+
+                                                                                 of Prop. 2). With these definitions, notice that x̃ = S̃y and
+B. Parameter selection for the RSF estimators                                    x̄ = S̄y . Moreover, the proposed estimators can be written in
+                                                                                 the form of linear smoothers:
+   The proposed estimators are efficient tools to approximate x̂
+in both graph TR and interpolation problems for a fixed value                                          1 X
+                                                                                                           N
+                                                                                                                    1 X (k)
+                                                                                                                              N
+of µ. However, as usual in these problems, a difficult question                              θ̃(y) =       x̃Φ(k) =    S̃ y,
+                                                                                                       N      Q     N
+is the tuning of the hyper-parameter: the choice of µ that yields                                          k=1                k=1
+                                                                                                                                               (24)
+the best performance. For linear smoothers such as the one                                                  N                  N
+                                                                                                     1     X              1   X
+                                                                                                                                     (k)
+we have at hand (x̂ = Ky), many methods such as Akaike                                       θ̄(y) =             x̄Φ(k) =           S̄     y
+                                                                                                     N              Q     N
+information criterion (AIC), Bayesian information criterion                                                k=1                k=1
+
+(BIC), Marlow’s Cp, leave-one-out cross validation (LOOCV),
+                                                                                 where superscript (k) denotes k-th realization of S̃ or S̄.
+generalized cross validation (GCV) or Stein’s unbiased risk
+estimator (SURE) are readily available4 for this tuning step                       Then, one can also evaluate the formula in Eq. (23) for θ̃(y)
+(for more details and motivations, we refer the reader to [9]).                  and θ̄(y). For instance, we get for θ̃(y):
+                                                                                                                                      N
+                                                                                                                                               !
+  4 Note that the theoretical framework used to justify these various criteria
+                                                                                                         2             2    2      1 X (k)
+does not directly apply to graphs, because large-n asymptotics are not imme-     SURE(y, θ̃(y)) = −nσ +||y−θ̃(y)||2 +2σ tr                S̃      .
+diately well-defined in graphs. One may appeal to random graph assumptions,                                                       N
+                                                                                                                                     k=1
+as in [30], but a detailed argument is beyond the scope of this paper.                                                                       (25)
+                                                                                                                                       8
+
+
+
+The residual error is trivial to compute after sampling N            sampling N spanning forests. Thus, this score can be easily
+spanning forests. Moreover, this is also the case for the degree     computed for both estimators.
+of freedom term. A closer look at the trace shows:
+                                                                        IV. RSF ESTIMATORS FOR OTHER GRAPH PROBLEMS
+          N
+                  !            N
+                                       !         N
+       1 X (k)             1 X (k)            1 X         (k)
+  tr         S̃     = tr           S̄     =         |ρ(ΦQ )|.          In this section, we explore a few graph problems in which
+       N                   N                 N
+         k=1                   k=1                   k=1
+                                                                     the RSF based estimators presented can replace expensive
+This result yields that the trace term can be replaced with the      exact computations.
+average number of roots in the computation of SURE(y, θ̃(y))
+or SURE(y, θ̄(y)). Thus, the SURE scores of both estimators
+                                                                     A. Node Classification in semi-supervised learning
+are trivial to numerically compute after sampling N spanning
+forests.                                                                Consider a dataset consisting of elements one wishes to
+   Note that neither SURE(y, θ̃(y)) nor SURE(y, θ̄(y)) is an         classify. In the semi-supervised learning context, the class
+unbiased estimator for SURE(y, θ(y)). Moreover, the estima-          label of a few elements are supposed to be known a priori,
+tion errors read:                                                    along with a graph structure encoding some measure of affinity
+   h                i                      X                         between the different elements: the larger the weight of the
+ E SURE(y, θ̃(y)) − SURE(y, θ(y)) =            Var(θ̃(y)i ) ≥ 0,     edge connecting two elements, the closer they are according
+                                               i∈V                   to some application-dependent metric, the more likely these
+                                 X
+E SURE(y, θ̄(y)) − SURE(y, θ(y)) =   Var(θ̄(y)i ) ≥ 0.               two elements belong to the same class. The goal is then to
+                                               i∈V                   infer all the labels given this prior information.
+                                                             (26)       Among many options to solve this problem, label
+                                                                     propagation [5], [36] and generalized SSL framework [12]
+Thus, SURE(y, θ̃(y)) and SURE(y, θ̄(y)) are (with high
+                                                                     are two well-known baseline approaches. In this section, we
+probability) upper-bounds for SURE(y, θ(y)). For large
+                                                                     deploy x̃ and x̄ to approximate the solutions given by these
+graphs, in which computing SURE(y, θ(y)) is prohibitive,
+                                                                     approaches.
+these upper bounds might also be useful since they can be
+obtained cheaply.
+                                                                     Problem definition. Let us denote the labeled vertices by
+                                                                     ` ⊂ V (typically |`|  |V|) and the unlabeled ones by
+Leave-One-Out cross validation. LOOCV is a simple and
+                                                                     u = V\`. Assume C distinct label classes and define the
+popular method for hyperparameter selection. Unlike SURE,
+                                                                     following encoding of the prior knowledge for the c-th class:
+it does not require for the noise variance to be known. Keeping                        (
+the same notation as above, LOOCV is defined as: (See                                   1 if i is known to belong to the c-th class
+Chapter 5.5 in [9]):                                                 ∀i ∈ V, yc (i) =
+                                                                                        0 otherwise.
+                                 1 X −i                                                                                         (29)
+         LOOCV(y` , θ(y` )) =          (θ (y` )i − yi )2
+                                |`|                                  The matrix Y = [y1 | . . . |yC ] ∈ Rn×C thus encodes the prior
+                                     i∈`
+                                                                     knowledge. Many approaches to SSL formulate the problem
+where θ−i (y` ) is the estimation without using the i-th mea-        as follows. First, for each class c, compute the so-called
+surement.                                                            “classification function”, defined as:
+   This method leaves yi out at the estimation stage, and                                  X
+calculates the corresponding prediction error. The overall score           fc = argmin µ        qi0 (yc (i) − zc (i))2 + z>
+                                                                                                                          c Lzc (30)
+                                                                                 zc ∈Rn
+                                                                                             i∈V
+is the average error over the vertices in `. Note that this
+method needs to compute θ−i (y` ) for each individual i which        where µ and    qi0 ’sare regularization parameters: µ sets the
+in general costs n times the cost of the original estimator on the   global regularization level, and each qi0 acts entry-wise (when
+full data. Fortunately, this formula simplifies to the following     qi0 is high, the corresponding entry in fc is close to the mea-
+for linear estimators in the form of θ(y) = Ky [9]:                  surement yc (i)). Eq. (30) has the following explicit solution:
+                                                      2
+                                                                                             fc = (L + Q)−1 Q yc
+                                       
+                                 1 X θ(y` )i − yi                                                                                  (31)
+         LOOCV(y` , θ(y)) =                                   (27)
+                                |`|         1 − Ki,i
+                                   i∈`                               where Q = diag(q1 , . . . , qn ) and qi = µqi0 . Thus, each
+which avoids re-computation.                                         classification function fc can be viewed as a smoothed version
+                                                                     of the prior knowledge encoded in yc . As such, if fc (i) is large,
+LOOCV for RSF estimators. Similar to SURE, this score                it implies that labels of class c are relatively dense around node
+can be adapted for the RSF based estimators. For example, in         i. The last step in these SSL algorithms is to assign each node
+case of θ̃(x` ), it becomes:                                         i to the class argmaxc fc (i).
+                                                      !2                 Label propagation and generalized SSL framework are
+                           1 X      θ̃(y` )i − yi                    two algorithms that adapt this solution in different ways.
+   LOOCV(y` , θ̃(y` )) =                          (k)
+                                                         (28)        In particular, by using different set of qi0 ’s in Eq. (30),
+                          |`|
+                                        PN
+                             i∈`1− 1       N    S̃
+                                                 k=1   i,i
+                                                                     label propagation corresponds to solving graph interpolation
+and for θ̄, it can be derived in the same way. Notice that           and the generalized SSL framework may be understood
+every element in this expression is numerically available after      as solving a graph TR. Thus, the RSF estimators can be
+                                                                                                                                         9
+
+
+
+used to approximate the solution for both algorithms. In the          the sampled random trees. In addition, the estimator x̄ boils
+following, we discuss the corresponding parameter settings            down to x̃ in this very specific case.
+for these algorithms along with their RSF versions.
+                                                                      Generalized SSL framework. The generalized SSL frame-
+Label Propagation. The label propagation algorithm [5], [36]          work proposed in [12] defines the classification function as
+solves the Dirichlet problem for each class c, that is:               follows:
+                                                                                                                 −1
+                       ∀i ∈ V, Lfc (i) = 0                                           µ           2    −η     η−1
+                                                              (32)             fc =        I−        D WD              yc
+                  s. t. ∀i ∈ `,   fc (i) = yc (i)                                   µ+2       µ+2
+which is equivalent to Eq. (14) for µ = 0. Defining the               where µ > 0 is the regularization parameter and η controls the
+classification matrix F = [f1 | . . . |fC ] ∈ Rn×C , one thus has:    normalization of the graph Laplacian. This formula can also
+              (                                                       be written as:
+                Yi,c ,                         if i ∈ `
+      Fi,c =                                                   (33)            fc = D1−η KDη−1 yc with K = (L + Q)−1 Q
+                (−(Lu|u )−1 Lu|` Y`|: )i,c , otherwise
+where Y`|: is the matrix Y restricted to rows in `. Note in           where Q = µ2 D. Notice that the cumbersome part in this
+passing that F corresponds to a special set of functions for          formula is to compute KDη−1 yc and it can be approximated
+graphs called harmonic functions. Besides being the solution          by the proposed estimators on the input vector y = Dη−1 yc .
+of Dirichlet boundary problem, they have interesting connec-          Then, fc is obtained by left-multiplying the result by D1−η .
+tions with electrical networks and random walks [36].
+   Zhu [36] provide a simple algorithm to compute F without             Both solutions, label propagation and the generalized SSL,
+computing the inverse matrix. Starting from an arbitrary initial      can be considered as two different versions of a more generic
+F(0) , at each iteration k, the algorithm updates F(k) ←              optimization problem. Label propagation puts a very high
+D−1 WF(k−1) . The iteration is completed by setting the known         confidence on the prior. x̃, for example, only propagates
+         (k)
+labels F`|: to Y`|: . They prove that the output of this iteration    the measurements of the labeled vertices (from the second
+converges to F as k → ∞ (see Section 2.3 in [36]).                    scenario’s perspective). Whereas, in generalized SSL, lower
+   Here, we provide an RSF-based estimator to approximate             confidence over the prior information is assumed, and thus,
+F. Two scenarii are possible. The first (unlikely) scenario is        the propagation of other measurements, which are all set
+when any node in u is connected to at least one node in `. In         to 0 in this encoding, is authorized. The success of both
+this case, one can rewrite Eq. (33) as:                               methods depends on the correctness of these assumptions
+                                                                      on the data. Section V provides empirical comparisons on
+     F = −K Q−1 Lu|` Y      with K = (LG\` + Q)−1 Q           (34)    benchmark datasets.
+where LG\` is the Laplacian of the reduced graph obtained
+by removing the vertices (and the incident P       edges) in `,       B. Non-quadratic convex functions and Newton’s method
+Q ∈ R|u|×|u| is a diagonal matrix with Qi,i = j∈` w(i, j).              Consider the following generalized optimization problem:
+The condition of this first scenario ensures that Q is indeed
+                                                                                                            1
+invertible; and RSFs on the reduced graph G \ ` can thus                                x̂ = argmin µf (z) + z> Lz                   (35)
+estimate the columns of F.                                                                    z∈R n         2
+   However, when there exists at least one node in u that is not      where f : Rn → R is a generic twice-differentiable function
+connected to `, Q is no longer invertible and another approach        (e.g. previously f (z) = ||y − z||22 ). A common
+                                                                                                                    Pn scenario is
+                                                                                                                       i=1 log p(yi |zi ).
+is needed. In this second scenario, the parameters are defined        when f is a log-likelihood, i.e. f (z) =
+over all vertices and set to qi = α > 0 for i ∈ ` and qi = 0 for      This is used when the assumption that the observations are
+i ∈ u. The following proposition guarantees that as α → ∞,            Gaussian (given the signal) is inappropriate, for instance when
+the RSF estimator x̃ with this setting approximates the solution      the observations are discrete. In such cases f is not a quadratic
+given in Eq (33).                                                     function and there is typically no closed-form solution for 35.
+                                                                         In these cases, iterative approaches are often deployed.
+Proposition 3. Given the parameters qi = α > 0 for i ∈ `
+                                                                      One popular approach among them is Newton’s method. Let
+and qi = 0 for i ∈ u, as well as the input vector yc ∈ Rn for
+                                                                      L(z) denote the loss function, Newton’s method follows the
+the RSF estimator x̃, the following is verified:
+                                                                      following iteration scheme:
+                         lim E [x̃] = fc .
+                        α→∞                                             zk+1 = zk − α(HL(zk ))−1 ∇L(zk ) with α ∈ [0, 1],            (36)
+Proof. See the supplementary material for the detailed proof.
+                                                                      H and ∇ are the Hessian and gradient operators, respectively
+                                                                      and zk denotes the estimation at iteration k. Note that, by
+   From the random forest point-of-view, setting qi to infinity       definition of the Hessian operator, this method requires twice-
+for all nodes i in `, and to 0 otherwise, implies that all            differentiability for the loss function.
+possible realizations of ΦQ have exactly the same root set: `.           Given this scheme, the methods proposed here may become
+Thus, when using the estimator x̃, the measurements in ` are          useful for approximating the inversion at each iteration. We
+not altered and are simply propagated to other vertices via           illustrate this usage in the following setup.
+                                                                                                                                  10
+
+
+
+   Assume an independent Poisson distribution for each like-         P B is 1/2
+                                                                    where        the edge incidence matrix and ||Bz||1 =
+lihood at i:                                                              w(i, j) |zi − zj |. In contrast to the l2 regularization,
+                                                                    (i,j)∈E
+                                    ziyi exp(−zi )                  a closed form solution for the l1 case is not available and
+                P (yi |λ = zi ) =
+                                          yi !                      iterative optimization schemes are again used to find the
+where λ is the distribution parameter. This assumption is           solution. The iterative reweighted least square [14] (IRLS)
+often made in image processing applications to eliminate shot       method is one such option and we show here how our RSF
+noise [37]. Also, consider the slightly modified loss function:     based estimators can help compute its numerical bottleneck.
+                  n
+                                                                       Let M = diag(abs(Bz))−1 where abs is the entry-wise
+                  X                             1                   absolute value operator. Note that
+    L0 (t) = −µ       log P (yi |λ = exp(ti )) + t> Lt       (37)
+                  i=1
+                                                2
+                                                                                ||Bz||1 = abs(z> B> )1 = z> B> MBz
+where exp(ti ) = zi . The gradient ∇L0 (t) reads:
+                                                                    where 1 ∈ Rm is the all-ones vector. The problem of Eq. (38)
+                ∇L0 (t) = µ exp(t) − µy + Lt                        can thus be re-written as:
+where exp operates entry-wise on vectors. Then, the Hessian                    x̂ = argmin µ||y − z||22 + z> B> MBz,           (39)
+matrix becomes:                                                                       z∈Rn
+
+                HL0 (t) = µ diag(exp(t)) + L.                       and the IRLS iterative loop reads:
+
+With these two ingredients, the iterative scheme becomes:           zk+1 = (2µI+B> Mk B)−1 µ y with Mk = diag(abs(Bzk ))−1 .
+
+tk+1 = tk −α [µ diag(exp(tk )) + L]
+                                        −1
+                                             (µ exp(tk )−µy+Ltk )   A more detailed derivation and the convergence analysis of
+                                                                    this scheme can be found in [14]. Notice that, by definition,
+The update term, which requires an inverse operation, can be        B> Mk B equals to a reweighted graph Laplacian Lk . Then,
+approximated by our RSF estimators. This approximation is           computing the update at each iteration step immediately re-
+achieved by setting Q = µ diag(exp(tk )) and the graph mea-         duces to solving a graph Tikhonov regularization. Thus, x̃ or x̄
+surements y0 to µ−1 diag(exp(−tk ))(µ exp(tk ) − µy + Ltk ).        can be used for estimating the update. See the supplementary
+This particular case yields the following computation:              materials for an illustration.
+  Ky0 = (Q + L)−1 Qy0
+                                                                                          V. E XPERIMENTS
+       = [µ diag(exp(tk )) + L]−1 (µ exp(tk ) − µy + Ltk )
+                                                                       We provide in this section several illustrations and run time
+which equals to the update in Newton’s method. Thus, the            analysis of the proposed methods. First of all, in Section V-A,
+RSF estimators can be easily used to compute each update            the RSF based methods are run on two image denoising setups.
+step with a cheap cost.                                             In these, we consider
+   In the classical Newton’s method i.e. α = 1, convergence
+                                                                       • An image corrupted by an additive Gaussian noise, for
+of the result is not guaranteed. It might diverge or get stuck
+                                                                         which we show its RSF-based Tikhonov regularization
+in a loop depending on the closeness of the initial point t0 to
+                                                                         parameterized by SURE.
+the solution. Guessing a good initial point is not an easy task
+                                                                       • An image corrupted by a Poisson noise, for which we
+and may require expensive computations in high dimensions.
+                                                                         show its version denoised by the RSF-based Newton’s
+Instead, modifying α is a more applicable option to ensure
+                                                                         method coupled with line search.
+convergence. Thus, Newton’s method is often combined with
+an additional step at each iteration in which α is reset            In both setups, the underlying graph is assumed to be a 2-
+accordingly. Line search algorithms [13] are simple and well-       dimensional (2D) grid graph. We stress that these illustrations’
+understood methods for this purpose. At each iteration, if          main purpose is not to compete with the state-of-the-art image
+needed, they damp the applied update by shrinking α. These          denoising methods but to provide visual examples for the
+methods provide convergence, however, they may require more         proposed methods. Denoising performance can be improved
+iteration steps w.r.t. the pure Newton’s method with a good         in many ways, but it is not our goal here.
+initial point. In our case, the updates are stochastic and exact       Secondly, in Section V-B, the SSL node classification prob-
+convergence cannot be expected.                                     lem is considered on three benchmark datasets. We examine
+                                                                    the classification performances of Tikhonov regularization,
+                                                                    label propagation and the RSF versions of these algorithms.
+C. l1 -Regularization and iteratively reweighted least squares      In these experiments, the parameter selection for the Tikhonov
+   As with the data fidelity term, many alternatives for the        regularization is done by leave-one-out cross validation sepa-
+regularization term are also available. Among them, l1 -            rately for each method.
+regularization [38] is often deployed to obtain sparser solu-          Finally, in Section V-C, we compare RSF estimators with
+tions. In [39], Sharpnack et al. adapts l1 -regularization for      the state-of-the-art methods, i.e. Chebyshev polynomials and
+graphs as follows:                                                  conjugate gradient method with and without preconditioning,
+                                                                    in various graphs. Given a denoising setup, error vs. runtime
+              x̂ = argmin µ||y − z||22 + ||Bz||1             (38)   plots are shown for all these algorithms.
+                     z∈Rn
+                                                                                                                                                          11
+
+
+
+
+                                                                                                                             90
+                                                                                                                             85         SURE with x
+                                                                                                                             80
+                                                                                                                                        SURE with x
+                                                                                                                                        SURE with x
+
+
+
+
+                                                                                                               SURE Scores
+                                                                                                                             75
+                                                                                                                             70
+                                                                                                                             65
+                                                                                                                             60
+                                                                                                                             55
+                                                                                                                             50
+                                                                                                                                    1     2    3      4   5
+                                                                                                                                         Parameter
+    (a) Original Image x           (b) Noisy Measurments y,           (c) Exact solution x̂, PSNR =                               (d) SURE scores vs µ
+                                   PSNR = 14.0                        19.2
+
+
+
+
+(e) x̃ with N = 1, PSNR=12.2       (f) x̄ with N = 1, PSNR=16.1        (g) x̃ with N = 20, PSNR =                (h) x̄ with N = 20, PSNR =
+                                                                       18.3                                      18.9
+Fig. 6: An image denoising experiment with additive Gaussian noise. a) the original image. b) a noisy version y = x +  with
+∼N (0, σ) with σ = 0.2. c) the exact solution x̂ = Ky. Figure d) summarizes the SURE scores of x̂, x̃ and x̄ for different µ’s where
+µ ∈ {0.5, 1.0, 1.5, . . . 5.0}. For each estimator, the value of µ that minimizes the SURE score is selected. For the computation of SURE
+scores, the noise variance is assumed to be known. e-f) the two RSF estimates x̃ and x̄ based on only one sampled forest. g-h) same as e-f)
+but averaged over N = 20 sampled forests. Given the initial noisy image with PSNR= 14.0, the exact solution produces a denoised image
+with PSNR= 19.2 where the RSF estimates x̃ and x̄ closely follows with PSNR=18.3 and 18.9, respectively.
+
+
+A. Image denoising                                                     value of the pixel:
+                                                                                                    y∼Poisson(x).
+   A 2D grid graph is a natural underlying structure for images:
+every pixel corresponds to a node and each pixel is connected          To reconstruct x, Newton’s method is applied, as explained in
+to its four direct neighbors with equal weights. Other structures      Section IV-B. The line search algorithm is used for picking
+could be used (such as an 8-neighbour version of the grid              the value of α at each iteration to ensure convergence. Both
+graph) and performances will depend on the chosen structure.           qualitative and quantitative results in Fig. 7 show that both x̂
+However, for the purpose of illustration, we will only consider        and x̄ converge to the same solution. Fig. 7c shows a similar
+the simplest 4-neighbour grid graph.                                   decrease of the loss function for both x̂ and x̄, even though
+   In the first setup, noisy (with additive Gaussian noise)            convergence is slightly faster for x̂.
+measurements y of the original image x are given:
+                                                                       B. Node classification
+                  y = x +  with ∼N (0, σ 2 I).                          In this illustration, we run our methods to solve the node
+                                                                       classification problem discussed in Section IV-A. For the
+To recover x, Tikhonov regularization is applied. Fig. 6
+                                                                       generalized SSL framework, η is set to 0, and µ is set by
+compares the exact result x̂ = Ky = (L + µI)−1 µy, to its
+                                                                       RSF based cross-validation.
+forest-based approximations x̃ and x̄. The SURE method to
+                                                                          The experiments are done on three standard benchmark
+estimate the best value of µ is also illustrated for all three
+                                                                       datasets, namely Cora , Citeseer and Pubmed 5 . In the first two,
+estimations of the original image x (and we remark in passing
+                                                                       the underlying graphs are disconnected, thus we use the largest
+that they are consistent). The results confirm that x̄ produces
+                                                                       connected components. Also, in all datasets, the orientations
+a better estimate for x̂ than x̃. Also, in Fig. 6d, the scores
+                                                                       of the edges are omitted to operate on undirected graphs. The
+computed for the RSF estimators are observed as upper bounds
+                                                                       general statistics of these datasets after the preprocessing are
+of the scores for x̂, as expected from the results in Eq (26). As
+                                                                       summarized in Table I. Note that in these three datasets, the
+observed in this illustration, and as expected by our theoretical
+                                                                       class of each node is known. This will enable us to test the
+analysis, x̄ always performs better than x̃. In the following
+                                                                       different SSL frameworks (a small arbitrary fraction of nodes
+experiments and in order to avoid overloading the figures, we
+                                                                       will serve as pre-labeled nodes, and one tests whether or not
+will omit the results obtained with x̃.
+                                                                       this is sufficient to infer the class of all nodes). More precisely,
+   In the second setup, each pixel value is assumed to be
+sampled from a Poisson distribution whose mean is the true               5 These datasets can be found in https://linqs.soe.ucsc.edu/data .
+                                                                                                                                                                         12
+
+
+
+
+                                                                                                      1.0     Generalized SSL            1.0     Label Propagation
+                                                                              Updates with x
+                                                             7 × 103
+                                                                              Updates with x
+                                                                                                      0.8                                0.8
+
+
+
+
+                                             Loss Function
+                                                             6 × 103
+
+
+
+
+                                                                                               Accuracy
+                                                                                                      0.6                                0.6
+
+
+
+
+                                                                                               Citeseer
+                                                             5 × 103
+
+
+
+
+                                                                       100           101
+                                                                             Iterations
+                                                                                                      0.4                                0.4
+  (a) Original image x   (b) Noisy image y, (c) Loss function through
+                                                                                                      0.2                                0.2
+                         PSNR=17.1          iterations
+                                                                                                      0.020   22   24       26   28   30 0.020   22   24       26   28   30
+                                                                                                                        m                                  m
+                                                                                                      1.0                                1.0
+
+                                                                                                      0.8                                0.8
+
+
+
+
+                                                                                               Accuracy
+                                                                                                      0.6                                0.6
+
+
+
+
+                                                                                                 Cora
+          (d) Denoised image             (e) Denoised image
+          with x̂, PSNR=22.8             with x̄ with N = 40,                                         0.4                                0.4
+                                         PSNR=22.8
+                                                                                                      0.2                                0.2
+Fig. 7: An image denoising experiment with Poisson noise. a) original
+image x. b) a noisy version y∼Poisson(x). Newton’s method is                                          0.020
+deployed to recover x by minimizing the loss function in 37. For                                              22   24       26   28   30 0.020   22   24       26   28   30
+two update options, namely x̂ and x̄, Newton’s method yields the                                                        m                                  m
+results shown on the bottom line. Figure c) shows the loss function
+                                                                                                      1.0                                1.0
+through the iterations for the two update options.
+                                                                                                      0.8                                0.8
+        TABLE I: SSL dataset statistics after preprocessing
+                                                                                               Accuracy
+
+                                                                                                      0.6                                0.6
+                                                                                               Pubmed
+
+
+              Dataset     #Nodes    #Edges              #Classes
+              Citeseer      2110     3668                  6                                          0.4                                0.4
+               Cora        2485      5069                  7
+              Pubmed       19717    44324                  3                                          0.2                                0.2
+
+                                                                                                      0.020   22   24       26   28   30 0.020   22   24       26   28   30
+we use the following procedure:                                                                                         m                                  m
+   • m vertices are selected at random per class as the labeled
+      nodes,
+   • the parameter µ is set by LOOCV separately for x̂ and
+                                                                                               Fig. 8: The classification accuracy of the generalized SSL, LP and
+      x̄,                                                                                      their RSF variants are presented on the datasets Citeseer, Cora and
+   • the classification functions fc for each class c are com-                                 Pubmed. The RSF methods for the generalized SSL are illustrated
+      puted by the generalized SSL framework, label propaga-                                   for N = 50, 500 forest realizations, whereas, these numbers for LP
+      tion and their RSF versions averaged over N repetitions,                                 are N = 5, 50. In these plots, the random classifier denotes the
+                                                                                               accuracy of inferring classes at random and the constant classifier is
+   • for each vertex i, we assign argmaxc Fi,c as its class and
+                                                                                               the accuracy of assigning the most occurring class to all unlabeled
+      calculate the classification accuracy as the ratio of cor-                               vertices. The results for Citeseer, Cora and Pubmed datasets are
+      rectly predicted labels to the total number of predictions.                              averaged over respectively 50 different set of labeled vertices.
+   In Fig. 8, the classification accuracy is reported as m and
+N vary. The results are averaged over 50 realizations of the
+m labeled vertices for all datasets.                                                           Note that these figures strongly depend on m and the given
+   For the first two datasets, Cora and Citeseer, x̄ has a                                     network. Thus, one needs to examine this trade-off with the
+comparable performance with the exact solution. However, in                                    given dataset to adjust the total run time.
+Pubmed, x̄ fails to perform as good as the x̂ for gSSL due
+to larger approximation errors in both the parameter selection
+and the estimation steps.                                                                      C. Run-time analysis
+   The empirical results yield that the proposed methods need
+much less forest realizations to reach the exact solution of                                     In this section, we present an empirical comparison of
+LP rather than the generalized SSL. However, sampling a                                        the proposed estimators with classical approaches, namely
+forest for LP often takes more time if n is large and m                                        Chebyshev polynomial approximation [16], and the conjugate
+is relatively small. For example, in the Pubmed graph, for                                     gradient (CG) method (with and without preconditioning) [15].
+m = 20, sampling a single forest for LP (resp. the generalized                                 We run these algorithms on various graphs and graph signals
+SSL) takes 6.3 × 10−2 (resp. 1.4 × 10−3 ) seconds averaged                                     and report curves of performance versus run-time.
+over 100 repetitions in a single threaded run time of a laptop.
+                                                                                                                                                        13
+
+
+
+   1) Experimental setup: In these experiments, we compute              in the experiments.
+the result of the following graph smoothing operation via
+several methods:                                                        Experimental procedure. For a given graph, we follow this
+                                                                        simple procedure:
+                x̂ = Ky with K = (Q + L)−1 Q                    (40)
+                                                                          1) Generate y as described earlier.
+where Q is set to qI for the sake of simplicity in parameter              2) Find the value of q that minimizes ||x − x̂|| by a grid
+tuning. Given a graph, the vector y is assumed to contain noisy              search.
+measurements of a k-bandlimited signal x [40], [41]. The term             3) Run the algorithms and measure the run-time, approxi-
+“bandlimited” means that the signal belongs to a particular                  mation error and reconstruction error.
+subspace of harmonic functions and is defined more precisely            This procedure is repeated for different runs of the algorithms
+below. The parameter q is set to the value maximizing the               and realizations of y, and the results are averaged. All simula-
+denoising performance. In the following, these steps are further        tions are done in a single thread of a laptop. Fig. 9 summarizes
+detailed.                                                               the results.
+
+Graph signal generation. Consider L = U> ΛU, the eigende-                  2) Results: The algorithms compared are: the RSF based
+composition of L with the eigenvectors U = (u1 |u2 | . . . |un )        estimators, Chebyshev polynomial approximation, conjugate
+and eigenvalues λ1 = 0 ≤ λ2 ≤ . . . ≤ λn forming                        gradient method with and without preconditioning6 . The
+Λ = diag(λ1 , λ2 , . . . , λn ). In GSP, U = (u1 |u2 | . . . |un ) is   preconditioner for CG is the Algebraic Multigrid (AMG)7
+considered to be a Fourier basis for graph signals, and the λi ’s       method [46]. All of these algorithms admit an iteration pa-
+are interpreted as generalized graph frequencies. For more on           rameter determining their performance: the larger this iteration
+graph Fourier bases, we refer the reader to [2], [42]. In our           parameter, the better the approximation but the longer the
+experiments, we consider the denoising of a noisy version y             computation time. These parameters are:
+of a bandlimited signal x defined as:                                     1) The number of forests for x̄
+   • x is a k-bandlimited signal, i.e.:                                   2) The polynomial’s degree in Chebyshev approximation
+                                   k
+                                                                          3) The number of iterations for CG and preconditioned CG
+                                   X                                          (PCG).
+                             x=          αi ui
+                                   i=1                                  For each algorithm and each graph, this iteration parameter is
+                                                                        swept through 17 logarithmically spaced values between 1 and
+     where the αi ’s are the graph Fourier coefficients of x. In
+                                                                        100: {1, 2, . . . , 62, 78, 100}, corresponding to the 17 plotted
+     other words, x is a low frequency graph signal, and is
+                                                                        markers forming each curve. In each curve, the marker at the
+     thus smooth on the given graph.
+                                                           2            top left-hand corner thus corresponds to 1 iteration, whereas
+   • The noise is Gaussian: y = x +  with i ∼ N (0, σ ).
+                                                                        the marker at the bottom right-hand corner corresponds to 100
+In the simulations, we randomly generate different realizations         iterations. The samples for error and time measurements are
+of y as follows:                                                        collected from separate runs. The error results are averaged
+  1) Sample k = 5 Fourier coefficients αi ’s from a Gaussian            over 20 realizations of y. The time measurements are averaged
+     distribution N (0, 1) and obtain a realization of x.               over 100 runs for each realization of y. For the graphs
+  2) Normalize it to unit norm i.e. ||x||2 = 1.                         generated from random graph models, such as Erdos-Renyi
+  3) Draw n iid values from N (0, σ 2 ) to create the noise             or Barabasi-Albert, only a single realization of the graph is
+     vector . To obtain a given signal-to-noise ratio (the             used in these results.
+     SNR is fixed to 2), the variance of the noise is set to               PCG and Chebyshev polynomial approximation are two
+     σ 2 = (n × SNR)−1 = 1/2n.                                          algorithms that require some preprocessing. In PCG, this
+  4) Pass the noisy signal y = x +  to the algorithms.                 preprocessing is simply the calculation of the preconditioner.
+                                                                        In the polynomial approximation method, one needs to provide
+Performance metrics. Let x∗ be the generic output of the                the spectrum interval [0, b] over which the approximation
+tested algorithms. In the experiments, we measure their per-            should be computed (the interval starts at 0 since the smallest
+formance with respect to two metrics. The first one is the              eigenvalue of L is necessarily null). For the polynomial ap-
+approximation error ||x̂ − x∗ ||2 which evaluates the quality of        proximation to work, b should be an upper bound of λn , L’s
+the approximation to x̂ = Ky achieved by the algorithms. The            largest eigenvalue. A popular option8 in the GSP literature,
+second is the reconstruction error ||x − x∗ ||2 which measures             6 Julia implementation in https://julialinearalgebra.github.io/IterativeSolvers.
+the denoising performance of the output.                                jl/dev/
+                                                                           7 Julia    implementation       in      https://github.com/JuliaLinearAlgebra/
+Parameter tuning. The parameter q is always set to the value            AlgebraicMultigrid.jl. The package’s default parameters are used.
+                                                                           8 Another option is to set b to the trivial upper bound equal to 2d
+                                                                                                                                                      max
+yielding the best denoising performance (that is, to the value          where dmax is the largest degree (this upper bound is easily obtained via
+of q minimizing ||x − x̂||2 ).                                          Gershgorin’s circle theorem). The preprocessing cost is in this case null
+                                                                        but this upper bound has the drawback of being very crude for some
+                                                                        graphs: a good polynomial approximation constrained on such a large interval
+Graphs. We experimented on many graphs with varying                     will require an unnecessarily large polynomial order –inducing a longer
+structures and density. Table II summarizes all graphs used             computation time.
+                                                                                                                                                                                                                                                                                                                                           14
+
+
+
+
+                                                                          Grid Graph                                                                                                                                                 Barabasi-Albert Graph
+                                                                                                                                                                                            100
+                         10 1
+                                                                                                                                                                                           10 2
+
+
+
+                                                                                 Reconstruction error
+
+
+
+
+                                                                                                                                                                                                                                                      Reconstruction error
+  Approximation error
+
+
+
+
+                                                                                                                                                                    Approximation error
+                                                                                                        6 × 10 1
+                         10 3                                                                                                                                                              10 4
+                         10 5                                                                           4 × 10 1
+                                                                                                                                                                                           10 6                                                                              6 × 10 1
+                         10 7                                                                           3 × 10 1
+                                                                                                                                                                                           10 8
+                         10 9                                                                           2 × 10 1                                                                          10 10
+                        10 11                                                                                                                                                             10 12
+                                                                                                                                                                                                                                                                             4 × 10 1
+                        10 13                                                                                                                                                             10 14
+                                          10 3            10 2            10 1                                               10 3            10 2            10 1                                        10 3        10 2          10 1                                                        10 3        10 2          10 1
+                                                 Time (s)                                                                           Time (s)                                                                        Time (s)                                                                             Time (s)
+
+                                                                   Erdos-Renyi Graph                                                                                                                                                        K-regular Graph
+                          100                                                                           7 × 10 1                                                                            100                                                                              7 × 10 1
+                         10 2                                                                                                                                                              10 2
+
+
+
+
+                                                                                                                                                                                                                                                      Reconstruction error
+                                                                                 Reconstruction error
+
+
+
+
+                                                                                                                                                                    Approximation error
+  Approximation error
+
+
+
+
+                         10 4                                                                           6 × 10 1                                                                           10 4
+                                                                                                                                                                                                                                                                             6 × 10 1
+                         10 6                                                                                                                                                              10 6
+                         10 8                                                                           5 × 10 1                                                                           10 8
+                        10 10                                                                                                                                                             10 10
+                                                                                                                                                                                                                                                                             5 × 10 1
+                        10 12                                                                                                                                                             10 12
+                                                                                                        4 × 10 1
+                        10 14                                                                                                                                                             10 14
+                                   10 3          10 2       10 1          100                                         10 3          10 2       10 1          100                                         10 3      10 2       10 1           100                                               10 3      10 2       10 1          100
+                                                 Time (s)                                                                           Time (s)                                                                        Time (s)                                                                             Time (s)
+
+                                                                    Euclidean Graph                                                                                                                                                          Bunny Graph
+                          100
+                                                                                                                                                                                          10 1                                                                               6 × 10 1
+                         10 2
+                                                                                 Reconstruction error
+
+
+
+
+                                                                                                                                                                                                                                                      Reconstruction error
+  Approximation error
+
+
+
+
+                                                                                                                                                                    Approximation error
+
+
+
+
+                                                                                                        6 × 10 1                                                                           10 3
+                         10 4                                                                                                                                                              10 5
+                                                                                                        4 × 10 1                                                                                                                                                             4 × 10 1
+                         10 6                                                                                                                                                              10 7
+                         10 8                                                                           3 × 10 1                                                                           10 9                                                                              3 × 10 1
+                        10 10                                                                                                                                                             10 11
+                                                                                                        2 × 10 1
+                        10 12                                                                                                                                                             10 13                                                                              2 × 10 1
+                        10 14                                                                                                                                                             10 15
+                                   10 3            10 2            10 1                                               10 3            10 2            10 1                                                  10 3            10 2               10 1                                               10 3            10 2              10 1
+                                                 Time (s)                                                                           Time (s)                                                                       Time (s)                                                                              Time (s)
+
+                                                                          Cora Graph                                                                                                                                                        Citeseer Graph
+                                                                                                           100
+                         10 1                                                                                                                                                              10 1
+                                                                                                                                                                                                                                                      Reconstruction error
+                                                                                                                                                                    Approximation error
+                                                                                 Reconstruction error
+  Approximation error
+
+
+
+
+                         10 3                                                                                                                                                              10 3                                                                              6 × 10 1
+                                                                                                        6 × 10 1
+                         10 5                                                                                                                                                              10 5
+                                                                                                                                                                                                                                                                             4 × 10 1
+                         10 7                                                                           4 × 10 1                                                                           10 7
+                                                                                                                                                                                                                                                                             3 × 10 1
+                         10 9                                                                                                                                                              10 9
+                                                                                                        3 × 10 1
+                        10 11                                                                                                                                                             10 11                                                                              2 × 10 1
+                        10 13                                                                           2 × 10 1                                                                          10 13
+                                10 4             10 3            10 2                                              10 4             10 3            10 2                                          10 4             10 3              10 2                                               10 4             10 3              10 2
+                                                 Time (s)                                                                           Time (s)                                                                       Time (s)                                                                              Time (s)
+
+
+
+
+Fig. 9: Approximation and Reconstruction error vs run-time for CG (dark blue), PCG (cyan), Chebyshev polynomial approximations (orange)
+and the RSF estimator x̄ (dark green) over various graphs. The vertical dashed line corresponds to the time to calculate the exact solution
+via the backslash operation of Julia (Sparse decomposition). The horizontal dashed red line indicate the reconstruction error of the exact
+solution ||x − x̂||2 . Finally, the horizontal green dashed line is the reconstruction error of the noisy signal y. In all graphs and methods,
+we observe that the best denoising performance is reached many iterations before reaching the best approximation error.
+                                                                                                                                                15
+
+
+
+                                      TABLE II: Graphs considered in the run-time experiments
+ Graph                  n                      m                      description
+ Grid                   10000                  20000                  100x100 grid with periodic boundary conditions.
+ Barabasi-Albert        10000                  19996                  Randomly generated by the Barabasi-Albert model [43].
+ Erdos-Renyi            10000                  49877                  A random Erdos-Renyi graph with average degree around 10.
+ K-regular              10000                  50000                  A random graph where each node has exactly 10 neighbors.
+ Euclidean              10000                  112613                 (K=20)-nearest neighbor graph of n randomly drawn points in R3 .
+                                                                      Whenever a node i is a K-nearest neighbor of a node j, both edges
+                                                                      (i, j) and (j, i) are added to symmetrize the graph.
+ Bunny                  2503                   65490                  ( = 0.2)-Nearest neighbor graph of Stanford’s bunny point cloud
+                                                                      dataset [44]. Taken from the PyGSP toolbox [45]. Whenever a point
+                                                                      is close to another one in a distance less than , an edge between them
+                                                                      is added.
+ Citeseer               2110                   3668                   -
+ Cora                   2485                   5069                   -
+
+
+
+and the option we choose in this paper, is straightforward:         optimal algorithms are very complex and, in some cases, close
+compute λn and set b to λn . This ensures that the polynomial       to unimplementable. Wilson’s algorithm, on the other hand, is
+order required for a good approximation on [0, b] is the            very easy to implement.
+lowest possible, thus minimizing the number of matrix-vector           In terms of practical, short term ideas for speeding up our
+computations. However, the preprocessing step of computing          methods, there are quite a few options. One is to exploit
+λn , even via efficient Krylov-based routines, is not free          a multilevel representation. A second is to use the coupled
+and is in fact a significant part of the cost on the graph          random forests algorithm of Avena & Gaudillière [23], which
+examples considered here. In Fig. 9, we report the total time       generates forests for different values of q in one go and so
+(preprocessing and algorithm run) for these algorithms. Both        can produce a regularisation path for the Tikhonov estimator.
+algorithms have very steep convergence but their preprocessing      A third is to use random forests as preconditioners to CG. We
+costs make them stand out compared to the other methods: a          plan to explore these possibilities in future work.
+more favorable context for them would be cases where one
+needs to filter many graph signals, thus making their overhead                                VI. C ONCLUSION
+cost worthwhile.
+   Regarding the performance of x̄, we observe that it follows         The Monte Carlo estimators can be used as building blocks
+the usual Monte Carlo convergence regime (i.e., O(N − 2 ),
+                                                              1     in various problems, and are amenable to theoretical anal-
+thus linear on log-scale) as expected. Due to this inherent         ysis. As we have shown, the proposed methods are adapt-
+weakness, RSF methods cannot compete with the state-of-the-         able to various graph-based optimization algorithms including
+art if the goal is to obtain high precision in the approximation    the generalized SSL framework, label propagation, Newton’s
+of x̂. However, as the results also show, it is often not           method and IRLS. Moreover, via a trick known at least since
+necessary to have very high precision in approximation to get       Gremban [50, ch. 7] , these RSF techniques can be easily
+a good reconstruction performance (no point computing with          extended to a larger class of matrices than Laplacians, namely
+high accuracy an inaccurate quantity). See [47] for a detailed      symmetric diagonally dominant matrices, as explained for
+discussion of this point in the context of Stochastic Gradient      instance in [51]. In future work, we will continue to explore
+Descent. When looking at reconstruction errors instead of           the links between RSFs and graph-related algebra to develop
+approximation errors, RSF-based estimators are comparable to        efficient estimators of graph characteristics such as effective
+state-of-the-art methods (results depend on the graph at hand).     resistances or tr(L† ) where L† is the Moore-Penrose inverse
+                                                                    of L.
+   Note that the current implementation of the RSF methods
+fail to benefit from compiler and hardware optimizations as
+much as the other deterministic methods do. The deterministic                              ACKNOWLEDGMENTS
+methods use the matrix L only in the vector-matrix products.          We thank the anonymous reviewers for their comments and
+In sparse implementations, these operations are well-optimized      suggestions to improve this manuscript.
+in terms of memory-access to the entries of L. On the other
+hand, the current implementation of RSF methods does not
+                                                                                                 R EFERENCES
+have this advantage. To sample a forest, the entries of L are
+accessed randomly, which incurs additional cost as random           [1] W. Huang, T. A. Bolton, J. D. Medaglia, D. S. Bassett, A. Ribeiro, and
+                                                                        D. Van De Ville, “A Graph Signal Processing Perspective on Functional
+parts of the matrix need to be pulled into cache. Yet, there are        Brain Imaging,” Proc. IEEE, vol. 106, no. 5, pp. 868–885, may 2018.
+several avenues open for speeding up our method so that it          [2] D. I. Shuman, S. K. Narang, P. Frossard, A. Ortega, and P. Van-
+reaches state-of-the-art performance.                                   dergheynst, “The emerging field of signal processing on graphs: Ex-
+                                                                        tending high-dimensional data analysis to networks and other irregular
+   Importantly, recent research in computer science has shown           domains,” IEEE signal processing magazine, vol. 30, no. 3, pp. 83–98,
+that Wilson’s algorithm is not asymptotically optimal for UST           2013.
+sampling. There are recent methods that are nearly linear in the    [3] A. Sandryhaila and J. M. Moura, “Big data analysis with signal
+                                                                        processing on graphs: Representation and processing of massive data
+number of edges, at the cost of a small approximation error, for        sets with irregular structure,” IEEE Signal Process. Mag., vol. 31, no. 5,
+instance, [48], [49]. However, at this stage, the asymptotically-       pp. 80–90, 2014.
+                                                                                                                                                               16
+
+
+
+ [4] A. Ortega, P. Frossard, J. Kovačević, J. M. Moura, and P. Vandergheynst,     [33] S. Barthelme, N. Tremblay, A. Gaudilliere, L. Avena, and P.-O. Amblard,
+     “Graph signal processing: Overview, challenges, and applications,” Pro-             “Estimating the inverse trace using random forests on graphs,” in
+     ceedings of the IEEE, vol. 106, no. 5, pp. 808–828, 2018.                           XXVIIème Colloq. GRETSI (GRETSI 2019), Lille, France, aug 2019.
+ [5] X. Zhu and Z. Ghahramani, “Learning from labeled and unlabeled data            [34] R. Tibshirani and L. Wasserman, “Stein’s unbiased risk estimate,”
+     with label propagation,” 2002.                                                      Course notes from “Statistical Mach. Learn., pp. 1–12, 2015.
+ [6] A. J. Smola and R. Kondor, “Kernels and regularization on graphs,” in          [35] C. M. Stein, “Estimation of the Mean of a Multivariate Normal Distri-
+     Learning theory and kernel machines. Springer, 2003, pp. 144–158.                   bution,” Ann. Stat., vol. 9, no. 6, pp. 1135–1151, nov 1981.
+ [7] M. Belkin, I. Matveeva, and P. Niyogi, “Regularization and semi-               [36] X. Zhu, “Semi-supervised learning with graphs,” Ph.D. dissertation,
+     supervised learning on large graphs,” in International Conference on                Carnegie Mellon University, language technologies institute, school of
+     Computational Learning Theory. Springer, 2004, pp. 624–638.                         computer science, 2005.
+ [8] I. Pesenson, “Variational Splines and Paley-Wiener Spaces on Combi-            [37] M. Lebrun, M. Colom, A. Buades, and J. M. Morel, “Secrets of image
+     natorial Graphs,” Constr. Approx., vol. 29, no. 1, pp. 1–21, nov 2009.              denoising cuisine,” Acta Numer., vol. 21, pp. 475–576, may 2012.
+ [9] T. Hastie, R. Tibshirani, J. Friedman, and J. Franklin, “The elements of       [38] R. J. Tibshirani, J. Taylor et al., “The solution path of the generalized
+     statistical learning: data mining, inference and prediction,” Math. Intell.,        lasso,” The Annals of Statistics, vol. 39, no. 3, pp. 1335–1371, 2011.
+     vol. 27, no. 2, pp. 83–85, 2005.                                               [39] J. Sharpnack, A. Singh, and A. Rinaldo, “Sparsistency of the edge lasso
+[10] L. Grady and E. Schwartz, “Anisotropic interpolation on graphs : The                over graphs,” in Artificial Intelligence and Statistics, 2012, pp. 1028–
+     combinatorial dirichlet problem Anisotropic Interpolation on Graphs :               1036.
+     The Combinatorial Dirichlet Problem,” Bost. Univ., 2003.                       [40] G. Puy, N. Tremblay, R. Gribonval, and P. Vandergheynst, “Random
+[11] D. Zhou, O. Bousquet, T. N. Lal, J. Weston, and B. Schölkopf, “Learning            sampling of bandlimited signals on graphs,” Applied and Computational
+     with local and global consistency,” in Adv. Neural Inf. Process. Syst.,             Harmonic Analysis, pp. –, 2016. [Online]. Available: http://www.
+     2004, pp. 321–328.                                                                  sciencedirect.com/science/article/pii/S1063520316300215
+[12] K. Avrachenkov, A. Mishenin, P. Gonçalves, and M. Sokol, “Generalized         [41] P. di Lorenzo, S. Barbarossa, and P. Banelli, “Sampling and recovery of
+     optimization framework for graph-based semi-supervised learning,” in                graph signals,” in Cooperative and Graph Signal Processing. Elsevier,
+     Proc. 2012 SIAM Int. Conf. Data Min. SIAM, 2012, pp. 966–974.                       2018, pp. 261–282.
+[13] S. Boyd and L. Vandenberghe, Convex optimization.               Cambridge      [42] N. Tremblay, P. Gonçalves, and P. Borgnat, “Design of graph filters and
+     university press, 2004.                                                             filterbanks,” in Cooperative and Graph Signal Processing. Elsevier,
+[14] C. S. Burrus, J. A. Barreto, and I. W. Selesnick, “Iterative Reweighted             2018, pp. 299–324.
+     Least-Squares Design of FIR Filters,” IEEE Trans. Signal Process.,             [43] A.-L. Barabási and R. Albert, “Emergence of scaling in random net-
+     vol. 42, no. 11, pp. 2926–2936, 1994.                                               works,” science, vol. 286, no. 5439, pp. 509–512, 1999.
+[15] Y. Saad, Iterative methods for sparse linear systems. SIAM, 2003.              [44] G. Turk and M. Levoy, “Zippered polygon meshes from range images,”
+[16] D. I. Shuman, P. Vandergheynst, and P. Frossard, “Chebyshev polyno-                 in Proceedings of the 21st annual conference on Computer graphics and
+     mial approximation for distributed signal processing,” in 2011 Inter-               interactive techniques, 1994, pp. 311–318.
+     national Conference on Distributed Computing in Sensor Systems and             [45] M. Defferrard, L. Martin, R. Pena, and N. Perraudin, “Pygsp: Graph
+     Workshops (DCOSS). IEEE, 2011, pp. 1–8.                                             signal processing in python,” URL https://github. com/epfl-lts2/pygsp,
+[17] F. R. K. Chung and F. C. Graham, Spectral graph theory. American                    2017.
+     Mathematical Soc., 1997, no. 92.                                               [46] J. Xu and L. Zikatanov, “Algebraic multigrid methods,” Acta Numerica,
+[18] G. Grimmett, Probability on graphs: Random processes on graphs and                  vol. 26, pp. 591–721, 2017.
+     lattices: Second edition. Cambridge University Press, 2018, vol. 8.            [47] L. Bottou, “Stochastic gradient descent tricks,” in Neural networks:
+[19] X. M. Wu, Z. Li, A. M. C. So, J. Wright, and S. F. Chang, “Learning                 Tricks of the trade. Springer, 2012, pp. 421–436.
+     with partially absorbing random walks,” in Adv. Neural Inf. Process.           [48] N. Anari, K. Liu, S. Oveis Gharan, and C. Vinzant, “Log-concave
+     Syst., vol. 4, 2012, pp. 3077–3085.                                                 polynomials iv: Exchange properties, tight mixing times, and faster
+[20] X. Wu, “Learning on Graphs with Partially Absorbing Random Walks:                   sampling of spanning trees,” CoRR, vol. abs/2004.07220, 2020.
+     Theory and Practice,” Ph.D. dissertation, Columbia University, 2016.           [49] A. Schild, “An almost-linear time algorithm for uniform random span-
+[21] K. Avrachenkov, P. Chebotarev, and A. Mishenin, “Semi-supervised                    ning tree generation,” in Proceedings of the 50th Annual ACM SIGACT
+     learning with regularized Laplacian,” Optim. Methods Softw., vol. 32,               Symposium on Theory of Computing, 2018, pp. 214–227.
+     no. 2, pp. 222–236, 2017.                                                      [50] K. D. Gremban, “Combinatorial preconditioners for sparse, symmetric,
+[22] L. Avena and A. Gaudillière, “Random spanning forests, markov matrix               diagonally dominant linear systems,” Ph.D. dissertation, Carnegie Mel-
+     spectra and well distributed points,” arXiv preprint arXiv:1310.1723,               lon University, 1996.
+     2013.                                                                          [51] J. A. Kelner, L. Orecchia, A. Sidford, and Z. A. Zhu, “A simple,
+[23] L. Avena and A. Gaudillière, “Two Applications of Random Spanning                  combinatorial algorithm for solving SDD systems in nearly-linear time,”
+     Forests,” Journal of Theoretical Probability, Jul. 2017. [Online].                  in Proc. forty-fifth Annu. ACM Symp. Theory Comput., 2013, pp. 911–
+     Available: http://link.springer.com/10.1007/s10959-017-0771-3                       920.
+[24] D. B. Wilson, “Generating random spanning trees more quickly than
+     the cover time,” in Proc. Annu. ACM Symp. Theory Comput., vol. Part
+     F1294. Association for Computing Machinery, jul 1996, pp. 296–303.
+[25] Y. Y. Pilavci, P. O. Amblard, S. Barthelmé, and N. Tremblay, “Smoothing
+     graph signals via random spanning forests,” in ICASSP, IEEE Int. Conf.
+     Acoust. Speech Signal Process. - Proc., vol. 2020-May. IEEE Inc., may
+     2020, pp. 5630–5634.
+[26] P. Marchal, “Loop-erased random walks, spanning trees and hamiltonian
+     cycles,” Elect. Comm. in Probab, vol. 5, pp. 39–50, 2000.
+[27] A. Kulesza and B. Taskar, “Determinantal point processes for machine
+     learning,” Found. Trends Mach. Learn., vol. 5, no. 2-3, pp. 123–286, jul
+     2012.
+[28] D. Blackwell, “Conditional Expectation and Unbiased Sequential Esti-
+     mation,” Ann. Math. Stat., vol. 18, no. 1, pp. 105–110, mar 1947.
+[29] C. R. Rao, “Information and the accuracy attainable in the estimation of
+     statistical parameters,” in Breakthroughs in statistics. Springer, 1992,
+     pp. 235–247.
+[30] N. Keriven, A. Bietti, and S. Vaiter, “Convergence and stability of
+     graph convolutional networks on large random graphs,” arXiv preprint
+     arXiv:2006.01868, 2020.
+[31] D. Girard, “Un algorithme simple et rapide pour la validation croisée
+     généralisée sur des problèmes de grande taille,” Tech. Rep., 1987.
+[32] M. F. Hutchinson, “A stochastic estimator of the trace of the influence
+     matrix for laplacian smoothing splines,” Commun. Stat. - Simul. Com-
+     put., vol. 19, no. 2, pp. 433–450, 1990.

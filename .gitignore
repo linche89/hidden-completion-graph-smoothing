@@ -1,0 +1,30 @@
+# Python bytecode and test/tool caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Local Python environments (the GPU environment is hundreds of MiB)
+.venv/
+.venv-*/
+venv/
+env/
+
+# Editor and operating-system metadata
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Scratch downloads used only during literature audits
+research/tmp_sdp_audit/
+
+# Generic transient files
+*.log
+*.tmp
+*.bak
+~$*

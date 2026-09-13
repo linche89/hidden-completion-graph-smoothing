@@ -1,0 +1,927 @@
+                                                   Nonlinear Analysis: Hybrid Systems 62 (2026) 101768
+
+
+                                                          Contents lists available at ScienceDirect
+
+
+                                             Nonlinear Analysis: Hybrid Systems
+                                                  journal homepage: www.elsevier.com/locate/nahs
+
+
+
+
+Distributed state estimation with event-triggered measurement
+samplingI , II
+                                 ∗
+Irene Perez-Salesa                 , Rodrigo Aldana-López, Carlos Sagüés
+Departamento de Informática e Ingeniería de Sistemas (DIIS) and Instituto de Investigación en Ingeniería de Aragón (I3A), Universidad de
+Zaragoza, María de Luna 1, Zaragoza, 50018, Spain
+
+
+
+ARTICLE               INFO                              ABSTRACT
+
+Keywords:                                               In this work, we focus on distributed state estimation under event-triggered measurement
+Distributed state estimation                            sampling and estimator-to-estimator communication. We design a distributed Kalman-like
+Sensor networks                                         filter, with fully asynchronous transmissions of measurements and estimates. The estimator
+Kalman filtering
+                                                        nodes leverage the implicit information from not receiving new sensor measurements between
+Asynchronous measurements
+                                                        events, resulting in stable estimates for any transmission sequence. Moreover, we show that
+Event-triggered sampling and communication
+Stochastic systems
+                                                        the performance of the centralized Kalman–Bucy filter with full measurement data can be
+                                                        approximated arbitrarily well with our event-triggered solution, by tuning the event thresholds
+                                                        and the consensus gain in the filter, while reducing communication.
+
+
+
+
+1. Introduction
+
+    Distributed sensing and estimation have attracted significant attention in recent years, finding applications in areas such as
+robot formation control, environmental monitoring and large-scale industrial processes. Thus, many works have been devoted
+to developing distributed implementations of popular state estimators, with Kalman filters being a prominent example [1]. In
+distributed filtering, several estimator nodes collectively observe the state of a plant, computing state estimates by using a local
+sensor measurements and information received from neighboring nodes. Relevant advances have been achieved, such as obtaining
+distributed formulations that converge to the solution of the centralized counterpart, e.g., [2–4], and developing event-triggered
+filters to reduce communication among estimator nodes [5–7].
+    However, several issues remain open. One important limitation is the assumption of synchronicity in the distributed filter. In
+most discrete-time formulations, it is implicitly assumed that sampling and filtering at all nodes follow the same synchronized
+discretization period. Even when event-triggered communication is considered (see [1,8] and the references therein), the underlying
+updates are typically still based on a common global clock. Such an assumption may be unrealistic in practical applications. Most
+works that consider asynchronous measurement sampling resort to a ‘‘data synchronization’’ strategy to still apply a synchronous
+filter [9–11]. An exception can be found in [12], which is limited to systems without noise, and requires the asynchronous period
+to be upper-bounded.
+    In addition, event-triggered communication is often applied only to the estimator-to-estimator channel, while continuous
+availability of local measurements is still assumed. For cases where sensors and estimator nodes are not co-located, this assumption
+
+
+ I This article is part of a Special issue entitled: ‘TC 1.5 Networked systems (IFAC WC 2026)’ published in Nonlinear Analysis: Hybrid Systems.
+II This work was supported via projects PID2021-124137OB-I00 and PID2024-159279OB-I00 funded by MICIU/AEI/10.13039/501100011033 and by ERDF/EU,
+via project REMAIN S1/1.1/E0111 (Interreg Sudoe Programme, ERDF), by the Gobierno de Aragón, Spain under Project DGA T45-23R, and by Spanish grant
+FPU20/03134. Grant reference BG24/00121 funded by MICIU/AEI/10.13039/501100011033.
+  ∗ Corresponding author.
+     E-mail addresses: i.perez@unizar.es (I. Perez-Salesa), raldana@unizar.es (R. Aldana-López), csagues@unizar.es (C. Sagüés).
+
+https://doi.org/10.1016/j.nahs.2026.101768
+Received 31 October 2025; Received in revised form 17 May 2026; Accepted 29 May 2026
+Available online 7 June 2026
+1751-570X/© 2026 The Authors.           Published by Elsevier Ltd.                      This is an open access article under the CC BY license
+(http://creativecommons.org/licenses/by/4.0/).
+I. Perez-Salesa et al.                                                                         Nonlinear Analysis: Hybrid Systems 62 (2026) 101768
+
+may be impractical, and event-triggered communication could also reduce the number of transmissions in this channel. However,
+few works have considered this setup. In [13–15], the event-triggered condition is checked periodically, matching the step of a
+synchronous filter. Moreover, some restrictive assumptions are made on the noise and observability of the system. Finally, 𝐻∞ filters
+are designed in [16,17] under event-triggered measurement transmissions. These works assume that sensors exchange information
+with each other, having enough capabilities to aggregate the measurements from neighbors and transmit them to the estimator
+node, and even run a local filter (in [17]), while the estimator nodes do not communicate with each other.
+    To the best of our knowledge, there is no prior work addressing distributed Kalman filtering under event-triggered measurement
+sampling. Note that extending the existing centralized event-triggered Kalman filters to the distributed case is not trivial. Many
+works consider triggering conditions that require the sensor to run a local filter [18–20], which assumes computational capabilities
+and knowledge of the dynamical model of the system at the sensor side. On the other hand, simple triggering conditions such as the
+send-on-delta [21] may cause a divergence of the estimation uncertainty if only the model-based prediction is used by the estimator
+during inter-event intervals, as exemplified in [22]. To overcome this issue, some event-triggered Kalman filters exploit the implicit
+information in not triggering an event [22–26], but most of them still adopt synchronous filter updates.
+    Motivated by this discussion, this work aims to address the current limitations in distributed Kalman filtering with the following
+contributions: (1) We develop a distributed filter with fully asynchronous transmissions, where measurement sampling and estimator-
+to-estimator communication do not need to be synchronized, by adopting a continuous-time filter formulation. (2) We consider
+that each sensor transmits information to an estimator node according to a simple event-triggering condition. The estimator
+leverages these measurements and the implicit information between events to provide stable estimates, even in the absence of new
+measurement data. (3) We show that event-triggered communication can also be adopted in the estimator-to-estimator channel in
+our setup while maintaining the stability of the distributed estimator. (4) We prove the stability of the filter in mean squared error,
+and we show that the performance of our distributed filter with reduced communication can approximate that of the centralized
+optimal filter with full information by tuning the event thresholds and consensus gain.
+
+
+1.1. Notation
+
+    The normal distribution of mean 𝝁 and covariance 𝜮 is denoted by  (𝝁, 𝜮). The notation ‖ ∙ ‖ denotes the Euclidean norm
+for vectors, or the induced norm for matrices, and ‖𝐱‖2𝐌 = 𝐱⊤ 𝐌𝐱 is the weighted norm. For a matrix 𝐌, we write 𝐌 ≻ (⪰) 𝟎 to
+indicate that it is positive definite (semidefinite, respectively). The column and block-diagonal compositions of vectors or matrices
+with indexes 𝑖 = 1, 2, … , 𝑁 is given by 𝖼𝗈𝗅𝑁  (∙ ) and 𝖽𝗂𝖺𝗀𝑁
+                                            𝑖=1 𝑖
+                                                               (∙ ). The vector of ones with dimension 𝑛×1 is given by 1𝑛 , 𝐔𝑛 = 1𝑛 1⊤
+                                                            𝑖=1 𝑖                                                                    𝑛 , and
+the 𝑛 × 𝑛 identity matrix is represented by 𝐈𝑛 . The symbol ⊗ is the Kronecker product and 𝗌𝗂𝗀𝗇(∙) is the sign function, with 𝗌𝗂𝗀𝗇(0) = 0,
+𝗌𝗂𝗀𝗇(𝑥) = 1 if 𝑥 > 0 and 𝗌𝗂𝗀𝗇(𝑥) = −1 if 𝑥 < 0. The operators P{∙} and E{∙} denote probability and expectation, respectively. The
+abbreviation 𝑤.𝑝.1 means ‘‘with probability 1’’.
+
+
+2. Problem statement
+
+    A network with 𝑁 estimator and sensor nodes collaboratively observes a system
+
+         ̇ = 𝐀(𝑡)𝐱(𝑡) + 𝐰(𝑡),
+         𝐱(𝑡)                            ∀𝑡 ≥ 0,                                                                                             (1)
+
+where 𝐱(𝑡) ∈ R𝑛 is the state to be estimated and 𝐰(𝑡) ∼  (𝟎, 𝐖(𝑡)) is a disturbance affecting the system. The initial state follows
+𝐱(0) ∼  (𝐱0 , 𝐏0 ).
+   The 𝑖th sensor obtains measurements 𝐲𝑖 (𝑡) ∈ R𝑚𝑖 , which take the form
+
+         𝐲𝑖 (𝑡) = 𝐂𝑖 (𝑡)𝐱(𝑡) + 𝐯𝑖 (𝑡),                                                                                                       (2)
+
+with 𝐯𝑖 (𝑡) ∼  (𝟎, 𝐕𝑖 (𝑡)). The disturbances 𝐰(𝑡) and 𝐯𝑖 (𝑡) at the sensors are uncorrelated. Aggregating all measurements as 𝐲(𝑡) =
+𝖼𝗈𝗅𝑁  (𝐲 (𝑡)) ∈ R𝑚 , the global measurement obtained by the sensor network can be compactly written as
+   𝑖=1 𝑖
+
+         𝐲(𝑡) = 𝐂(𝑡)𝐱(𝑡) + 𝐯(𝑡),                                                                                                             (3)
+
+where 𝐂(𝑡) = 𝖼𝗈𝗅𝑁  (𝐂 (𝑡)) and 𝐯(𝑡) = 𝖼𝗈𝗅𝑁
+                𝑖=1 𝑖
+                                            (𝐯 (𝑡)) with zero mean and covariance 𝐕(𝑡) = 𝖽𝗂𝖺𝗀𝑁
+                                         𝑖=1 𝑖
+                                                                                                (𝐕 (𝑡)).
+                                                                                             𝑖=1 𝑖
+    The 𝑖th estimator node receives measurements from the 𝑖th sensor through a communication network only at a series of
+discrete event instants 𝑡 ∈ {𝜏𝑘𝑖 }∞
+                                  𝑘=0
+                                      according to a local event-triggering mechanism at the sensor side, where 𝜏𝑘𝑖 refers to the 𝑘th
+event-triggered by the 𝑖th sensor. Therefore, from the estimator’s point of view, only the received measurements {𝐲𝑖 (𝜏𝑘𝑖 )}∞ 𝑘=0
+                                                                                                                                  are
+known.
+    The estimator nodes communicate their local estimates to neighboring estimators. Their communication network is described
+by a connected and undirected graph  = (, ), with  = {1, 2, … , 𝑁} being the node set representing the 𝑁 estimator nodes,
+and the edge set  ⊆  ×  denoting the communication channels between nodes. The notation 𝑖 represents the neighbors of the
+𝑖th estimator. The graph topology is described by its 0 − 1 adjacency matrix 𝐀 and, equivalently, by its Laplacian matrix 𝐋 with
+algebraic connectivity 𝜆 . To lighten the communication load, each estimator node may also transmit its estimate only at a series
+of event instants, which we denote 𝑡 ∈ {𝓁𝑘𝑖 }∞𝑘=0
+                                                  , via another event-triggering mechanism.
+
+                                                                     2
+I. Perez-Salesa et al.                                                                          Nonlinear Analysis: Hybrid Systems 62 (2026) 101768
+
+
+
+
+Fig. 1. Distributed state estimation setup with 𝑁 = 6 estimation nodes (E) and sensors (S). Dashed lines represent event-triggered measurement
+transmissions from sensors to estimators, and dotted lines are event-triggered communication links between estimators.
+
+
+
+Problem 1. Each estimator node 𝑖 must obtain an estimate 𝐱̂ 𝑖 (𝑡) of the state 𝐱(𝑡), using the event-triggered measurements received
+from the 𝑖th sensor, as well as the information exchanged with neighboring estimator nodes 𝑗 ∈ 𝑖 . Moreover, a bounded
+uncertainty for the estimates must be maintained in the absence of new sensor data for any sequence of events, despite the stochastic
+disturbances.
+
+   An example of the problem setup for a network with 𝑁 = 6 estimator nodes and sensors is shown in Fig. 1. Note that the
+transmission sequences are independent for each sensor and estimator node, i.e., all transmissions are asynchronous.
+   We make the following assumptions for the system, which are standard in Kalman filtering literature to ensure the stability of
+the filter [27]. Note that we merely require global observability for the system using the aggregate measurement (3).
+
+Assumption 1. The global pair (𝐀(𝑡), 𝐂(𝑡)) is uniformly completely observable and (𝐀(𝑡), 𝐖(𝑡)1∕2 ) is uniformly completely control-
+lable.
+
+Assumption 2. There exist constants 𝑎, 𝑐 ≥ 0 such that ‖𝐀(𝑡)‖ ≤ 𝑎 and ‖𝐂(𝑡)‖ ≤ 𝑐; 0 < 𝑤1 ≤ 𝑤2 fulfilling 𝑤1 𝐈𝑛 ⪯ 𝐖(𝑡) ⪯ 𝑤2 𝐈𝑛 , and
+0 < 𝑣1 ≤ 𝑣2 such that 𝑣1 𝐈𝑚 ⪯ 𝐕(𝑡) ⪯ 𝑣2 𝐈𝑚 , for all 𝑡 ≥ 0.
+
+
+3. Event-triggered measurement sampling
+
+   We start by introducing the event-triggering mechanism used by the sensor nodes to decide when to transmit information, as
+well as the implicit information that can be extracted by the estimator when the triggering condition is not met.
+
+
+3.1. Event-triggering mechanism
+
+    The 𝑖th sensor decides its transmission instants via an event-triggering mechanism of the form
+          𝑖
+         𝜏𝑘+1 = inf{𝑡 > 𝜏𝑘𝑖 | ‖𝐲𝑖 (𝑡) − 𝐲𝑖 (𝜏𝑘𝑖 )‖ ≥ 𝜀𝑖 (𝑡)},                                                                                 (4)
+
+where 𝜀𝑖 (𝑡) > 0 is the event threshold, possibly containing auxiliary dynamics. In order for the estimator to successfully infer implicit
+information from the triggering condition (4) and produce stable estimates, we consider the following requirements. First, the
+estimator node receiving the measurements from the 𝑖th sensor must have knowledge of 𝜀𝑖 (𝑡), ∀𝑡 ≥ 0. Second, the event threshold
+fulfills 𝜀𝑖 (𝑡) ≤ 𝜀max , ∀𝑡 ≥ 0, for some 𝜀max > 0.
+    Note that these requirements can be easily met when the event threshold is set to a constant value. In addition, the dynamic
+event-triggering mechanism from [22], where the dynamic threshold depends on the evolution of the transmitted measurements,
+also enables the extraction of implicit information despite the time-varying threshold, and fulfills the boundedness condition with
+probability 1, despite the event threshold being affected by the unbounded Gaussian measurement noise [22, Remark 1]. For such
+triggering mechanism, the stability guarantees in this work would hold with probability 1, instead of holding strictly for any noise
+realization.
+    For simplicity, we now make the following assumption:
+
+Assumption 3. There is no Zeno behavior under the event-triggering mechanisms, i.e., a strictly positive time interval exists between
+two consecutive events.
+
+    We will first establish some theoretical results regarding the filter performance under this assumption, isolating its convergence
+and stability properties. Then, in Section 7, we will formally prove that Assumption 3 indeed holds with probability 1 despite the
+stochastic noise present in the system, and we will detail an easily implementable time regularization strategy to enforce a minimum
+inter-event time, discussing its theoretical and practical impact.
+
+                                                                      3
+I. Perez-Salesa et al.                                                                          Nonlinear Analysis: Hybrid Systems 62 (2026) 101768
+
+3.2. Implicit information between events
+
+   Between events, the lack of measurement data can be mitigated by exploiting the implicit information in the non-fulfillment of
+the event-triggering condition. The event-triggering mechanism (4) can be equally expressed as
+          𝑖
+         𝜏𝑘+1 = inf{𝑡 > 𝜏𝑘𝑖 | ‖𝐲𝑖 (𝑡) − 𝐲𝑖 (𝜏𝑘𝑖 )‖2𝐄 (𝑡) ≥ 1},                                                                                (5)
+                                                         𝑖
+
+with 𝐄𝑖 (𝑡) = (𝜀𝑖 (𝑡)2 𝐈𝑚𝑖 )−1 . This means that the next event 𝜏𝑘+1
+                                                                 𝑖   is triggered when the measurement 𝐲(𝑡) leaves an ellipsoid 𝑖 (𝑡), given
+by
+
+         𝑖 (𝑡) = {𝐲𝑖 (𝑡) ∈ R𝑚𝑖 ∶ ‖𝐲𝑖 (𝑡) − 𝐲𝑖 (𝜏𝑘𝑖 )‖2𝐄 (𝑡) < 1},                                                                            (6)
+                                                                 𝑖
+
+noting that 𝐲𝑖 (𝜏𝑘𝑖 ) is the center of the ellipsoid, and the event threshold 𝜀𝑖 (𝑡) determines its size.
+    For an event-triggering mechanism of the form (5), [24, Lemma 1] states that the posterior probability density function (PDF)
+                                                                           𝑖 ) is the same as the posterior PDF conditioned to receiving
+of the state conditioned on not triggering an event at a time 𝑡 ∈ (𝜏𝑘𝑖 , 𝜏𝑘+1
+a measurement 𝐲𝑖′ (𝑡) = 𝐲𝑖 (𝜏𝑘𝑖 ) originated from a virtual measurement channel
+
+         𝐲𝑖′ (𝑡) = 𝐂𝑖 (𝑡)𝐱(𝑡) + 𝐯𝑖 (𝑡) − 𝝂 𝑖 (𝑡),                                                                                             (7)
+
+where 𝝂 𝑖 (𝑡) ∈ R𝑚𝑖 is a random disturbance that is independent from 𝐱(𝑡) and 𝐯𝑖 (𝑡), and uniformly distributed in the ellipsoid 𝑖 (𝑡). The
+virtual measurement noise fulfills E{𝐯𝑖 (𝑡) − 𝝂 𝑖 (𝑡)} = 𝟎, due to 𝐯𝑖 (𝑡), 𝝂 𝑖 (𝑡) being zero-mean and independent, and its noise covariance
+is given by
+                                                          𝜀𝑖 (𝑡)2
+         𝐌𝑖 (𝑡) = 𝖼𝗈𝗏{𝐯𝑖 (𝑡) − 𝝂 𝑖 (𝑡)} = 𝐕𝑖 (𝑡) +                𝐈 ,                                                                         (8)
+                                                          𝑚𝑖 + 2 𝑚𝑖
+recalling that the covariance of a uniform random variable contained in the ellipsoid (6) is given by ((𝑚𝑖 + 2)𝐄𝑖 (𝑡))−1 .
+                                                     𝑖 ) can be written as 𝐲 (𝑡) = 𝐲 (𝜏 𝑖 ) + 𝜼 (𝑡), where the difference 𝜼 (𝑡) is unknown
+    Note that the actual measurement for 𝑡 ∈ (𝜏𝑘𝑖 , 𝜏𝑘+1                        𝑖     𝑖 𝑘      𝑖                           𝑖
+but contained within the ellipsoid 𝑖 (𝑡) around 𝐲𝑖 (𝜏𝑘𝑖 ). Therefore, the virtual measurement can be seen as an approximation of the
+actual measurement using only the information available to the estimator, where the center of the ellipsoid, 𝐲𝑖 (𝜏𝑘𝑖 ), is taken as
+the measurement value between events, and the measurement uncertainty is augmented to take into account the ellipsoid’s size
+according to the event threshold 𝜀𝑖 (𝑡). Moreover, the result from [24, Lemma 1] ensures that the virtual measurement model is valid
+to design a suitable estimator, as the case with no new measurement data between events can be treated equally to receiving the
+virtual measurement from a Bayesian filtering perspective.
+
+3.3. Measurement handling
+
+    From the point of view of the estimator, the available sets of measurement information to compute state estimates are given by
+the actual measurements 𝐲𝑖 (𝑡) = 𝐲𝑖 (𝜏𝑘𝑖 ) generated by (2) with noise covariance 𝐕𝑖 (𝑡) received at discrete event instants 𝑡 ∈ {𝜏𝑘𝑖 }∞ 𝑘=0
+                                                                                                                                             ,
+and the continuous virtual measurements 𝐲𝑖′ (𝑡) = 𝐲𝑖 (𝜏𝑘𝑖 ) originated by (7) with covariance 𝐌𝑖 (𝑡), for 𝑡 ∈ (𝜏𝑘𝑖 , 𝜏𝑘+1
+                                                                                                                      𝑖 ). Incorporating this
+
+information into the filter would require hybrid continuous-discrete updates as in [22].
+    To reduce the complexity of the design, we will consider a simplified measurement model of the form
+
+         𝐲̄ 𝑖 (𝑡) = 𝐂𝑖 (𝑡)𝐱(𝑡) + 𝐯𝑖 (𝑡) − 𝝂 𝑖 (𝑡) = 𝐲𝑖 (𝜏𝑘𝑖 ),                   𝑖
+                                                                     𝑡 ∈ [𝜏𝑘𝑖 , 𝜏𝑘+1 ),                                                       (9)
+
+with noise covariance 𝐌𝑖 (𝑡) ∀𝑡 ≥ 0, i.e., as if the virtual measurement model was valid for all 𝑡 ≥ 0. Note that this model overestimates
+the noise covariance at events, since 𝐕𝑖 (𝑡) ⪯ 𝐌𝑖 (𝑡), but the conservativeness from this approximation is negligible due to the sparsity
+of event instants.
+    Then, at an arbitrary time instant 𝑡, the filter computes an estimate of the state 𝐱(𝑡) based on the information set
+            ⋃
+       ̄𝑡 = 𝑁     ̄
+              𝑖=1 {𝐲𝑖 (𝑠), ∀𝑠 ∈ [0, 𝑡]},                                                                                              (10)
+
+which represents the set of all causal measurements of the form (9) obtained up until time 𝑡.
+    Note that the measurement 𝐲̄ 𝑖 (𝑡) is defined ∀𝑡 ≥ 0 by maintaining a constant value between events, while its covariance 𝐌𝑖 (𝑡) is
+also defined ∀𝑡 ≥ 0. Thus, we will adopt a continuous-time filter formulation to produce a continuous estimate 𝐱(𝑡)
+                                                                                                                ̂ of the continuous
+state of system (1).
+
+4. Auxiliary centralized filter
+
+     Before we proceed with the design of the distributed filter, we introduce an auxiliary centralized formulation to aid us in
+establishing our formal results. Define 𝜏𝑡𝑖 = max{𝜏𝑘𝑖 ≤ 𝑡} as the most recent event triggered by the 𝑖th sensor prior to time 𝑡. Let
+̄
+𝐲(𝑡)  = 𝖼𝗈𝗅𝑁  (𝐲̄ (𝑡)) = 𝖼𝗈𝗅𝑁
+           𝑖=1 𝑖
+                               (𝐲 (𝜏 𝑖 )) = 𝐲(𝜏𝑡 ) be the global measurement available to the centralized filter, defined by keeping the
+                            𝑖=1 𝑖 𝑡
+last transmitted value from each node constant between events (recalling the piecewise-constant measurement model in (9)), with
+measurement noise covariance 𝐌(𝑡) = 𝖽𝗂𝖺𝗀𝑁         𝑖=1
+                                                      (𝐌𝑖 (𝑡)). Then, the centralized filter under event-triggered measurements is given by
+
+         𝐊(𝑡) = 𝐏(𝑡)𝐂(𝑡)⊤ 𝐌(𝑡)−1 ,                                                                                                          (11a)
+
+                                                                                          4
+I. Perez-Salesa et al.                                                                                     Nonlinear Analysis: Hybrid Systems 62 (2026) 101768
+
+          ̂̇ = 𝐀(𝑡)𝐱(𝑡)
+          𝐱(𝑡)                           ̂
+                   ̂ + 𝐊(𝑡)(𝐲(𝜏𝑡 ) − 𝐂(𝑡)𝐱(𝑡)),                                                                                                       (11b)
+         ̇
+         𝐏(𝑡) = 𝐀(𝑡)𝐏(𝑡) + 𝐏(𝑡)𝐀(𝑡)⊤ + 𝐖(𝑡) − 𝐊(𝑡)𝐌(𝑡)𝐊(𝑡)⊤ ,                                                                                          (11c)
+
+                               ̂ is the centralized estimate of the state 𝐱(𝑡) and 𝐏(𝑡) is the filter’s estimated error covariance matrix.
+where 𝐊(𝑡) is the filter gain, 𝐱(𝑡)
+Moreover, the filter converges to an asymptotic solution for 𝐏(𝑡) in the linear time-invariant (LTI) case, given by
+
+         𝟎 = 𝐀𝐏∞ + 𝐏∞ 𝐀⊤ + 𝐖 − 𝐏∞ 𝐂⊤ 𝐌−1 𝐂𝐏∞ .                                                                                                          (12)
+
+Therefore, (11) can be further simplified to the asymptotic filter:
+         𝐊∞ = 𝐏∞ 𝐂⊤ 𝐌−1 ,
+                                                                                                                                                        (13)
+         ̂̇ = 𝐀𝐱(𝑡)
+         𝐱(𝑡)                  ̂
+               ̂ + 𝐊 (𝐲(𝜏 ) − 𝐂𝐱(𝑡)).
+                               ∞      𝑡
+    We can now state the following result for the auxiliary centralized filter.
+
+Lemma 1. Let Assumptions 1 to 3 hold. Consider the filter (11) along with the measurement set ̄𝑡 from (10) for the system (1). Then, the
+                                                                                                             ̂ = argmin𝐱∈R
+filter is uniformly asymptotically stable and the best linear unbiased estimator (BLUE), providing estimates 𝐱(𝑡)        ̂  𝑛 𝗍𝗋(𝐏(𝑡)) with
+
+                   ̂ | ̄𝑡 }.
+𝐏(𝑡) = 𝖼𝗈𝗏{𝐱(𝑡) − 𝐱(𝑡)
+
+Proof. The result follows from noticing that the filter (11) is a Kalman-Bucy filter [27] over the measurement 𝐲(𝑡)
+                                                                                                               ̄ with measurement
+noise covariance 𝐌(𝑡), and therefore it inherits its properties. □
+
+Remark 1. Note that Gaussianity of the noise processes is not required for the derivation of the Kalman-Bucy filter as the minimum
+variance linear estimator (see the problem statement in [27]).
+
+
+5. Distributed filter with event-triggered measurements
+
+   We now propose a distributed counterpart to the filter (11), extending the design from [4]1 to incorporate the event-triggered
+measurement transmissions. In this section, we assume full communication between estimator nodes, but we will introduce
+event-triggered communication in this channel in Section 6.
+   Each estimator node obtains its own estimate 𝐱̂ 𝑖 (𝑡) of the state 𝐱(𝑡) and an estimated error covariance matrix 𝐏𝑖 (𝑡) according to
+the following:
+
+         𝐊𝑖 (𝑡) = 𝑁𝐏𝑖 (𝑡)𝐂𝑖 (𝑡)⊤ 𝐌𝑖 (𝑡)−1 ,                                                                                                            (14a)
+                                          (                          )          ∑
+         𝐱̂̇ 𝑖 (𝑡) = 𝐀(𝑡)𝐱̂ 𝑖 (𝑡) + 𝐊𝑖 (𝑡) 𝐲𝑖 (𝜏𝑡𝑖 ) − 𝐂𝑖 (𝑡)𝐱̂ 𝑖 (𝑡) + 𝜅𝐏𝑖 (𝑡)   (𝐱̂ 𝑗 (𝑡) − 𝐱̂ 𝑖 (𝑡)),                                              (14b)
+                                                                               𝑗∈𝑖
+
+         𝐏̇ 𝑖 (𝑡) = 𝐀(𝑡)𝐏𝑖 (𝑡) + 𝐏𝑖 (𝑡)𝐀(𝑡)⊤ + 𝐖(𝑡) − 𝐏𝑖 (𝑡)𝐙̂ 𝑖 (𝑡)𝐏𝑖 (𝑡),                                                                            (14c)
+         𝐙̂ 𝑖 (𝑡) = 𝑁𝐂𝑖 (𝑡)⊤ 𝐌𝑖 (𝑡)−1 𝐂𝑖 (𝑡) − 𝐐𝑖 (𝑡),                                                                                                (14d)
+                      ∑
+         𝐐̇ 𝑖 (𝑡) = 𝛼     𝜙(𝐙̂ 𝑖 (𝑡) − 𝐙̂ 𝑗 (𝑡), 𝜉, 𝛾),                                                                                                (14e)
+                     𝑗∈𝑖
+       ∑𝑁
+with      𝑖=1 𝐐𝑖 (0) = 𝟎, where the function
+
+         𝜙(∙, 𝜉, 𝛾) = (| ∙ |1−𝛾 + | ∙ |1+𝛾 + 𝜉)𝗌𝗂𝗀𝗇(∙)                                                                                                  (15)
+
+is applied element-wise to the matrix, and 𝜅, 𝛼, 𝜉, 𝛾 are parameters of the filter to be appropriately chosen. Ideally, the filter
+is initialized to 𝐱̂ 𝑖 (0) = 𝐱0 , 𝐏𝑖 (0) = 𝐏0 , but a suboptimal initialization can be used when the initial state is unknown, without
+compromising the asymptotic behavior of the filter.
+    In particular, (14a) is the filtering gain, which is akin to the one in the centralized filter (11a) but uses only the local matrices
+𝐂𝑖 (𝑡), 𝐌𝑖 (𝑡) and includes the factor 𝑁. This gain design has been used in prior works that consider full measurement availability
+to design a distributed filter that recovers the estimates of the centralized counterpart [2,4]. The corresponding state estimation
+update is given by (14b), which incorporates a consensus term featuring the received information from neighboring estimator
+nodes 𝑗 ∈ 𝑖 . The covariance matrix update (14c) aims to recover the covariance matrix 𝐏(𝑡) from (11c) in a distributed fashion,
+thanks to the auxiliary fixed-time consensus protocol (14d)–(14e).2 This protocol serves to obtain estimates 𝐙̂ 𝑖 (𝑡) of the quantity
+                       ∑
+𝐂(𝑡)⊤ 𝐌(𝑡)−1 𝐂(𝑡) = 𝑁              ⊤      −1
+                         𝑖=1 𝐂𝑖 (𝑡) 𝐌𝑖 (𝑡) 𝐂𝑖 (𝑡), which appears in the centralized formulation for 𝐏(𝑡) and contains global information of
+the sensor model matrices and event thresholds, that may be unknown from the point of view of each node in the network.
+
+
+  1 We will refer to the formal results from this work as well as [28], which extended the proof of convergence to the optimal solution for the LTV case and
+
+provided a sufficient value for the consensus gain in the filter.
+                                                                         ̂ 𝑖 (𝑡) of (14d)–(14e) must be understood in the sense of Filippov [29].
+  2 Note that (14e) has a discontinuous right-hand side. Thus, solutions 𝐙
+
+
+
+                                                                                            5
+I. Perez-Salesa et al.                                                                                Nonlinear Analysis: Hybrid Systems 62 (2026) 101768
+
+Remark 2. In the LTI case, 𝐏𝑖 (𝑡) can be directly replaced by 𝐏∞ from (12), such that the gain (14a) is constant and only (14b) needs
+to be run online. 𝐏∞ can be computed in a distributed form by running (14d)–(14e), which obtains 𝐙̂ 𝑖 (𝑡) = 𝐂⊤ 𝐌−1 𝐂 in a fixed time
+𝑇max . Then, each node can solve (12) locally. Another approach is to use the push-sum algorithm proposed in [2] to pre-compute
+𝐏∞ . Note that the number of nodes 𝑁 can also be obtained from distributed protocols such as [30].
+    We require the following additional assumptions.
+
+Assumption 4. Let 𝐙𝑖 (𝑡) = 𝑁𝐂𝑖 (𝑡)⊤ 𝐌𝑖 (𝑡)−1 𝐂𝑖 (𝑡). There is a constant 𝐿 ≥ 0 such that ‖𝐙̇ 𝑖 (𝑡)‖ ≤ 𝐿, ∀𝑡 ≥ 0.
+                                                                                                             √
+Assumption 5. The parameters of the distributed filter (14) are chosen such that 𝛼 > 0, 𝛾 ∈ (0, 1), 𝜉 ≥ 2𝐿∕(𝛼 𝜆 ), and 𝜅 such that
+the matrix
+
+         𝐀∗ (𝑡, 𝜅) = 𝖽𝗂𝖺𝗀𝑁
+                         𝑖=1
+                             (𝐀(𝑡) − 𝐊𝑖 (𝑡)𝐂𝑖 (𝑡)) − 𝜅 𝖽𝗂𝖺𝗀𝑁  (𝐏 (𝑡))(𝐋 ⊗ 𝐈𝑛 )
+                                                           𝑖=1 𝑖
+                                                                                                                                                   (16)
+                                                   ̇ = 𝐀∗ (𝑡, 𝜅)𝐞(𝑡).
+yields asymptotically stable dynamics for a system 𝐞(𝑡)
+
+Remark 3. Assumption 4 and the choice of parameters 𝛼, 𝛾, 𝜉 in Assumption 5 are needed to ensure the convergence of the fixed-
+time consensus protocol (14d)–(14e) [4, Lemma 2]. Moreover, by [4, Lemma 3], there exists a value 𝜅0 such that Assumption 5
+holds for any 𝜅 > 𝜅0 .
+    In the following, we state the main results for our distributed filter under event-triggered communication. We first introduce a
+lemma relating the performance of the filter to the measurement model (9) used for the design, and then we establish the stability
+of the filter considering the actual event-triggered measurements.
+
+Lemma 2. Let Assumptions 1 to 5 hold. Consider the distributed filter (14) for the state of system (1), with the measurement set (10).
+Then, the following properties are complied:
+
+   (1) Unbiasedness: E{𝐱(𝑡) − 𝐱̂ 𝑖 (𝑡) | ̄𝑡 } = 𝟎, ∀𝑡 ≥ 0.
+   (2) Stability: 𝖼𝗈𝗏{𝐱(𝑡) − 𝐱̂ 𝑖 (𝑡) | ̄𝑡 } and 𝐏𝑖 (𝑡) are uniformly bounded ∀𝑡 ≥ 0, for any sequence of events.
+   (3) Convergence: As 𝜅 → ∞, 𝖼𝗈𝗏{𝐱(𝑡) − 𝐱̂ 𝑖 (𝑡) | ̄𝑡 } and 𝐏𝑖 (𝑡) converge to 𝐏(𝑡) from the BLUE centralized filter (11) asymptotically, ∀𝑖 ∈ .
+
+Proof. The proof follows directly from noting that (11) and (14) correspond to the centralized Kalman-Bucy filter and the distributed
+filter from [4] for the assumed measurements 𝐲̄ 𝑖 (𝑡) with noise covariance 𝐌𝑖 (𝑡) from (9)–(10). Then, the lemma holds according to [4,
+Theorems 1-2] and [28, Theorem 2]. □
+
+Remark 4. Note that 𝐏(𝑡) = 𝖼𝗈𝗏{𝐱(𝑡) − 𝐱(𝑡)          ̂   | ̄𝑡 } in the centralized filter (11), but this equality does not hold in general for
+𝖼𝗈𝗏{𝐱(𝑡) − 𝐱̂ 𝑖 (𝑡) | ̄𝑡 } and 𝐏𝑖 (𝑡) in the distributed filter (14). In fact, 𝐏𝑖 (𝑡) converges to 𝐏(𝑡) regardless of the choice of 𝜅, but this
+choice is important for the convergence of 𝖼𝗈𝗏{𝐱(𝑡) − 𝐱̂ 𝑖 (𝑡) | ̄𝑡 }. Still, for large values of 𝜅, 𝐏𝑖 (𝑡) resembles 𝖼𝗈𝗏{𝐱(𝑡) − 𝐱̂ 𝑖 (𝑡) | ̄𝑡 }, as
+formalized in item 3 of Lemma 2.
+
+Theorem 1. Let Assumptions 1 to 5 hold. Consider the distributed filter (14) for the state of system (1), with the measurements (2)
+transmitted according to the event-triggering mechanism (4). The following items hold:
+
+   (1) The estimation error 𝐞𝑖 (𝑡) = 𝐱(𝑡) − 𝐱̂ 𝑖 (𝑡) is uniformly bounded in mean squared error.
+   (2) If 𝜀max → 0, 𝜅 → ∞, then both 𝖼𝗈𝗏{𝐱(𝑡) − 𝐱̂ 𝑖 (𝑡)} and 𝐏𝑖 (𝑡), ∀𝑖 ∈ , converge asymptotically to 𝐏(𝑡) from a centralized Kalman-Bucy
+       filter with the full global measurements (3).
+
+Proof. We start by proving item 1. We can compute the error dynamics of the 𝑖th estimator as 𝐞̇ 𝑖 (𝑡) = 𝐱(𝑡)       ̇ − 𝐱̂̇ 𝑖 (𝑡), considering (1)
+and (14b). By design of the triggering condition (4), we have 𝐲𝑖 (𝜏𝑡𝑖 ) = 𝐲𝑖 (𝑡) − 𝜼𝑖 (𝑡), where ‖𝜼𝑖 (𝑡)‖ ≤ 𝜀𝑖 (𝑡) ≤ 𝜀max , ∀𝑡 ≥ 0. Combining
+these, and with 𝐱̂ 𝑗 (𝑡) − 𝐱̂ 𝑖 (𝑡) = 𝐞𝑖 (𝑡) − 𝐞𝑗 (𝑡), we obtain
+                                                                                             ∑
+       𝐞̇ 𝑖 (𝑡) = (𝐀(𝑡) − 𝐊𝑖 (𝑡)𝐂𝑖 (𝑡))𝐞𝑖 (𝑡) + 𝐰(𝑡) − 𝐊𝑖 (𝑡)𝐯𝑖 (𝑡) + 𝐊𝑖 (𝑡)𝜼𝑖 (𝑡) − 𝜅𝐏𝑖 (𝑡)   (𝐞𝑖 (𝑡) − 𝐞𝑗 (𝑡)),
+                                                                                                                                             (17)
+                                                                                   𝑗∈𝑖
+
+similarly to the analysis in [4,28]. Defining 𝐞(𝑡) = 𝖼𝗈𝗅𝑁  (𝐞 (𝑡)) and 𝜼(𝑡) = 𝖼𝗈𝗅𝑁
+                                                        𝑖=1 𝑖
+                                                                                    (𝜼 (𝑡)), we write the global error dynamics,
+                                                                                 𝑖=1 𝑖
+
+         ̇ = 𝐀∗ (𝑡, 𝜅)𝐞(𝑡) + 1𝑁 ⊗ 𝐰(𝑡) − 𝖽𝗂𝖺𝗀𝑁
+         𝐞(𝑡)                                𝑖=1
+                                                 (𝐊𝑖 (𝑡))𝐯(𝑡) + 𝖽𝗂𝖺𝗀𝑁
+                                                                    𝑖=1
+                                                                        (𝐊𝑖 (𝑡))𝜼(𝑡),                                                              (18)
+
+where 𝐀∗ (𝑡, 𝜅) is defined in Assumption 5, recalling that it is an asymptotically stable dynamical matrix with a suitable choice of
+𝜅, as discussed in Remark 3. Note that the dynamics (18) are affected by stochastic disturbances 𝐰(𝑡), 𝐯(𝑡) and by an unknown but
+bounded variable 𝜼(𝑡). To ease the analysis, considering the two different types of disturbances that affect the error dynamics, we
+split the error as 𝐞(𝑡) = 𝐞𝑠 (𝑡) + 𝐞𝑏 (𝑡), where 𝐞𝑠 (𝑡) is the error term influenced by the stochastic components and 𝐞𝑏 (𝑡) by the bounded
+ones. In particular, their respective dynamics are
+         𝐞̇ 𝑠 (𝑡) = 𝐀∗ (𝑡, 𝜅)𝐞𝑠 (𝑡) + 1𝑁 ⊗ 𝐰(𝑡) − 𝖽𝗂𝖺𝗀𝑁
+                                                      𝑖=1
+                                                          (𝐊𝑖 (𝑡))𝐯(𝑡),
+                                                                                                                                                   (19)
+         𝐞̇ 𝑏 (𝑡) = 𝐀∗ (𝑡, 𝜅)𝐞𝑏 (𝑡) + 𝖽𝗂𝖺𝗀𝑁
+                                          𝑖=1
+                                              (𝐊𝑖 (𝑡))𝜼(𝑡).
+
+                                                                              6
+I. Perez-Salesa et al.                                                                                               Nonlinear Analysis: Hybrid Systems 62 (2026) 101768
+
+For the stochastic part, we have 𝐞𝑠 (𝑡) ∼  (𝟎, 𝐄𝑠 (𝑡)), where the zero mean is due to the initialization 𝐱̂ 𝑖 (𝑡) = 𝐱0 , which gives E{𝐞(0)} = 𝟎,
+and 𝐰(𝑡), 𝐯(𝑡) being zero mean Gaussian noises. The covariance 𝐄𝑠 (𝑡) is given by
+
+         𝐄̇ 𝑠 (𝑡) = 𝐀∗ (𝑡, 𝜅)𝐄𝑠 (𝑡) + 𝐄𝑠 (𝑡)𝐀∗ (𝑡, 𝜅)⊤ + 𝐔𝑁 ⊗ 𝐖(𝑡) + 𝖽𝗂𝖺𝗀𝑁
+                                                                         𝑖=1
+                                                                             (𝐊𝑖 (𝑡))𝐕(𝑡)𝖽𝗂𝖺𝗀𝑁
+                                                                                             𝑖=1
+                                                                                                 (𝐊𝑖 (𝑡))⊤ .                                                      (20)
+
+Note that 𝐖(𝑡) and 𝐕(𝑡) are uniformly bounded according to Assumption 2. Moreover, 𝐊𝑖 (𝑡) is also bounded by this assumption and
+recalling the boundedness of 𝐏𝑖 (𝑡) from Lemma 2. From the stable dynamics and bounded matrices, it follows that              𝑠
+                                                                                                                           √ 𝐄 (𝑡) has a uniform
+bound 𝐄̄ 𝑠 , such that 𝐄𝑠 (𝑡) ⪯ 𝐄̄ 𝑠 , ∀𝑡 ≥ 0. Similarly, for the error term 𝐞𝑏 (𝑡), the disturbance 𝜼(𝑡) fulfills ‖𝜼(𝑡)‖ ≤ 𝑁𝜀max , ∀𝑡 ≥ 0. This
+boundedness along with the stable dynamics from 𝐀∗ (𝑡, 𝜅) implies that a uniform bound 𝐸̄ 𝑏 , dependent on the value of 𝜀max , can be
+found such that ‖𝐞𝑏 (𝑡)‖ ≤ 𝐸̄ 𝑏 , ∀𝑡 ≥ 0. Combining these results, it follows that
+
+         E{𝐞(𝑡)⊤ 𝐞(𝑡)} = E{(𝐞𝑠 (𝑡) + 𝐞𝑏 (𝑡))⊤ (𝐞𝑠 (𝑡) + 𝐞𝑏 (𝑡))} = 𝗍𝗋(𝐄𝑠 (𝑡)) + ‖𝐞𝑏 (𝑡)‖2 ≤ 𝗍𝗋(𝐄̄ 𝑠 ) + (𝐸̄ 𝑏 )2 ,   ∀𝑡 ≥ 0,                                      (21)
+
+completing the proof of uniform mean-squared-error boundedness for the estimation error.
+   The proof of item 2 follows as a consequence of the convergence from item 3 of Lemma 2, along with noting that the full
+measurement information case is approximated as 𝜀max → 0. □
+
+6. Multi-channel event-triggered filter
+
+    We extend our proposal to the multi-channel event-triggered communication case, by endowing each estimator node with its own
+event-triggering mechanism to decide when to transmit its local estimate to neighboring nodes. The goal is to obtain a distributed
+filter with fully asynchronous and reduced transmissions in both communication channels. To ease the presentation and analysis,
+in this section we consider the particular case for LTI systems:
+
+Assumption 6. The observed system and measurement model are LTI, i.e., 𝐀, 𝐖, 𝐂𝑖 , 𝐕𝑖 , 𝜀𝑖 are constant.
+    Note that, in this case, only the state estimates 𝐱̂ 𝑖 (𝑡) need to be communicated among estimator nodes, and the asymptotic form
+of the filter with constant 𝐏∞ can be used, as detailed in Remark 2.
+    The transmission instants {𝓁𝑘𝑖 }∞
+                                    𝑘=0
+                                        for the estimator nodes, which are independent of the events {𝜏𝑘𝑖 }∞
+                                                                                                           𝑘=0
+                                                                                                               triggered at the sensors,
+are chosen as
+          𝑖
+         𝓁𝑘+1 = inf{𝑡 > 𝓁𝑘𝑖 | ‖𝐱̂ 𝑖 (𝑡) − 𝐱̂ 𝑖 (𝓁𝑘𝑖 )‖ ≥ 𝛿𝑖 (𝑡)},                                                                                                 (22)
+
+where 0 < 𝛿𝑖 (𝑡) ≤ 𝛿max , ∀𝑡 ≥ 0, for some 𝛿max > 0.
+  Then, the distributed LTI filter with multi-channel event-triggered communication is given by
+                        −1
+           𝐊𝑖 = 𝑁𝐏∞ 𝐂⊤
+                     𝑖 𝐌𝑖 ,                                                                                                                                      (23a)
+                                                                      ∑
+         𝐱̂̇ 𝑖 (𝑡) = 𝐀𝐱̂ 𝑖 (𝑡) + 𝐊𝑖 (𝐲𝑖 (𝜏𝑡𝑖 ) − 𝐂𝑖 𝐱̂ 𝑖 (𝑡)) + 𝜅𝐏∞          (𝐱̂ 𝑗 (𝓁𝑡𝑗 ) − 𝐱̂ 𝑖 (𝑡)),                                                          (23b)
+                                                                      𝑗∈𝑖
+
+where 𝐱̂ 𝑗 (𝓁𝑡𝑗 ) with 𝓁𝑡𝑗 = max{𝓁𝑘𝑗 ≤ 𝑡} is the most recent estimate received from the neighbor 𝑗 prior to time 𝑡.
+
+Remark 5. An event-triggered implementation of an auxiliary consensus protocol in (14) to compute 𝐏𝑖 (𝑡) for linear time-varying
+(LTV) systems could also be achieved through similar ideas as in [31].
+
+Theorem 2. Let Assumptions 1 to 6 hold. Consider the distributed filter (23) for the state of system (1) with the measurements (2), under
+the event-triggering mechanisms (4) and (22). Then,
+
+   (1) The estimation error 𝐞𝑖 (𝑡) = 𝐱(𝑡) − 𝐱̂ 𝑖 (𝑡) is uniformly bounded in mean squared error.
+   (2) If 𝛿max → 0, 𝜀max → 0, 𝜅 → ∞, then E{𝐞𝑖 (𝑡)} → 𝟎 and 𝖼𝗈𝗏{𝐱(𝑡) − 𝐱̂ 𝑖 (𝑡)} → 𝐏∞ from a centralized Kalman-Bucy filter with full
+       measurement information (3) asymptotically.
+
+Proof. With the introduction of the event-triggering mechanism, the error dynamics (18) are modified as follows
+                                                                         ∑                         ∑
+      𝐞̇ 𝑖 (𝑡) = (𝐀 − 𝐊𝑖 𝐂𝑖 )𝐞𝑖 (𝑡) + 𝐰(𝑡) − 𝐊𝑖 𝐯𝑖 (𝑡) + 𝐊𝑖 𝜼𝑖 (𝑡) − 𝜅𝐏∞   (𝐞𝑖 (𝑡) − 𝐞𝑗 (𝑡)) + 𝜅𝐏∞   𝐝𝑗 (𝑡),
+                                                                                                                                                                  (24)
+                                                                                           𝑗∈𝑖             𝑗∈𝑖
+
+by noting that 𝐱̂ 𝑗 (𝓁𝑡𝑗 ) = 𝐱̂ 𝑗 (𝑡) − 𝐝𝑗 (𝑡), with ‖𝐝𝑗 (𝑡)‖ ≤ 𝛿𝑗 (𝑡) ≤ 𝛿max , ∀𝑡 ≥ 0, by design of the triggering condition (22). That is, another
+bounded disturbance is added to the error dynamics, recalling the proof of Theorem 1. By the same arguments, it is evident that
+the estimation error remains bounded in mean squared error.
+    For item 2, as 𝛿max → 0, the perturbation 𝐝𝑗 (𝑡) vanishes, with the error dynamics remaining as in the case analyzed in Theorem
+1, from which the result follows. □
+   The results from Theorems 1–2 indicate that stable state estimates can be obtained by our distributed filter under event-triggered
+communication in the sensor and estimator channels, while reducing the communication load. Moreover, by appropriately tuning
+the event thresholds and consensus gain, the estimation performance of each estimator in the distributed setup with reduced
+communication can be made arbitrarily close to that of a centralized Kalman-Bucy filter with full measurement information.
+
+                                                                                                     7
+I. Perez-Salesa et al.                                                                                  Nonlinear Analysis: Hybrid Systems 62 (2026) 101768
+
+7. Strategies for Zeno-freeness
+
+    So far, we have provided our theoretical results while assuming the absence of Zeno behavior under the event-triggering
+mechanisms (4)–(22). In this section, we formally prove that Assumption 3 holds with probability 1 for our event-triggered
+distributed filters, under some mild considerations. In addition, since only a probabilistic guarantee can be given under the stochastic
+noise present in the system, we also discuss an alternative time regularization strategy that can be incorporated to the event-
+triggering mechanism to strictly enforce a minimum inter-event time. Finally, we comment on its effect on the overall performance
+of the setup.
+
+7.1. Probabilistic avoidance of Zeno behavior
+
+    This section formally establishes conditions ensuring the absence of Zeno behavior. Since the mechanism in (4) is directly
+influenced by stochastic measurement noise, whereas the mechanism in (22) acts on filtered estimates that incorporate neighbor
+information, each triggering rule is analyzed separately.
+
+Theorem 3. Let Assumptions 1 and 2 hold. Let 𝐂𝑖 (𝑡) be continuous. Consider the measurements (2) for system (1), assuming that 𝐯𝑖 (𝑡) is
+colored Gaussian noise of the form
+
+         𝐯̇ 𝑖 (𝑡) = −𝜆𝐯𝑖 (𝑡) + 𝐯′𝑖 (𝑡),                                                                                                              (25)
+
+where 𝐯′𝑖 (𝑡) is white Gaussian noise and 𝜆 > 0 is the bandwidth parameter. Choose the event threshold 𝜀𝑖 (𝑡) in (4) such that it has a strictly
+positive minimum value 𝜀min (𝑇 ) > 0 for any compact interval [0, 𝑇 ]. Then, the sequence {𝜏𝑘𝑖 }∞
+                                                                                                𝑘=0
+                                                                                                    does not exhibit Zeno behavior 𝑤.𝑝.1.
+
+Proof. The dynamical system (1) follows a stochastic differential equation driven by a Wiener process. In particular, 𝐰(𝑡) is formally
+understood as the generalized derivative 𝐰(𝑡) = d𝐰′ (𝑡)∕d𝑡 of a Wiener process 𝐰′ (𝑡). It is well known that the corresponding state
+process 𝐱(𝑡) admits a modification with continuous sample paths on any compact interval, 𝑤.𝑝.1 [32]. The colored noise process (25)
+is also driven by a Wiener process and admits the same modification. Then, since 𝐲𝑖 (𝑡) = 𝐂𝑖 (𝑡)𝐱(𝑡) + 𝐯𝑖 (𝑡) is composed of products and
+sums of continuous terms, it follows that 𝐲𝑖 (𝑡) admits a modification with continuous sample paths on any compact interval, 𝑤.𝑝.1.
+In the following, we work on such a continuous sample path, and the conclusions hold 𝑤.𝑝.1.
+    Fix an arbitrary 𝑇 > 0 and let 𝜀min (𝑇 ) = inf 𝑡∈[0,𝑇 ] 𝜀𝑖 (𝑡) > 0. Since 𝐲𝑖 (𝑡) is continuous on [0, 𝑇 ], it is uniformly continuous on [0, 𝑇 ].
+Therefore, for the value 𝜀min (𝑇 ) > 0, there exists a 𝛥(𝑇 ) > 0 such that, for all 𝑠, 𝑡 ∈ [0, 𝑇 ], if |𝑡 − 𝑠| < 𝛥(𝑇 ), then ‖𝐲𝑖 (𝑡)−𝐲𝑖 (𝑠)‖ < 𝜀min (𝑇 ).
+    Consider any event time 𝑠 = 𝜏𝑘𝑖 ∈ [0, 𝑇 ]. For any 𝑡 ∈ (𝜏𝑘𝑖 , min{𝜏𝑘𝑖 + 𝛥(𝑇 ), 𝑇 }), we have
+
+         ‖𝐲𝑖 (𝑡) − 𝐲𝑖 (𝜏𝑘𝑖 )‖ < 𝜀min (𝑇 ) ≤ 𝜀𝑖 (𝑡),
+
+so the triggering condition in (4) cannot be satisfied in that interval. Hence,
+          𝑖
+         𝜏𝑘+1 − 𝜏𝑘𝑖 ≥ 𝛥(𝑇 ) > 0,
+           𝑖
+whenever 𝜏𝑘+1  ≤ 𝑇 . This excludes an infinite accumulation of event times in [0, 𝑇 ]. Since 𝑇 > 0 is arbitrary, the sequence {𝜏𝑘𝑖 }∞
+                                                                                                                                    𝑘=0
+does not exhibit Zeno behavior, 𝑤.𝑝.1. □
+
+Remark 6. Theorem 3 has been established under additional assumptions, namely that 𝐯𝑖 (𝑡) is modeled as colored noise rather than
+white Gaussian noise. This guarantees sufficient regularity of the trajectories, preventing the occurrence of infinitely many events
+in finite time caused by abrupt variations, since white Gaussian noise does not admit continuous sample paths. The colored noise
+model (25) approximates white noise as 𝜆 increases. Moreover, colored noise naturally arises in digital implementations with sample
+and hold mechanisms, which impose bandwidth limitations on the noise process. Hence, assuming colored noise with unknown
+bandwidth remains consistent with practical scenarios.
+
+Theorem 4. Let Assumptions 1, 2, 5 and 6 hold, and assume that there is no Zeno behavior in the sequences {𝜏𝑖𝑘 }∞       𝑘=0
+                                                                                                                            , ∀𝑖 ∈ . Consider the
+distributed filter (23) and the event-triggering mechanism (22), choosing the event threshold 𝛿𝑖 (𝑡) such that it has a strictly positive minimum
+value 𝛿min (𝑇 ) > 0 for any compact interval [0, 𝑇 ]. Then, the sequences {𝓁𝑘𝑖 }∞
+                                                                                𝑘=0
+                                                                                    do not exhibit Zeno behavior.
+
+Proof. The estimate 𝐱̂ 𝑖 (𝑡) in (23b) depends on event-triggered measurements and neighbor estimates. Define the combined update
+sequence
+
+         {𝜁𝑘𝑖 }∞
+               𝑘=0
+                   = {𝜏𝑘𝑖 }∞
+                           𝑘=0
+                               ∪ {𝓁𝑘𝑗 }∞
+                                       𝑘=0
+                                           ,       ∀𝑗 ∈ 𝑖 ,
+
+which collects all instants where measurements or neighbor estimates are updated. By assumption, the measurement transmission
+times {𝜏𝑘𝑖 }∞𝑘=0
+                 are not Zeno. Hence, Zeno behavior in {𝓁𝑘𝑖 }∞
+                                                             𝑘=0
+                                                                 could only originate locally at some estimator node. Fix an interval
+        𝑖 ) where no external updates occur. On this interval, measurements and neighbor estimates are constant. Therefore, (23b)
+(𝜁𝑘𝑖 , 𝜁𝑘+1
+reduces to an ordinary differential equation with locally bounded right-hand side. In particular, there exists 𝐵 ≥ 0 such that
+
+         ‖𝐱̂̇ 𝑖 (𝑡)‖ ≤ 𝐵,                 𝑖
+                             ∀𝑡 ∈ (𝜁𝑘𝑖 , 𝜁𝑘+1 ).
+
+                                                                           8
+I. Perez-Salesa et al.                                                                                   Nonlinear Analysis: Hybrid Systems 62 (2026) 101768
+
+ If 𝐵 = 0, then ‖𝑥̂̇ 𝑖 (𝑡)‖ = 0 on (𝜁𝑘𝑖 , 𝜁𝑘+1     ̂ 𝑖 (𝑡) is constant. Hence, ‖𝑥̂ 𝑖 (𝑡) − 𝑥̂ 𝑖 (𝓁𝑘𝑖 )‖ = 0 < 𝛿𝑖 (𝑡), and no event can be triggered during
+                                           𝑖 ), so 𝑥
+
+this interval. When 𝐵 > 0, assume that two consecutive triggering instants 𝓁𝑘𝑖 < 𝓁𝑘+1                  𝑖                      𝑖 ). Moreover,
+                                                                                                           lie inside (𝜁𝑘𝑖 , 𝜁𝑘+1
+                                              𝑖
+                                             𝓁𝑘+1
+         ‖𝐱̂ 𝑖 (𝓁𝑘+1
+                 𝑖
+                     ) − 𝐱̂ 𝑖 (𝓁𝑘𝑖 )‖ ≤             ‖𝐱̂̇ 𝑖 (𝑠)‖d𝑠 ≤ 𝐵(𝓁𝑘+1
+                                                                       𝑖
+                                                                           − 𝓁𝑘𝑖 ).
+                                          ∫𝓁 𝑖
+                                             𝑘
+
+From the triggering condition (22),
+                              𝑖
+         0 < 𝛿min (𝑇 ) ≤ 𝛿𝑖 (𝓁𝑘+1 ) ≤ ‖𝐱̂ 𝑖 (𝓁𝑘+1
+                                              𝑖
+                                                  ) − 𝐱̂ 𝑖 (𝓁𝑘𝑖 )‖
+             𝑖 . Combining both inequalities yields
+for any 𝑇 ≥ 𝓁𝑘+1
+
+          𝑖                𝛿min (𝑇 )
+         𝓁𝑘+1 − 𝓁𝑘𝑖 ≥                > 0.
+                              𝐵
+                                                                                 𝑖 ), excluding Zeno accumulation within such intervals.
+Hence, a strictly positive lower bound on inter-event times holds inside (𝜁𝑘𝑖 , 𝜁𝑘+1
+Finally, since solutions of (23b) are continuous, accumulation cannot occur at the update instants {𝜁𝑘𝑖 }∞𝑘=0
+                                                                                                              either. Therefore, {𝓁𝑘𝑖 }∞
+                                                                                                                                       𝑘=0
+does not exhibit Zeno behavior. □
+
+
+7.2. Time regularization
+
+
+    A simple way to enforce a strictly positive minimum inter-event time is to introduce time regularization, namely, to disable the
+triggering condition for a fixed interval after each event. This approach is frequently adopted in stochastic settings, where rare noise
+realizations may otherwise induce arbitrarily fast successive events [33]. The triggering rules become
+          𝑖
+        𝜏𝑘+1 = inf{𝑡 ≥ 𝜏𝑘𝑖 + 𝜏 ∣ ‖𝐲𝑖 (𝑡) − 𝐲𝑖 (𝜏𝑘𝑖 )‖ ≥ 𝜀𝑖 (𝑡)},
+                             ̄                                                                                                     (26)
+        𝓁𝑘+1 = inf{𝑡 ≥ 𝓁𝑘𝑖 + 𝓁 ∣ ‖𝐱̂ 𝑖 (𝑡) − 𝐱̂ 𝑖 (𝓁𝑘𝑖 )‖ ≥ 𝛿𝑖 (𝑡)},
+          𝑖
+                               ̄
+where 𝜏 > 0 and 𝓁 > 0 are regularization parameters. By construction,
+        ̄           ̄
+          𝑖
+        𝜏𝑘+1 − 𝜏𝑘𝑖 ≥ 𝜏,       𝑖
+                            𝓁𝑘+1  − 𝓁𝑘𝑖 ≥ 𝓁,
+                      ̄                      ̄
+so a uniform minimum inter-event time is guaranteed.
+    From the perspective of exploiting implicit measurement information between events, disabling the triggering condition during
+the interval (𝜏𝑘 , 𝜏𝑘 + 𝜏) implies that such implicit information is not available over that short period. However, the purpose of
+                        ̄
+exploiting implicit information is to prevent the growth of estimation uncertainty during long inter-event intervals without new
+measurements. Since 𝜏 can be chosen arbitrarily small, neglecting implicit information over (𝜏𝑘 , 𝜏𝑘 + 𝜏) does not affect the intended
+                        ̄                                                                              ̄
+behavior. Therefore, it is reasonable to treat implicit information as effectively available between events.
+    In digital implementations, continuous-time dynamics are approximated with a sampling step ℎ > 0, and the triggering condition
+is evaluated once per step. Choosing 𝜏 = ℎ and 𝓁 = ℎ is therefore natural, since it does not impose additional constraints beyond
+                                               ̄                ̄
+those already induced by sampling. Under this choice, two situations may arise if the triggering condition is violated during the
+regularization interval:
+
+     • The violation disappears before the interval ends. No event is generated. This corresponds to a transient excursion of the signal
+       that does not persist over one sampling step, and the loss of information is no more significant than from the sampling itself.
+     • The violation persists after the interval ends. An event is generated immediately at the next admissible checking instant. In
+       the extreme case of persistent violation, events occur periodically with period ℎ, which coincides with full communication at
+       every sampling step.
+
+Remark 7. The use of positive event thresholds and time regularization parameters to guarantee well posedness prevents exact
+convergence to the centralized filter, as established in item 2 of Theorems 1–2. Indeed, simultaneously setting the event thresholds
+and the time regularization parameters to zero may lead to Zeno behavior. Nevertheless, these parameters can be chosen arbitrarily
+small, which avoids Zeno behavior while yielding a performance close to that of the centralized filter. The limit case 𝜀max → 0,
+𝛿max → 0 is mainly of theoretical interest, as it characterizes convergence to the centralized solution. In practice, selecting zero
+thresholds is undesirable since it removes any communication savings.
+
+
+8. Simulation experiments
+
+
+   We include a simulation experiment to illustrate the performance of the proposed filter. Without loss of generality, we focus
+here on an LTI system, since this is the case we have considered for the distributed filter (23) under multi-channel event-triggered
+communication. However, recall that the results for the filter (14) under event-triggered measurements hold for LTV systems as
+well.
+
+                                                                                      9
+I. Perez-Salesa et al.                                                                                   Nonlinear Analysis: Hybrid Systems 62 (2026) 101768
+
+
+
+
+                             Fig. 2. State estimates with the baseline centralized Kalman-Bucy filter with full measurement data.
+
+
+
+    We consider a 2D integrator system, where the state 𝐱(𝑡) = [𝑥(𝑡), 𝑦(𝑡), 𝑣𝑥 (𝑡), 𝑣𝑦 (𝑡)]⊤ represents the 2D Cartesian position coordinates
+𝑥(𝑡), 𝑦(𝑡), and the velocity components 𝑣𝑥 (𝑡), 𝑣𝑦 (𝑡) in both axes. The system dynamics are described by (1) along with
+
+           ⎡0            0   1       0⎤       ⎡0   0    0     0⎤
+           ⎢                          ⎥       ⎢                 ⎥
+            0            0   0       1⎥        0   0    0     0⎥
+         𝐀=⎢                            ,   𝐖=⎢                   .                                                                                   (27)
+           ⎢0            0   0       0⎥       ⎢0   0   0.5    0⎥
+           ⎢0            0   0        ⎥
+                                     0⎦       ⎢0   0    0       ⎥
+                                                             0.5⎦
+           ⎣                                  ⎣
+The plant is observed by a network of 𝑁 = 6 estimator nodes, with the topology shown in Fig. 1, noting that the communication
+graph for the set of estimator nodes running the distributed filter is given by the dotted lines. As depicted in dashed lines in Fig.
+1, each estimator node receives a sensor measurement from its corresponding 𝑖th sensor. The sensor models are given by (2) along
+with 𝐂1 = 𝐂5 = [1, 0, 0, 0], 𝐂2 = 𝐂4 = [0, 1, 0, 0], 𝐂3 = [0, 0, 1, 0], 𝐂6 = [0, 0, 0, 1], and 𝐕𝑖 = 0.01, ∀𝑖 ∈ . To simulate the system
+dynamics, we use the Euler–Maruyama discretization with step ℎ = 10−3 .
+    Each estimator node runs the event-triggered filter (23), where we assume that the constant matrix 𝐏∞ has been precomputed
+offline, as explained in Remark 2. Therefore, estimator nodes transmit only their state estimates 𝐱̂ 𝑖 (𝑡) to their neighbors, and
+measurements are transmitted to the estimators, at a series of events. Due to the digital implementation, note that the discretization
+step ℎ naturally acts as the time regularization parameters 𝜏, 𝓁 in the event-triggering mechanisms (26) to avoid Zeno behavior. We
+                                                             ̄ ̄
+set 𝜅 = 5000 for the distributed filter, recalling that 𝜅 → ∞ improves its estimation performance. In the following experiments, we
+test the performance of the filter for different values of the event thresholds 𝜀𝑖 , 𝛿𝑖 , assuming for simplicity that they are constant
+and that the same value is used at all nodes.
+    We aim to verify that the distributed filter (23) under multi-channel event-triggered communication can achieve comparable
+performance to the centralized Kalman-Bucy filter with the complete measurement (3) of the network, which provides the optimal
+state estimate in this context, while achieving communication savings in both channels. As intermediate cases, we will also include
+the performance of the centralized filter 4 and of the distributed filter (14) under event-triggered measurements only (which
+corresponds to setting 𝛿𝑖 = 0 in the simulation).
+    Figs. 2 and 3 show a qualitative comparison of the estimates obtained using the centralized filter and the distributed filter
+under multi-channel event-triggered communication with event thresholds 𝜀𝑖 = 0.1 and 𝛿𝑖 = 0.005, for the same sequence of states
+and measurements. The distributed filter is initialized randomly to verify its convergence in the case of having unknown initial
+conditions, and the estimates 𝐱̂ 𝑖 (𝑡) computed by all nodes are shown in Fig. 3. The blue band around the estimates represents
+twice the standard deviation, using the values of the estimated covariance matrix 𝐏∞ , in analogy to a confidence interval for the
+estimates. Note that the nodes in the distributed case exhibit a high level of agreement in their estimates, resembling the performance
+obtained for the centralized filter in Fig. 2. However, thanks to the introduction of event-triggered communication, the distributed
+filter achieves this result while using only 48% of the communication slots for the sensor channel and 37% in the estimator one, on
+average (considering that full usage of each channel means that every device transmits data at all simulation steps).
+    In addition, we provide a numerical comparison of the different setups to validate their performance. As performance metrics,
+we consider the mean squared error (MSE) for the simulation at each estimator, 𝐸, and the communication rates 𝐶𝑠 and 𝐶𝑒 in the
+sensor and estimator communication channels, respectively. We compute them as follows:
+
+                 1 ∑                                          ℎ ∑
+                         𝑁       𝑇                                    𝑁
+         𝐸=               ‖𝐱(𝑡) − 𝐱̂ 𝑖 (𝑡)‖2 d𝑡,       𝐶=          𝑒,                                                                                 (28)
+                𝑁𝑇 𝑖=1 ∫0                                    𝑁𝑇 𝑖=1 𝑖
+
+                                                                             10
+I. Perez-Salesa et al.                                                                               Nonlinear Analysis: Hybrid Systems 62 (2026) 101768
+
+
+
+
+Fig. 3. State estimates obtained by each estimator node with our proposed distributed filter under multi-channel event-triggered communication,
+with 𝜅 = 5000, 𝜀𝑖 = 0.1 and 𝛿𝑖 = 0.005. The sensors use 48% of communication slots, while the estimators use 37%.
+
+
+                         Table 1
+                         Average results of 100 runs for centralized and distributed estimators under full and event-triggered
+                         communication.
+                                                                               𝗍𝗋(P∞ )     𝐸            𝐶𝑠             𝐶𝑒
+                          Centralized Kalman-Bucy filter                       0.1534      0.0716       1              –
+                          Centralized filter,                𝜀𝑖 = 0.1          0.1789      0.0829       0.4817         –
+                          event-triggered measurements       𝜀𝑖 = 0.15         0.2071      0.0953       0.2918         –
+                                                             𝜀𝑖 = 0            0.1534      0.0794       1              1
+                          Our distributed filter
+                                                             𝜀𝑖 = 0.1          0.1789      0.0897       0.4817         1
+                          (𝛿𝑖 = 0)
+                                                             𝜀𝑖 = 0.15         0.2071      0.1013       0.2918         1
+                          Our distributed filter             𝛿𝑖 = 0.005        0.1789      0.1237       0.4817         0.4508
+                          (𝜀𝑖 = 0.1)                         𝛿𝑖 = 0.01         0.1789      0.2529       0.4817         0.2177
+
+
+
+
+with 𝑇 being the length of the experiment and 𝑒𝑖 the number of events triggered by the 𝑖th sensor (for 𝐶𝑠 ) or estimator (for 𝐶𝑒 ). For
+the centralized case, 𝑁 = 1 is used to compute 𝐸, since there is only one estimator. In the distributed case, note that 𝐸 represents
+the average MSE for one estimator node within the network, recalling that the goal is for each node to obtain similar estimates
+to a centralized filter. Moreover, the communication rates are normalized between zero, representing no transmissions, and one,
+representing the case where each device transmits at all steps in the simulation. Due to the stochastic nature of the observed system
+and measurements, we perform 100 runs of length 𝑇 = 10 for each method, such that the result is representative of the expected
+behavior for different noise realizations. Each method is run over the same 100 realizations of noise to ensure a fair comparison,
+and all filters are initialized to 𝐱̂ 𝑖 (0) = 𝐱0 .
+    The results of this experiment are shown in Table 1, considering different values of the event thresholds 𝜀𝑖 , 𝛿𝑖 in the event-
+triggered cases. We include the metrics 𝐸, 𝐶𝑠 , 𝐶𝑒 for each method, as well as 𝗍𝗋(𝐏∞ ), which represents the theoretical MSE estimated
+by the filter. Note that the case with 𝜀𝑖 = 0, 𝛿𝑖 = 0 matches the digital implementation of the full-communication distributed filter
+where each node transmits its data at every simulation step, so we include this limit case in the experiment. The simulations confirm
+our theoretical results. For our distributed filter, the case with 𝜀𝑖 = 0, 𝛿𝑖 = 0 recovers a comparable performance to the centralized
+Kalman-Bucy filter with full measurements. As the threshold 𝜀𝑖 is increased, the estimation error increases slightly, but significant
+communication savings are achieved in the sensor communication channel. Moreover, the distributed filter still obtains similar
+performance to the centralized one under the same event threshold 𝜀𝑖 . Then, by simultaneously increasing the threshold 𝛿𝑖 for the
+transmission of state estimates, the communication in the estimator channel can be similarly reduced, while still providing stable
+estimates with a bounded MSE. Thus, the results in Table 1 evidence a trade-off between accuracy and communication rate where,
+by tuning the event thresholds, the performance of the centralized filter can be approximated in a distributed fashion while reducing
+the transmission load in all channels of the network. The resulting values of 𝐸 in the experiments are also smaller than the estimated
+value given by 𝗍𝗋(𝐏∞ ) for each 𝜀𝑖 in most cases, except when setting higher values of 𝛿𝑖 for the event-triggering mechanism in the
+estimators, so the estimated covariance 𝐏∞ is a reasonable indicator of the expected quality of the estimates for a given threshold 𝜀𝑖 .
+Notice that 𝐸 does not exactly match 𝗍𝗋(𝐏∞ ) even for the centralized Kalman-Bucy filter, which can be due to using a finite number
+of noise realizations to compute 𝐸, while the expected error 𝗍𝗋(𝐏∞ ) is obtained theoretically by considering the noise probability
+distributions.
+
+                                                                          11
+I. Perez-Salesa et al.                                                                                         Nonlinear Analysis: Hybrid Systems 62 (2026) 101768
+
+9. Conclusions
+
+    We have presented a distributed filter for stochastic systems under event-triggered measurement sampling and communication
+between estimator nodes. To improve the estimates between sampling events and reduce uncertainty for large inter-event intervals,
+the estimators leverage implicit information in not receiving a new measurement, incorporating it as a virtual measurement. Through
+formal analysis and simulation experiments, we verify that our solution achieves stable estimates in the mean squared error sense and
+that undesirable Zeno behavior is avoided. Moreover, we have shown that, by tuning the consensus gain and the event thresholds,
+the performance of the distributed filter can be made arbitrarily close to that of the optimal centralized filter with full information
+of the network measurements, while significantly reducing the communication demands of the distributed setup.
+
+CRediT authorship contribution statement
+
+   Irene Perez-Salesa: Writing – original draft, Visualization, Validation, Software, Investigation, Formal analysis, Data curation,
+Conceptualization. Rodrigo Aldana-López: Writing – review & editing, Investigation, Formal analysis, Conceptualization. Carlos
+Sagüés: Writing – review & editing, Supervision, Resources, Project administration, Funding acquisition, Conceptualization.
+
+Declaration of competing interest
+
+    The authors declare that they have no known competing financial interests or personal relationships that could have appeared
+to influence the work reported in this paper.
+
+Data availability
+
+    Data will be made available on request.
+
+
+References
+
+ [1] S. He, H.-S. Shin, S. Xu, A. Tsourdos, Distributed estimation over a low-cost sensor network: A review of state-of-the-art, Inf. Fusion 54 (2020) 21–43.
+ [2] S. Battilotti, F. Cacace, M. d’Angelo, A. Germani, Asymptotically optimal consensus-based distributed filtering of continuous-time linear systems, Automatica
+     122 (2020) 109189.
+ [3] S. Battilotti, F. Cacace, M. d’Angelo, A stability with optimality analysis of consensus-based distributed filters for discrete-time linear systems, Automatica
+     129 (2021) 109589.
+ [4] I. Perez-Salesa, R. Aldana-López, C. Sagüés, ODEFTC: Optimal distributed estimation based on fixed-time consensus, Inf. Fusion 116 (2025) 102783.
+ [5] G. Battistelli, L. Chisci, D. Selvi, A distributed Kalman filter with event-triggered communication and guaranteed stability, Automatica 93 (2018) 75–82.
+ [6] D. Selvi, G. Battistelli, Distributed Kalman filtering with adaptive communication, IEEE Control. Syst. Lett. 9 (2025) 15–20.
+ [7] I. Perez-Salesa, R. Aldana-López, C. Sagüés, Event-triggered distributed state estimation based on asymptotic Kalman-Bucy filter, in: 2024 European Control
+     Conference, ECC, 2024, pp. 731–736.
+ [8] X. Ge, Q.-L. Han, X.-M. Zhang, L. Ding, F. Yang, Distributed event-triggered estimation over sensor networks: A survey, IEEE Trans. Cybern. 50 (3) (2020)
+     1306–1320.
+ [9] Z. Kowalczuk, M. Domżalski, Asynchronous distributed state estimation based on a continuous-time stochastic model, Internat. J. Adapt. Control Signal
+     Process. 26 (5) (2012) 384–399.
+[10] Y. Hu, X. Lin, K. Peng, Distributed consensus filtering over sensor networks with asynchronous measurements, Internat. J. Adapt. Control Signal Process.
+     39 (1) (2025) 101–115.
+[11] Y. Hu, X. Lin, Weighted average consensus filtering for continuous-time linear systems with asynchronous sensor measurements, IEEE Sensors J. 25 (4)
+     (2025) 6881–6893.
+[12] S. Wang, Y.-J. Pan, M. Guay, Distributed state estimation for linear time-invariant systems with aperiodic sampled measurement, IEEE Trans. Control.
+     Netw. Syst. 11 (4) (2024) 1835–1844.
+[13] L. Yan, X. Zhang, Z. Zhang, Y. Yang, Distributed state estimation in sensor networks with event-triggered communication, Nonlinear Dynam. 76 (1) (2014)
+     169–181.
+[14] C. Zhang, Y. Jia, Distributed Kalman consensus filter with event-triggered communication: Formulation and stability analysis, J. Franklin Inst. 354 (13)
+     (2017) 5486–5502.
+[15] N. Xia, F. Yang, Q.-L. Han, Distributed event-triggered networked set-membership filtering with partial information transmission, IET Control Theory Appl.
+     11 (2) (2017) 155–163.
+[16] X. Ge, Q.-L. Han, Distributed event-triggered H-infinity filtering over sensor networks with communication delays, Inform. Sci. 291 (2015) 128–142.
+[17] L. Ding, G. Guo, Distributed event-triggered H-infinity consensus filtering in sensor networks, Signal Process. 108 (2015) 365–375.
+[18] S. Trimpe, R. D’Andrea, Event-Based State Estimation With Variance-Based Triggering, IEEE Trans. Autom. Control 59 (12) (2014) 3266–3281.
+[19] S. Trimpe, Event-based state estimation: An emulation-based approach, IET Control Theory Appl. 11 (11) (2017) 1684–1693.
+[20] Q. Voortman, D. Efimov, A.Y. Pogromsky, J.P. Richard, H. Nijmeijer, An event-triggered observation scheme for systems with perturbations and data rate
+     constraints, Automatica 145 (2022) 110512.
+[21] M. Miśkowicz, Event-based sampling strategies in networked control systems, in: 10th IEEE Workshop on Factory Communication Systems, 2014, pp. 1–10.
+[22] I. Perez-Salesa, R. Aldana-López, C. Sagüés, Bounding uncertainty in state estimation under dynamic event-triggered communication, IEEE Trans. Syst.
+     Man, Cybern.: Syst. 55 (1) (2025) 209–220.
+[23] J. Sijs, B. Noack, U.D. Hanebeck, Event-based state estimation with negative information, in: 16th International Conference on Information Fusion,
+     International Society of Information Fusion (ISIF), 2013, pp. 2192–2199.
+[24] G. Battistelli, A. Benavoli, L. Chisci, Data-driven communication for state estimation with sensor networks, Automatica 48 (5) (2012) 926–935.
+[25] E.J. Schmitt, B. Noack, W. Krippner, U.D. Hanebeck, Gaussianity-preserving event-based state estimation with an FIR-based stochastic trigger, IEEE Control.
+     Syst. Lett. 3 (3) (2019) 769–774.
+
+
+                                                                                12
+I. Perez-Salesa et al.                                                                                    Nonlinear Analysis: Hybrid Systems 62 (2026) 101768
+
+[26] E.J. Schmitt, B. Noack, Event-based multisensor fusion with correlated estimates, in: 2024 27th International Conference on Information Fusion, FUSION,
+     2024, pp. 1–8.
+[27] R.E. Kalman, R.S. Bucy, New results in linear filtering and prediction theory, J. Fluids Eng. Trans. the ASME 83 (1961) 95–108.
+[28] I. Perez-Salesa, R. Aldana-López, C. Sagüés, A note on optimal distributed state estimation for linear time-varying systems, 2025, arXiv:2510.18712.
+[29] F. Arscott, A. Filippov, Differential equations with discontinuous righthand sides: Control systems, in: Mathematics and its Applications, Springer
+     Netherlands, 1988.
+[30] I. Shames, T. Charalambous, C.N. Hadjicostis, M. Johansson, Distributed network size estimation and average degree estimation and control in networks
+     isomorphic to directed graphs, in: 2012 50th Annual Allerton Conference on Communication, Control, and Computing (Allerton), 2012, pp. 1885–1892.
+[31] R. Aldana-López, R. Aragüés, C. Sagüés, Quasi-exact dynamic average consensus under asynchronous communication and symmetric delays, ISA Trans.
+     (2025).
+[32] K. Åström, Introduction to stochastic control theory, in: Mathematics in science and engineering, Academic Press, 1970.
+[33] X. Ge, Q.L. Han, X.M. Zhang, D. Ding, Dynamic event-triggered control and estimation: A survey, Int. J. Autom. Comput. 18 (6) (2021) 857–886.
+
+
+
+
+                                                                            13

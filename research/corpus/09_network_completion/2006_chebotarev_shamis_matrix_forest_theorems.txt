@@ -1,0 +1,503 @@
+                                            Matrix-Forest Theorems
+                                            PAVEL CHEBOTAREV1 AND ELENA SHAMIS
+                                            Institute of Control Sciences of the Russian Academy of Sciences
+arXiv:math/0602575v2 [math.CO] 2 Nov 2023
+
+
+
+
+                                            65 Profsoyuznaya Street, Moscow 117997, Russian Federation
+
+                                             The Laplacian matrix of a graph G is L(G) = D(G)−A(G), where A(G) is the adjacency
+                                            matrix and D(G) is the diagonal matrix of vertex degrees. According to the Matrix-
+                                            Tree Theorem, the number of spanning trees in G is equal to any cofactor of an entry
+                                            of L(G). A rooted forest is a union of disjoint rooted trees. We consider the matrix
+                                            W (G) = I + L(G) and prove that the (i, j)-cofactor of W (G) is equal to the number
+                                            of spanning rooted forests of G, in which the vertices i and j belong to the same tree
+                                            rooted at i. The determinant of W (G) equals the total number of spanning rooted
+                                            forests, therefore the (i, j)-entry of the matrix W −1 (G) can be considered as a measure
+                                            of relative “forest-accessibility” of the vertex i from j (or j from i). These results follow
+                                            from somewhat more general theorems we prove, which concern weighted multigraphs.
+                                            The analogous theorems for (multi)digraphs are established. These results provide a
+                                            graph-theoretic interpretation to the adjugate of the Laplacian characteristic matrix.
+
+
+                                            NOTE OF NOVEMBER 2023
+                                            The first version of this arXiv preprint was the 31.03.1997 version of an unpublished
+                                            manuscript of 12.04.1994, while the latter contained the same proofs of the same theo-
+                                            rems, but only 18 bibliographic references. The differences of the present version are the
+                                            exact reference [4] (with the volume and pages), mentioning the version of [3] that is still
+                                            available online, and this note.
+
+
+                                            1. INTRODUCTION
+                                            Let G be a labeled graph on n vertices with adjacency matrix A(G) = (aij ). The
+                                            Laplacian (the Kirchhoff or the admittance) matrix of G is the n-by-n matrix L(G) = (ℓij )
+                                            with ℓij = −aij (j 6= i, i, j = 1, . . . , n) and ℓii =    aij = − ℓij (i = 1, . . . , n).
+                                                                                                    P           P
+                                                                                                     j6=i         j6=i
+                                            According to the Matrix-Tree Theorem attributed to Kirchhoff (for its history, see [19]),
+                                            any cofactor of an entry of L(G) is equal to the number of spanning trees of G. Tutte (see
+                                            [26]) has generalized this theorem to weighted multigraphs and multidigraphs. Bapat
+                                            and Constantine [1] presented a version for graphs in which each edge is assigned a
+                                              1
+                                                  Corresponding author. E-mail: pavel4e@gmail.com
+
+                                                                                           1
+color. Merris [17] proposed an “edge version” of the Matrix-Tree Theorem and Moon
+[20] generalized it. Forman [9] considered the Kirchhoff theorem in a more general context
+of vector fields.
+   Another trend of literature studies the characteristic polynomial and the spectrum of
+the Laplacian matrix. For review of this literature we refer to [10, 11, 18]. We would
+like to mention here the research by Kelmans, who had published in 1965–1967 a series
+of results on the Laplacian characteristic polynomial and spectrum (see [13, 14], and the
+references therein), some of which were rediscovered later by other writers.
+   In [14] Kelmans and Chelnokov have shown that the coefficients of the Laplacian
+characteristic polynomial can be represented through the numbers of spanning forests of
+G with fixed numbers of components. This result is closely related to the theorems in
+this paper and we use it in our proofs. Another close result has been obtained by Fiedler
+and Sedláček [8] (see Lemma 3 in the Appendix) and generalized in [5, 2, 21].
+   We consider the matrix W (G) = I + L(G) = −Z(−1, G), where Z(λ, G) = λI − L(G)
+is the Laplacian characteristic matrix of G and I is the identity matrix. It turns out that
+W (G) can be used for counting spanning rooted forests of G (a rooted forest is a union of
+disjoint rooted trees) somewhat similarly to as L(G) can be used to count spanning trees.
+Namely, the determinant of W (G) is equal to the number of all spanning rooted forests
+of G, and the cofactor W ij (G) is equal to the number of those spanning rooted forests,
+such that i and j belong to the same tree rooted in i. This is a simple consequence of
+Theorems 5 and 6 in Section 3.
+   Theorems 3 and 4 consider an arbitrary multidigraphs Γ and provide an analogous
+relation between the Kirchhoff matrix of Γ and the numbers of spanning diverging forests
+of Γ. These results allow us to consider the matrices W −1 (G) and W −1 (Γ) as matrices
+of relative forest-accessibilities in the multigraph G and the multidigraph Γ.
+   It can be interesting to compare Theorems 3–7 with the corresponding results on
+the adjacency characteristic matrix (see [6, Subsections 1.9.1 and 1.9.5] or the original
+articles by Kasteleyn and Ponstein cited therein, and also [23]). About counting forests
+see [7, 12, 19]. Liu and Chow [15] obtained a rather complicated expression for the
+number of k-component spanning forests of a graph through the principal minors of the
+Laplacian matrix. Myrvold [22] gave a simpler graph-theoretic proof of some version
+of their result and discovered a polynomial algorithm for calculating this number of k-
+component spanning forests. The ideas of her proof are similar to those of Kelmans and
+Chelnokov [14].
+   In the following section, we give some graph-theoretic notation and statements of the
+Matrix-Tree Theorem for weighted multigraphs and multidigraphs, which will help us to
+formulate and prove our results.
+
+
+
+                                            2
+2. PRELIMINARIES
+Let us remind some necessary graph-theoretic notions. A subgraph of a multigraph G is
+a multigraph all of whose vertices and edges belong to the vertex and edge sets of G. A
+spanning subgraph of G is a subgraph of G whose vertex set coincides with the vertex
+set of G. A forest is a cycleless graph. A tree is a connected forest. A rooted tree is
+a tree with one marked vertex called a root. Formally, the rooted tree is a pair (T, r),
+where T is the tree and r is its vertex. A component of a multigraph G is any maximal
+(by inclusion) connected subgraph of G. A rooted forest can be defined as a forest with
+one marked vertex in each component. Obviously, a rooted forest is a union of disjoint
+rooted trees.
+   A path from vertex i to vertex j in a multidigraph Γ is an alternating sequence of
+distinct vertices and arcs having each arc directed from the previous vertex to the next
+one; i is the first vertex, j is the last one. Sometimes we will consider a path as a
+subgraph of Γ. A digraph is called a directed tree (a directed forest) if the graph obtained
+from it by replacement of all its arcs by edges is a tree (a forest). The definitions for
+directed rooted tree and directed rooted forest are analogous to the definitions of rooted
+tree and rooted forest (we will omit the word “directed” while talking about subgraphs
+of Γ). A diverging tree is a directed rooted tree, containing paths from the root to all
+other vertices. A diverging forest is a directed rooted forest, all whose components are
+diverging trees.
+   The Matrix-Tree Theorem asserts that for any graph G, all cofactors of entries of L(G)
+are equal to each other and their common value is the number of spanning trees in G.
+   Now suppose G is a weighted multigraph with vertex set V (G) = {1, . . . , n} and
+suppose εmij is the weight of the mth edge between vertices i and j in G. This weight
+will be also referred to as a conductance of the edge. However, we will not forbid εm      ij
+to be negative. The Kirchhoff matrix of G is the n-by-n matrix L = L(G) = (ℓij ) with
+          a
+          ij
+ℓij = −         εm
+                 ij (j 6= i, i, j = 1, . . . , n) and ℓii = −          ℓij (i = 1, . . . , n), where aij
+          P                                                     P
+          m=1                                                   j6=i
+                                                                ij
+is the number of edges between i and j. Denote by L the cofactor of ℓij in L. The
+product of the conductances of all edges belonging to a subgraph H of the multigraph G
+will be referred to as the weight or transmission coefficient of H and denoted by ε(H).
+The weight of a subgraph without edges is assumed to be 1. For every nonempty set
+of subgraphs G, its weight is defined as follows: ε(G) =      ε(H). Set the weight of the
+                                                           P
+                                                                 H∈G
+empty set to be zero. Let T (G) = T be the set of all spanning trees of G.
+  Tutte’s [26] generalization of the Matrix-Tree Theorem can be formulated as follows.
+
+Theorem 1 (Matrix-Tree Theorem for weighted multigraphs) For any weighted multi-
+graph G and for any i, j ∈ V (G), Lij = ε(T ).
+
+                                                3
+  Tutte [26] also developed a parallel theory for multidigraphs.
+  Let Γ be a multidigraph with vertex set V (Γ) = {1, . . . , n} and suppose εm
+                                                                              ij is the
+weight (or the conductance) of the mth arc from i to j in Γ. The Kirchhoff matrix L(Γ)
+                                                                    aji
+of Γ is the n-by-n matrix L = L(Γ) = (ℓij ) with ℓij = −                  εm
+                                                                           ji (j 6= i, i, j = 1, . . . , n)
+                                                                    P
+                                                                   m=1
+and ℓii = −          ℓij (i = 1, . . . , n), where aji is the number of arcs from j to i in Γ. Notice
+              P
+              j6=i
+that ℓii is the total conductance of the arcs converging to i. The definition for weight of
+a subgraph of Γ is analogous to the corresponding definition for multigraphs. Suppose
+T i is the set of spanning trees of Γ diverging from i.
+
+Theorem 2 (Matrix-Tree Theorem for weighted multidigraphs) For any weighted mul-
+tidigraph Γ and for any i, j ∈ V (Γ), Lij = ε(T i ).
+
+  Note that in the directed case entries in different rows of L may have different cofactors,
+but all the entries of one row have equal cofactors.
+  For simplicity, Tutte formulates this theorem (as well as the previous one) only for
+diagonal cofactors Lii . The “directed” Matrix-Tree Theorem concerning arbitrary Lij is
+given in Harary and Palmer [12].
+  In the following section, we give somewhat analogous theorems on spanning converging
+forests of a multidigraph Γ and on spanning rooted forests of a multigraph G.
+
+
+3. MATRIX-FOREST THEOREMS
+Consider the matrices W (Γ) = I + L(Γ) and W (G) = I + L(G). W ij (Γ) and W ij (G) will
+denote the cofactors of the (i, j)-entries of W (Γ) and W (G).
+   Suppose F (Γ) = F is the set of all spanning diverging forests of Γ and F i→j (Γ) = F i→j
+is the set of those spanning diverging forests of Γ, such that i and j belong to the same
+tree diverging from i. Let W = W (Γ), W ij = W ij (Γ).
+
+Theorem 3            For any weighted multidigraph Γ, det W = ε(F ).
+
+Theorem 4 For any weighted multidigraph Γ and for any i, j ∈ V (Γ), W ij = ε(F i→j ).
+
+   As usual, these theorems have dual counterparts concerning converging forests. The-
+orems 3 and 4 can be derived in the shortest way from one version of Chaiken’s result
+[2], namely, by putting U = W = ∅ and then U = {i}, W = {j} in the first formula in
+page 328 (cf. [21, Theorem 3.1]). In the Appendix of this paper, we give another proof
+which demonstrates some interesting relations of Matrix-Forest Theorems to the results
+in [8, 13, 14, 16].
+
+
+                                                    4
+  Suppose F (G) = F is the set of all spanning rooted forests of a weighted multigraph
+G and F ij (G) = F ij is the set of those spanning rooted forests of G, such that i and j
+belong to the same tree rooted in i. Let W = W (G), W ij = W ij (G).
+
+Theorem 5       For any weighted multigraph G, det W = ε(F ).
+
+Theorem 6       For any weighted multigraph G and for any i, j ∈ V (G), W ij = ε(F ij ).
+
+   As the matrix W of a weighted multigraph is symmetrical, Theorem 6 remains true if
+we replace F ij by F ji in the right-hand side. In the Appendix, Theorems 5 and 6 are
+derived from Theorems 3 and 4.
+   If the weights εm
+                   ij are non-negative, then by Theorems 3 and
+                                                              
+                                                                5, the matrix W is non-
+singular. If the matrix W −1 exists, we will denote it by Q = q ij (both for a weighted
+multidigraph Γ and for a weighted multigraph G). Then Q = (det W )−1 W ∗ , where
+W ∗ = (W ij ) is the adjugate of W . Theorems 3-6 imply the following main theorem.
+             ⊺
+
+
+
+
+Theorem 7 . 1. For any weighted multidigraph Γ, if the matrix Q = W −1 exists, then
+q ij = ε(F j→i ) ε(F ), i, j = 1, . . . , n.
+2. For any weighted
+               .       multigraph G if the matrix Q = W −1 exists, then
+q ij = ε(F ji ) ε(F ), i, j = 1, . . . , n.
+                        n
+  It can be seen that         q ij = 1 (i = 1, . . . , n) both for directed and undirected weighted
+                        P
+                        j=1
+multigraphs. This follows, for example, from the facts that for any i ∈ V (Γ), the sets
+                                                       n
+F j→i (j = 1, . . . , n) are non-overlapping and            F j→i = F (respectively, for any i ∈
+                                                       S
+                                                      j=1
+                                                                    n
+V (G), the sets F ji (j = 1, . . . , n) are non-overlapping and          F ji = F ).
+                                                                    S
+                                                                   j=1
+   If the weights of all arcs of Γ (of all edges of G) are ones, Theorems 3–7 tell us about
+the numbers of corresponding spanning forests (which are equal to their summary TC’s
+in this case).
+   Theorem 7 allows us to consider the matrix Q = W −1 as the matrix of relative forest-
+accessibilities of the vertices of Γ (or G).
+   Theorems 3 and 4 were formulated in [3] and Theorems 5 and 6 in [24]. The latter
+results were used in [25] for the analysis of one method of preference aggregation. That
+paper implicitly contains proofs of these theorems (in the case of equal weights εm     ij ),
+different from the proofs given here. In [4] we analyze the properties of relative forest-
+accessibilities and exploit them to introduce a new family of sociometric indices.
+   Theorems 5–7 were used in [25] for the analysis of one method of preference aggregation.
+That paper contains implicitly the proofs of these theorems (in the case of equal weights
+εm
+ ij ), different from the proofs given here.
+
+
+                                                  5
+   Remark Lemma 5 in the Appendix provides an interpretation for the adjugate of
+the characteristic matrix of −L(Γ). Replacing ε(F ) by (−1)d(F ) ε(F ) in (2) (d(F ) is the
+number of arcs in F ), we obtain a representation for the adjugate of the characteristic
+matrix of L(Γ). To get analogous representations in the undirected case, it suffices to
+           i→j       ij            ij
+replace Fϕ∪{i}  by Fϕ∪{i} in (2) (Fϕ∪{i} = F ij ∩ Fϕ∪{i} , and Fϕ∪{i} is the set of spanning
+rooted forests of G, having |ϕ ∪ {i}| components rooted in the vertices of ϕ ∪ {i}). The
+latter is obvious by the argument used in the proof of Theorems 5 and 6.
+
+
+APPENDIX
+  Prior to proving Theorems 3–6 we introduce some additional notation and prove several
+lemmas.
+  p(λ) is the characteristic polynomial of the matrix −L = −L(Γ);
+  Wλ = λI + L(Γ) (λ is a real number);
+  E = E(Γ) is the arc set of Γ;
+  ϕ is a subset of V = V (Γ) = {1, . . . , n};
+  L−ϕ (Γ) = L−ϕ is the matrix obtained from L(Γ) by deleting the rows and columns
+corresponding to the vertices of ϕ; we will use the analogous expression U−ψ for an
+arbitrary n-by-n matrix U and ψ ⊆ {1, . . . , n}.
+  Γϕ is the weighted multidigraph obtained from Γ by identifying all the vertices of ϕ;
+  ϕ∗ is the vertex of Γϕ being a result of this identification; any arc incident to some
+vertex of ϕ in Γ have the corresponding arc incident to ϕ∗ in Γϕ ;
+  “Γ-tree” is a spanning diverging tree of Γ;
+  “Γ-forest” is a spanning diverging forest of Γ;
+  Tϕ∗ is the set of Γϕ -trees diverging from ϕ∗ ; if ϕ = ∅, we set Tϕ∗ = ∅;
+  Fϕ is the set of Γ-forests with |ϕ| components that diverge from the vertices of ϕ;
+  Fϕj→i = F j→i Fϕ (if j ∈  / ϕ, then Fϕj→i = ∅);
+                T
+
+
+Lemma 1 Let Γ1 and Γ2 be weighted multidigraphs with the same vertex set. Suppose
+that the arc set of Γ2 can be obtained from that of Γ1 by replacing some arc (i, j) (with
+some weight εij ) by two arcs from i to j with the weights ε′ij and ε′′ij such that ε′ij +ε′′ij = εij .
+Then
+(i) W (Γ1 ) = W (Γ2 );
+(ii) for any vertices α and β, the value ε(F α→β ) is the same for Γ1 and Γ2 .
+
+   Proof (i) is obvious. (ii) holds since for any F ∈ F α→β (Γ1 ) there are two corresponding
+forests in F α→β (Γ2 ) with the same summary weight.                                        
+
+  Based on Lemma 1, we conclude that it suffices to prove Theorems 3 and 4 only for
+weighted digraphs. Thus, we will assume that Γ has no multiple arcs.
+
+                                                  6
+   The following three lemmas are directed (and weighted) counterparts of certain results
+of Kelmans [13] and Kelmans and Chelnokov [14].
+
+Lemma 2      Let ϕ ⊆ V . Then, in terms of the notation above, det L−ϕ = ε(Tϕ∗ ).
+
+  Proof If ϕ = ∅, we have zero in both sides of the equality. For ϕ 6= ∅, let L(Γϕ ) be
+the Kirchhoff matrix of Γϕ . Suppose L−{ϕ∗ } (Γϕ ) = L−ϕ∗ (Γϕ ) is the matrix obtained from
+L(Γϕ ) by deleting the row and column corresponding to ϕ∗ . Then the desired equality is
+valid since by Theorem 2, det L−ϕ∗ (Γϕ ) = ε(Tϕ∗ ), and L−ϕ∗ (Γϕ ) = L−ϕ .                
+
+Lemma 3 (Fiedler and Sedláček [8], cf. [1, 9]) For any ϕ ⊆ V , det L−ϕ = ε(Fϕ ).
+
+  We are proving Lemma 3 here, since this proof is very short.
+   Proof By Lemma 2, it suffices to prove the equality ε(Fϕ ) = ε(Tϕ∗ ), which holds for
+any ϕ 6= ∅ since identifying the vertices of ϕ transforms any Γ-forest belonging to Fϕ
+into a Γϕ -tree diverging from ϕ∗ , and this correspondence is one-to-one. If ϕ = ∅, we
+have zero in both sides.                                                              
+                                   n
+  Let p(λ) = det(λI + L) =               ck λk be the characteristic polynomial of −L.
+                                   P
+                                   k=0
+
+             ck =           ε(Fϕ ), k = 0, . . . , n.
+                     P
+Lemma 4
+                     ϕ⊆V
+                    |ϕ|=k
+
+  Proof In view of Lemma 3, this follows from the fact that ck is equal to the sum of
+degree k principal minors of L.                                                    
+
+  Proof of Theorem 3         Using Lemma 4, we have
+                                                      n X
+                                                      X                     X
+            det W = det(I + L) = p(1) =                          ε(Fϕ ) =         ε(Fϕ ) = ε(F ).    
+                                                     k=0 ϕ⊆V                ϕ⊆V
+                                                         |ϕ|=k
+
+  Suppose W λ = λI + L and
+                                               n−1
+                                    Wλij =           bk λk ,
+                                               X
+                                                                 i, j ∈ V                           (1)
+                                               k=0
+
+is the cofactor of the (i, j)-entry of Wλ .
+
+Lemma 5      In terms of the notation above,
+                                                i→j
+                                   X
+                         bk =                ε(Fϕ∪{i} ),         k = 0, . . . , n − 1.              (2)
+                                ϕ⊆V r{i,j}
+                                  |ϕ|=k
+
+
+                                                         7
+  Proof   It is easy to see that
+
+                                              Lij
+                                      X
+                          bk =                 −ϕ        (k = 0, . . . , n − 1),         (3)
+                                 ϕ⊆V r{i,j}
+                                   |ϕ|=k
+
+
+where Lij −ϕ is the cofactor in the matrix L−ϕ of the (i, j)-entry of L.
+   1. i 6= j. To obtain an expression for Lij
+                                            −ϕ , we will use a theorem by Maybee (see [16]),
+which can be formulated as follows. For any n-by-n matrix U = (uij ), the representation
+of a cofactor U ij ,
+                                  U ij =   ε(Pki→j ) det U−ψk ,
+                                         X
+                                                                                        (4)
+                                              k
+
+is valid for i 6= j, where Pki→j is the kth path from i to j in an arbitrary weighted digraph
+Γ(U) (with vertex set {1, . . . , n}) connected with U by the following relations:
+– if i 6= j and uij 6= 0, then the arc (j, i) belongs to arc set E(Γ(U)) and has the weight
+(−uij );
+                                                                       / E(Γ(U)).
+– if i 6= j and uij = 0, then the arc (j, i) has zero weight or (j, i) ∈
+                                                        i→j
+ψ k in (4) denotes the set of the vertices entering Pk .
+   Notice that matrix L and weighted digraph Γ satisfy these conditions (recall that by
+our assumption, Γ has no multiple arcs). Therefore, these conditions are obeyed for L−ϕ
+and the subgraph of Γ induced on the vertex subset V r ϕ. Hence, by (4) and Lemma 3,
+we have
+                    Lij       ε(Pki→j ) det L−(ϕ∪ψk ) =    ε(Pki→j )ε(Fϕ∪ψk ).
+                            X                           X
+                      −ϕ =                                                              (5)
+                          k                                      k
+                                                                   i→j
+  Note that if F ∈ Fϕ∪ψk then the union of Pki→j and F belongs to Fϕ∪{i} . On the other
+                  i→j
+hand, any F ∈ Fϕ∪{i} can be uniquely decomposed into a union of certain Pki→j and
+            ′
+
+F ∈ Fϕ∪ψk . Therefore, (5) implies
+
+                                          Lij      i→j
+                                           −ϕ = ε(Fϕ∪{i} ).                              (6)
+
+  2. i = j. Lemma 3 implies Lij                                             i→i
+                             −ϕ = L−(ϕ∪{i}) = ε(F ϕ∪{i} ). Since F ϕ∪{i} = Fϕ∪{i} , we
+have (6) as well.
+  Now (6) and (3) yield (2).                                                         
+
+  Proof of Theorem 4     It suffices to put λ = 1 in (1) and use Lemma 5:
+                                          n−1            n−1
+                       W ij = W1ij =                                         i→j
+                                          X              X      X
+                                                  bk =                    ε(Fϕ∪{i} )
+                                          k=0            k=0 ϕ⊆V r{i,j}
+                                                               |ϕ|=k
+                                                     i→j
+                                                           ) = ε(F i→j ).
+                                        X
+                                 =                ε(Fϕ∪{i}                                 
+                                     ϕ⊆V r{i,j}
+
+
+                                                     8
+   Proof of Theorems 5 and 6 Let G be an arbitrary weighted graph (by undirected
+counterpart of Lemma 1, we assume that G has no multiple edges). Replace every edge
+of G, having, say, a weight ε, by two opposite arcs with the weight ε. The weighted
+digraph we obtain has the same Kirchhoff matrix as G. The desired statements follow
+from the fact that there exists a natural one-to-one correspondence between rooted forests
+of G and diverging forests of Γ.                                                        
+
+
+*
+    References
+
+ [1] R. B. Bapat and G. Constantine, An enumerating function for spanning forests with
+     color restrictions, Linear Algebra Appl. 173 (1992), 231–237.
+
+ [2] S. Chaiken, A combinatorial proof of the all minors matrix tree theorem, SIAM J.
+     Alg. Disc. Meth. 3 (1982), 319–329.
+
+ [3] P. Yu. Chebotarev and E. Shamis, On the proximity measure for graph vertices
+     provided by the inverse Laplacian characteristic matrix, Abstracts of the Confer-
+     ence “Linear Algebra and its Applications”, University of Manchester, Manchester,
+     UK, 1995, pp. 6–7. http://web.archive.org/web/20230314224253/http://www.ma.
+      man.ac.uk/~higham/laa95/abstracts.ps
+
+ [4] P. Yu. Chebotarev and E. Shamis, The matrix-forest theorem and measuring re-
+     lations in small social groups, Automat. Remote Control 58 (1997), 1505–1514
+     (arXiv:math/0602070 [math.CO]).
+
+ [5] W. K. Chen, Applied Graph Theory, Graphs and Electrical Networks, North-Holland,
+     Amsterdam, 1976.
+
+ [6] D. Cvetković, M. Doob and H. Sachs, Spectra of Graphs, Academic Press, New York,
+     1980.
+
+ [7] P. L. Erdős, A new bijection on rooted forests, Discrete Math. 111 (1993), 179–188.
+                                                                   ◦
+ [8] M. Fiedler and J. Sedláček, O W -bası́ch orientovaných grafu, Časopis Pěst. Mat. 83
+     (1958), 214–225.
+
+ [9] R. Forman, Determinants of Laplacians on graphs, Topology 32 (1993), 35–46.
+
+[10] R. Grone, On the geometry and Laplacian of a graph, Linear Algebra Appl. 150
+     (1991), 167–178.
+
+                                             9
+[11] R. Grone, R. Merris and V. S. Sunder, The Laplacian spectrum of a graph, SIAM
+     J. Matrix Anal. Appl. 11 (1990), 218–238.
+
+[12] F. Harary and E. M. Palmer, Graphical Enumeration, Academic Press, New York,
+     1973.
+
+[13] A. K. Kelmans, On properties of the characteristic polynomial of a graph, Cyber-
+     netics Serves Communism [in Russian], Vol. 4, Energiya, Moscow–Leningrad, 1967,
+     pp. 27–41.
+
+[14] A. K. Kelmans and V. M. Chelnokov, A certain polynomial of a graph and graphs
+     with an extremal number of trees, J. Comb. Theory, Ser.B 16 (1974), 197–214.
+
+[15] C. J. Liu and Y. Chow, Enumeration of forests in a graph, Proc. Amer. Math. Soc.
+     83 (1981), 659–662.
+
+[16] J. S. Maybee, D. D. Olesky, P. van den Driessche, and G. Wiener, Matrices, digraphs
+     and determinants, SIAM J. Matrix Anal. Appl. 10 (1989), 500–519.
+
+[17] R. Merris, An edge version of the Matrix-Tree Theorem and the Wiener index, Lin.
+     Multilin. Alg. 25 (1989), 291–296.
+
+[18] B. Mohar, Laplace eigenvalues of graphs — a survey, Discrete Math. 109 (1992),
+     171–183.
+
+[19] J. W. Moon, Counting Labelled Trees, Canad. Math. Congress, Montreal, 1970.
+
+[20] J. W. Moon, On the adjoint of a matrix associated with trees, Lin. Multilin. Alg.,
+     39 (1995), 191–194.
+
+[21] J. W. Moon, Some determinant expansions and the matrix-tree theorem, Discrete
+     Math. 124 (1994), 163–171.
+
+[22] W. Myrvold, Counting k-component forests of a graph, Networks 22 (1992), 647–
+     652.
+
+[23] A. J. Schwenk, The adjoint of the characteristic matrix of a graph, J. Combin.
+     Inform. System Sci. 16 (1991), 87–92.
+
+[24] E. Shamis, Counting spanning converging forests Abstr. Papers Presented to the
+     Amer. Math. Soc. 15 (1994), 412–413.
+
+[25] E. Shamis, Graph-theoretic interpretation of the generalized row sum method, Math.
+     Soc. Sci. 27 (1994), 321–333.
+
+                                          10
+[26] W. T. Tutte, Graph Theory, Addison-Wesley, Reading, Mass., 1984.
+
+
+
+
+                                        11

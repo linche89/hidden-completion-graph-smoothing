@@ -1,0 +1,1241 @@
+                                              SPECTRAL MEASURES OF FACTOR OF I.I.D.
+                                             PROCESSES ON VERTEX-TRANSITIVE GRAPHS
+
+                                                          ÁGNES BACKHAUSZ AND BÁLINT VIRÁG
+
+
+                                                 Abstract. We prove that a measure on [−d, d] is the spectral
+arXiv:1505.07412v2 [math.PR] 3 Sep 2016
+
+
+
+
+                                                 measure of a factor of i.i.d. process on a vertex-transitive infinite
+                                                 graph if and only if it is absolutely continuous with respect to the
+                                                 spectral measure of the graph. Moreover, we show that the set of
+                                                 spectral measures of factor of i.i.d. processes and that of d¯2 -limits
+                                                 of factor of i.i.d. processes are the same.
+
+
+
+                                          Keywords: factor of i.i.d.; Gaussian process, spectral measure.
+
+                                                                        1. Introduction
+
+                                              We consider invariant random processes on vertex transitive graphs
+                                          that can be performed with ”randomized local” algorithms (factor of
+                                          i.i.d. processes). The aim of the paper is characterizing the covariance
+                                          structures of factor of i.i.d. processes, in terms of the absolute conti-
+                                          nuity of their spectral measure with respect to the spectral measure of
+                                          the graph.
+
+                                          1.1. Factor of i.i.d. processes. Let G = (V (G), E(G)) be a vertex-
+                                          transitive graph with countable vertex set V (G). We assign a random
+                                          variable Xv to each v ∈ V (G). We get an invariant random process
+                                          if the joint distribution is invariant under the automorphisms of G.
+                                          These are the analogues of stationary processes on Z, and they may be
+                                          interesting on their own right (Arnaud 1980, 1994).
+                                             Among invariant random processes, we deal with factor of i.i.d. pro-
+                                          cesses, see e.g. Elek and Lippner (2010), Hatami, Lovász and Szegedy
+                                          (2014) or the paper of Lyons (2014) and the references therein. Re-
+                                          sults of randomized local algorithms (or constant-time parallelized al-
+                                          gorithms) belong to this class. Furthermore, factor of i.i.d. processes
+                                          can be useful for ﬁnding large independent sets (Csóka, Gerencsér, Ha-
+                                          rangi and Virág 2014, Harangi and Virág 2013, Hoppen and Wormald
+                                          2013), matchings on nonamenable graphs (Lyons and Nazarov 2011,
+                                          Csóka and Lippner 2012), colorings, other structures (Gaboriau and
+                                          Lyons 2009, Kun 2013, Backhausz and Szegedy 2014). This family of
+                                          processes may also be interesting from an ergodic theoretic point of
+                                            Date: 2 September 2016.
+                                            2010 Mathematics Subject Classification. 60G15.
+2                ÁGNES BACKHAUSZ AND BÁLINT VIRÁG
+
+view (Bowen 2010), as they are the factors of the Bernoulli shift. To
+deﬁne factor of i.i.d. processes, loosely speaking, we start with indepen-
+dent and identically distributed labels (from R) on the vertices. Then
+each vertex gets a new label, depending on the labelled rooted graph
+as it is seen from that vertex. The rule is ﬁxed, and it is the same for
+all vertices. See Subsection 2.2 for the precise deﬁnition.
+
+1.2. Spectral measures, covariance structures and d¯2 limit. We
+assign a ﬁnite measure on R to invariant random processes on G, which
+is the spectral measure of the process. (Throughout the paper, we
+always consider Borel measures.) This measure is the spectral measure
+of the graphing associated to the process (Section 2.3). This is also
+related to the covariance structure of the process, as the following is
+satisﬁed for a process X:
+                                         Z
+             k              k
+        E([A X]o , Xo ) = hA δo , cX iG = tk dµX (t)   (k ≥ 0),
+
+where A is the adjacency operator, cX : V → R is the covariance
+structure assigning cov(Xo , Xv ) to each vertex v, and µX is the spectral
+measure of X.
+
+    Our goal is characterizing the set of spectral measures of factor of
+i.i.d. processes. As we will see, the same characterization holds for
+d¯2 -limits of factor of i.i.d. processes. The following metric is based on
+              ¯
+Ornstein’s d-metric     (see e.g. Lyons 2014).
+Definition 1. The d¯2 -distance of the random invariant processes X, X ′
+(with marginals having finite second moments) is defined as follows.
+                                            d        d
+      d¯2 (X, X ′ )2 = min{E (Yo − Yo′ )2 : Y = X, Y ′ = X ′ ,
+                                             (Y, Y ′ ) is invariant}.
+
+   If the graph is the d-regular tree (throughout the paper, we denote
+by Td the inﬁnite d-regular tree), the spectral measure equals to the
+Fourier transform of the covariance structure, see e.g. Cartier (1973),
+Arnaud (1980, 1994), Figà-Talamanca and Picardello (1982). On the
+other hand, in Backhausz, Szegedy and Virág (2015) a uniform expo-
+nential bound was proved for the decay of the correlation sequence
+of a factor of i.i.d. process, and the pointwise closure of the possible
+correlation sequences was described in the case G = Td (d ≥ 3).
+
+1.3. Main results. Our main result is the following theorem, which
+characterizes the spectral measures of factor of i.i.d. processes, linear
+factor of i.i.d. processes (see Deﬁnition 13 and 14) and d¯2 -limits of
+factor of i.i.d. processes (Deﬁnition 1).
+         SPECTRAL MEASURES OF FACTOR OF I.I.D. PROCESSES                  3
+
+Theorem 2. Fix an infinite vertex-transitive graph G. Suppose that all
+processes below have marginals with mean 0 and finite second moment.
+The following are equivalent for a finite (Borel) measure on R.
+   (i) It is absolutely continuous with respect to the spectral measure ν
+of the graph G.
+   (ii) It is the spectral measure of some linear factor of i.i.d. process.
+   (iii) It is the spectral measure of some factor of i.i.d. process.
+   (iv) It is the spectral measure of some limit of factor of i.i.d. process
+with respect to the d¯2 -distance.
+   (v) It is the spectral measure of some invariant process which is the
+¯
+d2 -limit of processes with spectral measures satisfying (i).
+
+   The equivalence of (iii) and (iv) shows that the conjecture about d¯2 -
+limits of factor of i.i.d. processes can not be refuted based on spectral
+measures or covariance structures.
+Remark 3. The proof shows that the family of processes with spectral
+measures absolutely continuous with respect to any ﬁxed measure on
+[−1, 1] is closed under d¯2 -convergence.
+
+  Based on this theorem, we give the characterization of spectral mea-
+sures of processes that are limits of factor of i.i.d. processes in distri-
+bution.
+Theorem 4. Fix an infinite vertex-transitive graph G. Suppose that all
+processes below have marginals with mean 0 and finite second moment.
+The following are equivalent for a finite (Borel) measure µ on R.
+   (i) Its support is contained in the support of the spectral measure of
+G, that is, supp(µ) ⊆ supp(ν).
+   (ii) It is the spectral measure of the weak limit of some linear factor
+of i.i.d. processes.
+   (iii) It is the spectral measure of the weak limit of some factor of
+i.i.d. process.
+
+   As for the d-regular tree, Theorem 5.1 of Backhausz, Szegedy and
+Virág (2014) gives a description of the pointwise closure of the correla-
+tion sequences of factor of i.i.d. processes, which shows the equivalence
+of (i) and (iii) in Theorem 4 after some reformulation.
+Remark 5. The family of processes that can be modelled on random d-
+regular graphs in an appropriate sense (see e.g. Backhausz and Szegedy
+(2014)) is strictly wider than the limit of factor of i.i.d. processes; for
+example, for large d, the independence ratio is twice as large as the
+proportion of an independent set that can be constructed with factor of
+i.i.d. (Gamarnik and Sudan 2014, Rahman and Virág 2014). However,
+4                   ÁGNES BACKHAUSZ AND BÁLINT VIRÁG
+
+the possible covariance structures are the same for the two families of
+invariant random processes, and the results remain valid.
+
+1.4. Applications.
+
+Process spectrum. The aim of this section is describing the set of points
+that can be included in the spectrum of an invariant random process.
+Definition 6 (Process spectrum of a graph). Let G be a d-regular
+vertex transitive graph. Its process spectrum is defined as follows:
+                              [
+                    psp(G) =     supp(µX ) ⊆ [−d, d],
+                                 X
+
+where the union is for all invariant random processes on G with marginals
+having finite variance. The process spectral radius ̺+p (G) is defined by
+sup{x : x ∈ psp(G), x < d}.
+
+  If d is ﬁxed, one can ask whether there √   are d-regular graphs with
+process spectral radius arbitrarily close to 2 d − 1.
+Theorem 7. Let µ be a finite measure with supp(µ) ⊆ psp(G). Then
+there exists an invariant random process X with spectral measure µ.
+
+   For the d-regular tree it is known that the process spectrum is [−d, d]
+(Arnaud 1980,√1994, Lasser
+                         √      and Leitner 1990), while the spectrum of
+the tree is [−2 d − 1, 2 d − 1]. In particular, Gaussian wave functions
+(see the deﬁnition below) exist for all λ ∈ [−d, d] (Csóka, Gerencsér,
+Harangi and Virág 2014, Figà-Talamanca and Nebbia 1991).
+   We will also prove the following statement about the connection of
+process spectrum and Kazhdan’s property (T ) (see e.g. Bekka, de la
+Harpe and Valette 2008). This also shows that the behavior of process
+spectral radius and the behavior of spectral radius with respect to
+tensor product of graphs are diﬀerent (take the product of two graphs,
+one with process spectral radius equal to d, and the other one less than
+d).
+Proposition 8. Let H be a finitely generated infinite group, and G
+its Cayley graph with some set of generators. Then the following are
+equivalent.
+     (i) H has Kazhdan’s property (T ).
+    (ii) The process spectral radius ̺+
+                                      p (G) is less than d.
+
+
+d¯2 -distance and total variation distance of the spectral measures. Dur-
+ing the proof of the main theorem, we will show the following inequality
+and orthogonality. The total variation distance of probability measures
+will be denoted by dT V (·, ·). However, we will use the notion of total
+         SPECTRAL MEASURES OF FACTOR OF I.I.D. PROCESSES                     5
+
+variation distance not only for probability measures:
+                                         Z
+                                       1
+                     dT V (µ1 , µ2 ) =     |f − g|dκ,
+                                       2
+where f and g are the density functions of µ1 and µ2 with respect to
+some common dominating measure κ.
+  The Hellinger distance dH of measures µ, ν is deﬁned by
+(1)                 d2H (µ, ν) = ||µ|| + ||ν|| − 2γ,
+                        R√
+where the quantity γ =       f gdκ is the Bhattacharyya coeﬃcient.
+Proposition 9. Let X, Y be invariant random processes. Suppose that
+E(Xo ) = E(Yo ) = 0 and the marginals of X have finite second moments.
+(a) The following inequality holds:
+  d¯22 (X, Y ) ≥ d2H (µX , µY )
+                                   q                  2
+                       2        2
+               ≥ E(Xo ) + E(Yo ) −   E(Xo2 ) + E(Yo2 ) − 4d2T V (µX , µY )
+                2d2T V (µX , µY )
+           ≥                      .
+               E(Xo2 ) + E(Yo2 )
+(b) Let (X, Y ) be an invariant pair of random processes. Suppose that
+    E(Xo ) = E(Yo ) = 0 and the marginals of X and Y have finite
+    second moments. If µX and µY are singular measures, then
+                                 E(Xo Yo ) = 0.
+
+
+Linear factor of i.i.d. processes and d¯2 -metric. Proposition 9 implies
+that Gaussian factor of i.i.d. processes are closed in the d¯2 -metric on
+the d-regular tree.
+Corollary 10. Let G = Td be the d-regular tree. Suppose that X (n) is
+a sequence of Gaussian factor of i.i.d. processes such that X (n) → X
+with respect to the d¯2 -distance as n → ∞. Then (the distribution of )
+X is a Gaussian factor of i.i.d. process.
+
+  In fact, we will prove this statement for arbitrary vertex-transitive
+graphs, but for a smaller class of linear factor of i.i.d. processes (see
+Deﬁnition 14 and Subsection 6.3).
+
+Gaussian wave functions. As another application of the inequality in
+Proposition 9, we will show that Gaussian wave functions are separated
+from factor of i.i.d. processes with respect to the d¯2 -distance. A Gauss-
+ian wave function with eigenvalue λ is an invariant Gaussian process
+(Xv ) satisfying
+             (AX)v = λXv almost surely for all v ∈ V (Td ).
+6                ÁGNES BACKHAUSZ AND BÁLINT VIRÁG
+
+According to Theorem 4 of Harangi and Virág (2015), such a process
+exists for all λ in the spectrum of the adjacency operator of G, but
+it is not a factor of i.i.d. process if λ is the supremum of the spec-
+trum. As for the d-regular tree G = Td (with d ≥ 3), Theorem 3 of
+Csóka, Gerencsér, Harangi and Virág (2015) states that Gaussian wave
+function (Xv ) exists for all λ ∈ [−d, d]. Theorem 4 of the same paper
+says that (Xv ) is a weak limit of√factor of√i.i.d. processes if λ is in the
+spectrum of the tree, i.e. in [−2 d − 1, 2 d − 1], but it is known that
+it is not a factor of i.i.d. See also Corollary 3.3 of Lyons (2014), which
+gives a 2-valued example for a process which is weak limit of factor of
+i.i.d. but not factor of i.i.d.
+    Proposition 9 will imply the following about wave functions.
+
+Corollary 11. Let X be a Gaussian wave function corresponding to
+λ ∈ [−d, d] (if it exists) with Var(Xo ) = 1 and E(Xo ) = 0.
+(a) If X ′ is a Gaussian wave function corresponding to λ′ 6= λ with
+    E(Xo′ ) = 0 and Var(Xo′ ) = 1, then√ they are orthogonal in every
+    coupling; equivalently, d¯2 (X, X ′ ) = 2.
+(b) If the spectral measure of G is absolutely continuous with respect to
+    the Lebesgue measure, and Y is a limit of factor of i.i.d. processes
+    in the d¯2 -distance with Var(Yo ) = 1, then
+                                               √ they are orthogonal in
+    every coupling; equivalently, d¯2 (X, Y ) = 2.
+
+  In particular, Gaussian wave functions are never factor of i.i.d. pro-
+cesses. Moreover, the metric space of processes with the d¯2 -distance is
+not separable.
+
+
+
+Gauss Markov processes. As an application of Theorem 2, we will show
+the following characterization of factor of i.i.d. Gauss Markov processes
+on G = Td . These are Gaussian processes which have the spatial
+Markov property. The covariance structure is exponential in this case.
+That is, for every Markov process there exist ̺ ∈ R such that
+
+(2)                cov(Xo , Xv ) = ̺|v|    (v ∈ V (Td )),
+
+where |v| denotes the distance of v from the root o.
+
+Proposition 12. A Gauss Markov process is factor of i.i.d. process if
+and only if
+                 1
+      |̺| ≤ √           holds, where ̺ is defined by equation (2).
+                d−1
+         SPECTRAL MEASURES OF FACTOR OF I.I.D. PROCESSES                 7
+
+Outline. The paper is built up as follows. In Section 2, we recall the
+concept of a factor of i.i.d. process and spectral measures. The proofs
+of Proposition 9, Theorem 2 and Theorem 4 may be found in Sec-
+tions 3, 4, and 5 respectively. The last section contains the proofs of
+the applications (process spectrum, d¯2 -limits of linear factor of i.i.d.
+processes, Gaussian wave functions, Gaussian free ﬁeld, Gauss Markov
+processes).
+
+                          2. Preliminaries
+  First we recall the deﬁnition of factor of i.i.d. processes for vertex-
+transitive graphs. This section is based on Harangi and Virág (2015).
+
+2.1. Invariant random processes and Gaussian processes. Let
+G be a rooted graph with countable vertex set V (G), edge set E(G)
+and root o ∈ V (G). We consider random processes indexed by the
+vertices of the graph. That is, we assign a random variable Xv to each
+v ∈ V (G).
+   We say that a bijection Φ : V (G) → V (G) is an automorphism of G
+if for all vertices u and v the following holds: (Φ(u), Φ(v)) ∈ E(G) if
+and only if (u, v) ∈ E(G). The group of automorphisms of G is denoted
+by Aut(G). The graph is vertex transitive if Aut(G) acts transitively
+on V (G).
+   The collection of random variables (Xv ), v ∈ V (G) is an invariant
+random process on G if for any Φ ∈ Aut(G) the joint distribution of
+(XΦ(v) ) is the same as the joint distribution of (Xv ).
+   We say that a collection of random variables (Xv ), v ∈ V (G) is a
+Gaussian process if their joint distribution is Gaussian (i.e. any ﬁnite
+linear combination of them has Gaussian distribution) and they all have
+mean 0. An invariant Gaussian process is a Gaussian process that is
+invariant.
+
+2.2. Factor of i.i.d. processes. Let G be a vertex transitive graph
+and Ω = RV (G) . Let P be the product measure on Ω obtained from the
+standard normal distribution on R. That is, if we assign independent
+standard normal random variables Zv to the vertices v ∈ V (G), then
+the collection of random variables (Zv ) is a random element of the
+measure space (Ω, P ).
+  A factor of i.i.d. process on G will be determined by a function
+f ∈ L2 (Ω, P ) which is invariant under the root-preserving automor-
+phisms of G. Given the independent standard normal random vari-
+ables (Zu )u∈V (G) , we assign to each vertex v ∈ V (G) the value of f on
+(ZΦ(u) )u∈V (G) where Φ is in Aut(G) taking v to the root. Notice that
+this does not depend on the choice of Φ, because f is invariant under
+the root-preserving automorphisms of G. We get an invariant random
+8                ÁGNES BACKHAUSZ AND BÁLINT VIRÁG
+
+process (Xv )v∈V (G) this way. In addition, the only possibility to deﬁne
+the process such that each Xu is determined from (Zv ) by a measurable
+function and they are Aut(G)-equivariant (they commute with the nat-
+ural action of Aut(G)) is to evaluate a measurable function f at each
+vertex. See Section 3.2. of Harangi and Virág (2015) for the details.
+On the other hand, since we will deal with the covariance structure of
+the process, we need f to be in L2 (Ω, P ).
+
+Linear factor of i.i.d. processes. Linear factor of i.i.d. processes will be
+given by ℓ2 -functions on the vertex set of G. More precisely, ﬁrst we
+deﬁne the ℓ2 -space of the graph by
+                                         X                 
+               2                                     2
+              ℓ (G) = α : V (G) → R            α(v) < ∞ .
+                                         v∈V (G)
+
+In this space we have the inner product as usual:
+                        X
+             hα, βiG =       α(v)β(v)     (α, β ∈ ℓ2 (G)).
+                        v∈V (G)
+
+Definition 13 (Linear factor of i.i.d. process). We say that X is a
+linear factor of i.i.d. process if its rule f is given by
+                              X
+                    f (ω) =         β(u)ωu       (ω ∈ Ω),
+                           u∈V (G)
+
+where β ∈ ℓ2 (G) and it is invariant under the root-preserving auto-
+morphisms of G (that is, β(u) = β(Φ(u)) for all Φ ∈ Aut(G) with
+Φ(o) = o).
+
+   By Kolmogorov’s three-series theoremP the sum    in the deﬁnition is
+                                                 2
+convergent almost surely if and only if u∈V (G) β (u) < ∞. See Propo-
+sition 3.3. of Harangi and Virág (2015) for more details.
+
+Spherical linear factor of i.i.d. processes. We will also consider a special
+class of linear factor of i.i.d. processes. In this case the coeﬃcients
+belong to the ℓ2 -closure of the polynomials of the adjacency operator
+of G. Let the adjacency operator A : ℓ2 (G) → ℓ2 (G) deﬁned by
+                          X
+            (Aβ)(v) =             β(u)      (v ∈ G, β ∈ ℓ2 (G)).
+                       (u,v)∈E(G)
+
+We denote by δo ∈ ℓ2 (G) the indicator function of the root. For each
+polynomial p the function p(A)δo is a ﬁnitely supported function on
+V (G), hence it is in ℓ2 (G). Let
+                    
+              L = p(A)δo : p is a polynomial ⊆ ℓ2 (G),
+that is, the ℓ2 -closure of the functions given by the polynomials of A.
+         SPECTRAL MEASURES OF FACTOR OF I.I.D. PROCESSES                 9
+
+Definition 14 (Spherical linear factor of i.i.d.). We say that X is a
+spherical linear factor of i.i.d. process if its rule f is given by
+                             X
+                   f (ω) =         β(u)ωu        (ω ∈ Ω),
+                           u∈V (G)
+
+where β ∈ L.
+
+  Note that for the regular tree G = Td every ﬁnitely supported radial
+function on V (G) (i.e., the value depends only on the distance from the
+root) is in the form p(A)δo for some polynomial p. Hence L = ℓ2 (Td ),
+and every linear factor of i.i.d. process is spherical.
+
+Linear factors. In the sequel, we will also consider ﬁnite linear factors
+of any invariant process X. The deﬁnition is based on polynomials of
+A, as follows.
+Definition 15 (Linear factor of a process X). Let X be an invariant
+random process and p a polynomial. By p(A)X we mean the linear
+factor process defined by
+                            X            
+                [p(A)X]v =        p(A)δo (Φ(w))Xw ,
+                             w∈V (G)
+
+where Φ ∈ Aut(G) is any automorphism taking v to the root o.
+
+  Since p(A)δo is a ﬁxed point of root-preserving automorphisms of G,
+the deﬁnition does not depend on the choice of Φ.
+
+2.3. Spectral measures.
+
+Spectral measure of the graph. Let G be a vertex-transitive graph with
+all vertices having degree d. Recall that δo ∈ ℓ2 (G) is the function that
+is equal to 1 at the root and 0 everywhere else. The operator A is a
+bounded self-adjoint operator. Therefore there exists a ﬁnite measure
+ν on [−d, d] such that
+                                       Z
+(3)                        k
+                        hA δo , δo iG = tk dν(t)
+
+holds for every k ≥ 0. This is called the spectral measure of the graph at
+the root (see e.g. Bordenave, Sen and Virág (2013), Abért, Thom and
+Virág (2014) and the references therein). Notice that this is closely
+related to the return probabilities of the random walk on the graph:
+the left hand side is the number of returning paths of length k starting
+from the root.
+   When G = Td is the inﬁnite d-regular tree (d ≥ 3), then ν is the
+Plancherel (or Kesten–McKay) measure (see e.g. Woess 2000), which
+10                ÁGNES BACKHAUSZ AND BÁLINT VIRÁG
+
+has density function
+               √                        h                  i
+               d 4(d−1)−t2                    √        √
+                                      t ∈ − 2 d − 1, 2 d − 1 ;
+       h(t) = 2π d2 −t2
+                    h(t) = 0         otherwise
+                                                √
+with respect to the Lebesgue measure. Here ̺ = 2 d − 1 is the spectral
+radius of the tree.
+
+Spectral measure of invariant processes. The spectral measure of in-
+variant random processes will be the spectral measures of the graph-
+ings (as bounded self-adjoint operators) associated to them (see also
+Backhausz et al. (2015)). This concept is as follows.
+   Let X be an invariant random process with marginals having ﬁnite
+variance. We modify the deﬁnition of Ω = RV (G) a bit. Namely, we
+identify two elements if one can be obtained from the other by apply-
+ing a root-preserving automorphism of G. We get Ω̃ this way. The
+distribution of X is a probability measure Q on Ω̃.
+   We construct a bounded degree graph from Ω̃ by connecting two
+elements if and only if one can be obtained from the other one by
+moving the root to one of its neighbors. Let E be the edge set of this
+graph.
+Remark 16. The probability space (Ω̃, Q) with edge set E will form
+a graphing. See Hatami, Lovász and Szegedy (2014 , Section 3) or
+Backhausz, Szegedy and Virág (2015, Section 2) for the deﬁnition and
+details.
+
+     We deﬁne the following operator G acting on L2 (Ω̃, Q):
+                        X
+           (Gf )(ω) =        f (ω ′)  (f ∈ L2 (Ω̃, Q), ω ∈ Ω̃).
+                       (ω,ω ′ )∈E
+
+Notice that G is a bounded self-adjoint operator. Let us denote by
+eo ∈ L2 (Ω̃, Q) the function that assigns to each element of Ω̃ its value
+at the root.
+   According to the spectral theorem, the operator G has a (ﬁnite) spec-
+tral measure µX at eo . That is, µX is a ﬁnite measure on R satisfying
+the following:
+                                 Z
+                    k
+                  hG eo , eo iQ = tk dµX (t)    (k ≥ 0),
+
+where h·, ·iQ is the scalar product in L2 (Ω̃, Q). Since the degrees in
+G are bounded by d, the same holds for the graph constructed above.
+This implies that the largest eigenvalue (in absolute value) is equal to
+d, and the support of µX is contained in the interval [−d, d].
+         SPECTRAL MEASURES OF FACTOR OF I.I.D. PROCESSES                   11
+
+Definition 17 (Spectral measure of a process). The spectral measure
+of an invariant random process X (with marginals having finite second
+moments) is the spectral measure of G at eo ∈ L2 (Ω̃, Q), which is a
+finite measure on [−d, d]. It will be denoted by µX .
+  In the sequel, we will use the notation
+                          hX, Y i = E(Xo · Yo )
+for any invariant pair of random processes (X, Y ) on G which have
+marginals with ﬁnite second moments.
+   Notice that X is a random element of Ω̃ with distribution Q, the
+function eo selects the value at the root, and the action of G corresponds
+to the linear factor process given by A (recall Deﬁnition 15). We obtain
+              hG k eo , eo iQ = E([Ak X]o · Xo ) = hAk X, Xi.
+  We conclude that for every invariant process X its spectral measure
+µX satisﬁes
+                          Z
+(4)            k
+             hA X, Xi = tk dµX (t)        (k ≥ 0), and
+
+(5)   A is self-adjoint: hAk X, Al Xi = hAk+l X, Xi          (k, l ≥ 0).
+Covariance structure. We will deﬁne the covariance structure of a pro-
+cess, and we will see how it is related to the spectral measure if the
+marginals of the process have mean 0.
+Definition 18 (Covariance structure). Let X be an invariant random
+process with marginals having finite second moments. Its covariance
+structure, cX : V (G) → R is defined by
+                 cX (v) = cov(Xo , Xv )       (v ∈ V (G)).
+  Suppose that E(Xo ) = 0. The scalar product hAk X, Xi is the same
+as the following: take X, start a random walk of length k from the
+root, calculate the covariance of the values of X at the root and at the
+endpoint of the random walk, and multiply this by dk . On the other
+hand, by linearity of expectation, we obtain
+                 hAk X, Xi = hAk δo , cX iG       (k ≥ 0).
+Notice that this is a ﬁnite sum. By equation (4) we get
+                               Z
+(6)                k
+                hA δo , cX iG = tk dµX (t)    (k ≥ 0),
+
+which shows the connection between the covariance structure and the
+spectral measure of the process.
+  Notice that if X is a process that assigns independent random vari-
+ables to the vertices of G, then cX = δo and µX = ν; that is, the
+spectral measure of the process is the spectral measure of the graph.
+12               ÁGNES BACKHAUSZ AND BÁLINT VIRÁG
+
+2.4. Limits of random processes. The d¯2 -distance of invariant pro-
+cesses (Deﬁnition 1) induces the notion of d¯2 -limits of factor of i.i.d.
+processes.
+   We will also deal with distributional convergence. That is, a se-
+quence of invariant random processes converges if the sequence of their
+distributions on Ω = RV (G) converges weakly to some probability mea-
+sure on Ω. A weak limit of factor of i.i.d. process is an invariant process
+that can be approximated with factor of i.i.d. processes in distribution.
+Notice that d¯2 -convergence implies convergence in distribution.
+
+                    3. Proof of Proposition 9
+  Before proving Proposition 9, we need a lemma. Recall that p(A)X
+denotes the linear factor process of X whose coeﬃcients are given by
+the ﬁnitely supported function p(A)δo (Deﬁnition 15).
+Lemma 19 (Isometry). Let X be a random invariant process and p
+a polynomial. Assume that E(Xo ) = 0 and the marginals of X have
+finite second moments. Then we have
+                                    Z
+                                
+                      E [p(A)X]o = p2 dµX .
+                               2
+
+
+
+Proof. Using the deﬁnition of the spectral measure µX (equation (4))
+and the fact that A is self-adjoint by equation (5), we get
+     Z
+                                                            
+        p2 dµX = hp2 (A)X, Xi = hp(A)X, p(A)Xi = E [p(A)X]2o . 
+
+  Notice that by the inequality of arithmetic and geometric means, the
+Bhattacharyya coeﬃcient can be expressed as
+                                    Z         Z
+                                                1
+                  2γ =     inf         hdµ +      dν;
+                           h>0                  h
+                           h,1/h integrable
+
+or, equivalently, using polynomials:
+                                              Z            Z       
+                                                   2            2
+(7)         2γ = lim            inf                p dµ +       q dν .
+                  ε↓0      p,q polynomials
+                        |pq−1|<ε on supp(κ)
+
+Proof of Proposition 9. Take any invariant coupling of X, Y . Let
+κ = µX + µY , and dµX = f dκ, dµY = gdκ. By Lemma 19 and
+equation (1), we need to show |E(Xo Yo)| ≤ γ. For polynomials p, q as
+in equation (7), we have
+                                
+      E (p(A)X)2o + E (q(A)Y )2o ≥ 2 E(p(A)Xo · q(A)Yo )
+                   = 2 E(q(A)p(A)Xo · Yo ) = 2 E(Xo Yo) + r,
+             p
+where |r| ≤ ε E(Xo2 )E(Yo2 ) holds for the error. We conclude by letting
+ε → 0.
+         SPECTRAL MEASURES OF FACTOR OF I.I.D. PROCESSES                13
+
+  The second inequality is standard, see e.g. Lemma 12.2. in Harsha
+(2011). We include a proof for completeness. We deﬁne
+                    Z                     Z
+              ∆1 = |f − g|dκ;        s = (f + g)dκ.
+
+By the Cauchy–Schwarz inequality, we have
+    Z p            Z p                  Z          2
+             √ 2             √ 2
+       ( f − g) dκ ( f + g) dκ ≥           |f − g|dκ = ∆21 .
+
+On the other hand, the deﬁnition of s implies that
+  Z p                   Z           p               Z p
+             √ 2                                              √
+     ( f + g) dκ = f + g + 2 f gdκ = 2s − ( f − g)2 dκ.
+                 R √      √
+Hence for q = ( f − g)2 dκ we obtain q(2s − q) ≥ ∆21 . It follows
+              p
+that q ≥ s − s2 − ∆21 .
+  The last inequality is straightforward.
+                                                    R√
+  As for (b), singularity of µX and µY implies that    f gdη = 0. Hence
+the statement follows from the above inequality |E(Xo Yo )| ≤ γ.     
+
+                      4. Proof of Theorem 2
+Lemma 20 (Spectral measures of spherical linear functions). There
+exists an isometry between L and L2 (R, ν) such that the following hold.
+(a) For all α ∈ L and its image α̂ we have
+                                 Z
+                       hα, αiG = α̂2 (t)dν(t).
+
+(b) Let α ∈ L. Then the spectral measure of the spherical linear factor
+    of i.i.d. process given by α has density α̂2 with respect to ν.
+(c) Let h ∈ L2 (R, ν) be a measurable function. Then there exists a
+    spherical linear factor of i.i.d. process X such that µX is the mea-
+    sure with density function h2 with respect to ν.
+Proof. (a) Let p be a polynomial. By equation (3) we have
+                                       Z
+                  hp(A)δo , p(A)δo iG = p2 (t)dν(t).
+
+It follows that p(A)δo 7→ p is an isometry from the appropriate subspace
+of ℓ2 (G) to the set of polynomials in L2 (R, ν). As usual, this isometry
+has a unique extension to the ℓ2 -closure; that is, there is an isometry
+between L and L2 (R, ν) (as polynomials form a dense set in the latter
+space).
+   (b) Let (pn ) be a sequence of polynomials tending to α̂ in L2 (R, ν).
+Let Y be an i.i.d. process, and X is the spherical linear factor of i.i.d.
+process obtained by α from Y . The Cauchy–Schwarz inequality implies
+           lim hAk pn (A)Y, pn (A)Y i = hAk X, Xi     (k ≥ 0).
+          n→∞
+14               ÁGNES BACKHAUSZ AND BÁLINT VIRÁG
+
+By equations (3) and (6) this yields
+    Z
+lim   tk p2n (t)dν(t) = lim hAk pn (A)δo , pn (A)δo iG = hAk X, Xi (k ≥ 0).
+n→∞                    n→∞
+
+
+  On the other hand, since (pn ) tends to α̂ in L2 (R, ν), we conclude
+that                      Z
+                hAk X, Xi =      tk α̂2 (t)dν(t)   (k ≥ 0).
+
+This implies that dµX = α̂2 dν, and the proof of part (b) is complete.
+   (c) Based on the isometry between L and L2 (R, ν), let α ∈ L be
+chosen such that α̂ = h. Let X be the spherical linear function given by
+α. The argument in the proof of (b) implies that the spectral measure
+of X has density h2 with respect to ν.                                
+Lemma 21. Let X be an invariant random process such that E(Xo ) =
+0, X has marginals with finite second moments, and cX ∈ ℓ2 (G). Then
+µX is absolutely continuous with respect to the spectral measure ν of
+the graph.
+
+Proof. Suppose ﬁrst that cX = p(A)δo for some polynomial p. Then,
+by self-adjointness and equation (3), we have
+                                         Z
+         k              k
+      hA δo , cX iG = hA δo , p(A)δo iG = tk p(t)dν(t) (k ≥ 0).
+
+By equation (6) we obtain that the measure with density function p
+will be the spectral measure of X. Hence µX is absolutely continuous
+with respect to ν.
+  Next, we assume that cX ∈ L. Let (pn ) be a sequence of polynomials
+converging to cX in ℓ2 (G). Taking limits in the previous equation and
+applying Cauchy–Schwarz inequality we obtain that
+                                                    Z
+          k                 k
+       hA δo , cX i = lim hA δo , pn (A)δo iG = lim   tk pn (t)dν(t)
+                      n→∞                       n→∞
+                      Z
+                    = tk ccX dν(t),
+
+                2
+where ccX ∈ L ([−d, d], ν) is the image of cX at the isomorphism deﬁned
+in Lemma 20. Again, this implies that µX is absolutely continuous with
+respect to ν with density cc X.
+                      2
+   Finally, let cX ∈ ℓ (G) be arbitrary. By deﬁnition, L is a closed linear
+subspace in the Hilbert space ℓ2 (G). Let cX ∈ L be the projection of
+cX into this subspace. Since the projection does not change the scalar
+product with vectors from the subspace, we have
+                hAk δo , cX iG = hAk δo , cX iG    (k ≥ 0).
+          SPECTRAL MEASURES OF FACTOR OF I.I.D. PROCESSES                             15
+
+Therefore the spectral measure of X is the same as the spectral measure
+corresponding to cX , which is absolutely continuous with respect to
+ν.                                                                   
+Proof of Theorem 2. We start with showing that (i) implies (ii). Let
+µ be a ﬁnite measure, which is absolutely continuous with respect to
+                                                      √
+the spectral measure ν; its density is g ≥ 0. Since g ∈ L2 ([−d, d], ν),
+by part (c) of Lemma 20 there exists a spherical linear factor of i.i.d.
+process with spectral measure having density g with respect to ν.
+    (ii) ⇒ (iii), (iii) ⇒ (iv) are trivial.
+    (iv) ⇒ (v) We say that a factor of i.i.d. process is a block factor of
+i.i.d. if the factor map depends only on the values in a ball of ﬁnite
+radius.
+    A factor of i.i.d. process can be approximated with block factor of
+i.i.d. processes in the d¯2 -distance. See Lyons (2014) for trees, but
+the proof is similar for vertex-transitive graphs. (To see this, let
+f ∈ L2 (Ω, P ) be the rule of a factor of i.i.d. process, and let Fr =
+σ{ωv : |v| ≤ r} ⊂ Ω. By the martingale convergence theorem, the
+sequence of block factor of i.i.d. processes with rule E(f |Fr ) converges
+to the factor of i.i.d. process with rule f in the d¯2 -metric.) Thus, d¯2 -
+limits of factor of i.i.d. processes can also be approximated with block
+factors. The covariance structure of a block factor of i.i.d. process is
+ﬁnitely supported, hence it is in ℓ2 (G). Thus every block factor of i.i.d.
+process has absolutely continuous spectral measure by Lemma 21. This
+shows that (iv) implies (v).
+    Finally, we prove that (v) implies (i). Let (X (n) )n≥1 be a sequence
+of invariant random processes such that each µ(n) = µX (n) is absolutely
+continuous with respect to the spectral measure ν with density function
+g (n) . Furthermore, assume that X (n) → X in the d¯2 -distance as n → ∞.
+    It follows from the Cauchy–Schwarz inequality and the deﬁnition of
+ ¯                             (n)
+d2 -convergence that Var(Xo ) → Var(Xo ) holds as n → ∞. Therefore
+Proposition 9 implies that
+(8)                         d(µ(n) , µX )T V → 0              (n → ∞).
+We have                                       Z
+                (n)        (m)
+                                         1
+          d µ         ,µ             TV
+                                        =         g (n) − g (m) dν      (n, m ≥ 1).
+                                          2
+                               
+Equation (8) implies that g (n) is a Cauchy sequence in L1 ([−d, d], ν).
+Due to the completeness of this space, we get that there exists g ∈
+L1 ([−d, d], ν) such that
+                  g (n) → g              in L1 ([−d, d], ν)          (n → ∞).
+The dominated convergence theorem implies that
+                                                  TV
+                            µ(n) = g (n) dν → gdν              (n → ∞)
+16              ÁGNES BACKHAUSZ AND BÁLINT VIRÁG
+
+with respect to the total variation distance (by this notation, we mean
+the measures having the given density with respect to ν). Hence dµX =
+gdν, and we conclude that µX is absolutely continuous with respect to
+the spectral measure of the graph G.                                  
+
+                     5. Proof of Theorem 4
+Lemma 22. Let (X (n) ) be a sequence of invariant random processes
+(with marginals having finite second moments) with covariance struc-
+tures (cn ) and spectral measures (µn ).
+(a) Suppose that X is another invariant random process such that
+             cn (v) → cX (v) for all v ∈ V (G) as n → ∞.
+    Then µn → µX weakly as n → ∞. In particular, µn tends to
+    µ weakly if X (n) tends to X in distribution and each X (n) is a
+    Gaussian process.
+(b) Suppose that µn converges weakly to a finite measure µ. Then there
+    exists an invariant random process X with spectral measure µ =
+    µX .
+Proof. (a) Since every p(A)δo has ﬁnite support, by equation (3) we
+obtain that
+     Z                                                 Z
+        p(t)dµn (t) = hp(A)δo , cn iG → hp(A)δo , ciG = p(t)dµ(t)
+
+holds as n → ∞ for all polynomials p. The set of polynomials is dense
+in the set of continuous functions with respect to the supremum norm,
+hence µn tends to µ weakly.
+   Furthermore, in case of Gaussian processes, convergence in distribu-
+tion implies the pointwise convergence of the covariance structures.
+   (b) We neglect the degenerate case µ([−d, d]) = 0. Lemma 19 and
+                                      (n) 2 
+the ﬁniteness of µ implies that E Xo            is bounded. Hence the
+covariance structures are uniformly bounded by the Cauchy–Schwarz
+inequality. Since the vertex set of G is countable, we may choose a
+subsequence X (nm ) such that
+(9)           cnm (v) → c(v) for all v ∈ V (G) as m → ∞
+for some c : V (G) → R. Pointwise convergence preserves the property
+of being a covariance structure of an invariant process, hence there
+exists an invariant Gaussian process X with covariance structure c.
+On the other hand, equation (9) and part (a) imply that µnm → µX
+weakly as m → ∞. We conclude that µ = µX .                        
+Proof of Theorem 4. (ii) ⇒ (iii) is trivial.
+  (iii) ⇒ (i) Suppose that the invariant process X is the limit of the
+factor of i.i.d. processes (X (n) ) in distribution, and X has marginals
+          SPECTRAL MEASURES OF FACTOR OF I.I.D. PROCESSES                      17
+
+with ﬁnite second moments. Denote by X (n,T ) the truncation of X (n)
+at level T :
+                                (n)
+                   
+                   T,      if Xv > T ;
+         Xv(n,T ) = Xv(n) , if Xv(n) ∈ [−T, T ]; (v ∈ V (Td )).
+                   
+                                (n)
+                    −T,     if Xv < −T ;
+Let X T be the truncated version of X.
+   Since the truncation is a continuous function, X (n,T ) → X T in dis-
+tribution as n → ∞. By boundedness, we have
+(10)        cov(Xv(n,T ) , Xw(n,T ) ) → cov(XvT , XwT )     (n → ∞)
+for all v, w ∈ V (Td ) and T > 0.
+   The second moment condition on X implies
+(11)           cov(XvT , XwT ) → cov(Xv , Xw )            (T → ∞)
+for all v, w ∈ V (G).
+   Since X (n) is a factor of i.i.d. process, X (n,T ) is also factor of i.i.d. By
+(10), (11) and a diagonalization argument we obtain that the covariance
+structure of X is the pointwise limit of covariance structures of factor
+                                             (n)    (n)
+of i.i.d. processes. (Note that cov(Xv , Xw ) may not converge to
+cov(Xv , Xw ).)
+   To summarize, we can ﬁnd a sequence of factor of i.i.d. covariance
+structures (cm ) such that cm (v) → cX (v) for all v ∈ V (G) as m → ∞.
+Part (a) of Lemma 22 implies that µm tends to µ weakly. By Theorem
+2 every µm is absolutely continuous with respect to ν. Therefore the
+support of µ is contained in supp(ν).
+   (i) ⇒ (ii) Let µ be a ﬁnite measure such that supp(µ) ⊆ supp(ν).
+There exist a sequence of ﬁnite measures (µn ) such that it converges
+weakly to µ and every µn is absolutely continuous with respect to ν.
+   On the other hand, Theorem 2 implies that for every µn there exists
+a spherical linear factor of i.i.d process X (n) whose spectral measure
+is µn . It follows from part (b) of Lemma 22 that µ is the spectral
+measure of some Gaussian process X. In addition, the proof of the
+lemma shows that the covariance structures of a subsequence of X (n)
+converge pointwise to the covariance structure of X. Since every X (n)
+is spherical, it is also Gaussian. In case of Gaussian processes the
+pointwise convergence of covariance structures implies           convergence in
+distribution. Therefore some subsequence of X (n) converges to X in
+distribution, which concludes the proof.                                         
+Remark 23. Notice that linear factor of i.i.d. processes are always
+Gaussian. Therefore for an absolutely continuous measure we can ﬁnd
+a Gaussian factor of i.i.d. process with this spectral measure. Similarly,
+for measures supported on supp(ν), the appropriate process is the weak
+limit of Gaussian factor of i.i.d. processes as well.
+18               ÁGNES BACKHAUSZ AND BÁLINT VIRÁG
+
+                            6. Applications
+6.1. Process spectrum.
+
+Proof of Theorem 7. First we prove the statement for atomic measures.
+Suppose that x ∈ psp(G), and µ is an atom at x. Given ε > 0, there
+exists a process X ε such that µX ε ([x − ε, x + ε]) > 0. It follows that
+there exists a polynomial pε such that the following hold for the measure
+dµ∗ε = pε dµX ε (i.e. the measure µ∗ε that has density function pε with
+respect to µX ε ):
+µ∗ε (R \ [x − ε, x + ε]) < ε;   µ(x) − ε ≤ µ∗ε ([x − ε, x + ε]) ≤ µ(x) + ε.
+Notice that µ∗ε tends to µ weakly as ε → 0. Equation (4) implies that
+the process pε (X ε ), which is a ﬁnite linear factor of X ε by Deﬁnition
+15, has spectral measure µ∗ε . Putting this together with Lemma 22 (b),
+we conclude that µ is the spectral measure of some invariant random
+process.
+  Further on, if the support of µ consists of ﬁnitely many atoms, then
+one can take the sum of independent copies of invariant random pro-
+cesses constructed for atomic measures, multiplied by appropriate con-
+stants. The covariance structure is additive due to independence, which
+shows by equation (6) that the spectral measure is µ.
+  Finally, if we have an arbitrary ﬁnite measure µ whose support is
+contained in psp(G), then it can be approximated weakly with measures
+µn , where each µn is supported on ﬁnitely many atoms. For every µn
+we already have a process X (n) with spectral measure µn . We ﬁnish
+the proof by applying part (b) of Lemma 22.                             
+
+
+Proof of Proposition 8. (ii) ⇒ (i) We will use the next formulation of
+Kazhdan’s property: every sequence of positive deﬁnite functions on G
+that converges to 1 pointwise (i.e. on compact subsets) converges to 1
+uniformly on G.
+   Let X be the following process: constant 1 on all vertices with prob-
+ability 1/2, and constant −1 with probability 1/2. Then cX (v) = 1 for
+all v ∈ V (G), and, by equation (6) it follows that µX = δd is an atomic
+measure at d.
+   Let cn : V (G) → R be a sequence of positive deﬁnite functions
+converging pointwise to 1. We can ﬁnd a sequence of invariant processes
+(X (n) ) such that X (n) has covariance structure cn . By Lemma 22 (a)
+we obtain that µX (n) → µX weakly. It follows from (ii) and the fact
+µX = δd that
+                         µX (n) = (1 − εn )δd + µ′n ,
+where εn → 0, and (µ′n ) is a sequence of measures such that µ′n ([−d, d])
+tends to 0 as n → ∞, and µ′n is supported on psp(G).
+         SPECTRAL MEASURES OF FACTOR OF I.I.D. PROCESSES                 19
+
+  Since µX (n) is the spectral measure corresponding to X (n) , we get
+that µ′n is the spectral measure corresponding to cn − (1 − ε). That is,
+we have
+                                    Z
+              k
+           hA (cn − (1 − ε)), δo i = tk dµ′n   (k = 0, 1, . . .).
+
+It follows that (cn −(1−ε)) is positive deﬁnite for each n, and hence it is
+a covariance structure of an invariant process. The fact µ′n ([−d, d]) → 0
+implies that (cn − (1 − ε))(0) tends to 0. By the Cauchy–Schwarz
+inequality we obtain that cn − (1 − ε) converges to 0 uniformly. Hence
+cn converges to constant 1 uniformly, and G has Kazhdan’s property
+(T ).
+   (i) ⇒ (ii) Let X be the constant 1 process. Its spectral measure
+is an atomic measure at d, hence d is always in the process spectrum.
+Suppose (for contradiction) that d is not an isolated point. Choose a
+sequence of numbers (an ) with limit d such that an ∈ psp(G) for all n.
+Theorem 7 implies that we can ﬁnd a sequence of invariant processes
+X (n) such that the spectral measure of X (n) is an atomic measure at an
+for each n. It follows that µX (n) → µX weakly as n → ∞. Similarly to
+the proof of Lemma 22, we can assume that the covariance structures
+of X (n) converge pointwise to cX , by choosing an appropriate subse-
+quence. By the characterization of Kazhdan’s property using positive
+semideﬁnite functions (covariance structures are positive semideﬁnite),
+we get that cX (n) → cX ≡ 1 uniformly on V (G).
+   On the other hand, if H is inﬁnite and has Kazhdan’s property (T ),
+then it can not be amenable (see e.g. Bekka, de la Harpe and Valette
+2008). Therefore its spectral radius is strictly less than d. Therefore
+the covariance of Xo and Xv , where v is the endpoint of a random walk
+of length k, decays exponentially as a function of k. This contradicts
+the uniform convergence of correlation structures above. Hence the
+process spectral radius is less than d.                                  
+
+6.2. Gaussian wave functions.
+
+Proof of Corollary 11. We check that µX is the Dirac measure which
+puts an atom of weight 1 at λ:
+                                                 Z
+          k          k          k            k
+       hA X, Xi = λ hX, Xi = λ Var(Xo ) = λ = tk dµX (t).
+
+   Diﬀerent Dirac measures are singular measures. On the other hand,
+the measure µY is absolutely continuous with respect to the spectral
+measure of the graph by Theorem 2. Hence it is absolutely continu-
+ous with respect to the Lebesgue measure in case (b), and again, it is
+singular to the Dirac measure. Therefore both parts of the statement
+follow from Proposition 9 (b).                                      
+20                  ÁGNES BACKHAUSZ AND BÁLINT VIRÁG
+
+6.3. Linear factor of i.i.d. processes and d¯2 -convergence. First
+we prove the following statement about spherical linear processes.
+Proposition 24. Suppose that X (n) is a sequence of spherical linear
+factor of i.i.d. processes such that X (n) → X with respect to the d¯2 -
+distance as n → ∞. Then (the distribution of ) X is a spherical linear
+factor of i.i.d. process.
+
+Proof. Let αn ∈ L be the function which deﬁnes X (n) . Lemma 20
+                 cn 2 dν. On the other hand, due to the d¯2 -convergence
+implies µX (n) = α
+of X (n) and part (a) of Proposition 9, we get that µX (n) is a Cauchy
+sequence in total variation distance. Therefore, since L1 ([−d, d], ν) is
+complete,
+          we can ﬁnd a function which is the limit of the sequence
+ cn 2 . It has to be nonnegative, hence there exists α̂ ∈ L2 ([−d, d], ν)
+ α
+such that α̂ ≥ 0 and
+                   Z
+                       cn 2 − α̂2 dν → 0
+                       α                   (n → ∞).
+
+     Using the inequality (a − b)2 ≤ |a2 − b2 | for a, b > 0, this yields
+                    Z
+                        αn − α̂)2 dν → 0
+                       (c                      (n → ∞).
+
+   Let α ∈ L be the function corresponding to α according to part (a)
+of Lemma 20. Let X α be the spherical linear factor of i.i.d. process
+given by α. By applying αn and α on the same i.i.d. process (which
+deﬁnes the coupling), and using Lemma 20 (b), we have
+                 Z
+                                                    
+                     αn − α̂)2 dν = E (Xo(n) − Xoα )2 .
+                    (c
+
+   Hence X (n) converges to X α in the d¯2 -distance. Convergence in d¯2 -
+distance implies convergence in distribution, and the limit is unique.
+We conclude that the distribution of X is equal to the distribution of
+X α , which is a spherical linear factor of i.i.d. process.            
+
+Proof of Corollary 10. Invariant Gaussian processes are determined by
+their covariance structure. Hence every Gaussian factor of i.i.d. process
+is a linear factor of i.i.d. process by Theorem 2.
+   On the other hand, every linear factor of i.i.d. process is spherical on
+the d-regular tree, because every ﬁnitely supported radial function is a
+polynomial of A. Proposition 24 implies that the limit of the sequence
+is a linear factor of i.i.d. process. Hence it is Gaussian.               
+
+6.4. Gaussian free field. We recall the deﬁnition of an analogue of
+the Gaussian free ﬁeld on transient graphs, and we will show that all
+these random processes are factor of i.i.d. processes (see also Exercise
+10.31. in Lyons and Peres (2014)).
+         SPECTRAL MEASURES OF FACTOR OF I.I.D. PROCESSES                21
+
+Definition 25 (Gaussian free ﬁeld). Let G be a transient and vertex-
+transitive graph. An invariant Gaussian random process is a Gaussian
+free field if its covariance structure is the Green function:
+                                 X∞  k
+                                       A
+                                            .
+                                 k=0
+                                       d
+
+   Notice that our assumption that G is transient implies that this series
+is convergent, because the number of visits of a random walk starting
+from the root is ﬁnite almost surely.
+Proposition 26. A Gaussian free field is a linear factor of i.i.d. pro-
+cess.
+
+Proof. Consider the function deﬁned by
+                X∞  k
+                      x        d
+                           =           (x ∈ (−d, d)).
+                k=0
+                      d      d−x
+
+The transitivity of G implies that this function is in L1 ([−d, d], ν),
+where ν is the spectral measure of G. It follows from the deﬁnition
+of the Gaussian free ﬁeld that this is the density function of its spec-
+tral measure. Theorem 2 and the fact that Gaussian processes are
+determined by their covariance structures imply the statement.        
+
+6.5. Gaussian Markov processes on the tree. We will need the fol-
+lowing family of polynomials, which plays an important role in under-
+standing the radial functions on the regular tree. Let (rn ) be the unique
+sequence of polynomials satisfying the following recurrence equations:
+             r0 (x) = 1;
+(12)        xr0 (x) = r1 (x);
+            xrn (x) = (d − 1)rn−1 (x) + rn+1 (x)     (n ≥ 1).
+The polynomial rn has degree n. These are sometimes called Dunau
+polynomials, and they are closely related to Chebyshev polynomials of
+the second kind (see e.g. Alon, Benjamini, Lubetzky and Sodin 2007,
+Backhausz, Szegedy and Virág 2014, Arnaud and Letac 1984, Figà-
+Talamanca and Nebbia 1991). On the other hand, they are orthogonal
+with respect to the Plancherel measure. Moreover, the following can
+be proved by induction: r0 (A)δo = δo , and for n ≥ 1 we have
+                                    (
+                                     1, if |v| = n;
+(13)               [rn (A)δ0 ](v) =
+                                     0, otherwise.
+This implies that all radial functions on the tree are given by limits of
+polynomials of A.
+22                  ÁGNES BACKHAUSZ AND BÁLINT VIRÁG
+
+Proof of Proposition 12. Let c̺ : V (Td ) → R be deﬁned by c̺ (v) = ̺|v| .
+By equation (2), this is the covariance structure of the Gaussian Markov
+process. First we decide whether c̺ is in ℓ2 (Td ):
+                    ∞
+                    X                                                 1
+               1+         d(d − 1)k−1̺2k < ∞ ⇔ |̺| < √                   .
+                    k=1
+                                                                     d−1
+                          1
+Hence in the case |̺| < √d−1  Lemma 21 applies. However, we compute
+                                  1
+this density function for |̺| < √d−1  , in order to deal with the case
+       1
+|̺| = √d−1 . Equations (2) and (13) imply that
+                               X
+                          c̺ =    ̺k rk (A)δo .
+                                      k=0
+
+  Based on the proof of Lemma 21, we obtain that the density function
+(with respect to the spectral measure of the tree) of the spectral mea-
+sure of the Gaussian Markov process with parameter ̺ is the following:
+                                         ∞
+                                         X
+                              f̺ (x) =          ̺k rk (x).
+                                         k=0
+
+To compute this sum, let
+                                            ∞
+                                            X
+                             g(x, y) =            rk (x)y k .
+                                            k=1
+
+Then by recurrence equation (12) we have
+                           ∞
+                           X                      ∞
+                                                  X
+                                            k
+      xg(x, y) = (d − 1)       rk−1 (x)y +             rk+1 (x)y k
+                           k=1                     k=1
+                            X∞                      X∞
+                                                  1
+              = y(d − 1)          rk (x)y k +           rk (x)y k
+                            k=0
+                                                  y k=2
+                                                  1
+              = y(d − 1)rk (0) + y(d − 1)g(x, y) + [g(x, y) − r1 (x)y]
+                                                  y
+                                              1
+              = y(d − 1) + y(d − 1)g(x, y) + g(x, y) − x.
+                                              y
+     This yields
+                                        xy − y 2(d − 1)
+                          g(x, y) =                        .
+                                      1 + y 2 (d − 1) − xy
+     Hence the density function of µ is the following:
+                                       1                       1 
+      f̺ (x) = g(x, ̺) + 1 =                           |̺| < √     .
+                             1 + ̺2 (d − 1) − x̺               d−1
+         SPECTRAL MEASURES OF FACTOR OF I.I.D. PROCESSES                  23
+
+             1
+  For ̺ = √d−1  the covariance structure is not in ℓ2 (Td ). However, the
+calculation above works and we get
+                          ∞
+                          X                              1
+                f (x) =         rk (x)(d − 1)−k/2 =        x     .
+                          k=0
+                                                      2 − √d−1
+
+This has a singularity
+             √          only at the endpoint of the Plancherel interval,
+namely, at 2 d −√1. Since the density function of the Plancherel mea-
+sure behaves like x at the endpoints of its support, this function is still
+integrable with respect to the Plancherel measure: f ∈ L1 ([−d, d], ν).
+Therefore this is the density function of the spectral measure of the
+Gauss Markov process with respect to ν. Hence √      c̺ is the covariance
+                             √ process if |̺| ≤ 1/ d − 1. Similar ar-
+structure of a factor of i.i.d.
+gument works for ̺ = −1/ d − 1.) For Gauss Markov processes this
+implies that the process is linear factor of i.i.d. itself, according to
+Theorem 2.
+   As for the other direction, we refer to Backhausz, Szegedy and Virág
+(2015): from that result it follows immediately that covariance struc-
+ture with larger absolute value of ̺ can not be factor of i.i.d.        
+
+6.6. Branching Markov chains. We can also examine the covariance
+structures of branching Markov chains on the d-regular tree. Fix a
+reversible Markov chain with ﬁnite state space S and transition matrix
+M. Choose the state of the root o uniformly at random. Then the
+Markov chain spreads out: the neighbors of the root get their states
+given the state of the root and according to the transition probabilities
+given by M. The transitions are conditionally independent given the
+state of the root. This is continued to get the states of the neighbors of
+the neighbors of the root, and so on. This will be an invariant random
+process on Td . One can get the Potts and the Ising model as particular
+cases (see e.g. Evans, Kenyon, Peres and Schulman 2000, Sly 2011).
+   Let ϕ be eigenvector of M corresponding to the largest eigenvalue.
+Then the correlation of ϕ(Xo ) and ϕ(Xv ) is ̺|v| , where ̺ is the spectral
+radius of the transition matrix M. Therefore the calculation above
+implies that this covariance structure
+                                  √         is a factor of i.i.d. covariance
+structure if and only if |̺| ≤ 1/ d − 1. However, this does not imply
+that the process itself is factor of i.i.d. in this case.
+   A particular case is the Ising model, where S = {−1, 1} and
+                                  1+̺ 1−̺ 
+                           M=         2      2    .
+                                    1−̺    1+̺
+                                        2    2
+                                                                    1
+It is known that the process is itself a factor of i.i.d. if |̺| ≤ d−1 , see
+e.g. Lyons (2014). It is open whether√the Ising model itself is factor of
+i.i.d. in the case 1/(d − 1) < |̺| ≤ 1/ d − 1.
+24                 ÁGNES BACKHAUSZ AND BÁLINT VIRÁG
+
+6.7. Open questions. We ﬁnish the paper with some open questions.
+     (1) Is there a spectral description of the structure determined by
+         the expectation of the product of the random variables at more
+         than two vertices? In this case not just the distance matters,
+         the conﬁguration of the vertices has to be ﬁxed.
+     (2) Is there a spectral description of the moments of the random
+         variables at the vertices? That is, we assign Xv , Xv2 , . . . , Xvk to
+         each vertex instead of Xv , and we can take covariance matrices
+         of the vectors assign to a pair of vertices.
+
+Acknowledgement. The authors are especially grateful to Russell
+Lyons for useful comments that led to a shorter proof of Proposition
+9. The authors thank Péter Csikvári, Viktor Harangi and Mustazee
+Rahman for reading previous versions of the manuscript and provid-
+ing valuable suggestions, Gérard Letac for references, Gábor Pete for
+the question on the covariance structure of d¯2 -limits of factor of i.i.d.
+processes, and Balázs Szegedy for useful discussions. The ﬁrst author
+was partially supported by the National Research, Development and
+Innovation Oﬃce (NKFIH, grant no. 109684), and by the MTA Rényi
+Institute Lendület Limits of Structures Research Group. The second
+author was supported by Marie Sklodowska-Curie actions ”Spectra”,
+by the NSERC Discovery Accelerator Supplements Program and by
+the MTA Rényi ”Lendület” Groups and Graphs Research Group.
+
+
+                                References
+Arnaud, J.-P. (1980). Fonctions sphériques et fonctions déﬁnies
+  positives sur l’arbre homogène, C. R. Acad. Sci. Paris Sér. A-B
+  290(2): A99–A101.
+Arnaud, J.-P. (1994). Stationary processes indexed by a homogeneous
+  tree, Ann. Probab. 22(1): 195–218.
+Backhausz, Á. and Szegedy, B. (2014). On large girth regular
+  graphs and random processes on trees, preprint. (arXiv:1406.4420
+  [math.PR]).
+Backhausz, Á., Szegedy, B. and Virág, B. (2015). Ramanujan graph-
+  ings and correlation decay in local algorithms, Random Structures
+  Algorithms 47(3): 424–435.
+Bekka, B., de la Harpe, P. and Valette, A. (2008). Kazhdan’s property
+  (T), Vol. 11 of New Mathematical Monographs, Cambridge University
+  Press, Cambridge.
+Bowen, L. (2010). The ergodic theory of free group actions: entropy
+  and the f -invariant, Groups Geom. Dyn. 4(3): 419–432.
+Cartier, P. (1973). Harmonic analysis on trees, Harmonic analysis
+  on homogeneous spaces (Proc. Sympos. Pure Math., Vol. XXVI,
+         SPECTRAL MEASURES OF FACTOR OF I.I.D. PROCESSES              25
+
+  Williams Coll., Williamstown, Mass., 1972), Amer. Math. Soc.,
+  Providence, R.I., pp. 419–424.
+Csóka, E., Gerencsér, B., Harangi, V. and Virág, B. (2015). Invariant
+  Gaussian processes and independent sets on regular graphs of large
+  girth, Random Structures Algorithms 47(2): 284–303.
+Csóka, E. and Lippner, G. (2012). Invariant random matchings in
+  Cayley graphs, preprint. (arXiv:1211.2374 [math.CO]).
+Elek, G. and Lippner, G. (2010). Borel oracles. An analytical approach
+  to constant-time algorithms, Proc. Amer. Math. Soc. 138(8): 2939–
+  2947.
+Evans, W., Kenyon, C., Peres, Y. and Schulman, L. J. (2000). Broad-
+  casting on trees and the Ising model, Ann. Appl. Probab. 10(2): 410–
+  433.
+Figà-Talamanca, A. and Picardello, M. A. (1982). Spherical functions
+  and harmonic analysis on free groups, J. Funct. Anal. 47(3): 281–
+  304.
+Gamarnik, D. and Sudan, M. (2014). Limits of local algorithms over
+  sparse random graphs, Proceedings of the 5-th Innovations in The-
+  oretical Computer Science conference, ACM Special Interest Group
+  on Algorithms and Computation Theory .
+Harangi, V. and Virág, B. (2015). Independence ratio and random
+  eigenvectors in transitive graphs, Ann. Probab. 43(5): 2810–2840.
+Harsha, P. (2011). Communication complexity lecture notes.
+  URL:         http://www.tcs.tifr.res.in/     prahladh/teaching/2011-
+  12/comm/lectures/l12.pdf
+Hatami, H., Lovász, L. and Szegedy, B. (2014). Limits of locally-
+  globally convergent graph sequences, Geom. Funct. Anal. 24(1): 269–
+  296.
+Lasser, R. and Leitner, M. (1990). On the estimation of the mean of
+  weakly stationary and polynomial weakly stationary sequences, J.
+  Multivariate Anal. 35(1): 31–47.
+Lyons, R. (2014). Factors of iid on trees, Combin. Probab. Comput., to
+  appear. (arXiv:1401.4197 [math.DS]).
+Lyons, R. and Nazarov, F. (2011). Perfect matchings as IID factors on
+  non-amenable groups, European J. Combin. 32(7): 1115–1125.
+Lyons, R. and Peres, Y. (2014). Probability on trees and networks, in
+  preparation.
+  URL: http://mypage.iu.edu/˜rdlyons/
+Rahman, M. and Virág, B. (2014). Local algorithms for independent
+  sets are half-optimal, preprint. (arXiv:1402.0485 [math.PR]).
+Sly, A. (2011). Reconstruction for the Potts model, Ann. Probab.
+  39(4): 1365–1406.
+Woess, W. (2000). Random walks on infinite graphs and groups, Vol.
+  138 of Cambridge Tracts in Mathematics, Cambridge University
+  Press, Cambridge.
+26                 ÁGNES BACKHAUSZ AND BÁLINT VIRÁG
+
+  Ágnes Backhausz. MTA Alfréd Rényi Institute of Mathematics and Eötvös
+Loránd University; Budapest, Hungary.
+     E-mail address: backhausz.agnes@renyi.mta.hu
+
+  Bálint Virág. Department of Mathematics, University of Toronto, Canada
+and MTA Alfréd Rényi Institute of Mathematics, Budapest, Hungary.
+  E-mail address: balint@math.toronto.edu

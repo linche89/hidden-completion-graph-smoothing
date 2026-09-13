@@ -1,0 +1,2019 @@
+                                                  The ratio-cut polytope and K-means clustering ∗
+                                                                Antonio De Rosa †                Aida Khajavirad ‡
+
+
+                                                                                       Abstract
+arXiv:2006.15225v3 [math.OC] 1 Feb 2024
+
+
+
+
+                                                      We introduce the ratio-cut polytope defined as the convex hull of ratio-cut
+                                                  vectors corresponding to all partitions of n points in Rm into at most K clusters.
+                                                  This polytope is closely related to the convex hull of the feasible region of a number
+                                                  of clustering problems such as K-means clustering and spectral clustering. We
+                                                  study the facial structure of the ratio-cut polytope and derive several types of
+                                                  facet-defining inequalities. We then consider the problem of K-means clustering and
+                                                  introduce a novel linear programming (LP) relaxation for it. Subsequently, we focus
+                                                  on the case of two clusters and derive a sufficient condition under which the proposed
+                                                  LP relaxation recovers the underlying clusters exactly. Namely, we consider the
+                                                  stochastic ball model, a popular generative model for K-means clustering, and√we
+                                                  show that if the separation distance between cluster centers satisfies ∆ > 1 + 3,
+                                                  then the LP relaxation recovers the planted clusters with high probability. This is a
+                                                  major improvement over the only existing recovery guarantee for an LP relaxation
+                                                  of K-means clustering stating that recovery is possible with high probability if
+                                                  and only if ∆ > 4. Our numerical experiments indicate that the proposed LP
+                                                  relaxation significantly outperforms a popular semidefinite programming relaxation
+                                                  in recovering the planted clusters.
+
+                                              Key words. Ratio-cut polytope; K-means clustering; Linear programming, Stochastic
+                                          ball model.
+                                              AMS subject classifications. 90C05, 90C57, 62H30, 49Q20, 68Q87.
+
+
+                                          1       Introduction
+                                          Clustering is concerned with partitioning a given set of data points {xi }ni=1 in Rm into K
+                                          subsets such that some dissimilarity function among the points is minimized. Consider
+                                          a partition of [n] := {1, . . . , n}; i.e., {Γk }K
+                                                                                           k=1 such that Γa ∩ Γb = ∅ for all a, b ∈ [K] :=
+                                          {1, . . . , K} and ∪k∈[K] Γk = [n], where we further assume Γk 6= ∅ for all k ∈ [K]. K-means
+                                          clustering partitions the data points into K clusters by minimizing the total squared
+                                              ∗
+                                              A. De Rosa was supported in part by National Science Foundation award DMS-1906451-2112311.
+                                              †
+                                              Department of Mathematics, University of Maryland, 4176 Campus Dr, College Park, MD 20742,
+                                          USA. Department of Decision Sciences and BIDSA, Bocconi University, Via Röntgen 1, 20136, Milano,
+                                          MI, Italy. E-mail: anderosa@umd.edu.
+                                            ‡
+                                              Department of Industrial and Systems Engineering, Lehigh University, Bethlehem, PA 18015, USA.
+                                          E-mail: aida@lehigh.edu.
+
+
+
+
+                                                                                            1
+distance between each data point and the corresponding cluster center:
+                                      K X
+                                      X                    1 X j 2
+                               min                 xi −             x                        (1)
+                                      k=1 i∈Γk
+                                                          |Γk | j∈Γ   2
+                                                                     k
+
+                               s.t. {Γk }k∈[K] is a partition of [n].
+
+It is well-known that Problem (1) is NP-hard even when there are only two clusters [6] or
+when the data points are in R2 [20]. The most famous heuristic for K-means clustering
+is Lloyd’s algorithm [18] which, in spite of its effectiveness, in practice may converge to a
+local minimum that is arbitrarily bad compared to the global minimum [15]. Moreover,
+numerous constant-factor approximation algorithms have been developed, both for the
+fixed number of clusters K and for the fixed dimension m (see for example [15, 11]). In
+this paper, we are interested in the quality of convex relaxations for K-means clustering.
+    Several equivalent reformulations of K-means clustering, including a nonlinear bi-
+nary program [26], a binary semidefinite program (SDP) [23], and a completely positive
+program [25] are given in the literature. In the following, we present an alternative formu-
+lation that we will use to construct our new convex relaxation (see [16] for the derivation).
+Consider partition of [n]; let 1Γk , k ∈ [K] be the indicator vector of the kth cluster; i.e.,
+the ith component of 1Γk is defined as: (1Γk )i = 1 if i ∈ Γk and (1Γk )i = 0 otherwise.
+Define the partition matrix as
+                                              K
+                                             X    1
+                                          Z=            1Γk 1TΓk .                           (2)
+                                             k=1
+                                                 |Γ k |
+
+Denote by D ∈ Rn×n the distance matrix with the (i, j)th entry given by dij = ||xi −xj ||22 .
+Then it can be shown that Problem (1) can be equivalently written as:
+                            X
+                     min        dij Zij                                                (3)
+                                i,j∈[n]
+
+                        s.t. Z is a partition matrix defined by (2).
+
+SDP relaxations. The most popular convex relaxations for K-means clustering are
+SDP relaxations; indeed, both theoretical and numerical properties of these algorithms
+have been extensively investigated in the literature (see for example [24, 23, 25]). These
+relaxations are obtained by observing that any partition matrix Z satisfies the following
+properties:
+
+                                     Z1n = 1n , Tr(Z) = K,                                   (4)
+                                     Z  0, Z ≥ 0,
+
+where 1n is a n-vector with all entries equal to 1 and Tr(Z) is the trace of the matrix
+Z. Moreover, Z  0 and Z ≥ 0 mean that the matrix Z is positive semidefinite and
+component-wise nonnegative, respectively. A widely-studied SDP relaxation of the K-
+means clustering, often referred to as “Peng-Wei relaxation” [23], is given by
+                     X
+             min          dij Zij                                                   (5)
+                     i,j∈[n]
+
+               s.t. Z1n = 1n ,        Tr(Z) = K,          Z  0,         Z ≥ 0,   Z = ZT .
+
+                                                     2
+If by solving Problem (5), we obtain a minimizer Z̄ that is a partition matrix as defined
+by (2), then Z̄ is also optimal for the original problem, as the feasible region of Problem (5)
+contains the feasible region of Problem (3). Otherwise, a common approach is to devise
+a rounding scheme to extract a feasible solution of (3) from the relaxation solution Z̄.
+This two-phase approach has been successfully employed for clustering various synthetic
+and real data sets [23, 25].
+
+Recovery guarantees under stochastic models. A recent stream of research in
+data clustering is concerned with obtaining conditions under which a planted clustering
+corresponds to the unique optimal solution of a SDP relaxation under suitable generative
+models [4, 2, 12, 22, 14, 5, 3, 17, 16]. Such conditions are often referred to as exact
+recovery (henceforth, simply recovery) conditions. Generally speaking, these works first
+provide deterministic sufficient conditions for a given clustering assignment to be the
+unique optimal solution of a SDP relaxation via the construction of dual certificates.
+Subsequently, they show that those conditions hold with high probability under a given
+random model. Throughout this paper, we say that an optimization problem recovers
+the planted clusters if its unique optimal solution corresponds to the planted clusters.
+    The stochastic ball model (SBM) is the most widely-studied generative model for K-
+means clustering. In this distributional setting, we assume that there exist K clusters in
+Rm and the data in each cluster consists of Kn points sampled from a uniform distribution
+within a ball of unit radius. The question is what is the minimum separation distance ∆
+between cluster centers needed for a convex relaxation to recover these K clusters with
+high probability (i.e., probability tending to 1 as n → ∞). Clearly, a convex relaxation
+recovers the planted clusters only if the original K-means problem succeeds in doing
+so. Perhaps surprisingly, the recovery threshold for K-means clustering under the SBM
+remains an open question. Recently, in [6], the authors prove that when the points are
+generated uniformly on two m-dimensional touching spheres for m ≥ 3, in the limit, i.e.,
+when the empirical samples is replaced by the probability measure, K-means clustering
+identifies the two individual spheres as the two clusters. In this paper, we show that the
+same recovery result is valid for the SBM.
+         √ the authors
+    In [4],        √ consider the Peng-Wei relaxation as defined by (5) and show that
+if ∆ > 2 2(1 + 1/ m), then the SDP recovers the planted clusters with high probability.
+In [14], the authors consider the same SDP and prove that recovery is guaranteed with
+high probability if ∆ > 2 + K 2 /m, which is near optimal in m ≫ K 2 regime. The
+              p obtain yet another recovery condition for Peng-Wei relaxation given by
+authors of [16]
+∆ > 2 + O( K/m) which is an improvement over the previous      p      condition when K is
+large. Moreover, in [16], the authors prove that if ∆ < 1 + 1 + 2/(m + 2), then with
+high probability, Peng-Wei relaxation fails in recovering the planted clusters.
+
+LP relaxations. It is widely accepted that state-of-the-art LP solvers outperform the
+SDP counterparts in both speed and scalability. However, for K-means clustering, to
+date, there exists no LP relaxation with desirable theoretical or computational properties.
+In [4], the authors consider the following LP relaxation of K-means clustering:
+              X
+       min         dij Zij                                                             (6)
+             i,j∈[n]
+
+       s.t. Z1n = 1n ,    Tr(Z) = K,      Z ≥ 0,    Z = ZT ,    Zij ≤ Zii ,   ∀i, j ∈ [n].
+
+
+                                              3
+Subsequently, they show that under the SBM, Problem (6) recovers the planted clusters
+with high probability if and only if ∆ > 4. We should remark that if ∆ > 4, any two points
+within a particular cluster are closer to each other than any two points from different
+clusters, and hence in this case, recovery follows from a simple distance thresholding.
+They complement this negative theoretical result with poor numerical performance to
+conclude the ineffectiveness of the “natural” LP relaxation for K-means clustering. In [8,
+9], the authors study the recovery properties of LP relaxations for community detection
+and joint object matching.
+
+Our contribution. In this paper, we propose a novel LP relaxation for K-means clus-
+tering with favorable theoretical and numerical properties. We start by introducing
+the ratio-cut polytope RCutK n defined as the convex hull of ratio-cut vectors corresponding
+to all assignments of n points to at most K nonempty clusters. We are interested in a
+certain facet of RCutK                        =K
+                       n , denoted by RCutn , which corresponds to all ratio-cut vectors
+of exactly K nonempty clusters. As we detail later, RCut=K    n   is the polytope obtained by
+projecting out variables Zii , i ∈ [n] from convex hull of the feasible region of Problem (3).
+We then study the facial structures of RCutK    n and RCutn
+                                                             =K
+                                                                 and derive several classes of
+facet-defining inequalities for these polytopes. This in turn enables us to obtain a new LP
+relaxation for K-means clustering. We then address the question of recovery when there
+are two clusters. First, we obtain a deterministic sufficient condition under which the
+                                                 √ of the LP relaxation. Subsequently, we
+planted clusters correspond to an optimal solution
+focus on the SBM, and prove that if ∆ > 1 + 3, the LP relaxation recovers the planted
+clusters with high probability. While this recovery guarantee is significantly better than
+the recovery guarantee of Problem (6), our empirical observations suggest that it is overly
+conservative. Indeed, our numerical experiments on a collection of randomly generated
+test problems indicate that the LP relaxation outperforms the Peng-Wei SDP relaxation.
+
+Organization. The remainder of the paper is structured as follows. In Section 2, we
+study the facial structure of the ratio-cut polytope. In Section 3 we introduce a new LP
+relaxation for K-means clustering. We then focus on the case of two clusters and obtain
+a deterministic sufficient condition under which the planted clusters correspond to an
+optimal solution of the LP relaxation. In Section 4, we consider the K-means clustering
+problem with two clusters under the SBM. We first show that for dimension m ≥ 3, in
+the continuum limit, the K-means clustering problem achieves optimal recovery threshold.
+Next, utilizing our deterministic condition of Section 3, we obtain a recovery guarantee
+for the LP relaxation. We present our numerical experiments in Section 5. Finally, proofs
+of the technical results omitted in Section 4 are given in Section 6.
+
+
+2     The ratio-cut polytope
+In this section, we perform a polyhedral study of the convex hull of the feasible region
+of Problem (3). Denote by {xi }ni=1 a set of points in Rm that we would like to put into
+at most K clusters. Consider a partition of [n] denoted by {Γk }K  k=1 where some of the
+partitions Γk could be empty. For any 1 ≤ i < j ≤ n, define Xij = |Γ1k | if i and j
+belong to the same partition
+                          n
+                             Γk , for some k ∈ [K] and Xij = 0 if i and j are in different
+partitions. Let X be the 2 -vector whose elements are Xij . We refer to any such vector
+                                                               n
+X as a ratio-cut vector and we refer to the convex hull in R( 2 ) of all ratio-cut vectors
+
+                                              4
+corresponding to at most K nonempty clusters as the ratio-cut polytope and denote it by
+RCutK n . Throughout the paper, we let Xji = Xij whenever i < j. If K = 1, then RCutn
+                                                                                         K
+                 1
+is given by RCutn = {X : Xij = n1 , ∀1 ≤ i < j ≤ n}. Moreover, it can be shown that
+RCut22 = {X12 : 0 ≤ X12 ≤ 1/2}. Henceforth, we assume that n ≥ 3 and 2 ≤ K ≤ n.
+    We denote by RCut=Kn  the convex hull of all ratio-cut vectors corresponding to exactly
+K nonempty clusters. If K = n, it follows that RCut=n n = {X : Xij = 0, ∀1 ≤ i < j ≤ n}
+and if K = n − 1, it can be shown that
+                          n      X            1                            o
+              RCutn=n−1 = X :          Xij = , Xij ≥ 0, ∀1 ≤ i < j ≤ n .
+                               1≤i<j≤n
+                                              2
+
+Henceforth, when studying the facial structure of RCut=K
+                                                       n , we assume that n ≥ 4 and
+                                                       K
+2 ≤ K ≤ n − 2. See Figure 1 for an illustration of RCutn and RCut=K
+                                                                  n , with n = 3 and
+K = 2.
+
+
+
+
+Figure 1:             The polytopes RCutK            n and RCut=K n , with n = 3 and K =
+                                                     K
+2.      The       ratio-cut     polytope       RCut  n  is the convex hull of the ratio-cut vectors
+                                                                       =K
+ 1 1 1 1                        1              1
+ ( 3 , 3 , 3 ), ( 2 , 0, 0), (0, 2 , 0), (0, 0, 2 ) . The polytope RCutn , shaded in red, is a facet
+of RCutK    n whose affine hall is given by X12 + X13 + X23 = 2 .
+                                                                        1
+
+
+
+   Consider the convex hull of the feasible region of Problem (3) denoted by ZnK ; i.e.,
+the convex hull of all partition matrices Z. It then follows that
+                         n                                                 o
+            RCut=K     =   X  ∈ R (n2 ) | ∃Z ∈ Z K : X = Z , ∀1 ≤ i < j ≤ n .       (7)
+                   n                            n     ij  ij
+
+
+That is, the polytope RCut=K
+                          n    is obtained by projecting out diagonal variables Zii , i ∈ [n]
+from the convex hull of partition matrices. Hence, understanding the facial structure of
+RCut=Kn   enables us to construct a strong LP relaxation for K-means clustering. By
+definition, RCutK         =K                                                  K
+                 n ⊃ RCutn . However, we are interested in studying RCutn due to its
+following fundamental property.
+Proposition 1. The ratio-cut polytope RCutK
+                                          n with n ≥ 3 and 2 ≤ K ≤ n is full-
+                           K     n
+                                   
+dimensional; i.e., dim(RCutn ) = 2 .
+                                  ′
+Proof. Since RCutK n ⊂ RCut
+                             K           ′
+                             n for all K > K, to prove the statement, it suffices to show
+                       n
+that RCut2n contains 2 + 1 affinely independent points.
+                         
+
+   First let n 6= 4. Consider the ratio-cut  vector corresponding to one cluster; i.e.,
+       1                                n
+                                          
+Xij = n for all 1 ≤ i < j ≤ n and the 2 ratio-cut vectors corresponding to two clusters
+
+                                                 5
+of cardinality two and n − 2; i.e., for any 1 ≤ r < s ≤ n, consider the ratio-cut vector
+with Xrs = 21 , Xij = n−21
+                                 / {r, s} and j ∈
+                            if i ∈              / {r, s}, and Xij = 0, otherwise. It can be
+                      n
+                       
+checked that these 2 + 1 ratio-cut vectors are affinely independent.
+    Now consider n = 4; in this case RCut24 is the convex hull of eight ratio-cut vectors
+and it can be checked that any seven of these vectors containing the ratio-cut vector
+corresponding to one cluster are affinely independent. Notice that we could not utilize
+the same construction as the one we used for n 6= 4 since due to symmetry, for n = 4,
+the set of all ratio-cut vectors corresponding to two clusters of cardinality two and n − 2
+            1 n
+                
+consists of 2 2 = 3 affinely independent points.
+
+                                              =K
+2.1    Three types of facets of RCutK
+                                    n and RCutn
+In the next three propositions, we present various classes of facet-defining inequalities
+for RCutK           =K
+        n and RCutn . These results enable us to construct a strong LP relaxation for
+K-means clustering.
+
+Proposition 2. The inequality
+                                     X                    n−K
+                                              Xij ≥                                    (8)
+                                   1≤i<j≤n
+                                                           2
+
+is valid for RCutK
+                 n and is facet-defining if and only if K ≤ n − 1. Moreover, the affine
+              =K
+hull of RCutn is defined by the equation
+                                     X                   n−K
+                                              Xij =          .                         (9)
+                                  1≤i<j≤n
+                                                          2
+
+Proof. Consider a partition of [n] given by {Γk }Kk=1 ; denote by K1 the subset of [K] for
+which |Γk | = 1 and denote by K2 the subset of [K] for which |Γk | ≥ 2. It then follows
+that
+     X           X 1 |Γk | 1  X                        n − |K | − |K |
+                                                                   1      2    n−K
+           Xij =                  =         |Γk | − |K2 | =                 ≥         ,
+   1≤i<j≤n       k∈K
+                     |Γk | 2         2 k∈K                         2              2
+                    2                          2
+
+
+where the last inequality holds with equality when K = |K1 | + |K2 |; i.e., when all Γk ,
+k ∈ [K] are nonempty; that is, we have exactly K clusters.
+    Now let K ≤ n − 1 and consider a facet-defining inequality aX ≥ α for RCutK     n that
+is satisfied tightly by all ratio-cut vectors that are binding for inequality (8). We show
+that the two inequalities coincide up to a positive scaling which by full dimensionality of
+the ratio-cut polytope (see Proposition 1), implies that inequality (8) defines a facet of
+RCutK n.
+    Consider a partition of [n] with K nonempty clusters Γk , k ∈ [K] with Γ1 = {i} for
+some i ∈ [n]. Consider a second partition obtained by switching point i with a point
+j where j ∈ Γr for some |Γr | ≥ 2. Note such a Γr always exists since by assumption
+K ≤ n − 1. Substituting the corresponding ratio-cut vectors in aX = α and subtracting
+the resulting equalities, we obtain:
+                                     X             X
+                                           ajl =         ail .                         (10)
+                                l∈Γr \{i,j}            l∈Γr \{i,j}
+
+
+
+                                                   6
+Next, take the two partitions defined above and for each one, remove a point k 6= i, j
+from Γr and place it in Γ1 . Substituting the corresponding ratio-cut vectors in aX = α
+yields:                     P                           P
+                     aik      l∈Γr \{i,j,k} ajl   ajk    l∈Γr \{i,j,k} ail
+                         +                      =     +                    .        (11)
+                      2        |Γr | − 1           2      |Γr | − 1
+From (10) and (11) it follows that aik = ajk for all distinct i, j, k ∈ [n]. Moreover it
+P be checked that for any ratio-cut vector associated to K nonempty clusters we have
+can
+   1≤i<j≤n Xij = (n−K)/2. Hence, if K ≤ n−1, the inequality aX ≥ α coincides with (8)
+up to a positive scaling implying that inequality (8) is facet-defining.
+    Now let n = K; in this case, the right-hand side of inequality (8) is zero and hence
+is implied by valid inequalities Xij ≥ 0 for all 1 ≤ i < j ≤ n. Therefore, in this case
+inequality (8) is not facet-defining.
+    Finally, since the set of all ratio-cut vectors corresponding to K nonempty clusters
+constitute the set of  tight points of the facet-defining inequality (8), wePconclude that
+           =K       n
+dim(RCutn ) = 2 −1 for all K ≤ n−1 and its affine hull is induced by 1≤i<j≤n Xij =
+(n − K)/2.
+   Next, we present a class of facet-defining inequalities for the ratio-cut polytope that
+can be considered as the generalization of the well-known triangle inequalities associated
+with the cut polytope [10] (see Subsection 2.2 for more detail).
+
+Proposition 3. Let l ∈ [n] and let T be a nonempty subset of [n]\{l}. Then the inequality
+                        X            X                 X
+                      2     Xlj +           Xlj ≤ 1 +         Xij ,                 (12)
+                          j∈T        j∈[n]\T ∪{l}         i,j∈T :i<j
+
+
+is valid for RCutK
+                 n . Moreover, if 2 ≤ |T | ≤ K, then inequality (12) defines a facet of
+      K
+RCutn , and if in addition, K ≤ n − 2 then this inequality defines a facet of RCut=K
+                                                                                  n .
+
+Proof. Denote by ω the number of points in T that are in the same cluster P     as l and let Ω
+denote the size of the corresponding cluster; clearly ω ≥ 0 and Ω ≥ 1. Then j∈T Xlj = Ωω
+and j∈[n]\T ∪{l} Xlj = Ω−ω−1   . Moreover, if ω ≥ 2, we have i,j∈T Xij ≥ ω2 Ω1 . Hence to
+    P                                                         P                 
+                           Ω
+show the validity of inequality (12) it suffices to show that 1 + ω−1
+                                                                   Ω
+                                                                       ≤ 1, if ω ∈ {0, 1} and
+    ω−1         ω(ω−1)
+1 + Ω ≤ 1 + 2Ω , if ω ≥ 2, both of which are valid.
+   Let K ∈ {2, . . . , n}; we now show that if t := |T | ∈ {2, . . . , min{n − 1, K}}, then
+inequality (12) defines a facet of RCutK n . Denote by
+
+                                            aX ≤ α,                                        (13)
+
+a nontrivial valid inequality for RCutKn that is satisfied tightly by all ratio-cut vectors that
+are binding for (12). We show that inequalities (12) and (13) coincide up to a positive
+scaling, which by full dimensionality of RCutK     n (see Proposition 1) implies that (12)
+                         K
+defines a facet of RCutn .
+    Let Γk , k ∈ [K] form a partition of [n]. Assume that (i) l ∈ Γ1 , (ii) |Γ1 ∩ T | = 1
+or |Γ1 ∩ T | = 2 and (iii) |Γk ∩ T | ≤ 1 for all k ∈ [K] \ {1}. It can be checked that the
+ratio-cut vector corresponding to any partition satisfying conditions (i)-(iii) satisfies (12)
+tightly. Note that all such partitions consist of at least t nonempty clusters if |Γ1 ∩ T | = 1
+and at least t − 1 nonempty clusters if |Γ1 ∩ T | = 2, all of which correspond to valid
+ratio-cut vectors in RCutK  n since by assumption 2 ≤ t ≤ K. Henceforth, by a “binding
+
+
+                                                    7
+partition,” we imply a partition of [n] consisting of at most K nonempty clusters, which
+satisfies conditions (i)-(iii) above. In the following we present several types of binding
+partitions and by substituting the corresponding ratio-cut vectors in aX = α, we prove
+the facetness of inequality (12).
+    Take some r ∈ T and some s ∈ [n] \ (T ∪ {l}). Consider a binding partition consisting
+of q ≤ K − 1 nonempty clusters such that Γ2 = {r, s}. Note that this binding partition
+exists since by assumption t ≥ 2. Moreover, such a partition with exactly K −1 nonempty
+clusters exists if K ≤ n − 1. Now consider another binding partition consisting of q + 1
+nonempty clusters, obtained from the above partition by removing s from Γ2 and putting
+it in Γq+1 . Substituting the ratio-cut vectors in aX = α we obtain ars = 0.
+    For any j ∈ [n] \ (T ∪ {l, s}), consider a binding partition such that Γ2 = {r, s}
+and Γ3 = {j}. Such a partition with exactly K nonempty clusters exists if K ≤ n − 2.
+Construct a second binding partition from the above partition by swapping j and s.
+Substituting the ratio-cut vectors in aX = α and using ars = 0, we obtain arj = 0 for all
+j ∈ [n] \ (T ∪ {l}). Similarly, we obtain asj = 0 for all j ∈ [n] \ (T ∪ {l, s}).
+    For any i ∈ T and for any j ∈ [n] \ (T ∪ {l}), consider a binding partition (consisting
+of K nonempty clusters, if K ≤ n − 2) such that Γ2 = {r, j} and Γ3 = {i}. Construct a
+second binding partition from the above partition by swapping r and i. Substituting the
+ratio-cut vectors in aX = α and using arj = 0, we obtain
+
+                          aij = 0,      ∀i ∈ T, j ∈ [n] \ (T ∪ {l}).                   (14)
+
+    For any i, j ∈ [n] \ (T ∪ {l}), consider a binding partition (consisting of K nonempty
+clusters, if K ≤ n − 2) such that Γ2 = {s, j} and Γ3 = {i}. Construct a second binding
+partition from the above partition by swapping s and i. Substituting the ratio-cut vectors
+in aX = α and using asj = 0, we obtain
+
+                             aij = 0,     ∀i, j ∈ [n] \ (T ∪ {l}).                     (15)
+
+   For any i, j ∈ T , consider a binding partition (consisting of K nonempty clusters, if
+K ≤ n − 1) with Γ1 = {1, i} and Γ2 = {j}. Construct a second binding partition from
+the above partition by swapping i and j. Substituting the ratio-cut vectors in aX = α,
+we obtain
+                                    ali = β, ∀i ∈ T.                                (16)
+    For any i, j ∈ [n] \ (T ∪ {l}), consider a binding partition (consisting of K nonempty
+clusters, if K ≤ n − 1) with |Γ1 ∩ T | = 1, i ∈ Γ1 , and j ∈ Γ2 . Construct a second binding
+partition from the above partition by swapping i and j. Substituting the ratio-cut vectors
+in aX = α and using (14)-(16), we obtain
+
+                              ali = γ,     ∀i ∈ [n] \ (T ∪ {l}).                       (17)
+
+   For any i, j, k ∈ T , consider a binding partition (consisting of K nonempty clusters, if
+K ≤ n − 2) with Γ1 = {l, i, j} and Γ2 = {k}. Construct a second binding partition from
+the above partition by swapping j and k. Substituting the ratio-cut vectors in aX = α
+and using (16), we obtain
+                                     aij = ζ, ∀i, j ∈ T.                              (18)
+  For any i, j ∈ T and k ∈ [n] \ (T ∪ {l}), consider a binding partition (consisting of
+K nonempty clusters, if K ≤ n − 2) with Γ1 = {l, i, j} and Γ2 = {k}. Construct a
+
+
+                                                8
+second binding partition from the above partition by swapping j and k. Substituting the
+ratio-cut vectors in aX = α and using (14)- (18), we obtain
+
+                                           β + ζ = γ.                                    (19)
+
+   For any i, j ∈ T and k ∈ [n] \ (T ∪ {l}), consider a binding partition (consisting of K
+nonempty clusters, if K ≤ n − 2) with Γ1 = {l, i} and Γ2 = {j, k}. Construct a second
+binding partition from the above partition by adding j to Γ1 . Substituting the ratio-cut
+vectors in aX = α and using (14), (16), and (18), we obtain
+
+                                        β + 2ζ = 0.                                      (20)
+
+     Consider a binding partition, consisting of K nonempty clusters if K ≤ n − 1,
+with Γ1 = {l, i} for some i ∈ T . Substituting the corresponding ratio cut vector in
+aX = α and using (14)-(16) yields β = 2α. Together with (19)     P and (20),  P this in turn
+implies that inequality (13) can be equivalently written as α(2 j∈T Xlj + j ∈T
+P                                                                                 / ∪{l} X1j −
+   i,j∈T,i<j Xij ) ≤ α where α > 0 since by assumption, inequality (13) is nontrivial and
+inequality (12) is valid, and this concludes the proof of facetness for RCutK  n.
+                                                =K
+     Finally, let us consider the polytope RCutn for 2 ≤ K ≤ n − 2. In the above proof,
+with the exception of the first one, all of the binding partitions consist of K nonempty
+clusters and hence the corresponding ratio-cut vectors are present in RCut=K n . As RCutn
+                                                                                           =K
+                     K                                                             =K
+is a facet of RCutn , it follows that the inequality (12) defines a facet of RCutn ..
+    Now consider the valid inequalities Xij ≥ 0 for all 1 ≤ i < j ≤ n. As we show in the
+following, if K ≥ 3, these inequalities define facets of the ratio-cut polytope.
+Proposition 4. Let K ≤ n − 1. Then inequalities Xij ≥ 0 for all 1 ≤ i < j ≤ n define
+facets of RCutK         =K
+              n and RCutn  if and only if K ≥ 3.
+Proof. We show without loss of generality that X12 ≥ 0 defines a facet of RCutK      n if and
+only if K ≥ 3. First suppose that K ≥ 3. It then follows that X12 ≥ 0 is binding at
+all ratio-cut vectors in which 1 and 2 are not in the same cluster. Let aX ≥ α denote
+a nontrivial valid inequality for RCutK  n that is binding at all ratio-cut vectors for which
+X12 ≥ 0 is satisfied tightly. We show that the two inequalities coincide up to a positive
+scaling, which by full dimensionality of RCutK    n implies that X12 ≥ 0 defines a facet of
+      K
+RCutn .
+    Consider a partition of [n] consisting of K −1 nonempty clusters such that Γ1 = {1, n}.
+Construct a second partition of [n] consisting of K nonempty clusters obtained from the
+partition defined above by removing the nth point from the first cluster and putting it in
+the Kthe cluster. The corresponding ratio-cut vectors are binding and hence substituting
+in aX = α we obtain a1n = 0.
+    Next for any j ∈ [n] \ {1, 2, n} consider two partitions of [n] consisting of K nonempty
+clusters corresponding to binding ratio-cut vectors, where in the first partition we have
+Γ1 = {1, n}, Γ2 = {j} and ∪K      k=3 Γk = [n] \ {1, j, n}. The second partition is obtained
+from the first one by only modifying the first and second clusters as follows: Γ1 = {1, j},
+Γ2 = {n}. Substituting the ratio-cut vectors in aX = α and using a1n = 0 yields:
+
+                                a1j = 0,     ∀j ∈ [n] \ {1, 2}.                          (21)
+
+Similarly, for any j ∈ [n] \ {1, 2} and for any k ∈ [n] \ {1, j}, consider two partitions
+of [n] consisting of K nonempty clusters both of which correspond to binding ratio-cut
+
+                                               9
+vectors, defined as follows: in the first partition we have Γ1 = {1, j}, Γ2 = {k}, and
+∪Kk=3 Γk = [n] \ {1, j, k}. The second partition is obtained from the first one by only
+changing the first and second clusters as follows: Γ1 = {1}, Γ2 = {j, k}. Substituting the
+ratio-cut vectors in aX = α and using (21) yields
+                                  ajk = 0,       ∀2 ≤ i < j ≤ n.
+Hence, since by assumption aX ≥ α is nontrivial and valid for RCutK        n we conclude that
+it can be equivalently written as a12 X12 ≥ 0 where a12 > 0, implying that if K ≥ 3 the
+inequality X12 ≥ 0 defines a facet of RCutK   n.
+    Now suppose that K = 2. We show that X12 ≥ 0 is implied by a collection of inequal-
+ities all of which are valid for RCut2n indicating that it is not facet-defining. Consider the
+following inequalities
+                                    X
+                 2(X1i + X2i ) +            Xij ≤ 1 + X12 , ∀i ∈ {3, . . . , n}.          (22)
+                                 j∈[n]\{1,2,i}
+
+By letting S = {1, 2, i} for each i ∈ {3, . . . , n}, from Proposition  3 it follows that inequal-
+                               2                                P
+ities (22) are valid for RCutn . Moreover, take inequality 1≤i<j≤n Xij ≥ (n − 2)/2 whose
+validity follows from Proposition 2; multiplying this inequality by −2 and adding the
+result to the inequality obtained by summing up all inequalities (22), we get −nX12 ≤ 0.
+Hence Xij ≥ 0 does not define a facet of RCut2n .
+    Finally, let us consider the polytope RCut=K    n    for 3 ≤ K ≤ n − 1. In the above proof,
+with the exception of the first one, all of the defined ratio-cut vectors binding for Xij ≥ 0
+correspond to K nonempty clusters and hence are present in RCut=K             n . As RCutn
+                                                                                             =K
+                                                                                                is
+a facet of RCutK  n , it follows that the inequality     X ij ≥ 0 defines  a facet of RCut  =K
+                                                                                            n   as
+well.
+
+2.2    Connections with the cut polytope
+The cut polytope, a celebrated polytope in combinatorial optimization, is the convex hull
+of all cut vectors of a graph (see [10] for an exposition). This polytope corresponds to the
+convex hull of the feasible region of the max-cut problem. Consider a graph with n nodes;
+we define a cut vector Y associated with a graph cut as follows: for any 1 ≤ i < j ≤ n,
+let Yij = 1 if i and j are in the same partition and let Yij = 0, otherwise. The cut
+polytope Cutn is then defined as the convex hull of all cut vectors. In this section, we
+describe some key similarities and differences between the cut polytope and the ratio-cut
+polytope.
+    The facial structure of the cut polytope has been extensively studied and numerous
+classes of facet-defining inequalities have been identified for this polytope. The most
+well-known class of facet-defining inequalities for Cutn are triangle inequalities given by
+                                       Yij + Yik ≤ 1 + Yjk ,                                 (23)
+and
+                                       Yij + Yik + Yjk ≥ 1,                                  (24)
+for all distinct i, j, k ∈ [n] (see for example [10]).                      P
+    Now let l ∈ [n], and let T ⊆ [n]\{l} with 2 ≤ |T | ≤ K; define Xll := 1− j∈[n]\{l} Xlj .
+Then inequality (12) can be equivalently written as
+                                   X                  X
+                                        Xlj ≤ Xll +     Xij .                          (25)
+                                 j∈T                   i,j∈T :i<j
+
+
+                                                  10
+By Proposition 3, inequalities of the form (25) define facets of RCutK
+                                                                     n . Let K = 2; then
+all inequalities of the form (25) can be written as:
+
+                      Xij + Xik ≤ Xii + Xjk , ∀ distinct i, j, k ∈ [n],                  (26)
+                              P
+where as before Xii := 1 − j∈[n]\{i} Xij . Hence, inequalities (26) (and more generally,
+inequalities (25)) for the ratio-cut polytope can be considered as an equivalent of in-
+equalities (23) for the cut polytope. Moreover, the fact-defining inequality (8) can be
+considered as an equivalent of inequalities (24) for the cut polytope. We further detail on
+some parallels between Cutn and RCutK      n in the next section as we introduce a relaxation
+of the ratio-cut polytope.
+     In spite of certain similarities, it is important to note that there are fundamental
+differences between the cut polytope and the ratio-cut polytope. For example, unlike the
+cut polytope, the ratio-cut polytope does not have the so-called “zero-lifting” property
+(see Section 26.5 of [10] for the definition of zero-lifting). Roughly speaking, the zero-
+lifting property implies that if an inequality defines a facet of Cutn then it also defines a
+facet of Cutn′ for all n′ > n. Indeed, the lack of this property in case of inequalities (25)
+is hidden in the definition of Xii .
+
+2.3    A polyhedral relaxation of the ratio-cut polytope
+We now define a polyhedral relaxation of RCutK     n defined by all facet-defining inequal-
+ities given by Propositions 2, 3, and 4. We denote this relaxation by RMetK       n due to
+its similarities to the metric polytope. The metric polytope defined by triangle inequal-
+ities (23) and (24) is a widely used relaxation of the cut polytope. Similarly, we define
+a polyhedral relaxation of RCut=K  n   defined by equality (9) together with facet-defining
+inequalities given by Propositions 3, and 4. We denote this relaxation by RMet=K   n . No-
+                 K
+tice that RMetn is defined by a collection of inequalities all of which are facet-defining
+for RCutK  n and RMetn
+                        =K
+                           is the restriction of RMetK
+                                                     n to one of such inequalities. It then
+                    =K                     K
+follows that RMetn is a facet of RMetn .
+    It is well-known that the metric polytope coincides with the cut polytope if and only
+if n ≤ 4 [10]. The following demonstrates an analogous relation between RCutK        n and
+       K
+RMetn .
+
+Proposition 5. RCutK       K
+                   n = RMetn if and only if n ≤ 4.
+
+Proof. If n = 3 and K = {2, 3} or if n = 4 and K ∈ {2, 3, 4}, it can be checked, by
+direct calculation that the ratio-cut vectors constitute all vertices of RMetKn , implying
+      K          K
+RCutn = RMetn .
+    Now let n ≥ 5 and consider some K ∈ {2, . . . , n}. To show that RCutK   n ⊂ RMetn ,
+                                                                                          K
+
+we present a point X̄ such that X̄ ∈ RMetK     n and X̄ ∈/ RCutK
+                                                               n . To prove the latter, we
+                                              K
+present an inequality that is valid for RCutn but is violated by X̄.
+                                                        polytope. Consider a pair i, j ∈ [n]
+    We first give the valid inequality for the ratio-cutP
+and let T ⊆ [n] \ {i, j} with |T | ≥ 2. Let Xii = 1 − k∈[n]\{i} Xik and suppose that Xjj
+is similarly defined. We first show that the inequality
+                       X                                     X
+                           (Xik + Xjk ) − Xij ≤ Xii + Xjj +       Xkl                  (27)
+                      k∈T                                    k<l∈T
+
+
+is valid for RCutK
+                 n . Two cases arise:
+
+
+                                             11
+(i) i and j are in the same cluster of size Ω. Then Xii = Xjj = Xij = Ω1 . Denote
+    by ω the number of points in T that belong to the same P cluster as i ωand 1 j. Then
+                           2ω
+    P
+       k∈T (Xik + Xjk ) = Ω . Moreover, if ω ≥ 2, we have    k<l∈T Xkl ≥ 2 Ω . Hence if
+                                    2ω   1   1    1
+    ω ≤ 1, it suffices to show that Ω
+                                       − Ω
+                                           ≤ Ω
+                                               +  Ω
+                                                    and if ω ≥ 2, it suffices to show that
+    2ω    1    1    1    ω 1
+                           
+     Ω
+       − Ω ≤ Ω + Ω + 2 Ω , both of which are valid.
+(ii) i and j are in two distinct clusters of size Ω1 and Ω2 , respectively. Then Xii = Ω11 ,
+     Xjj = Ω12 and Xij = 0. Denote by ω1 (resp. ω2 ) the number of points in T that are in
+     the same cluster with i (resp. j). Then k∈T (Xik + Xjk ) = Ωω11 + Ωω22 . Let q1 = ω21
+                                                     P                                                  
+
+     (resp. q2 = ω22 ), if ω1 ≥ 2 (resp. ω2 ≥ 2) and let q1 = 0 (resp. q2 = 0) , otherwise.
+                     
+
+     Then it suffices to show that Ωω11 + Ωω22 ≤ Ω11 + Ω12 + Ωq11 + Ωq22 . The validity of this statement
+     follows from the fact that ω1 ≤ 1 + q1 and ω2 ≤ 1 + q2 .
+      We now present a point X̄ ∈ RMetK    n that does not satisfy inequality (27). Suppose
+  that |T | = 3; for notational simplicity, let {i, j} = {1, 2} and T = {3, 4, 5}. Two cases
+  arise:
+(i) n = 5: in this case, let
+                                      X̄12 = 0
+                                                  5
+                              X̄1k = X̄2k = α =     ,        k ∈ {3, 4, 5}
+                                                 24
+                                                  2
+                                      X̄kl   = ω= ,          k < l ∈ {3, 4, 5}
+                                                 24
+    We now show that X̄ ∈ RMetK                                                       3     5−K
+                                                       P
+                                        5 . We have       1≤i<j≤5 X̄ij = 6α + 3ω = 2 ≥        2
+                                                                                                ,
+    where the last inequality is valid for any K ≥ 2; hence, inequality (8) is satisfied at
+    X̄. It remains to show the validity of inequalities (25) for 2 ≤ |T | ≤ min{K, 4} and
+                                                        9                   10
+    for 2 ≤ K ≤ 5. We have X̄11 = X̄22 = β = 24             and X̄kk = γ = 24  for k ∈ {3, 4, 5}.
+    Then for |T | = 2, it suffices to have 2α ≤ β + ω, 2α ≤ γ, ω ≤ γ, all of which are
+    valid. For |T | = 3, it suffices to have 3α ≤ β + 3ω which is satisifed and all inequalities
+    corresponding to |T | = 4 are implied by the above inequalities. Thus, we conclude
+    that X̄ ∈ RMetK  5 . Substituting X̄ in inequality (27) yields 6α − 0 ≤ 2β + 3ω, which
+                  30    18    6
+    simplifies to 24 ≤ 24  + 24   and is clearly not valid.
+(ii) n > 5: in this case, let
+                      X̄12 = 0
+                                          n
+              X̄1k = X̄2k = α =                 , k ∈ {3, 4, 5}
+                                      3(3n − 7)
+                                          n
+                       X̄kl =    ω=             , k < l ∈ {3, 4, 5}
+                                      6(3n − 7)
+                                            3n − 14
+              X̄1k = X̄2k =      η1 =                   , k ∈ {6, . . . , n}
+                                       2(3n − 7)(n − 5)
+                                            4n − 21
+                       X̄kl =    η2 =                   , k ∈ {3, 4, 5}, l ∈ {6, . . . , n}
+                                       3(3n − 7)(n − 5)
+                                           3n − 14
+                       X̄kl =    η3 =                  , k < l ∈ {6, . . . , n}.
+                                       (3n − 7)(n − 5)
+    We now show that X̄ ∈ RMetK  n . First, X̄ij ≥ 0 for all 1 ≤ i < j ≤ n. Moreover,
+    P                                                    (n−5)(n−6)       2n       n
+     1≤i<j≤n X̄ij = 6α + 3ω + 2(n − 5)η1 + 3(n − 5)η2 +       2
+                                                                    η3 = 3n−7 + 2(3n−7) +
+
+                                                    12
+      3n−14
+      3n−7
+            + 4n−21
+              3n−7
+                    + (n−6)
+                        2
+                            3n−14
+                            3n−7
+                                  = n−2
+                                     2
+                                        ≥ n−K
+                                           2
+                                              , implying inequality (8) is satisfied.     We now
+      establish the validity of inequalities (25) at X̄, for 2 ≤ |T | ≤ K. It can be checked
+                                     n                           2n
+      that X̄11 = X̄22 = β = 2(3n−7)      and X̄kk = γ = 3(3n−7)      for k ∈ {3, 4, 5}. From the
+      construction of X̄, it follows that the inequalities of the form (25) not implied by the
+      rest are the following: 2α ≤ β + ω, 2α ≤ γ, ω ≤ γ, 3α ≤ β + 3ω all of which are
+      satisfied by X̄. Hence, X̄ ∈ RMetK     n . Finally, substituting X̄ in inequality (27) yields
+           n               n           n
+      6 3(3n−7) − 0 ≤ 2 2(3n−7) + 3 6(3n−7) , which simplifies to 2n ≤ n + n2 and is clearly not
+      valid.
+
+
+     While for n ≥ 5, the polytopes RMetK              K
+                                             n and RCutn do not coincide, next, we show
+  that every ratio-cut vector is a vertex of RMetK
+                                                 n.
+
+  Proposition 6. Every ratio-cut vector is a vertex of RMetK
+                                                           n and every ratio-cut vector
+                                                          =K
+  corresponding to K nonempty clusters is a vertex of RMetn .
+
+  Proof. We first show that every ratio-cut vector is a vertex of RMetK   n . By Proposition 5
+  it suffices to consider n ≥ 5. Let Γk , k ∈ [K] form a partition of [n], where as before we
+  allow for some empty Γk . Denote by K ′ the number of nonempty clusters and denote
+  by X̂ the corresponding    ratio-cut vector. We show that X̂ is a vertex of RMetK        n by
+  presenting n2 linearly independent facets of RMetK
+                 
+                                                      n  that are satisfied  tightly by X̂. The
+  following cases arise:
+
+ (i) K ′ = 1: in this case for each i, j, k in the partition,
+                                                     P         consider facet-defining inequalities
+     of the form (12) given by 2(Xij + Xik ) + l∈[n]\{j,k} Xil ≤ 1 + Xjk , 2(Xij + Xjk ) +
+     P                                                  P
+        l∈[n]\{i,k} Xjl ≤ 1 + Xik , and 2(Xik + Xjk ) +    l∈[n]\{i,j} Xkl ≤ 1 + Xij .
+
+(ii) K = K ′ = 2: in this case for each i, j in one partition and for each k in the other
+     partition
+     P                                                   the form (12) given by 2(Xij + Xik ) +
+                 consider facet-defining inequalities of P
+       l∈[n]\{j,k} Xil ≤ 1 + Xjk and 2(Xij +   X ) + l∈[n]\{i,k} Xjl ≤ 1 + Xik . In addition,
+                                              P jk
+     consider the facet defining inequality 1≤i<j≤n Xij ≥ n2 − 1.
+
+(iii) K > 2, K ′ 6= 1, in this case for each i, j in the same partition and for any k in a different
+      partition
+      P           consider facet-defining inequalities P  of the form (12) given by 2(Xij + Xik ) +
+        l∈[n]\{j,k} X il ≤ 1 + X jk and 2(X ij + X jk ) +    l∈[n]\{i,k} Xjl ≤ 1 + Xik . In addition, for
+      each i, j not in the same partition consider the facet defining inequality Xij ≥ 0.
+
+  It can be checked   that X̂ satisfies above inequalities tightly and that these inequalities
+            n
+  contain 2 linearly independent facets implying that X̂ is a vertex of RMetK
+              
+                                                                                 n.
+      Finally, notice that every ratio-cut vector corresponding to K nonempty clusters be-
+  longs to RMet=Kn   and by the above argument is a vertex of RMetK    n . Moreover, RMetn
+                                                                                           =K
+                      K
+  is a facet of RMetn ; it then follows that all such ratio-cut vectors corresponding to K
+  nonempty clusters are vertices of RMet=K  n  as well.
+
+
+  3      A new LP relaxation for K-means clustering
+  As we detailed in Section 2, the polytope RCut=K  n   corresponds to a projection of the
+  convex hull of the feasible region of Problem (3) defined by (7). Hence, to obtain an LP
+  relaxation for K-means clustering, first, we outer-approximate the polytope RCut=K n  by
+
+                                                    13
+the polytope RMet=K
+                                                                             P
+                     n . Next, we introduce additional variables Xii := 1 −    j∈[n]\{i} Xij
+for all i ∈ [n] and let Xji = Xij for all 1 ≤ i < j ≤ n. Let t ∈ {2, . . . , K}; for each
+i ∈ [n] define Sit := {S ⊆ [n] \ {i} : 2 ≤ |S| ≤ t}. It then follows that an LP relaxation
+of K-means clustering is given by:
+                         X
+                  min        dij Xij                                                (LPK)
+                        i,j∈[n]
+
+                  s.t. Tr(X) = K,                                                         (28)
+                       Xn
+                          Xij = 1,      ∀i ∈ [n],                                         (29)
+                        j=1
+                        X                     X
+                              Xij ≤ Xii +               Xjk ,   ∀i ∈ [n], ∀S ∈ Sit ,      (30)
+                        j∈S                 j,k∈S:j<k
+
+                        Xij ≥ 0,    ∀1 ≤ i < j ≤ n.                                       (31)
+
+By the proof of Proposition 8, if K = 2, inequalities (31) are implied by equalities (28), (29)
+and inequalities (30). However, for K ≥ 3, these inequalities are facet-defining at hence
+are present in Problem (LPK).
+     Clearly, letting t = K results in the strongest LP relaxation. However, it is im-
+portant to note that system (30) contains Θ(nt+1 ) inequalities and hence, for large t,
+Problem (LPK) is too expensive to solve. Indeed, even for t = 2, the above LP is expen-
+sive to solve for n ≥ 200. To address this issue, a common approach is to devise a cutting
+plane generation scheme together with the dual Simplex algorithm to solve the LP in an
+iterative manner (see for example [19]). Given a fixed t, let us consider the separation
+problem
+P          over inequalities
+                    P         (30). For a fixed i ∈ [n], these inequalities can be written as
+   j,k∈S:j<k X jk ≥   j∈S X  ij − Xii . Hence, the separation problem over these inequalities
+is quite similar to the separation problem over clique inequalities and therefore similar
+heuristics and acceleration techniques can be used (see for example [21]). We should also
+remark that inequalities of the form (30) corresponding to subsets S of smaller cardinal-
+ity are sparser (i.e., contain fewer variables with nonzero coefficients) than those of the
+larger cardinality, a property that is highly desirable from a computational perspective.
+A careful selection of t and designing of an efficient cutting plane algorithm requires
+a systematic computational study and is a subject of future research. However, as we
+demonstrate in Section 5, the LP relaxation with t = 2 outperforms the SDP relaxation,
+even for K = 5 clusters.
+
+Remark 1. Recall that Problem (6) is the existing LP relaxation for K-means cluster-
+ing [4]. To show that the feasible region of Problem (LPK) is contained in the feasible
+region of this LP, it suffices to prove that inequalities Xij ≤ Xii for all i 6= j ∈ [n] are
+implied by system (28)-(31). Without loss of generality consider X12 ≤ X11 . Consider
+the following inequalities and equalities all of which are present in system (28)-(31):
+
+  (i) X12 + X13 ≤ X11 + X23 ,
+
+ (ii) X12 + X23 ≤ X22 + X13 ,
+
+(iii) X12 + X1j ≤ X11 + X2j , for all j ∈ {4, · · · , n},
+      P
+(iv)    j∈[n] X1j = 1,
+
+
+
+                                                14
+       P
+ (v)     j∈[n] X2j = 1.
+
+Multiplying inequality (i) by +2, inequality (ii) by +1, each inequality of type (iii) by +1,
+equality (iv) by -1, equality (v) by +1 and adding all resulting inequalities and equalities
+yields nX12 ≤ nX11 and this completes the argument.
+
+3.1    Optimality of the planted clusters
+We now focus on the case with two clusters and obtain a sufficient condition under which
+the ratio-cut vector corresponding to a planted clustering is an optimal solution of the
+LP relaxation. As we discussed before, even with only two clusters, K-means clustering
+is NP-hard [6]. The LP relaxation of K-means clustering for K = 2 is given by:
+                        X
+                 min        dij Xij                                                (LP2)
+                          i,j∈[n]
+
+                  s.t. Tr(X) = 2,                                                              (32)
+                       Xn
+                          Xij = 1,             ∀1 ≤ i ≤ n,                                     (33)
+                          j=1
+
+                          Xij + Xik ≤ Xii + Xjk ,          ∀i 6= j 6= k ∈ [n], j < k,          (34)
+where as before we let Xji = Xij for all 1 ≤ i < j ≤ n. We start by constructing the
+dual of Problem (LP2); define dual variables ω associated with (32), µi , i ∈ [n] associated
+with (33), and λijk for all (i, j, k) ∈ Ω := {(i, j, k) : i 6= j 6= k ∈ [n], j < k} associated
+with (34). It then follows that the dual of Problem (LP2) is given by
+                         X
+         max − (2ω +         µi )
+                            i∈[n]
+                                 X
+           s.t. µi + µj +                  (λijk + λjik − λkij ) + 2dij = 0, ∀1 ≤ i < j ≤ n,   (35)
+                            k∈[n]\{i,j}
+                                X
+                ω + µi −                   λijk = 0, ∀i ∈ [n],                                 (36)
+                            j,k∈[n]\{i}:
+                                j<k
+
+                λijk ≥ 0,       ∀(i, j, k) ∈ Ω,
+where we let λikj = λijk for all (i, j, k) ∈ Ω. Now consider the following planted model:
+suppose that n is even, the first half of the points are in the first cluster and the second
+half are in the second cluster; define C1 := {1, . . . , n/2} and C2 := {n/2 + 1, . . . , n}.
+Then the ratio-cut vector associated with this planted clustering is given by: X̄ij = n2
+for all i < j ∈ C1 and for all i < j ∈ C2 and X̄ij = 0, otherwise. We would like to
+obtain conditions under which X̄ is an optimal solution of Problem (LP2). To this end,
+it suffices to find a dual feasible point (λ̄, µ̄, ω̄) for which strong duality is attained:
+                                                                             !
+                             X           4       X                X
+                       2ω̄ +     µ̄i = −                 dij +            dij .              (37)
+                                         n i,j∈C :i<j          i,j∈C :i<j
+                                i∈[n]                  1              2
+
+
+For notational simplicity, for every A ⊆ [n] and f : A → R, we define
+                                  X           1 X
+                                  − f (i) :=         f (i).
+                                  i∈A
+                                             |A| i∈A
+
+                                                     15
+Moreover, for each i ∈ Cl , l ∈ {1, 2}, let us define din                out
+                                                            P                                            P
+                                                       i := − dij , and di   :=                          −      dij .
+                                                                                  j∈Cl                 j∈[n]\Cl
+   We now present a sufficient condition for the optimality of the planted clusters.
+
+Theorem 1. Define
+                                                   1 X in X in 
+                                           η :=       − d + − di .                                                  (38)
+                                                   2 i∈C i  i∈C
+                                                           1             2
+
+Then the ratio-cut vector corresponding to the planted clusters is an optimal solution of
+Problem (LP2) if for all i, j ∈ Cl , l ∈ {1, 2}, we have
+                         X
+                          − min{dik + din                in
+                                              j , djk + di } − dij ≥ η.              (39)
+                               k∈[n]\Cl
+
+
+Proof. By complementary slackness λ̄ijk = 0 if i ∈ C1 and j, k ∈ C2 or if i ∈ C2 and
+j, k ∈ C1 . Substituting in (35) yields:
+                         X                    X
+             µ̄i + µ̄j +   (λ̄ijk + λ̄jik ) +   (λ̄ijk + λ̄jik − λ̄kij ) + 2dij = 0, (40)
+                           / l
+                         k ∈C                         k∈Cl \{i,j}
+
+
+for every i < j such that i, j ∈ Cl , l ∈ {1, 2} and
+                         X                         X
+             µ̄i + µ̄j +        (λ̄ijk − λ̄kij ) +   (λ̄jik − λ̄kij ) + 2dij = 0,                                   (41)
+                           k∈C1 \{i}                            k∈C2 \{j}
+
+
+for every i ∈ C1 , j ∈ C2 . Moreover, equation (36) simplifies to
+                                      X             X
+                           ω̄ + µ̄i −      λ̄ijk −         λ̄ijk = 0,                                               (42)
+                                             j∈Cl \{i},             j<k∈Cl \{i}
+                                                 / l
+                                               k ∈C
+
+
+                                                           / Cl , l ∈ {1, 2}, let
+for each i ∈ Cl , l ∈ {1, 2}. Now for each i, j ∈ Cl and k ∈
+
+                                                          djk − dik din
+                                                                     i − dj
+                                                                           in
+                                    λ̄ijk − λ̄jik =                +          .                                     (43)
+                                                             n/2       n/2
+
+Substituting (43) in (41) yields:
+                                        X      X
+      µ̄i + µ̄j + dout
+                   i   + dout  in   in     in     in
+                          j + di + dj − − dk − − dk = 0,                                 ∀i ∈ C1 , j ∈ C2 .         (44)
+                                                       k∈C1           k∈C2
+
+To satisfy (44), let
+                                      µ̄i = −din   out
+                                              i − di   + η,                  ∀i ∈ [n].                              (45)
+where η is defined by (38). Substituting (45) in (37) we obtain
+                                                     1 X out
+                                            ω̄ =        (di − din
+                                                               i ).                                                 (46)
+                                                     2
+                                                      i∈[n]
+
+
+Utilizing (43) and (45), equation (40) can be equivalently written as
+              X                1      X
+                     λ̄ijk +                     (λ̄ijk + λ̄jik − λ̄kij ) = din         out
+                                                                             i − dij + dj − η,                      (47)
+              k∈C2
+                               2
+                                   k∈C1 \{i,j}
+
+
+                                                               16
+for any (i, j) ∈ C1 . By (45) and (46), for each i ∈ C1 , equation (42) simplifies to
+                  X                       X                    1 X out
+                             λ̄ijk +                 λ̄ijk =      (dj − din     out
+                                                                         j ) − di   − din
+                                                                                       i + η.    (48)
+                                                               2
+                j∈C1 \{i},             j<k∈C1 \{i}              j∈[n]
+                  k∈C2
+
+We now obtain a set of conditions under which system (48) is implied by equalities (47).
+Firstly, it can be checked that
+                         X                                   X
+                                (λ̄ijk + λ̄jik − λ̄kij ) = 2   λ̄ijk .
+                              j6=k∈C1 \{i}                                j<k∈C1 \{i}
+
+Hence, for each i ∈ C1 it suffices to have
+             X                             1X
+                    din
+                     i  − d ij + d out
+                                   j   − η  =   (dout  in     out
+                                                  j − dj ) − di   − din
+                                                                     i + η,
+                                              2
+               j∈C1 \{i}                                          j∈[n]
+
+whose validity can be verified by a simple calculation. Hence, to find a dual certificate,
+it suffices to find nonnegative λ̄ijk satisfying equalities (40); that is, for each (i, j) ∈ C1 ,
+we should find λ̄ijk satisfying the following system
+     X                       X
+          (λ̄ijk + λ̄jik ) +    (λ̄ijk + λ̄jik − λ̄kij ) = dout
+                                                            i   + dout         in   in
+                                                                   j − 2dij + di + dj − 2η
+    k∈C2                        k∈C1 \{i,j}
+
+    λ̄ijk ≥ 0, λ̄jik ≥ 0,          ∀k ∈ C2
+                    djk − dik din        in
+                                    i − dj
+    λ̄ijk − λ̄jik =            +            , ∀k ∈ C2
+                       n/2           n/2
+    λ̄ijk ≥ 0, λ̄jik ≥ 0, λ̄kij ≥ 0, ∀k ∈ C1 \ {i, j}.
+                                         din   in                              din  in
+                          n                       o                n                   o
+                               djk −dik    i −dj                      dik −djk  j −di
+By letting λ̄ijk ≥ max 0, n/2 + n/2                 and λ̄jik ≥ max 0, n/2 + n/2         for all
+k ∈ C2 , it follows that the above system has a feasible solution, if
+           1      X                                     X
+                             (λ̄ijk + λ̄jik − λ̄kij ) ≤ − min{dik + din         in
+                                                                     j , djk + di } − dij − η,   (49)
+           2                                               k∈C2
+               k∈C1 \{i,j}
+
+for all i, j ∈ C1 together with nonnegativity of the remaining multipliers.
+    By letting λ̄ijk = 0 for all i, j, k ∈ Cl , l ∈ {1, 2}, inequality (49) simplifies to condi-
+tion (39) and this completes the proof.
+    As we demonstrate in Section 4, for the SBM, condition (39) leads to an overly
+conservative estimate for the minimum separation distance between cluster centers. We
+are hoping that the theoretical analysis presented in this paper serves as a starting point
+for deriving more realistic recovery guarantees for the proposed LP relaxation. Obtaining
+recovery guarantees for K ≥ 3 is left for future research as well.
+
+
+4     Recovery under the stochastic ball model
+In this section, we consider a popular generative model for K-means clustering often
+referred to as the stochastic ball model in the literature. This random model is defined as
+follows: let {γ k }k∈[K] be ball centers in Rm . For each k, draw i.i.d. vectors {y k,i}ni=1 from
+
+                                                               17
+some rotation-invariant distribution supported on the unit ball. The points in cluster k
+are then taken to be xk,i := y k,i + γ k . Moreover, we define ∆ := mink6=l∈[K] ||γ k − γ l ||2 .
+    Henceforth, we focus on the case of two clusters; throughout this section, whenever we
+say with high probability, we imply with probability tending to one as n tends to infinity.
+We are interested in the following question: what is the minimum separation distance
+∆ required for the LP relaxation to recover the planted clusters with high probability?
+Before proceeding further with addressing this question, we first establish a recovery
+threshold for K-means clustering under the SBM. This threshold then serves as a recovery
+limit for any convex relaxation of K-means clustering. In the following, we denote by
+{ei }m                              m
+     i=1 the standard basis for R . Moreover, for any k ∈ [m], we denote by H the
+                                                                                          k
+
+k-dimensional Hausdorff measure.
+
+4.1    Recovery for K-means clustering
+In [6], the authors show that if the points are uniformly generated on two m-dimensional
+touching spheres for some m ≥ 3, in the continuum limit, the K-means clustering problem
+identifies the two individual spheres as clusters. The goal of this section is to show that
+a similar recovery result is valid for the SBM.
+    We start by introducing some notation. We denote by B(x, r) the closed m-dimensional
+ball centered at x with radius r. For a set A ⊂ Rm , we denote by A the closure of A
+and by ∂A the boundary of A. Given a Borel measure ρ on Rm with support S and a
+Borel-measurable subset S1 ⊂ S with complement S2 = S \ S1 , the mean squared error
+associated with the partition {S1 , S2 } of S is
+                                 Z                       Z
+                                            2
+                 ES (S1 ) = minm    kx − ck dρ(x) + minm    kx − dk2 dρ(x).
+                           c∈R   S1                   d∈R    S2
+
+
+ For every Borel subset A ⊂ Rm and every k ∈ [m], we define the measure Hk A as
+ follows:
+               Hk A(B) = Hk (A ∩ B),       for every Borel subset B ⊂ Rm .
+ For every Borel-measurable subset A ⊂ Rm , we denote by b(A) := A xdx the barycenter
+                                                                  R
+
+ of A. It is easy to check that, if A is a k-dimensional smooth set and Hk A is a
+Rfinite non-zero measure, than b(A) is the only minimizer of the function y ∈ Rm 7→
+    kx − yk2dHk A. In this section we prove the following result:
+
+Theorem 2. For any m ≥ 3, let S := B(−e1 , 1) ∪ B(e1 , 1) and ρ := Hm B(−e1 , 1) +
+Hm B(e1 , 1). Then, up to a set of zero Lebesgue measure, the partition {B(−e1 , 1),
+B(e1 , 1)} of S is the unique minimizer of the mean squared error.
+
+    In [6], the authors prove Theorem 2 in the case where ρ is the surface measure for the
+union of two touching spheres, i.e., ρ = Hm−1 ∂B(−e1 , 1) + Hm−1 ∂B(e1 , 1). To this
+end, they first prove that an optimal partition is given by a separating hyperplane that
+is orthogonal to the symmetry axis (Lemma 3.5 and Theorem 2.2 in [6]). Subsequently,
+they examine the offset of the optimal separating hyperplane. More precisely they show
+the following:
+
+Proposition 7. [Theorems 2.4 and 2.5 in [6]] For any m ≥ 3, let S := ∂B(−e1 , 1) ∪
+∂B(e1 , 1) and ρ := Hm−1 ∂B(−e1 , 1) + Hm−1 ∂B(e1 , 1). Then the function a ∈ R 7→
+ES ({x ∈ S : x1 ≤ −a}) attains a minimum at a = 0, and this minimum is unique.
+
+                                               18
+Remark 2. Proposition 7 is invariant under scaling. In particular if for any r > 0 we
+define S := ∂B(−re1 , r) ∪ ∂B(re1 , r) and ρ := Hm−1 ∂B(−re1 , r) + Hm−1 ∂B(re1 , r),
+then the function a ∈ R 7→ ES ({x ∈ S : x1 ≤ −a}) attains a minimum at a = 0, and
+this minimum is unique. Moreover, in [6], the authors renormalize ρ to get a probability
+measure, but this changes ES (S1 ) just by a constant factor.
+    Since the proofs of Lemma 3.5 and Theorem 2.2 in [6] can be repeated verbatim for
+balls, in order to prove Theorem 2, we just need to prove the following analogous result
+to Proposition 7:
+Proposition 8. For any m ≥ 3, let S := B(−e1 , 1) ∪ B(e1 , 1) and ρ := Hm B(−e1 , 1) +
+Hm B(e1 , 1). Then the function
+
+                           a ∈ R 7→ F (a) := ES ({x ∈ S : x1 ≤ −a})
+
+attains a minimum at a = 0, and this minimum is unique.
+Proof. Assume by contradiction there exists a 6= 0 such that F (a) ≤ F (0). By symmetry,
+we can assume a > 0. Define S1 := {x ∈ S : x1 ≤ −a}, S1r := {x ∈ ∂B(−e1 , r) : x1 ≤
+−a}, S2r := {x ∈ ∂B(−e1 , r) : x1 ≥ −a} ∪ ∂B(e1 , r), and as before, we let S2 = S \ S1 .
+Then, by Coarea formula (see Chapter 2 of [27])
+    Z 1Z                                       Z 1Z
+                              2   m−1
+                     kx + e1 k dH     (x)dr +               kx − e1 k2 dHm−1 (x)dr = F (0)
+      0   ∂B(−e1 ,r)
+                      Z                      Z 0 ∂B(e1 ,r)
+         ≥ F (a) =        kx − b(S1 )k2 dx +     kx − b(S2 )k2 dx
+                       S1                     S2
+           Z 1Z                                    Z 1Z
+                                 2    m−1
+         =           kx − b(S1 )k dH      (x)dr +         kx − b(S2 )k2 dHm−1 (x)dr.
+              0    S1r                                    0   S2r
+
+We deduce that there exists r ∈ (0, 1), such that
+        Z                                   Z
+                              2   m−1
+                     kx + e1 k dH     (x) +            kx − e1 k2 dHm−1 (x)
+          ∂B(−e1 ,r)                         ∂B(e1 ,r)
+                        Z                               Z                                        (50)
+                                        2   m−1
+                      ≥     kx − b(S1 )k dH     (x) +       kx − b(S2 )k2 dHm−1 (x).
+                           S1r                                  S2r
+
+Define S3r := {x ∈ ∂B(−e1 , r) : x1 ≥ −a} ∪ ∂B((2r − 1)e1 , r). It then follows that
+     Z                                   Z
+                        2   m−1
+          kx − b(S1 )k dH         (x) +        kx − b(S2 )k2 dHm−1 (x)
+      S1r                                  S2r
+        Z                                     Z
+                        r 2      m−1
+     ≥        kx − b(S1 )k dH        (x) +        kx − b(S3r )k2 dHm−1 (x)
+          S r                                   r
+                                               S3
+        Z 1                                     Z                                                (51)
+                              2     m−1
+     >               kx + e1 k dH       (x) +                     kx − (2r − 1)e1 k2 dHm−1 (x)
+          ∂B(−e1 ,r)                              ∂B((2r−1)e1 ,r)
+        Z                                       Z
+     =               kx + e1 k2 dHm−1 (x) +               kx − e1 k2 dHm−1 (x),
+          ∂B(−e1 ,r)                          ∂B(e1 ,r)
+
+where the first inequality follows from the definition of the barycenter and the second
+inequality follows from Proposition 7 and Remark 2. Combining (50) with (51), we get
+the desired contradiction.
+
+                                                 19
+Remark 3. It is well-known that in dimension one, for both spheres and balls, √ K-means
+clustering recovers the planted clusters with high probability only√if ∆ > 1 + 3 (see for
+example [14, 6]). As we detail in the next section ∆ > 1 + 3 is also sufficient for
+recovery with high probability, hence settling the question in dimension one. In [6] the
+authors show that for two touching spheres in dimension two, the minimum of F (a) =
+ES ({x ∈ S : x1 ≤ −a}) is attained at a point a 6= 0. The authors of [14] numerically
+verify that a similar result holds for the SBM in dimension two. To date, the recovery
+threshold in dimension two, for both spheres and balls, remains an open question.
+
+4.2    Recovery for the LP relaxation
+In this section, we obtain a recovery guarantee for the proposed LP relaxation under the
+SBM. Namely, we prove that our deterministic optimality condition given by inequal-
+ity (39) implies that Problem
+                        √        (LP2) recovers the planted clusters with high probability,
+provided that ∆ > 1+ 3 ≈ 2.73. This is a significant improvement compared to the only
+existing recovery result for an LP relaxation of K-means clustering stating that recovery
+is possible with high probability if and only if ∆ > 4 [4]. Moreover, by Remark 3, this
+sufficient condition is tight for m = 1 and implies that in dimension one, the NP-hard
+                 √ problems recovers the planted clusters with high probability if and
+K-means clustering
+only if ∆ > 1 + 3.
+    In the remainder of this section, for an event A, we denote by P(A) the probability
+of A. We denote by E[Y ] the expected value of a random variable Y . In case of a
+multivariate random variable Xij , the conditional expected value in j, with i fixed, will
+be denoted either with Ei [X] or with Ej [X]. To prove the next theorem, we make use of
+two technical lemmas; to streamline the presentation, these lemmas are given in Section 6.
+
+Theorem 3. Let K = 2 and suppose that the points are generated according to the SBM.     √
+Then Problem (LP2) recovers the planted clusters with high probability, if ∆ > 1 + 3.
+                                                                  √
+Proof. To prove the statement, we need to show that for ∆ > 1+ 3, with high probability
+the ratio-cut vector corresponding to the planted clusters is the unique optimal solution
+of Problem (LP2).
+    To prove uniqueness, notice that the solution to the LP is not unique only if the objec-
+tive function coefficient vector d = {dij }1≤i<j≤n is orthogonal to an edge of the polytope
+RMet=2n . The objective function coefficient vector is generated from a probability distri-
+                                                                                  n        n
+bution which is absolutely continuous with respect to the Lebesgue measure     H( 2 ) in R( 2 ) .
+The set of all “bad” directions however is the union of finitely many n2 − 1-dimensional
+                                                                          
+                                    n
+subspaces and hence is a zero H( 2 ) -measure set. Hence any optimal solution is unique
+with probability one.
+   We now address the question of optimality of the planted clusters under the SBM.
+In particular, we show that the optimality condition (39) holds with high probability.
+Namely, √we show that, given ǫ > 0 as defined in the statement of Lemma 1 (since
+∆ > 1 + 3), we have
+             \ n             X                                   o
+          P         dij + η − − min{dik + din
+                                            j , d jk + d in
+                                                         i  } ≤ 0
+               i,j∈C1           k∈C2
+                                                                            
+                                 
+                                       −2(n/2                             n/2 −2nǫ2 /128 
+                                           2 )
+                                               ǫ2 /16      −nǫ2 /32
+                          ≥ 1 − 4e                      + ne          +2      e           .
+                                                                           2
+
+
+                                                   20
+We first observe that
+        P({|η − E[η]| ≥ ǫ})
+               X           hX i hX i X             
+          = P − dij − E − dij + E − dij − − dij ≥ 2ǫ
+                    i,j∈C1                     i,j∈C1             i,j∈C2           i,j∈C2
+             n X        hX i      o n hX i X            o
+          ≤P    − dij − E − dij ≥ ǫ ∪ E − dij − − dij ≥ ǫ
+                                                                                                                        (52)
+                      i,j∈C1                     i,j∈C1                            i,j∈C2           i,j∈C2
+              X       hX i          hX i X            
+          ≤ P − dij − E − dij ≥ ǫ + P E − dij − − dij ≥ ǫ
+                    i,j∈C1                     i,j∈C1                              i,j∈C2           i,j∈C2
+                      n/2
+          ≤ 4e−2(      2   )   ǫ2 /16
+                                        .
+The first inequality holds by set inclusion and the third inequality follows from Hoeffding’s
+inequality (see for example Theorem 2.2.6 in [28]), since dij , i, j ∈ Cl are i.i.d. random
+variables for every l ∈ {1, 2} and dij ∈ [0, 4].
+   For notational simplicity, let us denote
+                                hX                                           i
+                      tij := Ek − min{dik + Ej [din  j ], d jk + E  [d
+                                                                   i i
+                                                                       in
+                                                                          ]}  .
+                                                   k∈C2
+
+We now observe that
+               [ n         hX                               i    o
+            P       tij − Ek − min{dik + din
+                                          j  , d jk + d in
+                                                        i  }   ≥ ǫ
+                          i,j∈C1                          k∈C2
+                                                        [n                                    o                       (53)
+                                                                                                         −nǫ2 /32
+                                               ≤P                din       in
+                                                                  i − Ei [di ]         ≥ ǫ/2        ≤ ne            ,
+                                                          i∈C1
+
+where the first inequality follows from the linearity of expectation and the second inequal-
+ity follows from the application of Hoeffding’s inequality and taking the union bound.
+Combining the previous estimates, we conclude the claimed inequality:
+       \ n              X                                     o
+    P          dij + η − − min{dik + din j , d jk + d in
+                                                      i  } ≤ 0
+         i,j∈C1                         k∈C2
+            \ n                                       X                               o
+                                                                    in         in
+    ≥P                    dij + η − dij − E[η] + tij − − min{dik + dj , djk + di } ≤ 3ǫ
+             i,j∈C1                                                  k∈C2
+           n                 o  \ n         hX                               i    o
+    ≥P            η − E[η] < ǫ ∩     tij − Ek − min{dik + din
+                                                           j  , d jk + d in
+                                                                         i  }   < ǫ
+                                                 i,j∈C1                  k∈C2
+         \ n        hX                          i X                               o
+                      k           in         in                 in         in
+    ∩              E − min{dik + dj , djk + di } − − min{dik + dj , djk + di } < ǫ
+        i,j∈C1             k∈C2                                                 k∈C2
+                                                     
+            
+               −2(n/2 ) ǫ 2 /16
+                                    −nǫ 2 /32      n/2 −2nǫ2 /128 
+    ≥ 1 − 4e       2            + ne          +2        e           .
+                                                    2
+                                                                  √
+The first inequality follows from Lemma 1, since ∆ > 1 + 3; the second inequality holds
+by set inclusion; the third inequality is obtained by taking the union bound, followed by
+the application of Hoeffding’s inequality, inequalities (52) and (53).
+
+
+5       Numerical Experiments
+In this section, we conduct a preliminary numerical study to demonstrate the desirable
+numerical properties of the proposed LP relaxation defined by (LPK). A comprehensive
+
+                                                                    21
+computational study including the design and implementation of a separation algorithm
+for inequalities (30) is a subject of future research. First, we compare the recovery
+properties of the proposed LP relaxation versus the SDP relaxation defined by (5). To
+this end, we set m ∈ {2, 3}, K ∈ {2, 3} and generate the points in each cluster according
+to the SBM. We set t = 2 in the LP relaxation. As before we denote by ∆ the minimum
+distance between the cluster centers. For each fixed configuration (m, K), we consider
+various values for ∆; namely, we set ∆ ∈ [2 : 0.01 : ∆],  ¯ where ∆  ¯ is set to a value at
+which recovery is clearly achieved for both algorithms. For each fixed ∆, we conduct
+20 random trials. We count the number of times the optimization algorithm returns the
+planted clusters as the optimal solution; dividing this number by total number of trials, we
+obtain the empirical rate of success. All experiments are performed on the NEOS server [7];
+LPs are solved with GAMS/CPLEX [13] and SDPs are solved with GAMS/MOSEK [1].
+    Our results are depicted in Figure 2. As can be seen from these graphs, in all con-
+figurations, the LP clearly outperforms the SDP in recovering the planted clusters. In
+particular, results for K = 2 suggest that our recovery guarantee of Section 4 is exces-
+sively conservative. In addition, it can be seen that the recovery threshold of the LP
+relaxation in dimension m = 3 is better than the threshold in dimension m = 2; this
+effect is not reflected in our recovery guarantee and is a subject to future research. We
+also remark that in all these experiments, the optimal solution of the LP is a partition
+matrix; that is, even when the LP fails in recovering the planted clusters, its optimal
+solution is still a partition matrix and hence optimal for the original nonconvex problem.
+This is in sharp contrast with the SDP relaxation whose solution is not a partition matrix
+whenever it fails in recovering the planted clusters.
+                            1                                                                       1
+
+                           0.8                                                                    0.8
+           Recovery rate
+
+
+
+
+                                                                                  Recovery rate
+
+
+
+
+                           0.6                                                                    0.6
+
+                           0.4                                                                    0.4                                           LP
+                                                                     LP
+
+                           0.2                                       SDP                          0.2                                           SDP
+
+                            0                                                                       0
+                             2       2.1     2.2         2.3     2.4       2.5                       2     2.1     2.2   2.3       2.4    2.5    2.6   2.7
+                                                   ∆                                                                           ∆
+
+                                  (a) m = 2, K = 2, n = 100                                              (b) m = 2, K = 3, n = 120
+                            1                                                                       1
+
+                                                                                                   0.8
+                           0.8
+           Recovery rate
+
+
+
+
+                                                                                   Recovery rate
+
+
+
+
+                                                                                                   0.6
+                           0.6
+                                                                                                   0.4                                           LP
+                                                                 LP
+                           0.4
+                                                                 SDP                               0.2                                           SDP
+
+                           0.2                                                                      0
+                              2        2.1         2.2         2.3         2.4                       2       2.1         2.2        2.3         2.4    2.5
+                                                   ∆                                                                           ∆
+
+                                  (c) m = 3, K = 2, n = 100                                              (d) m = 3, K = 3, n = 120
+
+Figure 2: The empirical probability of success of the LP versus the SDP in recovering
+the planted clusters when the points are generated according to the SBM.
+
+   In all above experiments, we set t = 2; this implies that in cases with K ≥ 3,
+the LP relaxation can be further strengthened by adding inequalities of the form (30)
+
+                                                                                 22
+corresponding to subsets S with |S| > 2. However, such a strengthening implies a
+significantly higher cost for the LP relaxation and requires the implementation of a clever
+separation algorithm. We now show that even for K > 3, the weakest LP relaxation,
+i.e., Problem (LPK) with t = 2, outperforms the SDP relaxation. To this end, we set
+m = 2 and let K ∈ {4, 5}; the points in each cluster are generated according to the
+SBM and the cluster centers have a hive-shaped geometry (see Figure 3). As before, we
+set ∆ ∈ [2 : 0.01 : ∆]¯ and for each fixed ∆, we conduct 20 random trials. Our results
+are depicted in Figure 4. As can be seen from these graphs, the weakest LP relaxation
+outperforms the SDP relaxation for both K = 4 and K = 5 clusters.
+                                                     Ƴ2              Ƴ4          Ƴ2                       Ƴ4
+
+
+
+
+                                              Ƴ1                Ƴ3   Ƴ1                              Ƴ3         Ƴ5
+
+
+
+
+Figure 3: Cluster centers γ k , k ∈ [K] with hive-shaped geometry. The parameter ∆ is
+defined as the distance between two adjacent centers.
+
+
+                            1                                                                   1
+
+                           0.8                                                                 0.8
+           Recovery Rate
+
+
+
+
+                                                                               Recovery Rate
+
+
+
+
+                           0.6                                                                 0.6
+
+                           0.4                                                                 0.4
+                                                    LP                                                                           LP
+                           0.2                      SDP                                        0.2                               SDP
+
+                            0                                                                   0
+                             2   2.2    2.4   2.6         2.8                                    2        2.2        2.4   2.6        2.8
+
+                                 (a) K = 4, n = 100                                                       (b) K = 5, n = 125
+
+Figure 4: The empirical probability of success of the weakest LP versus the SDP in recov-
+ering planted clusters for the SBM in dimension two, with K = 4 clusters (Figure 4(a))
+and with K = 5 clusters (Figure 4(b)).
+
+    We now illustrate the impact of inequalities (30) on the quality of the LP relaxation via
+a simple numerical experiment. As we mentioned before, a careful selection of parameter t
+requires the development of a separation algorithm that is beyond the scope of this paper.
+We consider two LP relaxations of K-means clustering: (i) Problem (LPK) with t = 2,
+referred to as LPt2 and (ii) Problem (LPK) with t = 3, referred to as LPt3. As before,
+we set m = 2 and we generate the points according to the SBM. We consider K ∈ {4, 5}
+where the cluster centers are chosen as shown in Figure 3. To better understand the
+impact of inequalities (30), in addition to recovery, we compare the tightness of the two
+LPs. That is, we say that a relaxation is tight, if the returned optimal solution is a
+partition matrix as defined by (2). Moreover, we assume that the balls from which the
+points are drawn may overlap; that is, we let ∆ ∈ [0 : 0.1 : ∆]       ¯ and for each fixed
+∆ we conduct 50 random trials. Indeed in practice, there is often no clear separation
+between the underlying clusters, and the recovery question does not make much sense; in
+such settings, one is interested in finding an optimal clustering (i.e., an optimal partition
+matrix) which may or may not correspond to a planted clustering.
+    Our results are depicted in Figure 5. Interestingly, while LPt2 and LPt3 have identical
+performance with respect to recovery, the addition of inequalities (30) with |S| = 3,
+
+                                                                          23
+clearly improves the tightness of the LP relaxation. This serves as a strong motivation
+for developing an efficient separation algorithm for inequalities (30). We conclude by
+acknowledging that in order to fully investigate the relative computational benefits of
+the LP relaxation versus the SDP relaxation for K-means clustering, a comprehensive
+numerical study on various real data sets is needed. This is indeed a subject of future
+research.
+                 1                                                       1
+
+                0.8                                                     0.8
+
+                0.6                                                     0.6
+         Rate
+
+
+
+
+                               recovery - LPt2
+
+
+
+
+                                                                 Rate
+                                                                                    recovery - LPt2
+                               tightness - LPt2
+                0.4                                                     0.4         tightness - LPt2
+                               recovery - LPt3
+                                                                                    recovery - LPt3
+                0.2            tightness - LPt3
+                                                                        0.2         tightness - LPt3
+
+                 0                                                       0
+                     0   0.5        1       1.5   2   2.5                 0   0.5        1       1.5   2   2.5
+
+                         (a) K = 4, n = 40                                    (b) K = 5, n = 50
+
+Figure 5: Comparing the quality of two LP relaxations, LPt2 vs LPt3 for the SBM in
+dimension two, with K = 4 clusters (Figure 5(a)) and with K = 5 clusters (Figure 5(b)).
+
+
+
+6    Technical proofs
+In this section, we present the two technical lemmas that we utilized to prove Theorem 3.
+In the following, for a Borel set A ⊂ Rm and measurable function f : Rm → R, we define
+                                               1
+                        Z                           Z
+                                   m
+                        − f (x)dH (x) := m             f (x)dHm (x).
+                          A                H    (A)  A
+
+Moreover, for any x ∈ Rm , we denote by xi the ith component of x. Given two points
+x, y ∈ Rm , the notation x k y means that x and y are linearly dependent.
+Lemma 1. Suppose that the random points are generated
+                                                    √       according to the SBM. Then
+the following inequality holds provided that ∆ > 1 + 3:
+              1        k
+                          hX
+                                             in          in
+                                                             i            
+         ǫ :=     inf E − min{dik + Ej [dj ], djk + Ei [di ]} − dij − E[η] > 0.    (54)
+              3 i,j∈C1     k∈C              2
+
+Proof. Denote by B1 and B2 the balls corresponding to the first and second clusters,
+respectively. Up to a rotation we can assume that the center of B1 and B2 are 0 and
+∆e1 , respectively. For notational simplicity, we denote the ith (resp. jth) point in B1
+by x (resp. y). By Lemma 2, it suffices to show that inequality (54) can be equivalently
+written as:
+                                                               1
+                             Z
+                        max − max{xT z, y T z}dHm (z) − xT y < ∆2 .                 (55)
+                       x,y∈B1 B
+                               2
+                                                               2
+First, notice that for any i ∈ B1 we have
+                Z                            Z                     Z
+      Ei [di ] = − kx − zk dH (z) = kxk + − kzk dH (z) − 2x − zdHm (z)
+           in               2     m       2         2   m         T
+                  B1                           B1                    B1
+                        Z                                                           (56)
+                     2          2   m
+               = kxk + − kzk dH (z).
+                                   B1
+
+
+                                                            24
+By symmetry, the same calculation holds for Ei [din
+                                                 i ] with i ∈ B2 . By (56), we have
+        X            X
+     E − din             in
+                         
+            k = E − dk
+         k∈B1                k∈B2
+                      Z      Z                      Z                                   (57)
+                     = − kzk + − kwk dH (w) dH (z) = 2− kzk2 dHm (z).
+                            2       2  m      m
+                        B1            B1                                 B1
+
+Hence, by (56) and (57), inequality (54) reads
+     Z                                                      Z
+ min − min{kx − zk + kyk , ky − zk + kxk }dH (z) − kx − yk > − kzk2 dHm (z),
+                      2      2         2       2 m        2
+ x,y∈B1 B                                                                           B1
+         2
+
+
+which expanding the squares gives
+            Z                                       Z
+        min − kzk + min{−2x z, −2y z}dH (z) + 2x y > − kzk2 dHm (z).
+                   2            T T    m        T
+                                                                                          (58)
+         x,y∈B1 B                                                         B1
+                 2
+
+
+Via a change of variables
+    Z                  Z                 Z
+     − kzk dH (z) = − k∆e1 + zk dH (z) = − k∆e1 k2 + kzk2 + 2∆eT1 zdHm (z)
+           2   m               2   m
+      B2
+                     Z B1             Z   B1
+                                                        Z
+             = ∆ + − kzk dH (z) + 2∆e1 − zdH (z) = ∆ + − kzk2 dHm (z),
+                 2        2 m        T       m       2
+                             B1                      B1                        B1
+
+hence (58) reads
+                         Z
+                     min − min{−2xT z, −2y T z}dHm (z) + 2xT y > −∆2 ,
+                     x,y∈B1 B
+                             2
+
+
+which is equivalent to (55).
+                                                               √
+Lemma 2. Inequality (55) holds if and only if ∆ > 1 +               3.
+Proof. We will prove that the maximum of the left-hand side of inequality (55) over all
+x, y ∈ B1 is attained at (e1 , −e1 ). This in turn implies that inequality (55) is satisfied if
+and only if
+                                                            1
+                                       Z
+                             ∆ + 1 = − z1 dHm (z) + 1 < ∆2 ,
+                                        B2                  2
+                                       √
+which is true if and only if ∆ > 1 + 3; i.e., the desired condition.
+    Define                          Z
+                       F (x, y) := − max{xT z, y T z} − xT ydHm(z).
+                                       B2
+
+Our goal is to show that
+                                    max F (x, y) = F (e1 , −e1 ).                         (59)
+                                    x,y∈B1
+
+We divide the proof in several steps:
+Step 1. Slicing:
+    Let z, w be any pair of points in B2 satisfying z1 = w1 , z2 = −w2 ≥ 0, zj = wj = 0
+for all j ∈ {3, . . . , m}. In the special case m = 1, we consider z = w ∈ B2 . Define
+                                                                          
+                                1        T    T     1       T    T       T
+               H(x, y) :=         max{x z, y z} + max{x w, y w} − x y .
+                                2                   2
+
+                                                25
+Then (59) holds if the following holds
+
+                                     max H(x, y) = H(e1 , −e1 ).                                  (60)
+                                    x,y∈B1
+
+Proof of Step 1. Since
+                                 Z ∆+1 Z
+                      1
+          F (x, y) = m                                      max{xT z, y T z} − xT ydHm−1 (z)ds,
+                    H (B2 )        ∆−1         {z1 =s}∩B2
+
+to show (59) it is enough to show that the function
+                              Z
+                   G(x, y) :=         max{xT z, y T z} − xT ydHm−1(z)
+                                   {z1 =s}∩B2
+
+is maximized in x = e1 , y = −e1 , for every s ∈ [∆ − 1, ∆ + 1]. Denoting A := {z1 =
+s, z2 ≥ 0} ∩ B2 , then
+  1              1                   1
+              Z
+    G(x, y) =      max{xT z, y T z} + max{xT (2se1 − z), y T (2se1 − z)} − xT ydHm−1(z).
+  2            A 2                   2
+
+Hence, it is enough to prove that for every s ∈ [∆ − 1, ∆ + 1] and for every z ∈ A,
+                                                                             
+                 1       T   T      1        T            T                T
+         max       max{x z, y z} + max{x (2se1 − z), y (2se1 − z)} − x y ,          (61)
+        x,y∈B1   2                  2
+
+is achieved at (e1 , −e1 ). Since Problem (61) is invariant under a rotation of the space
+around the axis generated by e1 , we conclude that solving Problem (61) is equivalent to
+solving Problem (60).
+Step 2. Symmetric distribution of the maxima:
+    Let z, w be any pair of points as defined in Step 1. Define
+                                           1      1
+                                 I(x, y) := xT z + y T w − xT y.
+                                           2      2
+In order to show that (60) holds, it suffices to prove that for m ≥ 2
+
+                              max              {I(x, y)} ≤ H(e1 , −e1 ) = z1 + 1.                 (62)
+                             x,y∈B1
+                      xT z≥y T z, y T w≥xT w
+
+ Proof of Step 2. We first analyze the special case m = 1. For every z ∈ B2 , we have that
+H(x, y) = max{xz, yz} − xy. The maximum for x, y ∈ [−1, 1] of the multilinear function
+H must be attained at the boundary point x = 1, y = −1. This complesetes the proof of
+Lemma 2 for m = 1.
+   From now on, we focus our attention on the case m ≥ 2. Assume by contradiction
+that (62) holds, but (60) does not hold. Then there exists z, w ∈ B2 , z1 = w1 , z2 = −w2
+and zj = wj = 0 for all j ∈ {3, . . . , m} and x̄, ȳ ∈ B1 such that x̄T z ≥ ȳ T z, x̄T w ≥ ȳ T w
+and H(x̄, ȳ) > H(e1 , −e1 ). We deduce that
+                               1       1                        1  1
+     H(e1 , −e1 ) < H(x̄, ȳ) = x̄T z + x̄T w − x̄T ȳ ≤ max xT z + xT w − xT y
+                               2       2                 x,y∈B1 2  2
+                                                                                                  (63)
+                         1 T      1 T
+                  = max x z + x w + kxk.
+                    x∈B1 2        2
+
+                                                       26
+Since the function 12 xT z + 21 xT w + kxk is convex in x, then
+
+      1    1                   1   1                   1   1
+ max xT z + xT w + kxk = max xT z + xT w + kxk = max xT z + xT w + 1. (64)
+ x∈B1 2    2             x∈∂B1 2   2             x∈∂B1 2   2
+The maximization problem on the right hand side of (64) has critical points satisfying
+
+                                                  z + w + 2λx = 0.                                        (65)
+
+Since z, w ∈ B2 , z1 = w1 , z2 = −w2 ≥ 0 and zj = wj = 0 for every j = 3, . . . , m, then
+equation (65) implies that x k e1 . We deduce that any maximum point of (64) satisfies
+x = te1 , with t ∈ [−1, 1]:
+                                     1   1
+                               max xT z + xT w + 1 = max tz1 + 1,                                         (66)
+                               x∈∂B1 2   2          t∈[−1,1]
+
+
+and the maximum point of (66) is attained at t = 1, since z1 > 0. Combining (63), (64)
+and (66), we deduce the contradiction H(e1 , −e1 ) < z1 + 1 = H(e1 , −e1 ).
+Step 3. Reduction from balls to disks:
+     To show the validity of (62), we can restrict to dimension m = 2.
+     Proof of Step 3. We fix z = (z1 , z2 , 0, . . . , 0) and w = (z1 , −z2 , 0, . . . , 0). Denote
+x = (x1 , x′ ) and y = (y1 , y ′), where x′ := (x2 , . . . , xm ) and y ′ := (y2 , . . . , ym ). We will
+use the same notation also for z, w. Moreover denote x̃ = (x1 , x̃′ ) and ỹ = (y1 , ỹ ′), where
+x̃′ := (x̃2 , 0, . . . , 0), ỹ ′ := (ỹ2 , 0, . . . , 0), such that kx′ k = kx̃′ k and ky ′k = kỹ ′k, x̃2 ≥ 0
+and ỹ2 ≤ 0. To prove the claim, it suffices to show that the maximum in (62) is attained
+at x, y ∈ span{e1 , e2 }. To this end, it is enough to show that I(x, y) ≤ I(x̃, ỹ), which is
+equivalent to
+                1 ′ T ′ 1 ′ T ′                 1             1
+                  (x ) z + (y ) w − (x′ )T y ′ ≤ (x̃′ )T z ′ + (ỹ ′ )T w ′ − (x̃′ )T ỹ ′.
+                2         2                     2             2
+In turn, this inequality is valid because
+
+  (i) by definition x̃′ k z ′ , ỹ ′ k w ′, x̃2 ≥ 0, ỹ2 ≤ 0 and z2 ≥ 0; then we have (x′ )T z ′ ≤
+      (x̃′ )T z ′ and (y ′)T w ′ ≤ (ỹ ′)T w ′ .
+
+ (ii) by definition kx′ k = kx̃′ k, ky ′k = kỹ ′k, x̃2 ≥ 0, ỹ2 ≤ 0, and x̃′ k ỹ ′ ; then we have
+      (x′ )T y ′ ≥ (x̃′ )T ỹ ′ .
+
+Step 4. Reduction from disks to circles:
+   In order to prove Problem (62), it is enough to show that
+
+                                   max              I(x, y) ≤ H(e1 , −e1 ) = z1 + 1,                      (67)
+                                 x,y∈∂B1
+                           xT z≥y T z, y T w≥xT w
+
+for every z ∈ B2 , z1 = w1 and z2 = −w2 ≥ 0.
+    Proof of Step 4. Fix x, y ∈ B1 . To prove this step, it is enough to find x′ , y ′ ∈ ∂B1
+such that I(x′ , y ′) ≥ I(x, y). Let us denote x̄ = x/kxk if x 6= 0 and x̄ = e1 if x = 0. Let
+us denote ȳ = y/kyk if y 6= 0 and ȳ = e1 if y = 0. Since x, y, z, w are fixed, we define the
+constants a = 21 x̄T z, b = 12 ȳ T w and c = x̄T ȳ. We consider the problem
+
+                          max            I(r1 x̄, r2 ȳ) =         max           r1 a + r2 b − r1 r2 c.
+                     (r1 ,r2 )∈[−1,1]2                       (r1 ,r2 )∈[−1,1]2
+
+
+                                                              27
+It is well-known that the maximum of a bilinear function over a box is attained at a
+vertex of the box and this completes the proof.
+Step 5. Symmetric local maxima:
+    For any pair x, y ∈ ∂B1 of the form x1 = y1 and x2 = −y2 , we have
+
+                                      I(x, y) ≤ H(e1 , −e1 ).
+
+ Proof of Step 5. Given such symmetric pair (x, y), the objective
+                                                                p     function evaluates to
+I(x, y) = z1 x1 + z2 x2 − x21 + x22 . Using x21 + x22 = 1 and z2 1 − x21 ≤ z2 , it suffices to
+show that
+                            z2 ≤ 2x21 − z1 x1 + z1 , ∀x1 ∈ [−1, 1].                       (68)
+Since the function fˆ(x1 ) := 2x21 − z1 x1 + z1 on the right hand side of (68) is a convex
+parabola in x1 , its minimum is either attained at one of the end points or at x̃1 = z41 ,
+provided that −1 ≤ z41 ≤ 1. Since ∆ − 1 ≤ z1 ≤ ∆ + 1, the point x̃1 lies in the domain
+only if ∆ − 1 ≤ z1 ≤ min{4, ∆ + 1}. The value of fˆ at x1 = −1 and x1 = 1 evaluates to
+2 + 2z1 and 2, respectively, both of which are bigger than z2 . Hence it remains to show
+that
+                √                       (u + ∆)2
+                  1 − u2 ≤ (u + ∆) −             , −1 ≤ u ≤ min{4 − ∆, 1},
+                                            8
+                                                       √
+where we set u := z1 − ∆ and we use that z2 ≤ 1 − u2 . Since u + ∆ ≤ 4, the right
+hand side of the above inequality is increasing in ∆; hence it suffices to show its validity
+at ∆ = 2; i.e.,
+                       √                       (u + 2)2
+                         1 − u2 ≤ (u + 2) −             , −1 ≤ u ≤ 1.
+                                                    8
+The right-hand side of the above inequality is concave and hence is lower bounded by
+      √ line through the boundary points (−1, 7/8), (1, 15/8); hence it suffices to show
+its secant
+that 1 − u2 ≤ 21 (u + 11  4
+                            ) for all −1 ≤ u ≤ 1. Squaring both sides and rearranging
+                                                                        11     57
+the terms, the above inequality can be equivalently written as u2 + 10     u + 80 ≥ 0, where
+−1 ≤ u ≤ 1. It can be shown that the minimum of the left hand side of this inequality
+                      11
+is attained at u = − 20  and is equal to 0.41 and this completes the proof.
+Step 6. Decomposition of the circle:
+    To solve Problem (67), it suffices to solve
+
+                             max               I(x, y) ≤ H(e1 , −e1 ) = z1 + 1,          (69)
+                     x,y∈∂B1 ∩{x1 ≤0, y1 ≥0}
+                      xT z≥y T z, y T w≥xT w
+
+
+ for every z ∈ B2 , z1 = w1 , z2 = −w2 ≥ 0.
+    Proof of Step 6. We first consider the case when x1 ≤ 0 and y1 ≤ 0. Since z1 > 0,
+then x1 z1 ≤ −x1 z1 , y1 z1 ≤ −y1 z1 . We deduce that I(x, y) ≤ I((−x1 , x2 ), (−y1 , y2)).
+    Now, since the case {x1 ≥ 0, y1 ≤ 0} is symmetric to the case {x1 ≤ 0, y1 ≥ 0}, we
+just need to show that
+
+                             max               I(x, y) ≤ H(e1 , −e1 ) = z1 + 1.
+                     x,y∈∂B1 ∩{x1 ≥0, y1 ≥0}
+                      xT z≥y T z, y T w≥xT w
+
+
+Consider x, y ∈ ∂B1 such that x1 ≥ 0, y1 ≥ 0, xT z ≥ y T z, y T w ≥ xT w. If x2 , y2 are both
+negative (resp. both positive), we can consider the new couple (x1 , −x2 ), (y1 , y2 ) (resp.
+(x1 , x2 ), (y1 , −y2 )), which gives a bigger (or equal) value for I. Hence, we can restrict
+
+                                                    28
+our study to the case x2 ≥ 0 and y2 ≤ 0. We denote in spherical coordinates x = (1, θ),
+y = (1, η), z = (kzk, γ) and w = (kzk, 2π − γ). Since x, y ∈ ∂B1 , x1 ≥ 0, y1 ≥ 0, x2 ≥ 0
+and y2 ≤ 0 then θ ∈ [0, π/2] and η ∈ [3π/2, 2π]. Furthermore, since z, w ∈ B2 , we can
+easily verify that
+                                      γ ∈ [0, π/4),                                   (70)
+since the straight line parallel to e1 + e2 does not intersect B2 , for every ∆ ≥ 2.
+    With this notation we have
+                         1                1
+                I(θ, η) = kzk cos(θ − γ) + kzk cos(η + γ) − cos(η − θ).
+                         2                2
+It then follows that the critical points of the above function have to satisfy
+      1                                            1
+        kzk sin(θ − γ) + sin(η − θ) = 0,   and    − kzk sin(η + γ) + sin(η − θ) = 0.
+      2                                            2
+Subtracting the two equations, since kzk > 0, we deduce that
+
+                                 sin(θ − γ) = − sin(η + γ).                             (71)
+
+We observe that θ − γ ∈ [−π/2, π/2] and η + γ ∈ [3π/2, 5π/2]. Since sin(s) is injective
+for s ∈ [−π/2, π/2], we deduce that the only solution is θ = 2π − η. This critical
+point corresponds to a symmetric couple x1 = y1 , x2 = −y2 and by Step 5 we have
+I(x, y) ≤ H(e1 , −e1 ). Up to rotation, the boundary cases of θ and η coincide. Hence,
+we are just left to study the boundary case θ = 0, or equivalently (x, y) = (e1 , y) (the
+boundary case θ = π/2 gives x1 ≤ 0 and will be threated in Step 7). In this case, since
+y1 ≥ 0 and y1 , y2 , z2 ∈ [−1, 1]
+               1    1       1            1
+    I(e1 , y) = z1 + y1 z1 − y2 z2 − y1 ≤ z1 (1 + y1 ) + 1/2 < z1 + 1 = H(e1 , −e1 ).
+               2    2       2            2
+Step 7. We solve Problem (69).
+   Proof of Step 7. We now assume that x, y ∈ ∂B1 , x1 ≤ 0, y1 ≥ 0, xT z ≥ y T z and
+ T
+y w ≥ xT w. As explained in Step 6, we can also assume that x2 ≥ 0 and y2 ≤ 0. This
+implies that, using the notation of Step 6, we need to study the domain
+
+                           (θ, η) ∈ [π/2, π/2 + 2γ] × [3π/2, 2π].                       (72)
+
+Using a similar line of argument as in Step 6, all critical points in this region must
+satisfy (71). By (70), since the function sin(s) is strictly increasing in [−γ, π/2 − γ] and
+sin(s) > sin(π/2 − γ) = sin(π/2 + γ) for every s ∈ (π/2 − γ, π/2 + γ), it follows that
+sin([π/2 − γ, π/2 + γ]) ∩ sin([−γ, π/2 − γ]) = {sin(π/2 − γ)} and that the equation (71)
+is never satisfied in the interior of the region (72). This implies that the only maximum
+points can be achieved at the boundary. We are just left to check that for all the boundary
+points (x, y) of this region, I(x, y) ≤ H(e1 , −e1 ).
+    We start with θ = π/2, that is, all the points of the form (e2 , y) with y ∈ ∂B1 . We
+claim that
+                            1      1        1
+                 I(e2 , y) = z2 + y1 z1 − y2 z2 − y2 ≤ z1 + 1, ∀y ∈ ∂B1 .
+                            2      2        2
+The maximum of the linear function I(e2 , y) over y ∈ ∂B1 is attained at
+                                        (z1 , −(z2 + 2))
+                                   ỹ = p 2              .
+                                          z1 + (z2 + 2)2
+
+                                             29
+Hence, it suffices to show that the following inequality is valid:
+                1      1
+                         q
+   I(e2 , ỹ) = z2 +      z12 + (z2 + 2)2 ≤ z1 + 1, ∆ − 1 ≤ z1 ≤ ∆ + 1, 0 ≤ z2 ≤ 1,
+                2      2
+Defining u = z1 − ∆, the above inequality can be equivalently written as:
+                   √                          (u + ∆)2
+                       1 − u2 ≤ (u + ∆) −                ,    −1 ≤ u ≤ 1,                   (73)
+                                            4(u + ∆ + 2)
+
+First, notice that the right hand side of inequality (73) is increasing in ∆, hence it
+suffices to show its validity at ∆ = 2. Second this expression is concave is and hence can
+√ lower bounded by its secant line, denoted by au + b; therefore, it suffices
+be                                                                              to show that
+  1 − u2 ≤ au + b. Squaring both sides, we need to show that (au + b)2 + u2 ≥ 1 for
+−1 ≤ u ≤ 1 and it can be checked that the latter inequality is valid.
+    The calculations for the boundary case η = 3π/2, that is all the points (x, −e2 ) with
+x ∈ ∂B1 , are symmetric to the case θ = π/2 (up to a rotation).
+    We now consider the boundary case η = 2π, that is all the points (x, e1 ) with x ∈ ∂B1
+and we claim that I(x, e1 ) ≤ z1 + 1 for every x ∈ ∂B1 . Indeed, since z1 ≥ 1
+                                                  
+              1       1         1            1   1           1         1
+  I(x, e1 ) = x1 z1 + x2 z2 + z1 − x1 =        −      x1 z1 + x2 z2 + z1 ,       ∀x ∈ ∂B1 .
+              2       2         2            2 z1            2         2
+                                   
+        1
+Since z1 ∈ (0, 1], we have 2 − z1 x1 z1 ≤ 12 z1 and since x2 , z2 ∈ [−1, 1], we have
+                              1   1
+
+
+
+                     1    1       1
+          I(x, e1 ) ≤ z1 + x2 z2 + z1 ≤ z1 + 1 = H(e1 , −e1 ),            ∀x ∈ ∂B1 .
+                     2    2       2
+    The last boundary case is θ = π/2 + 2γ, for every η ∈ [3π/2, 2π]. In this case, we
+observe that θ − γ ≥ 2π − η + γ, where θ − γ is the angle between x and z and 2π − η + γ
+is the angle between y and z). Hence xT z ≤ y T z and
+                     1       1
+            I(x, y) ≤ y T z + y T w − xT y ≤ y1 z1 + 1 ≤ z1 + 1 = H(e1 , −e1 ).
+                     2       2
+This concludes the proof of Step 7.
+
+
+Acknowledgments
+The authors would like to thank Shuyang Ling and Soledad Villar for fruitful discussions
+about the recovery properties of SDP relaxations for clustering problems.
+
+
+References
+ [1] MOSEK 9.2, 2019. http:https://docs.mosek.com/9.0/faq.pdf.
+
+ [2] E. Abbe, A. S. Bandeira, and G. Hall, Exact Recovery in the Stochastic Block Model, IEEE
+     Transactions on information theory, 62 (2016), pp. 471 – 487.
+
+ [3] N. Agarwal, A. S. Bandeira, K. Koiliaris, and A. Kolla, Multisection in the stochastic
+     block model using semidefinite programming, Compressed Sensing and its Applications, (2018),
+     pp. 125–162.
+
+                                              30
+ [4] P. Awasthi, A. S. Bandeira, M. Charikar, R. Krishnaswamy, S. Villar, and R. Ward,
+     Relax, no need to round: Integrality of clustering formulations, Proceedings of the Conference on In-
+     novations in Theoretical Computer Science, 165 (2015), pp. 191–200, doi: 10.1145/2688073.2688116.
+
+ [5] A. S. Bandeira, Random laplacian matrices and convex relaxations, Foundations of Computa-
+     tional Mathematics, 18 (2018), pp. 345–379, doi:10.1007/s10208-016-9341-9.
+
+ [6] B. G. Bodmann and C. J. George, On the minimum of the mean-squared error in 2-means
+     clustering, Involve, a journal of mathematics, 12 (2019), pp. 301–319.
+
+ [7] J. Czyzyk, M. P. Mesnier, and J. J. More, The NEOS server, IEEE Journal on Computational
+     Science and Engineering, 5 (1998), pp. 68–75.
+
+ [8] A. Del Pia and A. Khajavirad and D. Kunisky, Linear programming and community detec-
+     tion, Mathematics of Operations Research 48 (2023), p. 885–913.
+
+ [9] A. De Rosa and A. Khajavirad, Efficient joint object matching via linear programming, Math-
+     ematical Programming, 202 (2023), p. 1–46.
+
+[10] M. Deza and M. Laurent, Geometry of cuts and metrics, vol. 15 of Algorithms and Combina-
+     torics, Springer-Verlag, Berlin Heidelberg New York, 1997.
+
+[11] Z. Friggstad, M. Rezapour, and S. M. R., Local search yields a PTAS for K-means in doubling
+     metrics, SIAM Journal on Computing, 48 (2019), p. 452–480.
+
+[12] B. Hajek, Y. Wu, and J. Xu, Achieving exact cluster recovery threshold via semidefinite pro-
+     gramming, IEEE Transactions on Information Theory, 62 (2016), pp. 2788 – 2797.
+
+[13] IBM, CPLEX Optimizer, 2016.
+     http://www-01.ibm.com/software/integration/optimization/cplex-optimizer/.
+
+[14] T. Iguchi, D. G. Mixon, J. Peterson, and S.                         Villar, Probably certifiably
+     correct K-means clustering, Mathematical Programming,               165 (2017), pp. 605–642,
+     doi:https://doi.org/10.1007/s10107-016-1097-0.
+
+[15] T. Kanungo, D. Mount, N. Netanyahu, C. Piatko, R. Silverman, and A. Wu, A local
+     search approximation algorithm for K-means clustering, Proceedings of the 18th Annual ACM
+     Symposium on Computational Geometry, (2002), pp. 10–18.
+
+[16] X. Li, Y. Li, S. Ling, T. Strohmer, and K. Wei, When do birds of a feather flock together? K-
+     means, proximity, and conic programming, Mathematical Programming, 179 (2020), pp. 295–341,
+     doi: 10.1007/s10107-018-1333-x.
+
+[17] S. Ling and T. Strohmer, Certifying global optimality of graph cuts via semidefinite relax-
+     ation: A performance guarantee for spectral clustering, Foundations of Computational Mathemat-
+     ics, (2019), doi: /10.1007/s10208-019-09421-3.
+
+[18] S. Lloyd, Least squares quantization in PCM, IEEE Transactions on Information Theory, 28
+     (1982), pp. 129 –137.
+
+[19] A. Lisser and F. Rendl, Graph partitioning using linear and semidefinite programming, Math-
+     ematical Programming, 95 (2003), pp. 91 –101.
+
+[20] M. Mahajan, P. Nimbhorkar, and K. Varadarajan, The planar K-means problem is NP-
+     hard, in WALCOM: Algorithms and Computation, Springer Berlin Heidelberg, 2009, pp. 274–285.
+
+[21] F. Marzi and F. Rossi and S. Smriglio, Computational study of separation algorithms for
+     clique inequalities, Soft Computing, 23 (2019), pp. 3013–3027.
+
+[22] D. G. Mixon, S. Villar, and R. Ward, Clustering subgaussian mixtures by semidefinite
+     programming, Information and Inference: A Journal of the IMA, 6 (2017), pp. 389–415, doi:
+     10.1093/imaiai/iax001.
+
+                                                   31
+[23] J. Peng and Y. Wei, Approximating K-means-type clustering via semidefinite programming,
+     SIAM Journal on Optimization, 18 (2007), pp. 186–205.
+
+[24] J. Peng and Y. Xia, A New Theoretical Framework for K-means-type clustering, Springer Berlin
+     Heidelberg, 2005, pp. 79–96.
+
+[25] M. N. Prasad and G. A. Hanasusanto, Improved conic reformulations for K-means clustering,
+     SIAM Journal on Optimization, 28 (2018), pp. 3105–3126.
+
+[26] M. Rao, Cluster analysis and mathematical programming, Journal of the American Statistical
+     Association, 66 (1971), pp. 622–626.
+
+[27] L. Simon, Lectures on geometric measure theory, vol. 3, Proceedings of the Centre for Mathematical
+     Analysis. Australian National University, Centre for Mathematical Analysis, Canberra, 1983.
+
+[28] R. Vershynin, High-dimensional probability: An introduction with applications in data science,
+     vol. 47, Cambridge University Press, 2018.
+
+
+
+
+                                                 32

@@ -1,0 +1,442 @@
+ALEA, Lat. Am. J. Probab. Math. Stat. 20, 497–504 (2023)
+DOI: 10.30757/ALEA.v20-17
+
+
+
+On the mean projection theorem for
+determinantal point processes
+Adrien Kassel and Thierry Lévy
+CNRS – UMPA, ENS de Lyon
+E-mail address: adrien.kassel@ens-lyon.fr
+URL: http://perso.ens-lyon.fr/adrien.kassel/
+LPSM, Sorbonne Université, Paris
+E-mail address: thierry.levy@sorbonne-universite.fr
+URL: https://www.lpsm.paris/users/levyt/index
+
+
+Abstract. In this short note, we extend to the continuous case a mean projection theorem for
+discrete determinantal point processes associated with a finite range projection, thus strengthening
+a known result in random linear algebra due to Ermakov and Zolotukhin. We also give a new
+formula for the variance of the exterior power of the random projection.
+
+
+
+1. Introduction
+
+   Kirchhoff’s work on electrical networks Kirchhoff (1847) seems to be one of the earliest works
+in the literature where linear algebra and graph-theoretical combinatorial methods were put to-
+gether. Later on, linear algebra problems, and classical determinantal methods for solving them,
+gave rise to various statistical approaches, notably linked to the so-called determinantal point pro-
+cesses (introduced by Macchi (1975), and named like this by Borodin, only around 2000 which
+saw a blossoming of results on those processes from various authors, see Soshnikov (2000); Shirai
+and Takahashi (2003); Lyons (2003); Johansson (2006); Borodin (2011)). These methods recently
+became an active field in randomized numerical linear algebra Dereziński and Mahoney (2021).
+   In his work, Kirchhoff solved a linear algebra system on an electrical network seen as a finite graph,
+by expressing the current induced by an external battery hooked on the network, as an average
+over spanning trees of a certain current associated to the tree. In modern terms, he expressed an
+orthogonal projection as the expectation of a certain random projection associated to a random
+spanning tree. Such a mean projection theorem appeared in several guises in the literature, and
+more or less independently, in works of Maurer (1976), Lyons (2003), Catanzaro et al. (2013), and
+probably others that we are unaware of.
+   In our work Kassel and Lévy (2022, Theorem 5.9), we extended the mean projection formula for
+determinantal point processes on finite sets, thus putting the statements of Kirchhoff (1847); Maurer
+(1976); Lyons (2003); Catanzaro et al. (2013) in a unified geometric framework, and strengthening
+  Received by the editors October 24th, 2022; accepted February 17th, 2023.
+  2020 Mathematics Subject Classification. 60G55, 15A75.
+  Key words and phrases. determinantal point processes, random projection, exterior algebra.
+                                                      497
+498                                                                            Adrien Kassel and Thierry Lévy
+
+the result by proving a mean projection theorem for the exterior powers of the projections, that is,
+for minors of their matrices in a fixed basis.
+   Let us quickly recall our statement. Let K be R or C, let E be a finite dimensional Euclidean
+space on K of dimension d, and let (ei )1≤i≤d be an orthonormal basis of E. We let S = {1, . . . , d}
+and consider H a subspace of E of dimension      n. Let X be the determinantal point process on S
+associated to the matrix K = hei , ΠH ej i 1≤i,j≤d , where ΠH is the orthogonal projection on H. For
+                                          
+                        L
+each X ⊆ S, let EX = x∈X Kex be the corresponding coordinate subspace of E.
+Theorem 1.1. Almost surely, the equality E = H ⊕ EX⊥ holds, and denoting by PX the projection
+on H parallel to EX⊥ , we have
+                                     E P X = ΠH .
+                                       V  V
+
+   In words, in a fixed basis of E, the expectation of any minor of the matrix of PX is equal to the
+same minor of ΠH .
+   A short while ago, it came to our attention while reading the recent statistics paper Gautier
+et al. (2019) on Monte–Carlo integration methods, that such a mean projection formula had also
+appeared in Ermakov and Zolotukhin (1960) in the case of S = R, in a different guise, although the
+relation to the above-cited works was not mentioned there.
+   One of the referees of this paper kindly pointed out to us that results in the spirit of Theorem 1.1
+have also been obtained in the context of the resolution of singular linear systems of equations, for
+instance in Berg (1986); Ben-Tal and Teboulle (1990) and more recently in the context of active
+sampling for linear regression Dereziński and Warmuth (2018, Thms 5, 6 and 7), see also Avron and
+Boutsidis (2013); Mariet and Sra (2017); Dereziński et al. (2022). In Dereziński et al. (2020, Def. 4),
+the authors define the class of random matrices for which the expectation of any minor equals the
+same minor of the expectation, give basic properties, and provide a few examples. Theorem 1.1 and
+Kassel and Lévy (2022, Thm 5.9) give families of examples of such random matrices, namely the
+matrices PX . A systematic study of this class of random matrices would certainly be interesting.
+   The goal of this short note is to extend Theorem 1.1 to the case of a determinantal point process
+associated to a finite rank orthogonal projection on any Polish space S, so that it applies for instance
+to any orthogonal polynomial ensemble, see Lyons (2014, Section 3.8). This extension is the content
+of Theorem 2.2. An extension of Theorem 1.1 to the case of a projection with infinite range (both
+in the case where S is discrete or continuous) would be interesting. An example of this situation is
+investigated in Bufetov and Qiu (2022), where the author study among other things the continuous
+analogue of PX in the case of the Bergman kernel.
+
+2. The mean projection theorem
+
+  Let S be a Polish space and λ a positive Radon measure on S. Let us consider the space
+E = L2 (S, λ) and the space C(S) of continuous functions on S.1 Let H ⊆ E ∩ C(S) be a linear
+subspace of finite dimension n.
+  Let Conf n (S) be the set of collections of n distinct points in S, and let µ be the determinantal
+probability measure on Conf n (S) associated with the orthogonal projection on H. This means
+that if we choose an orthonormal basis (ϕj )1≤j≤n of H, then we have for any bounded continuous
+symmetric test function T : S n → C the equality
+    Z                            Z
+                               1
+                                      T (x1 , . . . , xn )| det ϕj (xi )1≤i,j≤n |2 dλ⊗n (x1 , . . . , xn ),
+                                                                               
+                 T (X) dµ(X) =                                                                              (2.1)
+      Conf n (S)               n! S n
+  1The space of continuous functions plays for us the role usually devoted to a reproducing kernel Hilbert space
+(RKHS), namely that of a space of functions that can be evaluated at points. However, we do not need this extra
+structure, because we do not need evaluation at a point to be a continuous linear form. Moreover, it seems that in
+many examples of interest, the RKHS is a subspace of continuous functions, so that our result applies.
+Mean projection for determinantal point processes                                                                499
+
+in which the right-hand side does not depend on the choice of the orthonormal basis. We will denote
+by X a random subset of S distributed according to µ, and use the notation E[T (X)] for either of
+the two sides of the equality above.
+   It follows from (2.1) that µ-almost every X is a uniqueness set for H, in the sense that two
+elements of H that coincide on X are equal.2 This fact can be used to define a random projection
+onto H, as follows. For every X ∈ Conf n (S), let us define C(S ; X) = {f ∈ C(S) : f|X = 0}.
+Lemma 2.1. For µ-almost every X ∈ Conf n (S), the decomposition C(S) = H ⊕ C(S ; X) holds.
+Proof : Let f be an element of C(S). Let (ϕj )1≤j≤n be an orthonormal basis of H. For µ-almost
+every X = {x1 , . . . , xn } in Conf n (S), we have det(ϕj (xi )1≤i,j≤n ) 6= 0, so that the system
+                          α1 ϕ1 (xi ) + . . . + αn ϕn (xi ) = f (xi ) ,     ∀i ∈ {1, . . . , n}
+admits a unique solution. Then PX f = α1 ϕ1 + . . . + αn ϕn is the unique element of H which takes
+the same values as f on X.                                                                      
+   For the rest of this note, we will keep the notation PX introduced in the previous proof for the
+projection on H parallel to C(S ; X). Let us emphasize that the decomposition given by Lemma 2.1
+depends on H and X, but is independent of the Euclidean structure of E. In particular, the
+projection PX is independent of this Euclidean structure.
+   For example, if S = R, λ is a measure with infinite support which admits moments of all orders,
+and ϕ1 , . . . , ϕn are the first n orthogonal polynomials with respect to λ, then H is the space
+of polynomial functions of degree at most n − 1 and PX f is the interpolating polynomial of the
+restriction of f to X.
+                                                                                         1 ⊗m
+   For all g1 , . . . , gm ∈ E ∩ C(S), let us define g1 ∧ . . . ∧ gm ∈ L2 (S m , m!        λ ) ∩ C(S m ) by setting,
+for all y1 , . . . , ym ∈ S,
+                                                                                          
+                               (g1 ∧ . . . ∧ gm )(y1 , . . . , ym ) = det gj (yi )1≤i,j≤m .                    (2.2)
+We will use several times the Andreieff–Heine identity, which is a continuous analogue of the Cauchy–
+Binet identity, and can be phrased as follows: if h1 , . . . , hm belong to E ∩ C(S), then
+                                                                               
+                 hg1 ∧ . . . ∧ gm , h1 ∧ . . . ∧ hm i 2 m 1 ⊗m = det hgi , hj i 1≤i,j≤m .        (2.3)
+                                                      L (S , m! λ      )
+
+This equality justifies, for instance, the fact that the measure µ defined by (2.1) is a probability
+measure.
+    Let us write H 0 = H and H 1 = H ⊥ . The isomorphism of vector spaces L2 (S m , m!    1 ⊗m
+                                                                                             λ ) ≃
+  2      ⊗m
+               √
+L (S, λ)                                                                     2         0
+             is m! times an isometry, and the orthogonal decomposition L (S) = H ⊕ H 1 gives
+rise to an orthogonal decomposition
+                               M                          m 
+                                                          M        M                        
+     2  m      2    ⊗m                   ε1          εm                     ε1           εm
+   L (S ) ≃ L (S)       =              H ⊗ ... ⊗ H =                      H ⊗ ... ⊗ H        . (2.4)
+                             ε1 ,...,εm ∈{0,1}                        k=0   ε1 ,...,εm ∈{0,1}
+                                                                             ε1 +...+εm =k
+
+Let us denote by Πk the orthogonal projection of L2 (S m ) on the k-th summand of the last expression.
+In order to describe this operator more concretely, recall that we denote by ΠH the orthogonal
+                                                                                       ⊥
+projection on H in E. For all real t, let us define the linear operator Dt = ΠH + tΠH on E. Then
+                                                          m
+                                                          X
+                                Dt g1 ∧ . . . ∧ Dt gm =         tk Πk (g1 ∧ . . . ∧ gm ).
+                                                          k=0
+
+  2The uniqueness property is true for all determinantal processes associated with an orthogonal projection of
+possibly infinite range, that is with infinitely many points (n = ∞), as proved in the discrete case by Lyons (2003),
+and recently by Bufetov et al. (2021) in the general case, following partial results by Ghosh (2015).
+500                                                                                    Adrien Kassel and Thierry Lévy
+
+In words, Πk (g1 ∧ . . . ∧ gm ) is the sum of all the functions obtained from g1 ∧ . . . ∧ gm by replacing k
+of the gi ’s by their projections on H ⊥ , and the others by their projection on H.
+Theorem 2.2. For all m ≥ 1, and all f1 , . . . , fm ∈ E ∩ C(S), we have
+                        E[PX f1 ∧ . . . ∧ PX fm ] = ΠH f1 ∧ . . . ∧ ΠH fm ,                                     (2.5)
+                                                      m
+                                                      X
+                                                             n−m+k
+                                                                   kΠk (f1 ∧ . . . ∧ fm )k2 .
+                                                                         
+                     Var(PX f1 ∧ . . . ∧ PX fm ) =             k                                                (2.6)
+                                                      k=1
+                                                                                     1 ⊗m
+  The variance in the second assertion is that of a random element of L2 (S m , m!      λ ), that is, to
+be explicit, and in view of the first assertion,
+                                    h                                                               i
+                                                                                   2
+     Var(PX f1 ∧ . . . ∧ PX fm ) = E PX f1 ∧ . . . ∧ PX fm − ΠH f1 ∧ . . . ∧ ΠH fm L2 (S m , 1 λ⊗m ) .
+                                                                                                      m!
+
+Further note that the quadratic identity (2.6) may be polarized to obtain information on covariances.
+   Given the remark made after Lemma 2.1, one can view Theorem 2.2 as providing a statistical
+estimator of part of the Euclidean structure of E given H and a realisation X.
+   When m = 1, this is the theorem of Ermakov and Zolotukhin (1960), rephrased by Gautier et al.
+(2019):
+                                                                          ⊥
+                            E[PX f ] = ΠH f and Var(PX f ) = nkΠH f k2 .
+   In order to prove Theorem 2.2, we will use the following generalization of Cramer’s formula,
+which surprisingly enough, we have not encountered in our undergraduate linear algebra class.
+   For all integers n and m, we denote by [[n]] the set {1, . . . , n} and by Pm ([[n]]) the set of its subsets
+with m elements. Given a p × q matrix M and two subsets I ⊆ [[p]] and J ⊆ [[q]], we define
+                                                                   I
+                                   MJI = (Mij )i∈I,j∈J and M I = M[[q]] .
+Proposition 2.3 (Cramer’s identity for minors). Let 1 ≤ m ≤ n be two integers. Let M be an
+n × n invertible square matrix, and F an n × m rectangular matrix. Let A be the n × m rectangular
+matrix solving M A = F . Then for all I ∈ Pm ([[n]]), the m × m submatrix AI has determinant
+                                       det AI = (det M )−1 det M[I←F ] ,                                        (2.7)
+where M[I←F ] is the n × n square matrix obtained by replacing in M the columns indexed by I by
+the columns of the matrix F .
+  If I = {i1 < . . . < im }, then (M[I←F ] )ij = Mij for j ∈
+                                                           / I, and (M[I←F ] )ij = Fik for j = ik .
+Proof : Let us write A = M −1 F and use the Cauchy–Binet formula:
+                                          X
+                              det AI =         det(M −1 )IJ det F J .
+                                             J∈Pm ([[n]])
+
+Now, by Jacobi’s complementary minor formula,
+                                                                                            c
+                                                P           P
+                          det(M −1 )IJ = (−1)       i∈I i+      j∈J j   (det M )−1 det M JI c .
+Combining the two previous equations and checking signs, we now recognize the Laplace expansion
+of det M[I←F ] with respect to all columns in I:
+                                                              c
+                             X          P      P
+     det AI = (det M )−1            (−1) i∈I i+ j∈J j det MIJc det F J = (det M )−1 det M[I←F ] ,
+                            J∈Pm ([[n]])
+
+which concludes the proof.                                                                                         
+Proof of Theorem 2.2: Let (ϕi )1≤i≤n be an orthonormal basis of H. Let X = (x1 , . . . , xn                ) ∈ S n be
+such that det(ϕj (xi )1≤i,j≤n ) 6= 0. Let us introduce the following matrices:
+      • M = (ϕj (xi ))      1 ≤ i, j ≤ n ,
+Mean projection for determinantal point processes                                                                     501
+
+      •   F = (fj (xi ))      1 ≤ i ≤ n, 1 ≤ j ≤ m ,
+      •   A = (αij )          1 ≤ i ≤ n, 1 ≤ j ≤ m , the solution to M A = F ,
+      •   G = (hϕi , fj i)    1 ≤ i ≤ n, 1 ≤ j ≤ m .
+For each I = {i1 < . . . < ik } ⊆ {1, . . . , n}, let us write ϕI = ϕi1 ∧ . . . ∧ ϕik .
+  For each 1 ≤ i ≤ m, we have
+                                             n
+                                             X                         n
+                                                                       X
+                                                                  H
+                                PX fi =            Aki ϕk and Π fi =         Gki ϕk ,
+                                             k=1                       k=1
+
+so that
+                                X                                                          X
+   PX f1 ∧ . . . ∧ PX fm =                  det AI ϕI and ΠH f1 ∧ . . . ∧ ΠH fm =                      det GI ϕI .   (2.8)
+                             I∈Pm ([[n]])                                               I∈Pm ([[n]])
+
+In order to prove the first assertion of the theorem, namely (2.5), we are thus left to show that for
+all I ∈ Pm ([[n]]), we have
+                                          E det AI = det GI ,
+                                                  
+                                                                                                (2.9)
+where we view A as a function of the subset X ⊆ S and the expectation is with respect to µ.
+  By Proposition 2.3, we can write det AI = (det M )−1 det M[I←F ] . Using the form (2.1) of the
+density of µ and the Andreieff–Heine identity (2.3), we find
+                                           Z
+                                         1
+                           E det AI =           det AI | det M |2 dλ⊗n
+                                   
+                                        n! S n
+                                           Z
+                                         1
+                                      =         det M[I←F ] det M dλ⊗n
+                                        n! S n
+                                                        
+                                      = det hϕa , ψI,b i 1≤a,b≤n ,
+
+where (ψI,1 , . . . , ψI,n ) is the list (ϕ1 , . . . , ϕn ) in which the terms labelled by elements of I have been
+replaced by f1 , . . . , fm . In symbols, ψI,b = ϕb if b ∈         / I and ψI,b = fk if I = {i1 < . . . < im } and
+b = ik .
+   The last determinant is, up to conjugation by a permutation matrix, that of a 2 × 2 block-
+triangular matrix. One of the diagonal blocks of this matrix is the identity, and the other is GI .
+Thus, its determinant is equal to det GI , which proves (2.9) and thus (2.5).
+
+   We now turn to the computation of the variance. An important observation is that the family
+                                                  1 ⊗m
+{ϕI : I ∈ Pm ([[n]])} is orthonormal in L2 (S m , m! λ ). Thus, using (2.8), Pythagoras’ theorem, and
+(2.5), we find that
+                                                                                          2
+                                            X
+                                                     E (det AI )2 − ΠH f1 ∧ . . . ∧ ΠH fm .
+                                                                
+             Var(PX f1 ∧ . . . ∧ PX fm ) =                                                      (2.10)
+                                                   I∈Pm ([[n]])
+
+  Using the same strategy as before, we compute, for each set I of cardinality m,
+                                            Z
+                                          1
+                                 I 2
+                                                | det AI |2 | det M |2 dλ⊗n
+                                    
+                        E | det A | =
+                                         n! S n
+                                            Z
+                                          1
+                                       =        | det M[I←F ] |2 dλ⊗n
+                                         n! S n
+                                       = det(hψI,a , ψI,b i)1≤a,b≤n .
+502                                                                                            Adrien Kassel and Thierry Lévy
+
+  The last matrix has a simple block structure coresponding to the partition [[n]] = I t I c , in which
+the block indexed by (I c , I c ) is the identity. The Schur complement formula thus gives
+                                                                                                        
+      det(hψI,a , ψI,b i)1≤a,b≤n = det hfi , fj i1≤i,j≤m − hfi , ϕb i 1≤i≤m,b∈I c hϕa , fj i a∈I c ,1≤j≤m
+                                 = det hfi , (Id − ΠHI c )fj i 1≤i,j≤m
+                                                              
+
+                                                  ⊥
+                                 = det hfi , (ΠH + ΠHI )fj i 1≤i,j≤m ,
+                                                                
+
+
+where for all J ⊆ {1, . . . , n}, we set HJ = Vect(ϕj , j ∈ J). Using the Andreieff–Heine identity, we
+rewrite this determinant as
+                                                   ⊥                       ⊥
+              E | det AI |2 = f1 ∧ . . . ∧ fm , (ΠH + ΠHI )f1 ∧ . . . ∧ (ΠH + ΠHI )fm
+                             
+
+and what we need now is to sum this quantity over all I ∈ Pm ([[n]]).
+                                                                                                   ⊥
+   For each i ∈ {1, . . . , m}, let us decompose fi as fi,0 + fi,1 + . . . + fi,n , where fi,0 = ΠH fi and
+for all j ∈ {1, . . . , n}, fi,j = hϕj , fi iϕj . By multilinearity, we find
+                                   n
+                                                                  ⊥                                     ⊥
+                                   X
+       E | det AI |2 =                          f1 ∧ . . . ∧ fm , (ΠH + ΠHI )f1,j1 ∧ . . . ∧ (ΠH + ΠHI )fm,jm .
+                   
+                                                                  |                    {z                   }
+                                j1 ,...,jm =0
+                                                                                           R
+
+    Let us call R the function in the right-hand side of the scalar product. If among the integers
+j1 , . . . , jm two are positive and equal, then R vanishes, and so does the corresponding term of the
+sum. Let us now assume that the positive indices among j1 , . . . , jm are pairwise distinct, and let
+us list them as {l1 , . . . , lm−k }, where k = 1{j1 =0} + . . . + 1{jm =0} . We make three observations.
+Firstly, for R not to be zero, it is necessary that {l1 , . . . , lm−k } ⊆ I. Secondly, if this condition is
+satisfied, then R = f1,j1 ∧ . . . ∧ fm,jm , and in particular does not depend on I. Finally, the condition
+{l1 , . . . , lm−k } ⊆ I is verified for n−m+k
+                                               
+                                            k    subsets I of {1, . . . , n} with m elements. Putting these
+observations together, we find
+                     X                        X
+                                                   n−m+k
+                            E | det AI |2 =
+                                                        
+                                                      k     f1 ∧ . . . ∧ fm , f1,j1 ∧ . . . ∧ fm,jm .
+                 I∈Pm ([[n]])                        j1 ,...,jm
+
+The sum runs over those j1 , . . . , jm between 0 and n among which no two are positive and equal,
+but lifting this condition only adds null terms to the sum. Therefore, we let j1 , . . . , jm run freely
+between 0 and n, and k is the number of them that are zero.
+   Let us sort the terms of the last sum according to which of the indices j1 , . . . , jm are zero and
+which are not: calling B the set {p ∈ [[m]] : jp = 0} and with the notation H 0 = H and H 1 = H ⊥ ,
+this resummation yields
+                               m
+                                       D                                              1                        1
+      X                       X                                         X                  (1)                       (m)
+                                                                                                                              E
+                         I 2     n−m+k
+                                                                                     ΠH B         f1 ∧ . . . ∧ ΠH B
+                 
+                E | det A | =      k      f1 ∧ . . . ∧ fm ,                                                                 fm . (2.11)
+ I∈Pm ([[n]])                         k=0                             B∈Pk ([[m]])
+
+The sum over B yields exactly the function Πk (f1 ∧ . . . ∧ fm ). The result follows from the orthog-
+onality of the decomposition (2.4) and the observation that the term corresponding to k = 0 is
+exactly the last term of (2.10).                                                                   
+
+
+
+
+Acknowledgements
+
+  We thank the two referees for interesting and helpful comments.
+Mean projection for determinantal point processes                                               503
+
+References
+
+Avron, H. and Boutsidis, C. Faster subset selection for matrices and applications. SIAM J. Matrix
+  Anal. Appl., 34 (4), 1464–1499 (2013). MR3121759.
+Ben-Tal, A. and Teboulle, M. A geometric property of the least squares solution of linear equations.
+  Linear Algebra Appl., 139, 165–170 (1990). MR1071706.
+Berg, L. Three results in connection with inverse matrices. In Proceedings of the symposium on
+  operator theory (Athens, 1985), volume 84, pp. 63–77 (1986). MR872276.
+Borodin, A. Determinantal point processes. In The Oxford handbook of random matrix theory, pp.
+  231–249. Oxford Univ. Press, Oxford (2011). MR2932631.
+Bufetov, A. I. and Qiu, Y. The Patterson-Sullivan reconstruction of pluriharmonic functions for
+  determinantal point processes on complex hyperbolic spaces. Geom. Funct. Anal., 32 (2), 135–192
+  (2022). MR4408430.
+Bufetov, A. I., Qiu, Y., and Shamov, A. Kernels of conditional determinantal measures and the
+  Lyons-Peres completeness conjecture. J. Eur. Math. Soc. (JEMS), 23 (5), 1477–1519 (2021).
+  MR4244512.
+Catanzaro, M. J., Chernyak, V. Y., and Klein, J. R. On Kirchhoff’s theorems with coefficients in a
+  line bundle. Homology Homotopy Appl., 15 (2), 267–280 (2013). MR3138380.
+Dereziński, M., Liang, F., and Mahoney, M. W. Exact Expressions for Double Descent and
+  Implicit Regularization via Surrogate Random Design. In Proceedings of the 34th Interna-
+  tional Conference on Neural Information Processing Systems, NIPS’20. Curran Associates Inc.
+  (2020). ISBN 9781713829546. Available at https://proceedings.neurips.cc/paper/2020/file/
+  37740d59bb0eb7b4493725b2e0e5289b-Paper.pdf.
+Dereziński, M. and Mahoney, M. W. Determinantal point processes in randomized numerical linear
+  algebra. Notices Amer. Math. Soc., 68 (1), 34–45 (2021). MR4202314.
+Dereziński, M. and Warmuth, M. K. Reverse iterative volume sampling for linear regression. J.
+  Mach. Learn. Res., 19, Paper No. 23, 39 (2018). MR3862430.
+Dereziński, M., Warmuth, M. K., and Hsu, D. Unbiased estimators for random design regression.
+  J. Mach. Learn. Res., 23, Paper No. 167, 46 (2022). Available at http://jmlr.org/papers/v23/19-
+  571.html.
+Ermakov, S. M. and Zolotukhin, V. G. Polynomial Approximations and the Monte-Carlo Method.
+  Theory Probab. Appl., 5 (4), 428–431 (1960). DOI: 10.1137/1105046.
+Gautier, G., Bardenet, R., and Valko, M. On two ways to use determinantal point pro-
+  cesses for Monte Carlo integration. In Wallach, H. et al., editors, Advances in Neural
+  Information Processing Systems, volume 32. Curran Associates, Inc. (2019). Available at
+  https://proceedings.neurips.cc/paper/2019/file/1d54c76f48f146c3b2d66daf9d7f845e-Paper.pdf.
+Ghosh, S. Determinantal processes and completeness of random exponentials: the critical case.
+  Probab. Theory Related Fields, 163 (3-4), 643–665 (2015). MR3418752.
+Johansson, K. Random Matrices and Determinantal Processes. In Bovier, A. et al., editors,
+  Mathematical Statistical Physics, volume 83 of Les Houches, pp. 1–56. Elsevier (2006). DOI:
+  10.1016/S0924-8099(06)80038-7.
+Kassel, A. and Lévy, T. Determinantal probability measures on Grassmannians. Ann. Inst. Henri
+  Poincaré D, 9 (4), 659–732 (2022). MR4525143.
+Kirchhoff, G. Ueber die Auflösung der Gleichungen, auf welche man bei der Untersuchung der
+  linearen Vertheilung galvanischer Ströme geführt wird. Annalen der Physik, 148 (12), 497–508
+  (1847). DOI: 10.1002/andp.18471481202.
+Lyons, R. Determinantal probability measures. Publ. Math. Inst. Hautes Études Sci., 98, 167–212
+  (2003). MR2031202.
+Lyons, R. Determinantal probability: basic properties and conjectures. In Proceedings of the
+  International Congress of Mathematicians—Seoul 2014. Vol. IV, pp. 137–161. Kyung Moon Sa,
+504                                                                Adrien Kassel and Thierry Lévy
+
+  Seoul (2014). MR3727606.
+Macchi, O. The coincidence approach to stochastic point processes. Advances in Appl. Probability,
+  7, 83–122 (1975). MR380979.
+Mariet, Z. E. and Sra, S. Elementary Symmetric Polynomials for Optimal Experimental De-
+  sign. In Guyon, I. et al., editors, Advances in Neural Information Processing Systems, vol-
+  ume 30, pp. 2136–2145. Curran Associates, Inc. (2017). ISBN 9781510860964. Available at
+  https://proceedings.neurips.cc/paper/2017/file/1cecc7a77928ca8133fa24680a88d2f9-Paper.pdf.
+Maurer, S. B. Matrix generalizations of some theorems on trees, cycles and cocycles in graphs.
+  SIAM J. Appl. Math., 30 (1), 143–148 (1976). MR392635.
+Shirai, T. and Takahashi, Y. Random point fields associated with certain Fredholm determi-
+  nants. I. Fermion, Poisson and boson point processes. J. Funct. Anal., 205 (2), 414–463 (2003).
+  MR2018415.
+Soshnikov, A. Determinantal random point fields. Uspekhi Mat. Nauk, 55 (5(335)), 107–160 (2000).
+  MR1799012.

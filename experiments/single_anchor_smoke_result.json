@@ -1,0 +1,404 @@
+{
+  "central": {
+    "factor_and_solve_seconds": 0.00025130005087703466,
+    "relative_residual": 1.450001704146654e-16
+  },
+  "checks": {
+    "central_residual_below_1e-9": true,
+    "raw_wls_tail_nonincreasing_on_sampled_unique_roots": true,
+    "schur_oracle_below_1e-8": true
+  },
+  "config": {
+    "anchor_fraction": 0.0138888888888889,
+    "anchor_weight": 0.2,
+    "bad_anchor_scale": 0.0001,
+    "bad_edge_scale": 0.03,
+    "bad_fraction": 0.15,
+    "bits_per_scalar": 32,
+    "block_dim": 2,
+    "confidence_alpha": 0.05,
+    "edge_holder_mode": "both",
+    "edge_weight": 1.0,
+    "failure_thresholds": [
+      0.01,
+      0.03,
+      0.1
+    ],
+    "graph": "cycle",
+    "n": 72,
+    "noise_std": 0.02,
+    "radii": [
+      0,
+      1,
+      2,
+      4,
+      8,
+      16
+    ],
+    "root_samples": 16,
+    "schur_oracle_max_state_dim": 300,
+    "seed": 20260913
+  },
+  "environment": {
+    "logical_cpus": 32,
+    "networkx": "3.6.1",
+    "numpy": "2.3.3",
+    "platform": "Windows-11-10.0.26100-SP0",
+    "python": "3.13.5",
+    "scipy": "1.17.1"
+  },
+  "instance": {
+    "H_nnz": 434,
+    "J_nnz": 816,
+    "anchor_count": 1,
+    "anchor_nodes": [
+      48
+    ],
+    "bad_nodes": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      67,
+      68,
+      69,
+      70,
+      71
+    ],
+    "condition_number_estimate": 4728.513466184651,
+    "edge_measurement_holder_mode": "both",
+    "edges": 72,
+    "information_matrix_positive_definite": true,
+    "lambda_max": 4.009430307248655,
+    "lambda_min": 0.0008479261687465995,
+    "local_anchor_rank_histogram": {
+      "0": 71,
+      "2": 1
+    },
+    "measurements": 146,
+    "nodes": 72,
+    "nodes_without_local_anchor": 71,
+    "state_dimension": 144
+  },
+  "radii": [
+    {
+      "chebyshev_global_relative_error": 0.7696565007561014,
+      "dirichlet_root_error": {
+        "max": 1.6693642524607182,
+        "mean": 0.96792446462663
+      },
+      "message_dimension_per_directed_edge_round": 2,
+      "polynomial_bit_hop_proxy": 0,
+      "radius_rounds": 0,
+      "raw_z_operator_tail_exceedance": [
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.01,
+          "sample_exceedance_fraction": 1.0
+        },
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.03,
+          "sample_exceedance_fraction": 1.0
+        },
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.1,
+          "sample_exceedance_fraction": 1.0
+        }
+      ],
+      "sampled_raw_wls_tail": {
+        "max": 10.147655947805667,
+        "mean": 4.084311010517912,
+        "median": 3.7815836753664955
+      },
+      "sampled_state_rhs_tail": {
+        "max": 259.2979427550355,
+        "mean": 101.2559911091216,
+        "median": 77.70725514507541
+      },
+      "schur_oracle_root_error_max": 3.1625685029021745e-14,
+      "seconds": 0.008505200035870075
+    },
+    {
+      "chebyshev_global_relative_error": 0.7738047010352166,
+      "dirichlet_root_error": {
+        "max": 3.1442314385445345,
+        "mean": 1.3389832058489284
+      },
+      "message_dimension_per_directed_edge_round": 2,
+      "polynomial_bit_hop_proxy": 9216,
+      "radius_rounds": 1,
+      "raw_z_operator_tail_exceedance": [
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.01,
+          "sample_exceedance_fraction": 1.0
+        },
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.03,
+          "sample_exceedance_fraction": 1.0
+        },
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.1,
+          "sample_exceedance_fraction": 1.0
+        }
+      ],
+      "sampled_raw_wls_tail": {
+        "max": 9.287781540730341,
+        "mean": 3.911176706222367,
+        "median": 3.653034073833073
+      },
+      "sampled_state_rhs_tail": {
+        "max": 214.4937075674075,
+        "mean": 95.61294729306572,
+        "median": 76.1575198505571
+      },
+      "schur_oracle_root_error_max": 4.483170754092524e-14,
+      "seconds": 0.008626900031231344
+    },
+    {
+      "chebyshev_global_relative_error": 0.7204591401614989,
+      "dirichlet_root_error": {
+        "max": 3.1928864357535063,
+        "mean": 0.9657364787204248
+      },
+      "message_dimension_per_directed_edge_round": 2,
+      "polynomial_bit_hop_proxy": 18432,
+      "radius_rounds": 2,
+      "raw_z_operator_tail_exceedance": [
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.01,
+          "sample_exceedance_fraction": 1.0
+        },
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.03,
+          "sample_exceedance_fraction": 1.0
+        },
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.1,
+          "sample_exceedance_fraction": 1.0
+        }
+      ],
+      "sampled_raw_wls_tail": {
+        "max": 8.339715262622983,
+        "mean": 3.5418425876701543,
+        "median": 3.519785572330559
+      },
+      "sampled_state_rhs_tail": {
+        "max": 176.31677447464727,
+        "mean": 90.45810706903428,
+        "median": 73.67445614401346
+      },
+      "schur_oracle_root_error_max": 4.79899280107199e-14,
+      "seconds": 0.008356100064702332
+    },
+    {
+      "chebyshev_global_relative_error": 0.6851545147561003,
+      "dirichlet_root_error": {
+        "max": 2.6978347750705027,
+        "mean": 1.1131506004557776
+      },
+      "message_dimension_per_directed_edge_round": 2,
+      "polynomial_bit_hop_proxy": 36864,
+      "radius_rounds": 4,
+      "raw_z_operator_tail_exceedance": [
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.01,
+          "sample_exceedance_fraction": 1.0
+        },
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.03,
+          "sample_exceedance_fraction": 1.0
+        },
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.1,
+          "sample_exceedance_fraction": 1.0
+        }
+      ],
+      "sampled_raw_wls_tail": {
+        "max": 6.010555722079084,
+        "mean": 3.1138124222727606,
+        "median": 3.236842510579022
+      },
+      "sampled_state_rhs_tail": {
+        "max": 153.16809577016346,
+        "mean": 81.89816234293411,
+        "median": 66.2830714132045
+      },
+      "schur_oracle_root_error_max": 3.4693636842275425e-14,
+      "seconds": 0.008921900065615773
+    },
+    {
+      "chebyshev_global_relative_error": 0.7281326067031478,
+      "dirichlet_root_error": {
+        "max": 2.3199142458836643,
+        "mean": 1.1529893898164771
+      },
+      "message_dimension_per_directed_edge_round": 2,
+      "polynomial_bit_hop_proxy": 73728,
+      "radius_rounds": 8,
+      "raw_z_operator_tail_exceedance": [
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.01,
+          "sample_exceedance_fraction": 1.0
+        },
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.03,
+          "sample_exceedance_fraction": 1.0
+        },
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.1,
+          "sample_exceedance_fraction": 1.0
+        }
+      ],
+      "sampled_raw_wls_tail": {
+        "max": 5.342510024187102,
+        "mean": 2.416423034171188,
+        "median": 2.5741500045030694
+      },
+      "sampled_state_rhs_tail": {
+        "max": 120.65332112437478,
+        "mean": 70.23540929898186,
+        "median": 51.67195601412424
+      },
+      "schur_oracle_root_error_max": 5.4350633379024595e-14,
+      "seconds": 0.009008900029584765
+    },
+    {
+      "chebyshev_global_relative_error": 0.6126892718478334,
+      "dirichlet_root_error": {
+        "max": 1.8279448246950787,
+        "mean": 0.7921689651779483
+      },
+      "message_dimension_per_directed_edge_round": 2,
+      "polynomial_bit_hop_proxy": 147456,
+      "radius_rounds": 16,
+      "raw_z_operator_tail_exceedance": [
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.01,
+          "sample_exceedance_fraction": 1.0
+        },
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.03,
+          "sample_exceedance_fraction": 1.0
+        },
+        {
+          "dkw_interval": [
+            0.6604746210648451,
+            1.0
+          ],
+          "epsilon": 0.1,
+          "sample_exceedance_fraction": 1.0
+        }
+      ],
+      "sampled_raw_wls_tail": {
+        "max": 4.497163567319958,
+        "mean": 1.644716423674759,
+        "median": 0.7094920057689169
+      },
+      "sampled_state_rhs_tail": {
+        "max": 78.1711207909243,
+        "mean": 50.71170714456326,
+        "median": 42.4549791390624
+      },
+      "schur_oracle_root_error_max": 6.174779108235901e-14,
+      "seconds": 0.009430999984033406
+    }
+  ],
+  "resources": {
+    "rss_end_bytes": 77979648,
+    "rss_start_bytes": 75317248,
+    "wall_seconds": 0.08723009994719177
+  },
+  "sampling": {
+    "confidence_alpha": 0.05,
+    "dkw_halfwidth": 0.3395253789351549,
+    "root_draws_with_replacement": [
+      46,
+      14,
+      65,
+      33,
+      0,
+      54,
+      41,
+      66,
+      22,
+      45,
+      58,
+      42,
+      59,
+      48,
+      50,
+      23
+    ],
+    "sample_count": 16
+  },
+  "schema_version": 2
+}

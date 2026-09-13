@@ -1,0 +1,1190 @@
+                                                                                                                                                                                            1
+
+
+
+
+                                           Distributed Linear Network Operators using Graph
+                                                                Filters∗
+                                                                            Santiago Segarra, Antonio G. Marques, and Alejandro Ribeiro
+
+
+
+                                            Abstract—We study the optimal design of graph filters (GFs)                   congestion level at the nodes of a telecommunication network.
+                                         to implement arbitrary linear transformations between graph                      Transversal to the particular application, one must address
+                                         signals. GFs can be represented by matrix polynomials of the                     the question of how to redesign traditional tools originally
+                                         graph-shift operator (GSO). Since this operator captures the local
+                                                                                                                          conceived to study and process signals defined on regular
+arXiv:1510.03947v2 [cs.IT] 21 May 2017
+
+
+
+
+                                         structure of the graph, GFs naturally give rise to distributed
+                                         operators. In most setups the GSO is given, so that GF design                    domains and extend them to the more complex graph domain.
+                                         consists fundamentally in choosing the (filter) coefficients of the              Motivated by this, the present manuscript looks at the problem
+                                         matrix polynomial to resemble desired linear transformations.                    of optimal design of graph filters (GFs), and its applications
+                                         We determine spectral conditions under which a specific linear                   in the context of distributed linear network operators.
+                                         transformation can be implemented perfectly using GFs. For the
+                                         cases where perfect implementation is infeasible, we address the
+                                         optimization of the filter coefficients to approximate the desired                  Design of GFs to approximate a given impulse or frequency
+                                         transformation. Additionally, for settings where the GSO itself                  response has been recently investigated in [4], [7], [8], con-
+                                         can be modified, we study its optimal design too. After this,                    sidering both moving average and autoregressive configura-
+                                         we introduce the notion of a node-variant GF, which allows                       tions. This paper goes one step further and addresses the
+                                         the simultaneous implementation of multiple (regular) GFs in                     optimization of GFs to approximate a pre-specified generic
+                                         different nodes of the graph. This additional flexibility enables
+                                         the design of more general operators without undermining the                     linear transformation. Mathematically, GFs are graph-signal
+                                         locality in implementation. Perfect and approximate designs are                  operators that can be expressed as polynomials of the graph-
+                                         also studied for this new type of GFs. To showcase the relevance of              shift [9], which is a sparse matrix accounting for the local
+                                         the results in the context of distributed linear network operators,              structure of the graph. Hence, GF design amounts to selecting
+                                         the paper closes with the application of our framework to two                    the filter coefficients and, in certain applications, the entries
+                                         particular distributed problems: finite-time consensus and analog
+                                         network coding.                                                                  of the graph-shift operator itself [10]. An attractive feature
+                                                                                                                          of GFs is that they naturally give rise to (local) distributed
+                                           Index terms — Graph signal processing, Graph filter design,                    implementations. Therefore, our results are also relevant from
+                                         Distributed linear transformation, Network operator, Finite-time                 the point of view of network linear transformations. During
+                                         consensus, Analog network coding.                                                the last decade, development of distributed linear schemes has
+                                                                                                                          attracted a lot of attention. The field has evolved quickly, shift-
+                                                                   I. I NTRODUCTION                                       ing from the estimation of simple network parameters such as
+                                            Networks have often intrinsic value and are themselves the                    the mean using consensus algorithms [11]–[15], to advanced
+                                         object of study. In other occasions, the network defines an                      inference problems such as sparse linear regression [16]; see
+                                         underlying notion of proximity or dependence, but the object                     also [17] for a review. Indeed, in the context of GSP but with-
+                                         of interest is a signal defined on top of the graph, i.e., data                  out leveraging the particular structure of a GF, several works
+                                         associated with the nodes of the network. This is the matter ad-                 have addressed the problem of distributed implementation of
+                                         dressed in the field of Graph Signal Processing (GSP), where                     different linear operators. Examples include the projection of
+                                         notions such as frequency analysis, sampling, and stationarity                   graph signals onto low-dimensional spaces [18]; the approx-
+                                         are extended to signals supported on graphs [3]–[6]. Graph-                      imation of a specific class of linear transformations (the so-
+                                         supported signals exist in a number of fields, with examples                     called graph Fourier multipliers) using Chebyshev polynomials
+                                         encompassing gene-expression patterns defined on top of gene                     [19]; or graph-signal inpainting [20], [21]. GFs have been
+                                         networks, the spread of epidemics over a social network, or the                  used to implement distributedly specific linear transformations
+                                            ∗ This paper has been accepted for publication in the IEEE Transactions
+                                                                                                                          such as fast average consensus [22], projections onto the low-
+                                         on Signal Processing under the title “Optimal Graph-Filter Design and            rank space of graph-bandlimited signals [23], or interpolation
+                                         Applications to Distributed Linear Network Operators”.                           of graph-bandlimited signals [24], [25], but not for general
+                                            Work in this paper is supported by the USA NSF CCF-1217963 and                linear transformations. Design of distributed linear network
+                                         the Spanish MINECO grants No TEC2013-41604-R and TEC2016-75361-R.
+                                         S. Segarra is with the Inst. for Data, Systems and Society, Massachusetts        operators under a GF framework is useful not only because
+                                         Inst. of Technology. A. G. Marques is with the Dept. of Signal Theory            it identifies conditions and rules for perfect and approximate
+                                         and Comms., King Juan Carlos Univ. A. Ribeiro is with the Dept. of               implementation, but also because it allows us to leverage many
+                                         Electrical and Systems Eng., Univ. of Pennsylvania. Emails: segarra@mit.edu,
+                                         antonio.garcia.marques@urjc.es, and aribeiro@seas.upenn.edu. Part of the         of the insights and results existing for classical linear time-
+                                         results in this paper were presented at the Allerton Conf. [1] and ICASSP [2].   invariant filters.
+2
+
+
+
+    To further motivate the practical interest of the investigated   used. The notation T , H , and † stands for transpose, transpose
+problem, one can exploit the fact that the output of a GF            conjugate, and Moore-Penrose pseudoinverse, respectively;
+can be viewed as the outcome of a diffusion or spreading             λmax (X) is the largest eigenvalue of the symmetric matrix
+process, with the filter coefficients corresponding to the rate      X; ei is the i-th N × 1 canonical basis vector (all entries of
+of diffusion. Therefore, our results can be applied to net-          ei are zero except for the i-th one, which is one); 0 and 1
+work processes evolving according to a dynamics given by             are the all-zero and all-one vectors, respectively;      denotes
+a (weighted) connectivity graph. The input of the GF is the          the Khatri-Rao (column-wise Kronecker) product and ◦ the
+initial network state, the output is the final network state,        Hadamard (element-wise) product.
+and the shift operator is given by the connectivity graph.
+The objective is then to design the filter coefficients, which                     II. G RAPH SIGNALS AND FILTERS
+amounts to tuning the parameters that control the dynamics,
+                                                                        Let G denote a directed graph with a set of N nodes or
+to approximate a given linear transformation. Another relevant
+                                                                     vertices N and a set of links E, such that if node i is connected
+example is distributed state estimation in power or communi-
+                                                                     to j, then (i, j) ∈ E. The (incoming) neighborhood of i is
+cation networks, such as wireless sensor networks, where lack
+                                                                     defined as the set of nodes Ni = {j | (j, i) ∈ E} connected
+of infrastructure or privacy issues prevents the deployment
+                                                                     to i. For any given graph we define the adjacency matrix A
+of a central controller and the processing and exchange of
+                                                                     as a sparse N ×N matrix with non-zero elements Aji if and
+information must be implemented locally. In this case, the
+                                                                     only if (i, j) ∈ E. The value of Aji captures the strength of
+entries of the shift correspond to the weights that each node
+                                                                     the connection from i to j. The focus of this paper is not on
+gives to the information received from its neighbors, and the
+                                                                     analyzing G, but graph signals defined on the set of nodes N .
+filter coefficients correspond to the weights that nodes give to
+                                                                     Formally, each of these signals can be represented as a vector
+the signals exchanged at different time instants.
+                                                                     x = [x1 , ..., xN ]T ∈ RN where the i-th element represents
+   The contributions and organization of the paper are as            the value of the signal at node i or, alternatively, as a function
+follows. In Section II, we first introduce the concepts of graph     f : N → R, defined on the vertices of the graph.
+signals and (node-invariant) GFs, and then propose two new              The graph G is endowed with a graph-shift operator S [4],
+types of GF, whose coefficients are allowed to vary across           [9]. The operator S is an N × N matrix whose entry Sji
+nodes. Upon casting the problem of approximating linear              can be non-zero only if i = j or if (i, j) ∈ E. The sparsity
+network transformations as a GF design, Sections III and             pattern of S captures the local structure of G, but we make no
+IV investigate perfect and approximate GF implementation.            specific assumptions on the values of the non-zero entries of
+In Section III, the focus is on node-invariant GFs. First,           S. Choices for S are A [4], [9], the graph Laplacian L [3],
+conditions under which a specific linear transformation can be       and their respective generalizations [29]. The intuition behind
+implemented perfectly are identified. These conditions depend        S is to represent a linear transformation that can be computed
+on the spectrum of the linear transformation, the spectrum of        locally at the nodes of the graph. More rigorously, if y is
+the graph-shift operator, and the order of the filter. For the       defined as y = Sx, then node i can compute yi provided that it
+cases where the previous conditions are not met, the design of       has access to the value of xj at j ∈ Ni . We assume henceforth
+optimal filter coefficients to approximate the desired transfor-     that S is diagonalizable, so that there exists an N ×N matrix
+mation under different error metrics is addressed. Moreover,         V and an N ×N diagonal matrix Λ such that S = VΛV−1 .
+for setups where the entries of the shift can be modified,           When S is normal, meaning that SSH = SH S, not only S is
+the spectral conditions are also leveraged to design shifts          diagonalizable but V−1 = VH is unitary. Given a graph signal
+that facilitate the implementation of the given transformation.      x, we refer to xb := V−1 x as the frequency representation of
+Section IV mimics the structure of Section III, but focusing on      x [9].
+node-variant filters. To illustrate the relevance of our results        A linear graph signal operator is a transformation B :
+for the design of distributed network operators, Section V           RN → RN between graph signals. Since the transformation
+applies the developed framework to the problems of finite-           is linear and the input and output spaces are the same, B can
+time consensus [22], [26] and analog network coding (ANC)            be represented by a square N × N matrix.
+[27], [28]. Numerical experiments and concluding remarks
+in Sections VI and VII wrap-up the manuscript. Relative
+                                                                     A. GFs and distributed implementation
+to our conference papers [1] and [2], here we present a
+new definition for node-variant GF, provide proofs for our             Here we define (node-invariant) GFs, provide some intuition
+theoretical claims, investigate the problem of optimal shift         on their behavior, and discuss their distributed implementation.
+design, discuss additional insights and generalizations, and         Mathematically, with c := [c0 , . . . , cL−1 ]T representing the
+report new numerical results.                                        vector of coefficients, GFs are linear graph-signal operators
+                                                                     H : RN → RN of the form
+Notation: In general, the entries of a matrix X and a vector x
+                                                                                                    L−1
+will be denoted as Xij and xi ; however, when contributing to                                       X
+                                                                                             H :=         cl Sl .                  (1)
+avoid confusion, the alternative notation [X]ij and [x]i will be                                    l=0
+                                                                                                                                         3
+
+
+
+That is, GFs are polynomials of the graph-shift operator [4].          step. The weights, that are the same across nodes, are given
+To emphasize its dependence on c and S, the GF in (1) will             by the coefficients c. Alternatively, these two steps can be
+be occasionally written as H(c, S). Leveraging the spectral            implemented simultaneously via a “multiply and accumulate”
+decomposition of the shift,       the GF H can also be written         operation. A different expression to define a GF is
+                PL−1       l
+                              −1
+as H = V               c
+                   l=0 l Λ    V     . The diagonal matrix Hb :=
+PL−1         l                                                                                        L−1
+   l=0 cl Λ can then be viewed as the frequency response of
+                                                                                                      Y
+                                                                                            H = a0          (S − al I),               (6)
+H and it can be alternatively written as H             c), where
+                                              b = diag(b
+                                                                                                      l=1
+vector bc is a vector that contains the N frequency responses
+of the filter. Let λk denote the k-th eigenvalue of S and define       which also gives rise to a polynomial on S of degree L−1. The
+the N × L Vandermonde matrix                                           previous expression can be leveraged to obtain an alternative
+                                                                       distributed implementation of GFs. To show this, we define
+                         1 λ1 . . . λL−1
+                                               
+                                           1
+                                                                       the intermediate graph signal w(l) = Sw(l−1) − al w(l−1) ,
+                Ψ :=  ...     ..           ..  .           (2)
+                      
+                                .            .                        with w(0) = x. Notice that: i) the computation of w(l) based
+                         1    λN      ...      λL−1
+                                                N                      on w(l−1) can be performed by each node locally; and ii) the
+For future reference, D denotes the number of distinct eigen-          output of applying H to input x can be obtained after L − 1
+values in {λk }N                              c = Ψc and thus          shifts just by setting y = Hx = a0 w(L−1) .
+               k=1 . Using (2), it holds that b
+           L−1
+                                                                          A convenient property of the representation in (6) is that it
+      H=
+           X
+                                               c)V−1.
+                  cl Sl = Vdiag Ψc V−1 = Vdiag(b
+                                  
+                                                                 (3)   provides a straightforward way to design band-pass (frequency
+            l=0
+                                                                       annihilating) filters [23]. In particular, upon setting al = λk for
+                                                                       the k-th eigenvalue of S, filter H will eliminate the frequency
+This implies that if y is defined as y = Hx, its frequency
+                                                                       basis vk , i.e., the eigenvector associated with λk .
+               b = V−1 y satisfies
+representation y
+          b = diag Ψc V−1 x = diag b
+                                      
+          y                           c x  c◦x
+                                         b=b   b,       (4)
+                                                                       B. Node-variant GFs
+which shows that the output at a given frequency depends
+only on the value of the input and the filter response at that           This paper proposes a generalization of GFs, called node-
+given frequency. In contrast with traditional discrete signal          variant GFs, as operators Hnv : RN → RN of the form [cf. (1)]
+processing, where the operator that transforms the signals and
+                                                                                                     L−1
+the filter coefficients into the frequency domain is the same –                                      X
+                                                                                          Hnv :=           diag(c(l) )Sl .            (7)
+the Discrete Fourier Transform (DFT) –, when a generic S is
+                                                                                                     l=0
+considered, matrices V−1 and Ψ are different.
+   A particularity of GFs is that they can be implemented              Whenever the N × 1 vectors c(l) are constant, i.e. c(l) = cl 1
+locally, e.g., with L − 1 exchanges of information among               for all l, the node-variant GF reduces to the regular (node-
+neighbors. This is not surprising, since the shift S is a local        invariant) GF. However, for general c(l) , when Hnv is applied
+operator. To formalize this, let us define the l-th shifted            to a signal x, each node applies different weights to the
+input signal as z(l) := Sl x and note that two properties of           shifted signals z(l) = Sl x. This additional flexibility enables
+z(l) are: i) it can be computed recursively (sequentially) as          the design of more general operators without undermining
+z(l) = Sz(l−1) , with z(0) = x; and ii) node i can obtain              the local implementation. For notational convenience, the
+[z(l) ]i locally based on the values of [z(l−1) ]j at j ∈ Ni .         filter coefficients associated with node i are collected in the
+To emphasize this locality, we define zi as an L × 1 vector            L × 1 vector ci , such that [ci ]l = [c(l) ]i , and we define the
+collecting the entries of {z(l) }L−1l=0 that are known by node i,      L × N matrix C := [c1 , . . . , cN ]. The GFs in (7) can be
+so that [zi ]l := [z(l) ]i . With y denoting the output of a GF for    viewed as a generalization of linear time-varying filters whose
+the input signal x, it follows from (1) that                           impulse response changes with time. Whenever convenient to
+                             L−1
+                             X                 L−1
+                                               X                       emphasize their dependence on the filter coefficients or the    
+              y = Hx =             cl Sl x =         cl z(l) .   (5)   shift, the GF Hnv in (7) will be written as Hnv {ci }N   i=1 , S .
+                             l=0               l=0                         Since Sl and diag(c(l) ) are not simultaneously diagonal-
+Hence, the i-th entry of vector y can be computed as yi =              izable (i.e., their eigenvectors are not the same), the neat
+PL−1        (l)     T
+   l=0 cl [z ]i = c zi , showing that if the nodes know the
+                                                                       frequency interpretation succeeding (1) does not hold true for
+value of the filter coefficients, yi can be computed using             the filters in (7). However, the spectral decomposition of S
+solely information available at node i. This also suggests             can still be used to understand how the output of the filter at
+a two-step distributed implementation of GFs. First, L − 1             a given node i depends on the frequency components of the
+sequential shifts are applied to the input signal x using              input. To be specific, let us write the filter in (7) as
+only local information. At each shift, every node stores its
+                                                                                               L−1
+own value of the shifted input. In the second step, nodes                                      X
+                                                                                       Hnv =         diag(c(l) )VΛl V−1 .             (8)
+perform a linear combination of the values obtained in the first                               l=0
+4
+
+
+
+Next, to analyze the effect of Hnv on the value of the output                  III. O PTIMAL DESIGN OF NODE - INVARIANT GF S
+signal at node i, consider the i-th row of Hnv , given by                  The first goal is to use the node-invariant GFs in (1) to
+                                 L−1
+                                 X                                       implement a pre-specified linear graph signal transformation
+              hTi := eTi Hnv =         [ci ]l eTi VΛl V−1 ,        (9)   B. To be more concrete, we want to find the filter coefficients
+                                 l=0                                     c such that the following equality
+with ei being the i-th N × 1 canonical vector. Defining the
+                                                                                                        L−1
+vectors ui := VT ei and b
+                                                                                                          X
+                        ci := Ψci , we can rewrite (9) as                                    B = H c, S =    cl Sl                      (12)
+              L−1                            L−1                                                              l=0
+              X                               X
+      hTi =       [ci ]l uTi Λl V−1 = uTi         [ci ]l Λl V−1          holds. This is addressed in Section III-A, while approximate
+            l=0                    l=0                                   solutions are analyzed in Section III-B.
+                          −1
+             T                T
+                                     ci )V−1 .
+          = ui diag(Ψci )V = ui diag(b                            (10)
+The expression in (10) reveals that the output of the filter at          A. Conditions for perfect implementation
+node i, which is given by hTi x, can be viewed as an inner                 With β := [β1 , ..., βN ]T standing for the vector containing
+product of V−1 x (the frequency representation of the input)             the eigenvalues of matrix B (including multiplicities), the
+and ui (how strongly node i senses each of the frequencies),             conditions for perfect implementation are given next.
+modulated by b ci (the frequency response associated with the
+coefficients used by node i). The expressions in (10) will               Proposition 1 The linear transformation B can be imple-
+be leveraged in Section IV to identify the type of linear                mented using a node-invariant GF H = H(c, S) of the form
+transformations that node-variant filters are able to implement.         given in (1) if the three following conditions hold true:
+   As a final remark, note that an alternative definition for            a) Matrices B and S are simultaneously diagonalizable; i.e.,
+node-variant GFs – different from the one in (7) – is to                 all the eigenvectors of B and S coincide.
+consider                                                                 b) For all (k1 ,k2 ) such that λk1 = λk2 , it holds that βk1 = βk2 .
+                           L−1
+                   H0nv :=
+                           X
+                               Sl diag(c(l) ).              (11)         c) The degree of H is such that L ≥ D.
+                              l=0
+                                                                         Proof: Using condition a), we may reformulate the equivalence
+As was the case for (7), if c(l) = cl 1, then (11) is equivalent         between B and H in the frequency domain and require their
+to the node-invariant GF in (1). For each of the terms in (11)           eigenvalues to be the same, i.e. β = Ψc. Denote by K the set
+the filter first modulates the signal x with c(l) and then applies       of indices of the D unique eigenvalues of S and define the
+the shift Sl . This is in contrast with (7), which first shifts x        N × D matrix EK = [ek1 , . . . , ekD ] for all ki ∈ K and the
+and then modulates the shifted input with the corresponding              N ×N−D matrix EK̄ = [ek1 , . . . , ekN −D ] for all ki 6∈ K. Then,
+c(l) . As was the case for (7), it is possible to implement (11)         we split the system of equations β = Ψc into two groups
+in a distributed and sequential fashion. To be more specific,
+                                                                                                  ETK β = ETK Ψc,                       (13)
+to obtain the output signal y = H0nv x one starts with the
+intermediate graph signal t(0) := 0, computes t(l) ∈ RN for                                       ETK̄ β = ETK̄ Ψc.                     (14)
+l > 0 as t(l) := St(l−1) + diag(c(L−l) )x, and sets y = t(L) .           Condition b) guarantees that if c solves (13) then it also solves
+Although the rest of the paper focuses on node-variant GFs of            (14). Finally, combining the fact that ETK Ψ has full row rank
+the form in (7), the frequency interpretations in (9) and (10)           (Vandermonde matrix with non-repeated basis) and condition
+as well as the optimal designs derived in the ensuing sections           c), there exists at least one c that solves (13), and the proof
+can be generalized for the GFs in (11).                                  concludes.                                                     
+
+Remark 1 Node-variant GFs come with some caveats, one                      Based on the proposition, the expression for the optimal
+of them being that their spectral interpretation, which is a key         coefficients follows readily, as stated in the following corollary.
+component in most graph signal processing works, is more
+involved than that of node-invariant GFs. On the other hand,             Corollary 1 If the conditions in Proposition 1 hold true, a
+they exhibit a number of advantages related to their flexibility.        vector of filter coefficients c∗ satisfying (12) is given by
+As already pointed out, from a practical point of view they                                         c∗ = Ψ† β.                          (15)
+offer a way to implement a very large class of linear operators
+in a distributed manner (see the discussions after (7) and (11),         Proof: If the conditions in Proposition 1 hold, then there exists
+and the results in Sections IV and V). Moreover, just like               a vector c such that the cost kβ − Ψck22 is zero. Since the
+classical time-varying filters, node-varying GFs are expected            pseudo-inverse solution c∗ in (15) is one of the solutions to
+to play an important role in problems related to adaptive graph          the minimization of kβ−Ψck22 , we have that kβ−Ψc∗ k22 = 0
+filtering or modeling of non-stationary graph processes, as well         and the corollary follows. When L = D, the solution is unique
+as in establishing links with control theory and modeling of             and, using the set K defined before (13), the expression in (15)
+local diffusion dynamics.                                                can be alternatively written as c∗ = (ETK Ψ)−1 (ETK β).        
+                                                                                                                                      5
+
+
+
+                                                                                                          1/2   1/2
+   The corollary leverages the spectral interpretation of GFs,        Proof : By expressing Rx = Rx Rx , we may rewrite
+                                                                                                 1/2      1/2     1/2      1/2
+advocating for a design where the filter coefficients are found       Trace(Rd ) as Trace((HRx −BRx )(HRx −BRx )T ).
+in the frequency domain. To be precise, if the conditions in          Thus, given that for any real matrix A we have that kAk2F =
+Proposition 1 hold then: i) β represents the desired frequency        Trace(AAT ), it follows that
+                               PL−1         l
+response of the filter H =        l=0 cl S ; and ii) the pseudo-
+            †                                                                      Trace(Rd ) = kHR1/2   1/2 2
+                                                                                                   x − BRx kF .                   (18)
+inverse Ψ in (15) is the generalization of the inverse graph
+Fourier transform when matrix Ψ is not square.                        This implies that c∗Tr minimizes the Frobenius norm in
+   To gain some intuition on the meaning of the proposition, let      (18). From the definition of Frobenius norm, we have that
+                                                                             1/2       1/2                1/2              1/2
+Adc be the adjacency matrix of the directed cycle, which is the       kHRx − BRx kF = kvec(HRx ) − vec(BRx )k2 . The
+                                                                                                                         1/2
+support of classical time-varying signals [3]. When Proposition       result in (16) follows from noting that vec(HRx ) = ΘRx c
+1 is particularized to S = Adc , condition a) implies that the        and using the pseudoinverse to solve the system of linear
+transformations B that can be implemented perfectly are those         equations [31].
+diagonalized by the DFT matrix, i.e., circulant transformations.         To show the result for c∗λ , note that the constraint in
+In other words, if the output of the filter is a linear combination   (17) can be rewritten in terms of its Schur complement as
+of successive applications of the shift Adc to the input, only        s2 I  (H − B)Rx (H − B)T . In terms of eigenvalues, this is
+transformations that are time invariant (so that each row of B        equivalent to s2 ≥ λmax (Rd ), from where it follows that s2 is
+is the shifted version of the previous row) can be implemented        an upper bound on λmax (Rd ). Since the constraint in (17) is
+perfectly using H(c, Adc ).                                           tight, minimizing the upper bound is equivalent to minimizing
+   Proposition 1 will also be exploited in Section III-C to           λmax (Rd ), so that the obtained coefficients c∗λ are optimal, as
+design shifts able to implement desired linear transformations.       stated in the proposition; see [32], [33].                     
+                                                                         Proposition 2 provides a closed-form expression for the
+B. Approximate implementation                                         MSE coefficients c∗Tr and obtains the WCE coefficients c∗λ as
+   In general, if the conditions in Proposition 1 are not             the solution of a semi-definite convex program [12]. Whenever
+satisfied, perfect implementation of B is not feasible. In            the spectrum of B is incompatible with that of S – violations
+such cases, the filter coefficients c can be designed to mini-        on conditions a) or b) in Proposition 1 – or when the filter
+mize a pre-specified error metric. We suppose first that prior        degree is lower than that needed for perfect reconstruction,
+knowledge of the input signal x is available. This knowledge          expressions (16) and (17) become relevant. Alternative error
+can be incorporated into the design of c and the goal is              metrics and additional assumptions could be incorporated
+then to minimize an error metric of the difference vector             into the designs including, but not limited to, supplementary
+d := Hx − Bx. A case of particular interest is when x is              statistical knowledge of x and structural properties such as
+drawn from a zero-mean distribution with known covariance             sparsity or bandlimitedness [9]. For example, if S is normal
+Rx := E[xxT ]. In this case, the error covariance is given by         and x is graph stationary [6], then the designs in (16) and (17)
+Rd := E[ddT ] = (H − B)Rx (H − B)T . Our objective is to              can be addressed in the frequency domain, with the benefit
+pick c to minimize some metric of the error covariance matrix         of all involved matrices being diagonal. Finally, if no prior
+Rd . Two commonly used approaches are the minimization of             information on x is available, we may reformulate the optimal
+Trace(Rd ) and λmax (Rd ), where the former is equivalent             criterion to minimize the discrepancy between the matrices H
+to minimizing the mean squared error (MSE) of d and the               and B. The optimal solutions are still given by (16) and (17)
+latter minimizes the worst-case error (WCE) by minimizing             by setting Rx = I. More precisely, the resulting coefficients
+the maximum variance of d [30].                                       c∗Tr in (16) minimize the error metric kH − BkF , while c∗λ in
+                                                         1/2
+   Define the N 2 × L matrix ΘRx := [vec(IRx ),                       (17) is the minimizer of kH − Bk2 .
+         1/2                    1/2
+vec(SRx ), . . . , vec(SL−1 Rx )] and the N 2 × 1 vector
+                    1/2
+bRx := vec(BRx ). The optimal filter coefficients are                 C. Designing the shift
+provided in the following proposition.                                   In this section we go beyond the design of the filter
+                                                                      coefficients and discuss how to use the results in Proposition 1
+Proposition 2 The optimal MSE filter coefficients c∗Tr :=             to design a shift S that enables the implementation of a given
+argminc Trace(Rd ) are given by                                       linear transformation B.
+                            ?
+            c∗Tr = Θ†Rx bRx = (ΘTRx ΘRx )−1 ΘTRx bRx ,        (16)       Since Proposition 1 established that B and S need to share
+        ?
+                                                                      the entire set of eigenvectors, we first look at the case where B
+where = holds if ΘRx has full column rank; while the optimal          is a rank-one matrix that can be written as Brk1 := abT . Find-
+WCE coefficients c∗λ := argminc λmax (Rd ) are obtained as            ing a shift able to implement B = Brk1 is a favorable setup
+{c∗λ , s∗ } = argmin        s                                 (17)    because Brk1 specifies only one of the eigenvectors of S, while
+                 {c,s}                                                the others can be chosen to endow S with desired properties.
+                                     Vdiag(Ψc)V−1 − B                 Rank-one operators are common in, for example, distributed
+                                                    
+                 sI
+s. to                                                  0.            estimation setups such as a wireless sensor network, where the
+        (Vdiag(Ψc)V−1 − B)T                sR−1
+                                             x
+6
+
+
+
+goal is for each of the sensors to obtain the same estimate.        recall that (i, j) is the l-th link in ET . Upon setting x = a
+To be specific, suppose that the estimate θ̂ can be written         it readily follows that a ∈ ker(MTa ). To show that a is
+as a linear combination of the observations available at the        the only eigenvector with zero eigenvalue, consider matrix
+                 PN
+nodes, i.e., θ̂ = i=1 bi xi where x = [x1 , ..., xN ]T are the      La = Ma MTa . Since [MTa x]l = aj xi − ai xj , it readily
+observations and b = [b1 , ..., bN ]T the weighting coefficients.   follows that xT La x = (i,j)∈ET (aj xi − ai xj )2 . In order for
+                                                                                             P
+
+Then, the sought network transformation is Brk1 = 1bT , so          xT La x to be zero, all the terms (aj xi − ai xj )2 must be zero.
+that when Brk1 is applied to x gives rise to θ̂1.                   Since the graph is connected this is only possible if x = αa.
+   The fact that N − 1 eigenvalues of Brk1 = abT are equal          Hence, rank(La ) = N − 1. Since La = Ma MTa , the previous
+to zero can be leveraged to show the following proposition.         finding implies that rank(MTa ) = N − 1; hence ker(MTa ) has
+                                                                    dimension one. Note that the fact that rank(MTa ) = N − 1
+Proposition 3 Consider the graph G and the rank-one trans-          also implies that rank(Ma ) = N − 1, which implies that the
+formation Brk1 = abT . If G is connected and ai 6= 0 and            dimension of ker(Ma ) is zero, concluding the proof.           
+bi 6= 0 for all i, then there exists a shift S associated with G
+such that the transformation Brk1 can be written as a node-         Lemma 2 Consider the shift S given in (19) and suppose that
+invariant GF H(c, S) of the form given in (1).                      ai 6= 0 and bi 6= 0 for all i, then it holds that ker(S − µI) =
+                                                                    span{a}.
+Proof : The proof is constructive. Suppose without loss of
+generality that a and b have unit norm and let T denote a           Proof : The key step to show this result is to notice that,
+spanning tree of G with edge set ET . With µ ∈ R being an           given (19), the shift can be written as S = µI + Mb MTa .
+arbitrary constant, set the shift operator S to                     Using now the facts that ker(MTa ) = span{a} (Lemma 1) and
+                       P                                           ker(Mb ) = {0} (Lemma 1 with a = b), Lemma 2 follows. 
+                µ + n∈Ni an bn if i = j,
+                
+          Sij = Sij = −ai bj            if (i, j) ∈ ET , (19)       From Lemma 2, it follows that a is the only eigenvector of
+                                                                   S−µI with null eigenvalue and, thus, the only eigenvector of S
+                   Sij = 0              otherwise,
+                
+                                                                    with eigenvalue equal to µ, as wanted. Finally, if we combine
+where the neighborhood Ni refers to the spanning tree T .           the facts that the eigenvalue in S associated with a is simple
+We will show that the three conditions in Proposition 1 are         (non-repeated) and that every other eigenvalue is repeated in
+                   PN −1
+satisfied for H = l=0 cl Sl . First notice that since D ≤ N ,       Brk1 (since they are equal to 0), fulfillment of condition b)
+condition c) is fulfilled. To see that condition a) is satisfied,   follows, completing the proof. Note that the fact of G being
+we must show that Brk1 and S share the eigenvectors. Since          connected is critical to guarantee that the multiplicity of µ is
+Brk1 is rank one, this requires showing that a is an eigenvector    one. In fact it is straightforward to show that if the graph is not
+of S. To this end, define q := Sa. Given the construction of        connected then the multiplicity of µ is equal to the number
+                                         P
+S in (19), it holds that qi = Sii ai + j∈Ni Sij aj = µai ,          of components, so that the linear transformation cannot be
+so that a is an eigenvector of S with eigenvalue µ. Since the       implemented as a filter.                                         
+shift is not symmetric, we also need to show that the row of
+                                                                    The proof of Proposition 3 not only guarantees the existence
+V−1 associated with eigenvector a corresponds to b. To do so,
+                                                                    of an S for which Brk1 = abT can be written as a GF, but also
+define p := ST b and notice that pj = Sjj bj + i∈Nj Sij bi =
+                                                P
+                                                                    provides a particular shift that achieves so [cf. (19)]. Clearly,
+µbj so that b is an eigenvector of ST with eigenvalue µ. Since
+                                                                    the definition in (19), which can be understood as a “gener-
+ST = (V−1 )T ΛVT , b is the column of (V−1 )T (alternative
+                                                                    alized” Laplacian using the entries of a and b as weights, is
+the row of V−1 ) associated with eigenvalue µ. To conclude
+                                                                    not unique. Note first that different spanning trees will give
+the proof, we need to show that the multiplicity of µ is one
+                                                                    rise to different valid S. Moreover, if Brk1 is symmetric, our
+[cf. condition b) in Proposition 1].
+                                                                    proof can be adapted to hold for a shift S where the edge set
+   To show that the eigenvalue µ is indeed simple, consider the
+                                                                    in (19) corresponds to that of any connected subgraph of G,
+incidence matrix Ma ∈ RN ×N −1 of the spanning tree. The
+                                                                    including G itself. This is particularly relevant in the context
+n-th row of Ma corresponds to node n, while each column
+                                                                    of distributed implementation, since the interplay between the
+corresponds to one link of T . Suppose that the l-th link is
+                                                                    number of edges of the subgraph and the order of the filter can
+given by (i, j) where we follow the convention that i < j,
+                                                                    be exploited to reduce the number of local exchanges required
+then the incidence matrix Ma is defined as [Ma ]il = aj ,
+                                                                    to compute the rank-one transformation distributedly.
+[Ma ]jl = −ai and [Ma ]ul = 0 for all u 6= i and u 6= j.
+                                                                       When the linear transformation B is of high rank, the design
+                                                                    of a shift S that preserves the sparsity of G and shares the
+Lemma 1 If ai 6= 0 for all i, then ker(MTa ) = span{a} and
+                                                                    eigenvectors of B is more involved and not always feasible.
+ker(Ma ) = {0}.
+                                                                    One possibility to address the design is to leverage the results
+Proof : To prove that ker(MTa ) = span{a}, we first show            in [10] and obtain the shift by solving a problem of the form
+that MTa a = 0. Using the definition of Ma , it holds that for                                      PN
+                                                                           min f (S) s. to S = k=1 λk Wk , S ∈ S,               (20)
+any x ∈ RN we have [MTa x]l = aj xi − ai xj , where we                   {S,λ}
+                                                                                                                                        7
+
+
+
+where Wk := Vdiag(ek )V−1 . Note that in the above                     For each i, partition the set {1, . . . , N } into three subsets
+problem the optimization variables are effectively the eigen-       of indices K1i , K2i , and K3i where i) K1i contains the indices
+values λ = [λ1 , ..., λN ]T , since the constraint S =              k such that [ui ]k = 0; ii) K2i contains the indices of all the
+PN                      −1
+   k=1 λk Vdiag(ek )V       forces the columns of V to be the       eigenvalues in {1, . . . , N } \ K1i that are distinct as well as one
+eigenvectors of S. The objective f promotes desirable network       index per repeated eigenvalue λk , and; iii) K3i = {1, . . . , N } \
+structural properties, such as sparsity or minimum-energy edge      (K1i ∪ K2i ). Thus, separate the N linear equations in (23) in
+weights. The constraint set S imposes requirements on the           three groups
+sought shift, including the elements of S being zero for entries
+                                                                                    ETKi b̃i = diag(ETKi ui )ETKi Ψci ,             (24)
+(i, j) corresponding to edges not present in G. For setups                              1                1       1
+
+where only a few eigenvectors are known or when the equality                        ETKi b̃i = diag(ETKi ui )ETKi Ψci ,             (25)
+                PN                                                                      2                2       2
+constraint S = k=1 λk Vdiag(ek )V−1 is relaxed, which can                           ETKi b̃i = diag(ETKi ui )ETKi Ψci .             (26)
+                                                                                       3               3        3
+be useful if the optimization in (20) is not feasible, see [10].
+                                                                    If condition a) holds, then (24) is true for any ci because both
+       IV. O PTIMAL DESIGN OF NODE - VARIANT GF S                   sides of the equality are 0. Since K2i contains no repeated
+   The objective in this section is to implement pre-specified      eigenvalues, the matrix diag(ETKi ui )ETKi Ψ in (25) has full
+                                                                                                        2         2
+
+linear transformations using the node-variant GFs introduced        row-rank. Given that |K2i | ≤ D, condition c) ensures that ci
+in (7). Since node-invariant filters are a specific instance of     has at least as many elements as equations in (25), guaran-
+(7), the class of linear network transformations that can be        teeing the existence of a solution. Denoting by c∗i a solution
+implemented perfectly using node-variant GFs is larger and          of (25), condition b) implies that this same vector also solves
+the approximation error (when perfect implementation is not         (26). To see why this is true, notice that for every equation in
+feasible) is smaller.                                               (26) (of index k3 ) there is one in (25) (of index k2 ) such that
+   More specifically, given a desired linear transformation         [Ψc∗i ]k3 = [Ψc∗i ]k2 = [b̃i ]k2 /[ui ]k2 , where the last equality
+B we want to design the coefficient vectors c(l) for l =            follows from the fact that c∗i solves (25). Imposing condition
+0, . . . , L − 1 so that the equality                               b), we arrive to the conclusion that [Ψc∗i ]k3 = [b̃i ]k3 /[ui ]k3
+                                                                    and, thus, (26) is satisfied. The simultaneous fulfillment of
+                               L−1
+                                 X
+                                                                    (24), (25), and (26), implies (23), concluding the proof. 
+          B = Hnv {ci }N
+                       i=1 , S =    diag(c(l) )Sl           (21)
+                                     l=0                               The conditions in Proposition 4 detail how the spectral
+holds. Using the same structure than that in Section III, we        properties of S impact the set of linear transformations that can
+first identify the conditions under which (21) can be solved        be implemented. Condition a) states that if node i is unable
+exactly, and then analyze approximate solutions.                    to sense a specific frequency k, only linear operators whose
+                                                                    i-th row is orthogonal to the k-th frequency basis vector can
+A. Conditions for perfect implementation                            be implemented. Condition b) states that if two frequencies
+   Defining the vectors bi := BT ei and b̃i := VT bi , the          k1 and k2 are indistinguishable for the graph-shift operator,
+conditions under which the equivalence in (21) can be achieved      then the projection of the i-th row of B onto these two
+are given in Proposition 4 and the subsequent corollary.            frequency basis vectors must be proportional to how strongly
+                                                                    node i senses frequencies k1 and k2 for every node i. Finally,
+Proposition 4 The linear transformation B can be imple-             condition c) requires that the order of the filter has to be high
+mented using a node-variant GF Hnv = Hnv ({ci }N      i=1 , S) of   enough to have enough degrees of freedom to design the linear
+the form given in (7) if the three following conditions hold for    operator and to allow the original signal x to percolate through
+all i:                                                              the network. As was the case for Proposition 1, a) and b) are
+a) [b̃i ]k = 0 for those k such that [ui ]k = 0.                    necessary conditions while c) details a sufficient filter degree
+b) For all (k1 ,k2 ) such that λk1 = λk2 , it holds that            for general implementation. However, filters with lower degree
+[b̃i ]k1 /[ui ]k1 = [b̃i ]k2 /[ui ]k2 .                             may be enough to implement particular linear transformations.
+c) The degree of Hnv is such that L ≥ D.                               The following result follows as a corollary of Proposition 4.
+Proof : We use (10) to write the row-wise equality between          Corollary 2 Suppose that spectrum of the graph-shift opera-
+Hnv and B                                                           tor S = VΛV−1 satisfies the following two properties:
+               bTi = hTi = uTi diag(Ψci )V−1 ,              (22)    a) all the entries of V are non-zero.
+                                                                    b) all the eigenvalues {λk }Nk=1 are distinct.
+for all i. Multiplying (22) from the right by V, transposing
+                                                                    Then, it holds that any linear transformation B can be im-
+the equality, and using the definition of b̃i , we get
+                                                                    plemented using a node-variant GF Hnv = Hnv ({ci }N  i=1 , S)
+              b̃i = diag(Ψci )ui = diag(ui )Ψci ,           (23)    of the form given in (7) for L = N , with the set of filter
+                                                                    coefficients {ci }N
+                                                                                      i=1 being unique and given by
+for all i. Thus, for B to be implementable, for every node i
+we need to find the vector ci that satisfies (23).                              ci = Ψ−1 diag(ui )−1 VT bi , for all i.             (27)
+8
+
+
+
+Proof: Conditions a) and b) immediately guarantee the cor-             where     denotes the Khatri-Rao product.
+responding conditions in Proposition 4 for any B. Condition
+c) in Proposition 4 is satisfied from the fact that the corollary      Proof: Leveraging equivalence (18), we may rewrite
+sets L = N and, by definition, N ≥ D. Equation (27) follows                                      N
+                                                                                                 X
+directly after substituting b̃i = VT bi into (23). Since condi-                  Trace(Rd ) =          khTi R1/2  T 1/2 2
+                                                                                                             x − bi Rx k2 .          (30)
+tions a) and b) guarantee that the full rank matrices diag(ui )−1                                i=1
+
+and Ψ−1 exist, respectively, uniqueness also follows.                 From (10), we write hi in terms of ci as hTi =
+    To gain some intuition on the design in (27), recall first that,   uTi diag(Ψci )V−1 . By transposing both sides of the equation
+as explained after (10), the output of a node-variant GF at node       and recalling that for general vectors diag(a)b = diag(b)a, it
+i (here bTi x) can be viewed as the inner product between ui           follows that hi = (V−1 )T diag(ui )Ψci . Using the definition
+and x b modulated by the frequency response of the GF b       ci =     of Φi we obtain
+Ψci . Then, comparing the expression in (27) to its counterpart                                 N
+                                                                                                X
+for node-invariant GFs in (15), we observe that the design still                 Trace(Rd ) =          kR1/2        1/2   2
+                                                                                                         x Φi ci − Rx bi k2 .        (31)
+tries to match the frequency response of B and Hnv , but here                                    i=1
+in a per-node fashion; so that (27) replaces β (the spectrum of        Since the i-th term in the summation depends on ci and not on
+B) with VT bi and accounts for ui (the effect of the particular        cj for i 6= j, we may minimize the summands separately. The
+node in the frequency domain, which was not present in (15)).                                                          1/2        1/2
+                                                                       result in (28) follows from minimizing kRx Φi ci −Rx bi k22
+More importantly, Proposition 4 and Corollary 2 confirm that           via the Moore-Penrose pseudoinverse [31].
+the class of linear transformations that can be implemented               The proof to show (29) is analogous to that of Proposition 2,
+using (7) is quite broad and significantly larger than the one         thus, we only need to show that (I ΨC)T ŨV−1 = Hnv .
+that can be implemented by using (1). This is consistent with          To see why this is true, transpose (10) to obtain hi =
+the fact that, as explained in Section II-B, node-variant GFs are      (V−1 )T diag(ui )Ψci , from where it follows that
+more flexible operators since their number of free parameters                                                                          
+(coefficients) is N times larger than those for node-invariant                                                             Ψc1 0 · · ·
+filters.                                                               [h1 , ..., hN ] = (V−1 )T [diag(u1), ..., diag(uN)] 0 Ψc2       .
+                                                                                                                                       
+                                                                                                                            .. .. . .
+                                                                                                                             .  .     .
+B. Approximate implementation
+                                                                       Noting that the rightmost matrix can be written as I          ΨC
+   When the conditions in Proposition 4 are not satisfied,             and that Hnv = [h1 , ..., hN ]T , the result follows.          
+we resort again to approximate designs aimed at minimizing
+a pre-specified error metric. As done in Section III-B we                 The reason that allows optimizing the MSE coefficients of a
+minimize the MSE and the WCE under the assumption that                 given node separately from those of the other nodes is that the
+                                                                                                                  1/2         1/2
+the signal x is zero-mean and that its covariance Rx is                MSE is given by Trace(Rd ) = kHnv Rx − BRx k2F [cf.
+known. To be specific, recall that the difference (error) vector       (18)], which is an element-wise norm that can be decoupled
+is defined as d = Hnv x − Bx and its covariance matrix                 across nodes. By contrast, if the objective is to optimize the
+is denoted by Rd . Recall also that C = [c1 , . . . , cN ] and         WCE given by kRd k2 , then the WCE coefficients must be
+define the matrices Ũ := [diag(u1 ), diag(u2 ), . . . , diag(uN )]T   optimized jointly.
+and Φi := (V−1 )T diag(ui )Ψ. Then, the filter coefficients               Naturally, there is a resemblance between the optimal
+minimizing the MSE given by Trace(Rd ) and the WCE                     designs in Proposition 5 and those for node-invariant GFs
+given by kRd k2 can be found as specified in the following             in Proposition 2. When comparing (17) with (29), we see
+proposition, which reveals that the optimal MSE coefficients           that the expression Vdiag(Ψc)V−1 that explicitly states the
+can be designed separately across nodes.                               dependence of a node-invariant filter on the filter coefficients c,
+                                                                       is replaced by the more involved expression (I ΨC)T ŨV−1
+Proposition 5 The optimal MSE coefficients {c∗i,Tr }N
+                                                    i=1 :=
+                                                                       stating the dependence of node-variant filters on the matrix C,
+argmin{ci }N   Trace(R d ) are given by                                which collects the filter coefficients at every node [cf. (10)].
+           i=1
+                                                                       Regarding expressions (16) and (28), their main difference
+                                 ?
+    c∗i,Tr = (R1/2   † 1/2      T
+               x Φi ) Rx bi = (Φi Rx Φi )
+                                         −1 T
+                                           Φi Rx bi (28)               stems from the additional design flexibility of node-variant
+                   ?                 1/2                               GFs. To be more precise, if (31) is augmented with ci = cj
+for all i, where = holds if Rx Φi has full column rank;
+                                                                       for all nodes i and j, then the optimal coefficients boil down
+while the optimal WCE filter coefficients {c∗i,λ }N
+                                                  i=1 :=
+                                                                       to those in (16). The fact that every node i can select different
+argmin{ci }N   λmax (Rd ) are found as
+           i=1                                                         coefficients ci decouples the cost in (31) ultimately leading to
+{C∗λ , s∗ } = argmin         s                                 (29)    the optimal expression in (28).
+                {C,s}                                                     As in Section III-B, when no prior information about x
+                                           ΨC)T ŨV−1 − B
+                                                        
+                  sI           (I                                      is available, the covariance matrix of the input in (28) and
+s. to                                                      0,
+        ((I   ΨC)T ŨV−1 − B)T               sR−1
+                                                x                      (29) is set to Rx = I. The resultant coefficients {c∗i,Tr }N   i=1
+                                                                                                                                      9
+
+
+
+minimize the error metric kHnv − BkF , while {c∗i,λ }N i=1 are      upper bound on the number of allowed exchanges is less than
+the minimizers of kHnv − Bk2 .                                      D − 1, the designs presented in Sections III-B and IV-B can
+   Although counterparts to the results in Section III-C could      be leveraged to minimize the approximation error. Another
+be derived here too, optimization of S in this case is not as       alternative is to design an S that, while respecting the support
+relevant, since the role of S in the class of transformations       of G, minimizes the number of required exchanges. Algorithms
+that node-variant GFs can implement is marginal compared to         to carry out such an optimization can be obtained along the
+that for node-invariant GFs (see Propositions 1 and 4).             lines of (20), but their development is left as future work.
+                                                                       In setups where S cannot be selected, node-variant filters
+    V. I MPLEMENTATION OF DISTRIBUTED OPERATORS                     are a better alternative to approximate the consensus operator.
+                                                                    Indeed, Corollary 2 guarantees error-free implementation for
+   While the findings in Sections III and IV hold for any linear
+                                                                    a broad class of shifts. Equally interesting, when S = I + aL
+operator B, our results, especially those related to node-variant
+                                                                    with a 6= 0, it is not difficult to show that: i) for L ≤ D
+GFs, are particularly relevant in the context of distributed
+                                                                    node-variant GFs outperform their node-invariant counterparts
+signal processing. To demonstrate this, we specialize B to
+                                                                    (numerical simulations show that the gain is moderate); and
+two operators commonly studied in networked setups: finite-
+                                                                    ii) for L > D both types of filters perform equally (zero error)
+time average consensus and analog network coding (ANC).
+                                                                    and, in fact, yield the same set of coefficients.
+Since the leniency of the consensus operator facilitates its
+implementation, the focus there is primarily on node-invariant
+GFs. As shown next, the more challenging ANC operators call         B. Analog network coding
+for the implementation of node-variant GFs.                            In the context of multi-hop communication networks, net-
+                                                                    work coding is a scheme where routing nodes, instead of
+A. Finite-time average consensus                                    simply relaying the received information, combine the packets
+   Define the N × N matrix Bcon := 11T /N and consider              (symbols) received from different sources to perform a single
+the case where the goal is to implement B = Bcon . Clearly,         transmission. The general goal is to optimize the network flow
+the application of this transformation to a signal x yields the     while providing error-free communication [34]. Even though
+consensus signal Bcon x = 1(1T x)/N = 1x̄, i.e., a constant         network coding was originally conceived for transmission of
+                                          PN
+signal whose value is equal to x̄ = N −1 i=1 xi . The fact of       digital data in the form of packets [35], [36], extensions to
+Bcon being a rank-one matrix can be leveraged to show the           the transmission of analog signals have been developed under
+following corollary of Proposition 3.                               the name of ANC [27], [28]. In this section, we show how
+                                                                    GFs can be leveraged to design ANC protocols. Apart from
+Corollary 3 The consensus transformation Bcon can be writ-          traditional communication networks, the results presented here
+                                PN −1
+ten as a (node-invariant) filter l=0 cl Sl for some S associ-       are also relevant for setups where there exists an inherent
+ated with an undirected graph G if and only if G is connected.      diffusion dynamics that percolates the information across the
+                                                                    network as, for example, in the case of molecular and nano
+Although Bcon is a particular case of the rank-one operators        communication networks [37], [38].
+considered in Proposition 3, the result in Corollary 3 is              To account for the particularities of ANC, the optimal GF-
+stronger. The reason for this is that Bcon is symmetric. As         design framework presented in the previous sections has to
+explained after Proposition 3, for symmetric transformations        be slightly modified. Up to this point, we have considered
+the proof can be modified to hold not only for spanning trees       B ∈ RN ×N to be a desired transformation encompassing the
+but for any connected subgraph. When the design for the shift       whole set of nodes. However, in ANC we are interested in
+in (19) is particularized to Bcon , the obtained S is a biased      the transmission of information from sources to sinks that are,
+and scaled version of the Laplacian. To be more precise, if         in general, a subset of the nodes in a graph. To be precise,
+we set µ = 1 and chose as subgraph T the graph G itself,            denote by S := {s1 , s2 , . . . , sS } the set of S sources and by
+then the obtained shift is S = (I + L)/N , but any other            R := {r1 , r2 , . . . , rR } the set of R sinks or receivers. Since
+selection for µ and T could also be used. Notice that an            every source can have one or more receivers, we also define the
+immediate consequence of Corollary 3 is that if the shift can       (surjective) function s : R → S, which identifies the source
+be selected, consensus can be achieved in finite time for every     for each receiver. In ANC one is interested in transformations
+connected undirected graph [22], [26], with N − 1 being an          B = Banc where the i-th row of Banc is equal to the canonical
+upper bound on the number of local interactions needed for          vector eTs(i) for all i ∈ R (see Fig. 1 for an example). Since
+convergence. Compared to classical consensus algorithms that        the values of Banc for rows i ∈       / R are not relevant for the
+require infinite number of iterations, the price to pay here        performance of ANC, one can define the reduced R × N
+is that the values of {λk }Nk=1 need to be known in order to        matrix BR := ETR Banc , where ER := [er1 , . . . , erR ]. Hence,
+compute Ψ in (15). If the selected S has repeated eigenvalues,      the goal of ANC boils down to designing a filter H such
+then the required filter degree (number of exchanges) will be       that ETR H is as close to BR as possible. Most ANC setups
+lower than N − 1 (cf. Proposition 1.c). For setups where the        consider that only source nodes have signals to be transmitted,
+10
+
+
+
+                                                                           original signal and the first L − 1 shifted versions of it to
+                                                                           resemble as close as possible (in terms of MSE) the desired
+                                                                           linear combination of source signals bi,S .
+                                                                               When the initial signal at the routing nodes cannot be
+                                                                           assumed zero, the goal is to approximate the matrix BR ∈
+                                                                           RR×N . In that case, the previous expressions for the optimal
+                                                                           filter coefficients still hold true. The only required modification
+                                                                           is to substitute BSR = BR and ES = I ∈ RN ×N into the
+                                                                           definitions of ΘSR , Φri ,S and bi,S . Indeed, when every node
+                                                                           acts as both a source and a sink: i) BR is an N × N matrix
+                                                                           equal to Banc ; and ii) the definitions of ΘSR and Φri ,S
+                                                                           require setting ES = ER = I. This readily implies that (32)
+                                                                           and (33) reduce to their original counterparts (16) and (28),
+                                                                           respectively.
+Fig. 1: Example of desired operators Banc , BR and BSR in the                  Although not presented here, expressions analogous to those
+context of ANC. A graph with N = 10 nodes is considered. The               in (32) and (33) for the remaining optimal filter-design criteria
+sources are n = 3, whose destinations are {1, 4, 6, 7, 10}, and n = 6,     can be derived too.
+whose destinations are {2, 3, 5, 8, 9}, so that every node in graph is a
+sink and thus R = N . The sources and destinations are identified in
+                                                                                          VI. N UMERICAL EXPERIMENTS
+the top-left and top-right graphs, respectively. The corresponding full
+and reduced ANC matrices are provided at the bottom of the figure.            This section is structured in three parts. The first two focus
+                                                                           on illustrating the results in Sections III and IV using as ex-
+                                                                           amples the two applications introduced in Section V. The last
+so that the input signal at all other nodes can be considered              part assesses the approximation error when the eigenvectors
+zero. The GF design can leverage this fact to yield a better               of S and B are different, which according to Proposition
+approximation. Indeed, it is easy to see that if the input signal          1 is the critical factor for approximation performance. The
+for nodes i ∈  / S is zero, the values of the corresponding                results presented here complement and confirm the preliminary
+columns in BR are irrelevant. Hence, upon defining matrices                findings reported in [1] and [2] for other types of graphs.
+ES := [es1 , . . . , esS ] and BSR := BR ES ∈ RS×R , the goal
+for ANC is to design a filter H such that ETR HES is as close              A. Finite-time average consensus
+to BSR as possible. To illustrate why designing BSR is easier,
+                                                                              To demonstrate the practical interest of the proposed frame-
+consider the example in Fig. 1. While perfect implementation
+                                                                           work, we present numerical experiments comparing the perfor-
+of B requires tuning the 100 entries of H, implementation of
+                                                                           mance achieved by three different consensus implementations:
+BSR requires only fixing 20 entries (those corresponding to
+                                                                           our design as a node-invariant GF, its node-variant counterpart,
+the 3rd and 6th columns).
+                                                                           and the asymptotic fastest distributed linear averaging (FDLA)
+   Although the propositions presented throughout the paper
+                                                                           in [12]. In order to assess the performance of the approxi-
+need to be modified to accommodate the introduction of
+                                                                           mation algorithms, we generate 1,000 unweighted symmetric
+BR and BSR , the main results and the structure of the
+                                                                           small-world graphs [39] with N = 10 nodes, where each node
+proofs remain the same. To be specific, consider first the
+                                                                           is originally connected in average to four of its neighbors, and
+case where the nodes that are not sources do not inject
+                                                                           a rewiring probability of 0.2. For each graph, we define the
+any input, so that the goal is to approximate the S × R
+                                                                           graph-shift operator S = W where W is the solution of the
+matrix BSR . Then, defining the SR × L matrix ΘSR :=
+                                                                           FDLA problem, i.e, liml→∞ Wl = Bcon with fastest conver-
+[vec(ETR IES ), . . . , vec(ETR SL−1 ES )], we can find the coeffi-
+                                                                           gence. Moreover, on each graph we define a signal x drawn
+cients that minimize kETR HES − BSR kF as [cf. (16)]
+                                                                           from a standard multivariate Gaussian distribution (smGd). For
+                           ?
+ c∗F = Θ†SR vec(BSR ) = (ΘTSR ΘSR )−1 ΘTSR vec(BSR ), (32)                 a fixed number K of local interactions, we define the FDLA
+                                                                                                 (K)
+        ?
+                                                                           approximation as xFDLA := WK x, the node-invariant GF
+where = holds if ΘSR has full column rank. Similarly, by                                        (K)    PK
+                                                                           approximation as xGF := l=0 c∗l Wl x and the node-variant
+defining Φri ,S := ETS Φri and denoting the i-th row of BSR                                          (K)        PK
+                                                                           GF approximation as xNVGF := l=0 diag(c(l)∗ )Wl x. The
+as bTi,S , we may obtain the node-variant counterpart of (32)              optimal coefficients c∗l and c(l)∗ , which change with K, are
+as [cf. (28)]                                                              obtained for all l using (16) and (28), respectively. Further, we
+                                                                                               (K)       (K)
+                               ?
+     c∗ri ,F = Φ†ri ,S bi,S = (ΦTri ,S Φri ,S )−1 ΦTri ,S bi,S ,   (33)    define the error eGF = kxGF − Bcon xk2 and similarly for
+                                                                            (K)          (K)
+                                                                           eFDLA and eNVGF . Fig. 2a plots the errors averaged over the
+                           ?
+for all ri ∈ R, where = holds if Φri ,S has full column rank.              1,000 graphs as a function of the number of local interactions
+For a given filter length, the L coefficients in c∗ri ,F specify           (K = L − 1) among neighbors. The error attained by the
+the optimal weights that the sink node ri must give to the                 GF approaches is around one order of magnitude lower than
+                                                                                                                                                                                                                            11
+
+
+
+                                                                                 1.5                                                                  0.9
+          100                                                                                                     Mean Error MSE                                                                       Random
+                                                                                                                  Mean Error Worst-case               0.8                                              Small-World
+                                                                                                                  Max Error MSE                                                                        Cycle
+                                                                                                                  Max Error Worst-case                0.7                                              Pref. Attach.
+              -4
+         10                                                                                                                                                                                            Star
+                                                                                  1                                                                   0.6
+
+                                                                                                                                                      0.5
+ Error
+
+
+
+
+                                                                         Error
+
+
+
+
+                                                                                                                                              Error
+              -8
+         10                                                                                                                                           0.4
+
+                                                                                 0.5                                                                  0.3
+
+         10-12                                                                                                                                        0.2
+                       FDLA
+                       Node-invariant filter                                                                                                          0.1
+                       Node-variant filter
+         10-16                                                                    0                                                                    0
+                   0     1       2       3     4   5    6    7   8   9                 0   1   2   3     4    5     6     7      8        9                 0      2    4        6      8         10      12           14
+                                       Number of exchanges                                         Number of exchanges                                                      Number of exchanges
+
+                        (a) Different types of filters                           (b) Different coefficient-design criteria                                      (c) Different underlying graphs
+Fig. 2: (a) Mean approximation error for consensus across 1,000 realizations in 10-node small-world graphs. GF approaches outperform the
+best asymptotic solution and achieve perfect consensus for degree N −1 = 9. (b) Mean and maximum errors obtained across 1,000,000 signal
+realizations for a 40-node scale-free graph and two different node-invariant GFs. One of the filters attains lower average error and the other
+attains lower maximum error, as expected. (c) Mean approximation error for consensus across 1,000 realizations of 20-node Erdős-Rényi,
+small-world, and scale-free graphs. Errors for star and cycle graphs are also shown.
+
+
+that of the asymptotic approach for intermediate number of                                                   world graphs by rewiring with probability 0.2 the edges in a
+interactions and, when K = N − 1 = 9, perfect recovery                                                       cycle, and we generate the scale-free graphs from a preferential
+is achieved using GFs (cf. Corollary 3). The performance                                                     attachment dynamic where each new node establishes one edge
+improvement attained by the GFs is due to the fact that, for                                                 with the existing graph. In Fig. 2c we illustrate the mean error
+a fixed K, FDLA returns the value of WK x whereas the                                                        across 1,000 realizations as a function of the filter degree K.
+GFs return an optimal linear combination of all Wl x for                                                     The approximation errors attained for random (Erdős-Rényi)
+0 ≤ l ≤ K. Notice that node-variant GFs, being a generaliza-                                                 and scale-free (preferential attachment) graphs are comparable,
+tion of node-invariant filters, are guaranteed to achieve a lower                                            with the former showing slightly better performance for small
+error. Nevertheless, the additional error reduction achieved by                                              values of K while the opposite being true for large values
+node-variant GFs is minimal, due to the fact that Bcon can be                                                of K. Moreover, the approximation errors obtained for small-
+perfectly implemented using node-invariant filters.                                                          world graphs are consistently larger than those for the other
+    We now focus the analysis on node-invariant filters and                                                  two types of graphs. This can be in part explained by the
+illustrate the difference between the MSE and the WCE                                                        fact that, for the simulation setup considered, the average
+minimizations (cf. Proposition 2). To this end, we generate an                                               diameters for the Erdős-Rényi and the scale-free graphs are
+unweighted and symmetric scale-free graph [39] with N = 40                                                   7.0 and 6.1, respectively, whereas the average diameter for the
+nodes from a preferential attachment dynamic with four initial                                               small-world graphs is 10.9. Fig. 2c also shows the consensus
+nodes and where each new node establishes two edges with                                                     approximation error for the star and the cycle, which are
+the existing graph. On this graph, we define 1,000,000 signals                                               deterministic graphs. Notice that the star can be understood
+x drawn from an smGd. For a fixed filter degree K, we                                                        as the limit of preferential attachment graphs, where every
+                                      (K)                                                                    new node attaches to the existing node of largest degree
+compute the optimal MSE filter HMSE using (16), and the
+                         (K)                                                                                 with probability 1. Furthermore, the cycle can be seen as
+optimal WCE filter HWCE using (17). We then define the
+        (K)         (K)                                  (K)
+error eMSE := ||HMSE x−Bcon x||2 and similarly for eWCE . In                                                 the limit of a small-world graph, where the probability of
+Fig. 2b we plot the average of these errors across the 1,000,000                                             rewiring is 0. The star graph achieves zero error after two
+realizations as well as their maximum as a function of the                                                   information exchanges between neighbors. Similarly, the cycle
+filter degree. If we focus on the average error, it is immediate                                             achieves zero error after 10 = N/2 local interactions between
+to see that, as expected, the MSE approach outperforms the                                                   neighbors. This implies that, for the star and the cycle graphs,
+WCE. On the other hand, if we consider the maximum error                                                     perfect consensus is achieved for a number of exchanges equal
+                        (K)
+across realizations, HWCE attains the lowest error. Notice                                                   to the diameter of the graph [22], which is a trivial lower bound
+that for K ≥ 9, the mean and maximum errors achieved by                                                      for perfect recovery since information must travel from each
+both approaches are negligible, even though the degree K is                                                  node to every other node for consensus to be achievable.
+markedly smaller than N − 1 = 39.
+   To consider different graph models, the last set of simu-                                                 B. Analog network coding
+lations includes Erdős-Rényi random graphs [39] as well as                                                    To assess the performance obtained when node-variant GFs
+the deterministic star and cycle graphs. Regarding the random                                                are designed to implement ANC schemes, we consider the
+graphs, the error performance is assessed by generating 1,000                                                example described in Fig. 1, where we recall that node 3
+instances of 20-node graphs for each class and setting S = L.                                                wants to transmit its signal to nodes 1, 4, 6, 7, and 10, while
+To obtain graphs with comparable number of edges, for the                                                    node 6 wants its signal to be transmitted to the remaining five
+Erdős-Rényi graphs we set pedge = 0.1, we obtain the small-                                                nodes. The corresponding desired matrix BSR is shown in the
+12
+
+
+
+                                   recover                    observed signal z(t)
+                       node         signal      t=0           t=1       t=2         t=3
+                        1              g         0             g        g+w        5g + 2w
+                        2             w          0             g        g+w        5g + 3w
+                        3             w          g              0     4g + 2w 4g + 3w
+                        4              g         0            g+w         g        7g + 7w
+                        5             w          0            g+w       g+w        5g + 8w
+                        6              g         w              0     2g + 4w 3g + 2w
+                        7              g         0             w          0        2g + 5w
+                        8             w          0             w        g+w        4g + 7w
+                        9             w          0              0      g + 2w      2g + 3w
+                        10             g         0              0         w        g + 2w
+
+
+                              (a) Observed signal for t = 0, .., 3                                                       (b) Best estimate of the target signal for t = 0, .., 3
+
+Fig. 3: Example of design of a node-variant GF for the ANC setup described in Fig. 1. (a) Signal to recover at each sink node (g stands
+for green and w for yellow) and observed shifted signals for t ∈ {0, 1, 2, 3}. (b) Optimal estimates at sink nodes shown by node colors for
+different times. After three interactions with neighbors (t = 3), the bottom-right graph shows that every sink can decode its target signal.
+
+              1                                                                     1                                                                1
+                                                                                                                               ;=0
+             0.9                                                                   0.9                                         ;=0.2                0.9
+
+             0.8                                                                   0.8
+                                                                                                                               ;=0.4
+                                                                                                                                                    0.8
+                                                                                                                               ;=0.6
+             0.7                                                                   0.7                                         ;=0.8                0.7
+                                                                                                                               ;=1
+             0.6                                                                   0.6                                                              0.6
+
+
+
+
+                                                                                                                                            Error
+     Error
+
+
+
+
+                                                                           Error
+
+
+
+
+             0.5                                                                   0.5                                                              0.5
+
+             0.4                                                                   0.4                                                              0.4
+
+             0.3
+                         Node-var. BSR                                             0.3                                                              0.3
+                         Node-var. BR                                                                                                                         Original shift (S1 )
+             0.2                                                                   0.2                                                              0.2
+                         Node-invar. B SR                                                                                                                     Re-weighted tree (S2 )
+             0.1         Node-invar. B R                                           0.1                                                              0.1       Re-weighted shift (S 3 )
+              0                                                                     0                                                                0
+                   0     1     2     3      4   5   6     7     8   9                    0   1   2    3    4    5    6     7   8       9                  0    1      2       3      4   5   6    7   8   9
+                                    Number of exchanges                                              Number of exchanges                                                    Number of exchanges
+
+                        (a) ANC uncorrelated sources                                         (b) ANC correlated sources                                       (c) Rank-one transformations
+Fig. 4: Approximation errors as a function of the filter degree based on 1,000 realizations and Erdős-Rényi random graphs. (a) ANC with
+N = 100, S = R = 5 sources and sinks. Curves represent mean recovery error for node-variant and node-invariant GFs when the coefficients
+are designed to approximate BR and BSR . (b) Same as in (a) for node-variant GFs and different levels of correlation ρ among the values
+injected at the different sources. (c) Rank-one transformations as node-invariant GFs for three different choices of graph-shift operators.
+
+
+figure too. For this particular example, every sink node wants                                                 of the table in Fig. 3a. For example, node 1 perfectly recovers
+to recover either one source signal or the other, but the same                                                 g by computing c∗T            T
+                                                                                                                                   1,F [0, g] = g. The optimal coefficients for
+model could accommodate the case where sink nodes seek to                                                      nodes 4 and 5 at t = 1 are c∗4,F = c∗5,F = [0, 0.5]T since their
+recover a linear combination of the source signals. Denote by g                                                observation after one shift is the sum of the signal they want
+(green) the signal injected by source node 3 and by w (yellow)                                                 to recover and the other input signal. At time t = 2, seven of
+the one injected by node 6, and set S = A. Fig. 3a summarizes                                                  the sink nodes perfectly recover the desired signal. E.g., node
+the signal to be recovered at each node as well as the initially                                               3 applies the optimal coefficients c∗3,F = [−2, 0, 0.5]T , which
+injected signal z(0) and its first three shifted versions. In                                                  yield the signal c∗T                  T
+                                                                                                                                  3,F [g, 0, 4g + 2w] = w as can be seen from
+Fig. 3b we specialize this problem for the case where the                                                      the corresponding row in Fig. 3a. By contrast, nodes 7 and
+green signal g and the yellow signal w are equal to 1 and 2,                                                   10 have not observed any information related to their desired
+respectively. Moreover, we use the node colors to represent the                                                signal and node 5 still cannot decode w since it observed
+successive best approximations of the signal to be recovered at                                                g +w twice. Finally, at time t = 3 every node can successfully
+each node, obtained using the optimal filter coefficients in (33).                                             decode the objective signal. Fig. 3b demonstrates that, through
+For example, at time t = 0, we have that 8 of the nodes have                                                   the optimal design of node-variant filters, every node can
+only observed a null signal and nodes 3 and 6 have observed                                                    recover its target signal after three information exchanges with
+their own injected signal which is different from the signal they                                              neighbors. Notice that three is also the smallest number of
+want to recover. Thus, none of the nodes has information about                                                 exchanges that can yield perfect recovery since sink nodes 7
+the signal they want to recover and the optimal estimate is 0 for                                              and 10 are three hops away from their associated source node
+all of them. However, after one shift (t = 1) we see that four                                                 3. Moreover, note that the communication protocol induced
+nodes have changed their estimates. The optimal coefficients                                                   by the shift operator S = A is extremely simple: each
+c∗1,F = c∗8,F = [0, 1]T allow nodes 1 and 8 to perfectly recover                                               node forwards its current signal to its neighbors and, in turn,
+the desired signal, as can be seen from the corresponding rows                                                 receives the sum of their signals.
+                                                                                                                                       13
+
+
+
+   The following experiments evaluate the ensemble perfor-           C. Optimal graph-shift operator design
+mance by averaging the results of multiple tests. To that end,          While the previous experiments investigated the design of
+we consider Erdős-Rényi graphs with N = 100, pedge = 0.1           the filter coefficients for a given shift, the focus of this section
+and weights drawn from a uniform distribution with support           is on designing the weights of the shift itself. Specifically, we
+[0.5, 1.5], and S = A. We randomly select S = 5 sources              test the results in Section III-C regarding the implementation
+and, to each of these sources, we assign a sink so that R = 5        of rank-one transformations B using node-invariant GFs.
+and BSR = I. The goal is to evaluate the performance gap                To perform these tests, we generate Erdős-Rényi graphs G
+when approximating BSR vs. BR . Recall that the former               with N = 10 nodes and edge probability pedge = 0.3, and
+assumes that the nodes that are not sources inject a zero            rank-one transformations B = abT where a and b are drawn
+input. Alternatively, in the latter each receiver only knows its     from an smGd. For each graph we consider three different shift
+intended source, so that it must annihilate the signal from all      operators: i) the original shift S1 , where we assign random
+other nodes. Since the size of BR is N/S times larger than           weights to every edge present in the graph and its diagonal; ii)
+the size of BSR , the performance of the former is expected to       the re-weighted tree S2 , where we randomly select a spanning
+be considerably lower. To corroborate this, Fig. 4a plots the        tree of G and then set the weights as dictated by (19); and iii)
+mean error across 1,000 graphs for node-invariant (red) and          the re-weighted shift S3 where we use (19) to select weights
+node-variant (blue) filters when the coefficients are designed       for all the edges in G, as opposed to just those forming a
+to approximate both BR and BSR . Denoting by x the S-                spanning tree. We test the performance of approximating B
+sparse input signal containing the values to be transmitted by       as node-invariant filters H(c, Sm ) for m ∈ {1, 2, 3} and for
+the source nodes (drawn from an smGd) and by y = Hx                  varying filter degrees. Specifically, for each filter degree or
+the filtered signal, the error is defined as e := kER y −            number of exchanges K ∈ {0, 1, . . . , 9} we obtain the optimal
+ES xk2 /kES xk2 , i.e. the normalized difference between the         GF coefficients cK  m for shift Sm by solving (16), where Rx =
+signal injected at the sources and the one recovered at the          I. We then measure the error as kB − H(cK         m , Sm )kF /kBkF
+sinks. Notice that if the sources are known and the relay nodes      and plot its average across 1, 000 realizations in Fig. 4c.
+inject a zero signal, after 7 local exchanges the mean error            GFs based on the original shift S1 approximate poorly the
+for node-variant filters is 0. For this same filter degree the       rank-one transformations, achieving a large error of around
+error when approximating BR is 0.93. Eventually, the latter          0.95 even for filters of degree 9. This is not surprising since,
+error also vanishes, but filters of degree close to N = 100          in general, S1 and B will not be simultaneously diagonal-
+are needed. By contrast, when node-invariant GFs are used            izable (cf. Proposition 1) and node-invariant filters are very
+to approximate BR , the error improvement associated with            sensitive to spectral misalignments (cf. Section VI-D). The
+increasing filter degree for the selected interval (0 ≤ L−1 ≤ 9)     tree-based shift S2 can perfectly implement B for a large
+is negligible. Finally, by comparing the plots for node-variant      enough degree, confirming the result shown in Proposition 3.
+and node-invariant GFs when the coefficients are designed to         Equally interesting, the full-graph shift S3 also attains zero
+approximate BSR , we observe that node-variant GFs achieve           error. Recall that, for simplicity, the constructive proof of
+zero error after a few interactions, while node-invariant GFs        Proposition 3 that guarantees zero-error was based on spanning
+exhibit a slow reduction of the error with the filter degree.        trees. In line with the discussion following Proposition 3, the
+                                                                     simulations support the presumption that the construction is
+                                                                     also valid for more general graphs. Note finally that, when
+                                                                     comparing the performance of S2 and S3 , the latter tends to
+    Correlation among the injected signals at source nodes can       outperform the tree-based design. This is somehow expected
+be leveraged to reduce the error at the receivers. To illustrate     since the larger number of links in S3 facilitates the quick
+this, for different values of ρ ∈ {0, 0.2, . . . , 1}, we build an   propagation of information across the graph. Indeed, as K
+                                              1/2                    increases and approaches the diameter of the tree both designs
+S ×S covariance matrix Rx,ρ defined as Rx,ρ := I+ρ(11T −
+                                                                     perform similarly.
+I) + 0.1ρZ where the elements in the symmetric matrix Z are
+drawn from an smGd. In this way, the correlation between
+injected signals increases with ρ and, in each realization, is
+corrupted by additive zero-mean random noise. In Fig. 4b             D. Spectral robustness of GF implementations
+we plot the mean error across 1,000 graphs as a function of             A limitation of node-invariant GFs is that perfect imple-
+the node-variant filter degree parametrized by ρ. Notice first       mentation of a transformation B requires S and B to share
+that when ρ = 0, the values injected at different sources are        the whole set of eigenvectors. In this section, we run numerical
+uncorrelated and we recover the blue plot in Fig. 4a. More           simulations to assess: i) how the implementation degrades
+interestingly, as ρ increases, the achieved error for a given        as the eigenvectors of S and B are further apart; and ii)
+filter degree markedly decreases. The reason for this is that        whether the implementation using node-variant filters is robust
+correlation allows sink nodes to form accurate estimates of          to this dissimilarity. For each experiment, we generate 1,000
+their objective source signals based on all injected signals.        unweighted and symmetric small-world graphs with N = 10,
+14
+
+
+
+          1                                                              1                                                               1                                                              1
+
+         0.9                                                            0.9                                                             0.9                                                            0.9
+
+         0.8                                                            0.8                                                             0.8                                                            0.8
+
+         0.7                                                            0.7                                                             0.7                                                            0.7
+
+         0.6                                                            0.6                                                             0.6                                                            0.6
+ Error
+
+
+
+
+                                                                Error
+
+
+
+
+                                                                                                                                Error
+
+
+
+
+                                                                                                                                                                                               Error
+         0.5                                                            0.5                                                             0.5                                                            0.5
+
+         0.4       =0                                                   0.4       =0                                                    0.4       Q=10                                                 0.4       Q=10
+         0.3       =0.2                                                 0.3       =0.2                                                  0.3       Q=8                                                  0.3       Q=8
+                   =0.4                                                           =0.4                                                            Q=6                                                            Q=6
+         0.2       =0.6                                                 0.2       =0.6                                                  0.2       Q=4                                                  0.2       Q=4
+                   =0.8                                                           =0.8                                                            Q=2                                                            Q=2
+         0.1                                                            0.1                                                             0.1                                                            0.1
+                   =1                                                             =1                                                              Q=0                                                            Q=0
+          0                                                              0                                                               0                                                              0
+               0   1      2    3    4    5     6    7   8   9                 0   1      2    3    4    5     6    7   8   9                  0   1      2    3    4    5     6    7   8   9                 0   1      2    3    4    5     6    7   8   9
+                              Number of exchanges                                            Number of exchanges                                             Number of exchanges                                            Number of exchanges
+
+
+     (a) Node invariant - noisy V                                        (b) Node variant - noisy V                            (c) Node invariant - incomplete V (d) Node variant - incomplete V
+Fig. 5: Approximation errors as a function of the filter degree based on 1,000 realizations and small-world graphs. (a) Spectrum mismatch for
+a node-invariant GF with N = 10 and symmetric shift. Curves represent median recovery error parametrized by the eigenbasis perturbation
+magnitude σ. (b) Same as in (a) but for node-variant GFs. (c) Same as in (a) but parametrized by Q, the number of shared eigenvectors
+between S and B. (d) Same as in (c) but for node-variant GFs.
+
+
+where each node is originally connected in average to four                                                                      by Q. As expected, when Q = 10, perfect implementation is
+neighbors, and rewiring probability of 0.2. We set S = A,                                                                       achieved since B and S are simultaneously diagonalizable. As
+and define a signal x drawn from an smGd on each graph.                                                                         Q decreases, a noticeable detrimental effect is observed. The
+For a given degree, the filter coefficients are obtained using                                                                  reason being that node-invariant GFs with symmetric shifts
+the optimal designs in (16) and (28).                                                                                           can give rise only to symmetric transformations, and B here
+   Two procedures are considered to construct linear trans-                                                                     is non-symmetric. Indeed, if the remaining N − Q columns
+                                                                                                                                      Q                          Q
+formations B whose eigenvectors have varying degrees of                                                                         of VB    are chosen such that VB   is unitary (and, hence, B is
+similarity with those of S = VΛVH . In the first one, we                                                                        symmetric), the approximation error for intermediate values of
+generate perturbed eigenbases from V by adding elementwise                                                                      K is considerably smaller (not shown here). By contrast, node-
+zero-mean Gaussian noise of varying power. Specifically,                                                                        variant filters show imperviousness to the degree of overlap Q
+                    σ            σ −1                                                                                           between the eigenbases of S and B; see Fig. 5d.
+we build B = VB       diag(β)(VB   )    with the eigenvalues β
+                                                      σ                                                                            In a nutshell, the performance of node-invariant GFs de-
+drawn from an smGd and the eigenvectors VB              obtained
+by normalizing the columns of V + σZ ◦ V, where the                                                                             pends noticeably on the similarity between the eigenvectors of
+elements in the N × N matrix Z also follow an smGd and ◦                                                                        S and B. The approximation error grows gradually with the
+denotes the Hadamard matrix product. Defining the error as                                                                      distance between eigenbases, and larger errors are observed
+e := kHx − Bxk2 /kBxk2 , in Fig. 5a we present the median                                                                       when approximating asymmetric operators with symmetric
+error achieved by node-invariant filters when approximating                                                                     shifts. This behavior was also observed in [1] for Erdős-
+B. Each curve corresponds to a different value of σ. For the                                                                    Rényi graphs. By contrast, node-variant GFs are robust to the
+case where σ = 0, S and B are simultaneously diagonalizable                                                                     spectral differences between S and B. A theoretical charac-
+and, hence, perfect implementation is achievable after N − 1                                                                    terization of the described robustness as well as an analysis of
+exchanges among neighbors. As expected the error increases                                                                      its dependence on topological features of the underlying graph
+with σ, e.g., when σ = 0.2 the best achievable error is                                                                         are interesting research directions and are left as future work.
+around 0.25 for filters of degree 9. Part of this insurmountable
+error comes from the fact that B is, in general, asymmetric                                                                                                                        VII. C ONCLUSIONS
+while node-invariant filters H inherit the symmetry from S.                                                                        The optimal design of GFs for (potentially distributed) im-
+By contrast, node-variant filters can successfully implement                                                                    plementation of generic linear operators was investigated. Our
+B for all values of σ; see Fig. 5b. Even though there is                                                                        first contribution was the introduction of two types of node-
+a slight dependence with σ, all curves demonstrate that the                                                                     variant GFs, which generalize the existing definition of (node-
+error decreases with the number of exchanges until almost                                                                       invariant) GFs by allowing each node to use a different set
+perfect implementation is achieved for K = N−1. The second                                                                      of filter coefficients. Then, for both node-invariant and node-
+procedure keeps only a subset of the eigenvectors of the                                                                        variant filters, we stated conditions for perfect implementation
+shift. More specifically, we build linear operators of the form                                                                 of linear operators. When these conditions were not met, we
+         Q            Q −1
+B = VB     diag(β)(VB  ) where Q of the columns of matrix                                                                       provided optimal filter-coefficient designs for the minimization
+   Q
+VB    are chosen randomly without replacement from V. The                                                                       of different error metrics. We also addressed the optimal
+remaining N − Q columns correspond to random linearly                                                                           design of the shift operator and provided a systematic way
+independent, non-orthogonal, vectors. In this way, the resulting                                                                to define a shift that allows the implementation of any rank-
+   Q
+VB    is not unitary and B is non-symmetric (symmetry will                                                                      one operator as a GF. The practical relevance of our approach
+require setting the N − Q vectors as an orthonormal basis                                                                       for distributed setups was emphasized by particularizing our
+of the orthogonal complement of the space spanned by the                                                                        results to the design of GFs able to implement finite-time con-
+Q columns selected from V). In Fig. 5c we present the                                                                           sensus and analog network coding, two problems commonly
+median error attained by node-invariant filters parametrized                                                                    studied in network settings.
+                                                                                                                                                           15
+
+
+
+                              R EFERENCES                                        [25] ——, “Reconstruction of graph signals through percolation from seeding
+                                                                                      nodes,” IEEE Trans. Signal Process., vol. 64, no. 16, pp. 4363 – 4378,
+ [1] S. Segarra, A. G. Marques, and A. Ribeiro, “Distributed implementation           Aug. 2016.
+     of linear network operators using graph filters,” in 53rd Allerton Conf.    [26] A. Y. Kibangou, “Finite-time average consensus based protocol for
+     on Commun. Control and Computing, Sept. 2015, pp. 1406–1413.                     distributed estimation over AWGN channels,” in IEEE Conf. Decis.
+ [2] ——, “Linear network operators using node-variant graph filters,” in              Contr. (CDC), Dec. 2011, pp. 5595–5600.
+     IEEE Intl. Conf. Acoust., Speech and Signal Process. (ICASSP), Mar.         [27] S. Katti, S. Gollakota, and D. Katabi, “Embracing wireless interference:
+     2016, pp. 4850–4854.                                                             Analog network coding,” SIGCOMM Comput. Commun. Rev., vol. 37,
+ [3] D. Shuman, S. Narang, P. Frossard, A. Ortega, and P. Vandergheynst,              no. 4, pp. 397–408, Oct 2007.
+     “The emerging field of signal processing on graphs: Extending high-         [28] S. Zhang, S. C. Liew, and P. P. Lam, “Physical-layer network coding,”
+     dimensional data analysis to networks and other irregular domains,”              in Intl. Conf. Mobile Comp. and Netw. (MobiCom), 2006, pp. 358–365.
+     IEEE Signal Process. Mag., vol. 30, no. 3, pp. 83–98, May 2013.             [29] C. Godsil and G. Royle, Algebraic Graph Theory. Springer-Verlag,
+ [4] A. Sandryhaila and J. Moura, “Discrete signal processing on graphs,”             Graduate Texts in Mathematics, 2001, vol. 207.
+     IEEE Trans. Signal Process., vol. 61, no. 7, pp. 1644–1656, Apr. 2013.      [30] F. Pukelsheim, Optimal Design of Experiments. SIAM, 1993, vol. 50.
+ [5] S. Chen, R. Varma, A. Sandryhaila, and J. Kovačević, “Discrete signal     [31] G. Golub and C. Van Loan, Matrix Computations (3rd Ed.). Johns
+     processing on graphs: Sampling theory,” IEEE Trans. Signal Process.,             Hopkins Univ. Press, 1996.
+     vol. 63, no. 24, pp. 6510 – 6523, Dec. 2015.                                [32] M. L. Overton, “On minimizing the maximum eigenvalue of a symmetric
+ [6] A. G. Marques, S. Segarra, G. Leus, and A. Ribeiro, “Stationary graph            matrix,” SIAM Journal on Matrix Analysis and Applications, vol. 9,
+     processes and spectral estimation,” arXiv preprint arXiv:1603.04667,             no. 2, pp. 256–268, 1988.
+     2016.                                                                       [33] S. Boyd and L. El Ghaoui, “Method of centers for minimizing gener-
+ [7] E. Isufi, A. Loukas, A. Simonetto, and G. Leus, “Separable autoregres-           alized eigenvalues,” Linear Algebra and its Applications, vol. 188, pp.
+     sive moving average graph-temporal filters,” in European Signal Process.         63–111, 1993.
+     Conf. (EUSIPCO), Budapest, Hungary, Aug. 29 - Sept. 2 2016.                 [34] T. Ho and D. Lun, Network Coding: An Introduction. Cambridge
+ [8] ——, “Autoregressive moving average graph filtering,” IEEE Transac-               University Press, 2008.
+     tions on Signal Processing, vol. 65, no. 2, pp. 274–288, 2017.              [35] R. Ahlswede, N. Cai, S.-Y. Li, and R. Yeung, “Network information
+ [9] A. Sandryhaila and J. Moura, “Discrete signal processing on graphs:              flow,” IEEE Trans. Inf. Theory, vol. 46, no. 4, pp. 1204–1216, Jul 2000.
+     Frequency analysis,” IEEE Trans. Signal Process., vol. 62, no. 12, pp.      [36] S.-Y. Li, R. Yeung, and N. Cai, “Linear network coding,” IEEE Trans.
+     3042–3054, June 2014.                                                            Inf. Theory, vol. 49, no. 2, pp. 371–381, Feb. 2003.
+[10] S. Segarra, A. G. Marques, G. Mateos, and A. Ribeiro, “Net-                 [37] T. Nakano, M. Moore, F. Wei, A. Vasilakos, and J. Shuai, “Molecular
+     work topology inference from spectral templates,” arXiv preprint                 communication and networking: Opportunities and challenges,” IEEE
+     arXiv:1608.03008v1, 2016.                                                        Trans. Nanobiosci., vol. 11, no. 2, pp. 135–148, June 2012.
+[11] D. P. Bertsekas and J. N. Tsitsiklis, Parallel and Distributed Computa-     [38] M. S. Kuran, H. B. Yilmaz, T. Tugcu, and B. Ozerman, “Energy model
+     tion: Numerical Methods. Prentice-Hall, Inc., 1989.                              for communication via diffusion in nanonetworks,” Nano Commun.
+[12] L. Xiao and S. Boyd, “Fast linear iterations for distributed averaging,”         Networks, vol. 1, no. 2, pp. 86 – 95, 2010.
+     Systems & Control Lett., vol. 53, no. 1, pp. 65 – 78, 2004.                 [39] E. D. Kolaczyk, Statistical Analysis of Network Data: Methods and
+[13] S. Kar, J. Moura, and H. Poor, “Distributed linear parameter estimation:         Models. Springer, 2009.
+     asymptotically efficient adaptive strategies,” SIAM Journal on Control
+     and Optimization, vol. 51, no. 3, pp. 2200–2229, May 2013.
+[14] I. D. Schizas, A. Ribeiro, and G. B. Giannakis, “Consensus in ad-hoc
+     WSNs with noisy links - Part I: Distributed estimation of deterministic
+     signals,” IEEE Trans. Signal Process., vol. 56, no. 1, pp. 350–364, Jan.
+     2008.
+[15] A. Tahbaz-Salehi and A. Jadbabaie, “A necessary and sufficient condi-
+     tion for consensus over random networks,” IEEE Trans. Auto. Control,
+     vol. 53, no. 3, pp. 791–795, Apr. 2008.
+[16] G. Mateos, J.-A. Bazerque, and G. B. Giannakis, “Distributed sparse
+     linear regression,” IEEE Trans. Signal Process., vol. 58, no. 10, pp.
+     5262–5276, Oct. 2010.
+[17] A. Sayed, S. Barbarossa, S. Theodoridis, and I. Yamada, “Adaptation
+     and learning over complex networks [from the guest editors],” IEEE
+     Signal Process. Mag., vol. 30, no. 3, pp. 14–15, May 2013.
+[18] S. Barbarossa, G. Scutari, and T. Battisti, “Distributed signal subspace
+     projection algorithms with maximum convergence rate for sensor net-
+     works with topological constraints,” in IEEE Intl. Conf. Acoust., Speech
+     and Signal Process. (ICASSP), Apr. 2009, pp. 2893–2896.
+[19] D. I. Shuman, P. Vandergheynst, and P. Frossard, “Distributed signal
+     processing via Chebyshev polynomial approximation,” arXiv preprint
+     arXiv:1111.5239, 2011.
+[20] X. Wang, P. Liu, and Y. Gu, “Local-set-based graph signal reconstruc-
+     tion,” IEEE Trans. Signal Process., vol. 63, no. 9, pp. 2432–2444, Sept.
+     2015.
+[21] S. Chen, A. Sandryhaila, and J. Kovacevic, “Distributed algorithm for
+     graph signal inpainting,” in IEEE Intl. Conf. Acoust., Speech and Signal
+     Process. (ICASSP), Apr. 2015, pp. 3731 – 3735.
+[22] A. Sandryhaila, S. Kar, and J. Moura, “Finite-time distributed consensus
+     through graph filters,” in IEEE Intl. Conf. Acoust., Speech and Signal
+     Process. (ICASSP), May 2014, pp. 1080–1084.
+[23] S. Safavi and U. Khan, “Revisiting finite-time distributed algorithms via
+     successive nulling of eigenvalues,” IEEE Signal Process. Lett., vol. 22,
+     no. 1, pp. 54–57, Jan. 2015.
+[24] S. Segarra, A. G. Marques, G. Leus, and A. Ribeiro, “Interpolation of
+     graph signals using shift-invariant graph filters,” in European Signal
+     Process. Conf. (EUSIPCO), Aug. 2015, pp. 210–214.

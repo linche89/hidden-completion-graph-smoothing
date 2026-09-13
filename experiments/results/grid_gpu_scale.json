@@ -1,0 +1,531 @@
+{
+  "schema_version": 1,
+  "environment": {
+    "platform": "Windows-11-10.0.26100-SP0",
+    "python": "3.13.5",
+    "numpy": "2.3.3",
+    "scipy": "1.17.1",
+    "cupy": "14.2.0",
+    "gpu": "NVIDIA GeForce RTX 5080",
+    "cuda_runtime": 12090,
+    "cuda_driver": 13020,
+    "logical_cpus": 32,
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "mpi": false
+  },
+  "semantics": {
+    "matrix": "same float64 CSR values and indices on CPU/GPU",
+    "dense_layout": "C contiguous on CPU and GPU",
+    "fixed_iteration": "degree-k Richardson/Neumann polynomial; one-hop propagation per step",
+    "timing": "construction, context, matrix H2D, per-operation warmup, kernels, D2H separated",
+    "claim": "performance experiment only; no theorem or MPI claim"
+  },
+  "total_seconds": 7.090602800017223,
+  "results": [
+    {
+      "case": {
+        "side": 320,
+        "family": "stable_mass",
+        "mass": 0.2,
+        "batches": [
+          1,
+          8,
+          32
+        ],
+        "spmv_repeats": 200,
+        "spmm_repeats": 20,
+        "local_steps": 40,
+        "seed": 101
+      },
+      "family_metadata": {
+        "family": "stable_mass",
+        "mass": 0.2,
+        "grounded_nodes": 0,
+        "spectral_bounds_used": [
+          0.2,
+          8.2
+        ],
+        "richardson_step_size": 0.23809523809523814
+      },
+      "matrix": {
+        "shape": [
+          102400,
+          102400
+        ],
+        "nnz": 510720,
+        "dtype": "float64",
+        "host_csr_bytes": 6538244,
+        "measured_device_matrix_allocation_bytes": 6291456
+      },
+      "construction_seconds": 0.007339800009503961,
+      "gpu_context_allocator_init_seconds": 0.18565919995307922,
+      "matrix_h2d_preprocess_seconds": 1.4524081000126898,
+      "memory": {
+        "host_rss_checkpoints": {
+          "start": 210710528,
+          "after_matrix_build": 218034176,
+          "after_vectors": 220147712,
+          "batch_1_before_release": 414990336,
+          "batch_8_before_release": 476516352,
+          "batch_32_before_release": 569053184
+        },
+        "host_rss_checkpoint_max": 569053184,
+        "gpu_total_bytes": 17094475776,
+        "gpu_free_before_matrix": 15710814208,
+        "gpu_free_after_matrix": 15704522752,
+        "gpu_free_final": 15689842688
+      },
+      "spmv": {
+        "repeats": 200,
+        "vector_h2d_seconds": 0.00015820004045963287,
+        "cpu_kernel_seconds": 0.04510759992990643,
+        "gpu_warmup_seconds": 0.12879470002371818,
+        "gpu_kernel_seconds": 0.009718599962070584,
+        "gpu_d2h_seconds": 0.00020589993800967932,
+        "gpu_end_to_end_excluding_matrix_preprocess": 0.010082699940539896,
+        "kernel_speedup_cpu_over_gpu": 4.641368109187621,
+        "relative_cpu_gpu_difference": 1.1359390155129894e-16,
+        "cpu_checksum": 35.24446871276976
+      },
+      "spmm": [
+        {
+          "batch": 1,
+          "layout": "C",
+          "repeats": 20,
+          "dense_input_bytes": 819200,
+          "cpu_kernel_seconds": 0.005985299940221012,
+          "gpu_kernel_seconds": 0.0009467999916523695,
+          "kernel_speedup_cpu_over_gpu": 6.321609625043803,
+          "h2d_seconds": 0.00016409996896982193,
+          "warmup_seconds": 0.00018440000712871552,
+          "d2h_seconds": 0.00011959997937083244,
+          "gpu_end_to_end_excluding_matrix_preprocess": 0.0012304999399930239,
+          "relative_cpu_gpu_difference": 1.1362074436283996e-16
+        },
+        {
+          "batch": 8,
+          "layout": "C",
+          "repeats": 20,
+          "dense_input_bytes": 6553600,
+          "cpu_kernel_seconds": 0.058639599941670895,
+          "gpu_kernel_seconds": 0.002826099982485175,
+          "kernel_speedup_cpu_over_gpu": 20.749301265026457,
+          "h2d_seconds": 0.001680399989709258,
+          "warmup_seconds": 0.38777839997783303,
+          "d2h_seconds": 0.06790840008761734,
+          "gpu_end_to_end_excluding_matrix_preprocess": 0.07241490005981177,
+          "relative_cpu_gpu_difference": 8.41521730916425e-17
+        },
+        {
+          "batch": 32,
+          "layout": "C",
+          "repeats": 20,
+          "dense_input_bytes": 26214400,
+          "cpu_kernel_seconds": 0.1362084000138566,
+          "gpu_kernel_seconds": 0.008643200038932264,
+          "kernel_speedup_cpu_over_gpu": 15.75902436601283,
+          "h2d_seconds": 0.004854399943724275,
+          "warmup_seconds": 0.0013810999225825071,
+          "d2h_seconds": 0.003382100025191903,
+          "gpu_end_to_end_excluding_matrix_preprocess": 0.01687970000784844,
+          "relative_cpu_gpu_difference": 8.35647659894454e-17
+        }
+      ],
+      "fixed_local_richardson": {
+        "steps_rounds": 40,
+        "step_size": 0.23809523809523814,
+        "cpu_warmup_seconds": 0.0009365000296384096,
+        "gpu_warmup_seconds": 0.09223609999753535,
+        "cpu_kernel_seconds": 0.02142130001448095,
+        "gpu_kernel_seconds": 0.0034048999659717083,
+        "gpu_d2h_seconds": 0.00017280003521591425,
+        "kernel_speedup_cpu_over_gpu": 6.291315524263171,
+        "cpu_relative_state_error": 0.012384576954090296,
+        "gpu_relative_state_error": 0.012384576954090296,
+        "cpu_relative_residual": 0.014997797794618574,
+        "gpu_relative_residual": 0.01499779779461858,
+        "relative_cpu_gpu_solution_difference": 1.81193175918204e-16
+      },
+      "case_total_seconds": 2.683112099999562
+    },
+    {
+      "case": {
+        "side": 320,
+        "family": "single_ground",
+        "mass": 0.0,
+        "batches": [
+          1,
+          8,
+          32
+        ],
+        "spmv_repeats": 200,
+        "spmm_repeats": 20,
+        "local_steps": 40,
+        "seed": 102
+      },
+      "family_metadata": {
+        "family": "single_ground",
+        "mass": 0.0,
+        "grounded_nodes": 1,
+        "spectral_bounds_used": [
+          null,
+          8.0
+        ],
+        "richardson_step_size": 0.125
+      },
+      "matrix": {
+        "shape": [
+          102399,
+          102399
+        ],
+        "nnz": 510715,
+        "dtype": "float64",
+        "host_csr_bytes": 6538180,
+        "measured_device_matrix_allocation_bytes": 4194304
+      },
+      "construction_seconds": 0.0053322999738156796,
+      "gpu_context_allocator_init_seconds": 7.800001185387373e-05,
+      "matrix_h2d_preprocess_seconds": 0.0009314999915659428,
+      "memory": {
+        "host_rss_checkpoints": {
+          "start": 477708288,
+          "after_matrix_build": 485654528,
+          "after_vectors": 485654528,
+          "batch_1_before_release": 493035520,
+          "batch_8_before_release": 509419520,
+          "batch_32_before_release": 568401920
+        },
+        "host_rss_checkpoint_max": 568401920,
+        "gpu_total_bytes": 17094475776,
+        "gpu_free_before_matrix": 15698231296,
+        "gpu_free_after_matrix": 15694036992,
+        "gpu_free_final": 15689842688
+      },
+      "spmv": {
+        "repeats": 200,
+        "vector_h2d_seconds": 0.00013890000991523266,
+        "cpu_kernel_seconds": 0.03334180009551346,
+        "gpu_warmup_seconds": 0.0007179999956861138,
+        "gpu_kernel_seconds": 0.008863399969413877,
+        "gpu_d2h_seconds": 0.00012970005627721548,
+        "gpu_end_to_end_excluding_matrix_preprocess": 0.009132000035606325,
+        "kernel_speedup_cpu_over_gpu": 3.761739311163942,
+        "relative_cpu_gpu_difference": 1.1411520247757818e-16,
+        "cpu_checksum": -0.24943423067512072
+      },
+      "spmm": [
+        {
+          "batch": 1,
+          "layout": "C",
+          "repeats": 20,
+          "dense_input_bytes": 819192,
+          "cpu_kernel_seconds": 0.00390260003041476,
+          "gpu_kernel_seconds": 0.0012911999365314841,
+          "kernel_speedup_cpu_over_gpu": 3.0224598995088323,
+          "h2d_seconds": 0.00019049993716180325,
+          "warmup_seconds": 0.0001572000328451395,
+          "d2h_seconds": 0.00013760000001639128,
+          "gpu_end_to_end_excluding_matrix_preprocess": 0.0016192998737096786,
+          "relative_cpu_gpu_difference": 1.1430705210865394e-16
+        },
+        {
+          "batch": 8,
+          "layout": "C",
+          "repeats": 20,
+          "dense_input_bytes": 6553536,
+          "cpu_kernel_seconds": 0.041444499976933,
+          "gpu_kernel_seconds": 0.002623199950903654,
+          "kernel_speedup_cpu_over_gpu": 15.799214986511409,
+          "h2d_seconds": 0.0011392999440431595,
+          "warmup_seconds": 0.0006443000165745616,
+          "d2h_seconds": 0.0009870999492704868,
+          "gpu_end_to_end_excluding_matrix_preprocess": 0.0047495998442173,
+          "relative_cpu_gpu_difference": 8.484545345987926e-17
+        },
+        {
+          "batch": 32,
+          "layout": "C",
+          "repeats": 20,
+          "dense_input_bytes": 26214144,
+          "cpu_kernel_seconds": 0.13728670007549226,
+          "gpu_kernel_seconds": 0.008464699960313737,
+          "kernel_speedup_cpu_over_gpu": 16.21873199512719,
+          "h2d_seconds": 0.002344300039112568,
+          "warmup_seconds": 0.0013906999956816435,
+          "d2h_seconds": 0.0034118000185117126,
+          "gpu_end_to_end_excluding_matrix_preprocess": 0.014220800017938018,
+          "relative_cpu_gpu_difference": 8.44467189862406e-17
+        }
+      ],
+      "fixed_local_richardson": {
+        "steps_rounds": 40,
+        "step_size": 0.125,
+        "cpu_warmup_seconds": 0.0006433000089600682,
+        "gpu_warmup_seconds": 0.0006658999482169747,
+        "cpu_kernel_seconds": 0.007999600027687848,
+        "gpu_kernel_seconds": 0.0030983000760897994,
+        "gpu_d2h_seconds": 0.00013699999544769526,
+        "kernel_speedup_cpu_over_gpu": 2.5819319727686674,
+        "cpu_relative_state_error": 0.09271461946961439,
+        "gpu_relative_state_error": 0.09271461946961439,
+        "cpu_relative_residual": 0.0028194639011233564,
+        "gpu_relative_residual": 0.0028194639011233564,
+        "relative_cpu_gpu_solution_difference": 1.4061569633774516e-16
+      },
+      "case_total_seconds": 0.31867199996486306
+    },
+    {
+      "case": {
+        "side": 1000,
+        "family": "stable_mass",
+        "mass": 0.2,
+        "batches": [
+          1,
+          8,
+          32
+        ],
+        "spmv_repeats": 50,
+        "spmm_repeats": 5,
+        "local_steps": 40,
+        "seed": 201
+      },
+      "family_metadata": {
+        "family": "stable_mass",
+        "mass": 0.2,
+        "grounded_nodes": 0,
+        "spectral_bounds_used": [
+          0.2,
+          8.2
+        ],
+        "richardson_step_size": 0.23809523809523814
+      },
+      "matrix": {
+        "shape": [
+          1000000,
+          1000000
+        ],
+        "nnz": 4996000,
+        "dtype": "float64",
+        "host_csr_bytes": 63952004,
+        "measured_device_matrix_allocation_bytes": 67108864
+      },
+      "construction_seconds": 0.05381100007798523,
+      "gpu_context_allocator_init_seconds": 8.459994569420815e-05,
+      "matrix_h2d_preprocess_seconds": 0.009398299967870116,
+      "memory": {
+        "host_rss_checkpoints": {
+          "start": 477761536,
+          "after_matrix_build": 541978624,
+          "after_vectors": 565989376,
+          "batch_1_before_release": 697126912,
+          "batch_8_before_release": 865132544,
+          "batch_32_before_release": 1709572096
+        },
+        "host_rss_checkpoint_max": 1709572096,
+        "gpu_total_bytes": 17094475776,
+        "gpu_free_before_matrix": 15696134144,
+        "gpu_free_after_matrix": 15629025280,
+        "gpu_free_final": 15597568000
+      },
+      "spmv": {
+        "repeats": 50,
+        "vector_h2d_seconds": 0.0006783000426366925,
+        "cpu_kernel_seconds": 0.2253576999064535,
+        "gpu_warmup_seconds": 0.0006414999952539802,
+        "gpu_kernel_seconds": 0.004869199940003455,
+        "gpu_d2h_seconds": 0.0010386999929323792,
+        "gpu_end_to_end_excluding_matrix_preprocess": 0.0065861999755725265,
+        "kernel_speedup_cpu_over_gpu": 46.28228511526138,
+        "relative_cpu_gpu_difference": 1.141604673748983e-16,
+        "cpu_checksum": -285.34119355841153
+      },
+      "spmm": [
+        {
+          "batch": 1,
+          "layout": "C",
+          "repeats": 5,
+          "dense_input_bytes": 8000000,
+          "cpu_kernel_seconds": 0.0230793000664562,
+          "gpu_kernel_seconds": 0.0010358999716117978,
+          "kernel_speedup_cpu_over_gpu": 22.27946780474007,
+          "h2d_seconds": 0.0007787999929860234,
+          "warmup_seconds": 0.00029910006560385227,
+          "d2h_seconds": 0.001025600009597838,
+          "gpu_end_to_end_excluding_matrix_preprocess": 0.002840299974195659,
+          "relative_cpu_gpu_difference": 1.1428788898042037e-16
+        },
+        {
+          "batch": 8,
+          "layout": "C",
+          "repeats": 5,
+          "dense_input_bytes": 64000000,
+          "cpu_kernel_seconds": 0.11138929997105151,
+          "gpu_kernel_seconds": 0.005225299973972142,
+          "kernel_speedup_cpu_over_gpu": 21.317302456489625,
+          "h2d_seconds": 0.004837800050154328,
+          "warmup_seconds": 0.0024874999653548002,
+          "d2h_seconds": 0.009960000053979456,
+          "gpu_end_to_end_excluding_matrix_preprocess": 0.020023100078105927,
+          "relative_cpu_gpu_difference": 8.35870264568416e-17
+        },
+        {
+          "batch": 32,
+          "layout": "C",
+          "repeats": 5,
+          "dense_input_bytes": 256000000,
+          "cpu_kernel_seconds": 0.5069779999321327,
+          "gpu_kernel_seconds": 0.02363859990146011,
+          "kernel_speedup_cpu_over_gpu": 21.447040097362855,
+          "h2d_seconds": 0.05909520003478974,
+          "warmup_seconds": 0.009244900080375373,
+          "d2h_seconds": 0.049114800058305264,
+          "gpu_end_to_end_excluding_matrix_preprocess": 0.13184859999455512,
+          "relative_cpu_gpu_difference": 8.363625930531453e-17
+        }
+      ],
+      "fixed_local_richardson": {
+        "steps_rounds": 40,
+        "step_size": 0.23809523809523814,
+        "cpu_warmup_seconds": 0.015308499918319285,
+        "gpu_warmup_seconds": 0.0008736000163480639,
+        "cpu_kernel_seconds": 0.28533350001089275,
+        "gpu_kernel_seconds": 0.005622299970127642,
+        "gpu_d2h_seconds": 0.0009957000147551298,
+        "kernel_speedup_cpu_over_gpu": 50.750315978678536,
+        "cpu_relative_state_error": 0.012598565195963031,
+        "gpu_relative_state_error": 0.012598565195963031,
+        "cpu_relative_residual": 0.01543658519427821,
+        "gpu_relative_residual": 0.015436585194278209,
+        "relative_cpu_gpu_solution_difference": 1.8286611058966402e-16
+      },
+      "case_total_seconds": 1.9995741999009624
+    },
+    {
+      "case": {
+        "side": 1000,
+        "family": "single_ground",
+        "mass": 0.0,
+        "batches": [
+          1,
+          8,
+          32
+        ],
+        "spmv_repeats": 50,
+        "spmm_repeats": 5,
+        "local_steps": 40,
+        "seed": 202
+      },
+      "family_metadata": {
+        "family": "single_ground",
+        "mass": 0.0,
+        "grounded_nodes": 1,
+        "spectral_bounds_used": [
+          null,
+          8.0
+        ],
+        "richardson_step_size": 0.125
+      },
+      "matrix": {
+        "shape": [
+          999999,
+          999999
+        ],
+        "nnz": 4995995,
+        "dtype": "float64",
+        "host_csr_bytes": 63951940,
+        "measured_device_matrix_allocation_bytes": 62914560
+      },
+      "construction_seconds": 0.06695959996432066,
+      "gpu_context_allocator_init_seconds": 9.159999899566174e-05,
+      "matrix_h2d_preprocess_seconds": 0.00510409998241812,
+      "memory": {
+        "host_rss_checkpoints": {
+          "start": 813494272,
+          "after_matrix_build": 877449216,
+          "after_vectors": 901459968,
+          "batch_1_before_release": 965488640,
+          "batch_8_before_release": 1133477888,
+          "batch_32_before_release": 1709477888
+        },
+        "host_rss_checkpoint_max": 1709477888,
+        "gpu_total_bytes": 17094475776,
+        "gpu_free_before_matrix": 15689842688,
+        "gpu_free_after_matrix": 15626928128,
+        "gpu_free_final": 15593373696
+      },
+      "spmv": {
+        "repeats": 50,
+        "vector_h2d_seconds": 0.0009098999435082078,
+        "cpu_kernel_seconds": 0.23848509998060763,
+        "gpu_warmup_seconds": 0.0011721000773832202,
+        "gpu_kernel_seconds": 0.0052411999786272645,
+        "gpu_d2h_seconds": 0.0011357000330463052,
+        "gpu_end_to_end_excluding_matrix_preprocess": 0.0072867999551817775,
+        "kernel_speedup_cpu_over_gpu": 45.502003539859174,
+        "relative_cpu_gpu_difference": 1.1434177482178708e-16,
+        "cpu_checksum": 2.2297459818074046
+      },
+      "spmm": [
+        {
+          "batch": 1,
+          "layout": "C",
+          "repeats": 5,
+          "dense_input_bytes": 7999992,
+          "cpu_kernel_seconds": 0.02491170004941523,
+          "gpu_kernel_seconds": 0.0011489000171422958,
+          "kernel_speedup_cpu_over_gpu": 21.683087890780158,
+          "h2d_seconds": 0.0010103000095114112,
+          "warmup_seconds": 0.00032600003760308027,
+          "d2h_seconds": 0.0010443000355735421,
+          "gpu_end_to_end_excluding_matrix_preprocess": 0.003203500062227249,
+          "relative_cpu_gpu_difference": 1.1419466895412746e-16
+        },
+        {
+          "batch": 8,
+          "layout": "C",
+          "repeats": 5,
+          "dense_input_bytes": 63999936,
+          "cpu_kernel_seconds": 0.12014610006008297,
+          "gpu_kernel_seconds": 0.005270000081509352,
+          "kernel_speedup_cpu_over_gpu": 22.79812110091516,
+          "h2d_seconds": 0.005230400012806058,
+          "warmup_seconds": 0.0026742999907583,
+          "d2h_seconds": 0.008997499942779541,
+          "gpu_end_to_end_excluding_matrix_preprocess": 0.01949790003709495,
+          "relative_cpu_gpu_difference": 8.437077947820021e-17
+        },
+        {
+          "batch": 32,
+          "layout": "C",
+          "repeats": 5,
+          "dense_input_bytes": 255999744,
+          "cpu_kernel_seconds": 0.5263805999420583,
+          "gpu_kernel_seconds": 0.02315900009125471,
+          "kernel_speedup_cpu_over_gpu": 22.728986479033257,
+          "h2d_seconds": 0.02353560004848987,
+          "warmup_seconds": 0.01083329995162785,
+          "d2h_seconds": 0.04259179998189211,
+          "gpu_end_to_end_excluding_matrix_preprocess": 0.08928640012163669,
+          "relative_cpu_gpu_difference": 8.442984754025328e-17
+        }
+      ],
+      "fixed_local_richardson": {
+        "steps_rounds": 40,
+        "step_size": 0.125,
+        "cpu_warmup_seconds": 0.015212099999189377,
+        "gpu_warmup_seconds": 0.0009956000139936805,
+        "cpu_kernel_seconds": 0.30751269997563213,
+        "gpu_kernel_seconds": 0.005675000022165477,
+        "gpu_d2h_seconds": 0.001055800006724894,
+        "kernel_speedup_cpu_over_gpu": 54.187259695955184,
+        "cpu_relative_state_error": 0.09029118210677037,
+        "gpu_relative_state_error": 0.09029118210677037,
+        "cpu_relative_residual": 0.0027782886317691334,
+        "gpu_relative_residual": 0.0027782886317691343,
+        "relative_cpu_gpu_solution_difference": 1.4036139778671332e-16
+      },
+      "case_total_seconds": 2.039543600054458
+    }
+  ]
+}

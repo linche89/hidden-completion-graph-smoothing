@@ -1,0 +1,1876 @@
+                                                        Polynomial graph filters of multiple shifts and distributed
+                                                                   implementation of inverse filtering
+                                                               Nazar Emirov1 , Cheng Cheng∗2 , Junzheng Jiang3 , and Qiyu Sun4
+                                            1
+                                                Department of Computer Science, Boston College, Chestnut Hill, Massachusetts 02467,
+                                                                                     USA.
+                                            2
+                                                School of Mathematics, Sun Yat-sen University, Guangzhou, Guangdong 510275, China.
+                                            3
+                                                School of Information and Communication, Guilin University of Electronic Technology,
+                                                                          Guilin, Guangxi 541004, China.
+                                        4
+arXiv:2003.11152v2 [cs.IT] 5 Nov 2021
+
+
+
+
+                                            Department of Mathematics, University of Central Florida, Orlando, Florida 32816, USA.
+
+                                            nazar.emirov@bc.edu, chengch66@mail.sysu.edu.cn, jzjiang@guet.edu.cn, qiyu.sun@ucf.edu
+
+
+
+
+                                                                                                  Abstract
+                                                           Polynomial graph filters and their inverses play important roles in graph signal processing.
+                                                      In this paper, we introduce the concept of multiple commutative graph shifts and polynomial
+                                                      graph filters, which could play similar roles in graph signal processing as the one-order delay and
+                                                      finite impulse response filters in classical multi-dimensional signal processing. We implement the
+                                                      filtering procedure associated with a polynomial graph filter of multiple shifts at the vertex level
+                                                      in a distributed network on which each vertex is equipped with a data processing subsystem for
+                                                      limited computation power and data storage, and a communication subsystem for direct data
+                                                      exchange only to its adjacent vertices. In this paper, we also consider the implementation of
+                                                      inverse filtering procedure associated with a polynomial graph filter of multiple shifts, and we
+                                                      propose two iterative approximation algorithms applicable in a distributed network and in a
+                                                      central facility. We also demonstrate the effectiveness of the proposed algorithms to implement
+                                                      the inverse filtering procedure on denoising time-varying graph signals and a dataset of US
+                                                      hourly temperature at 218 locations.
+
+                                            Keywords: Graph signal processing, polynomial graph filter, inverse filtering, distributed
+                                        algorithm, distributed network, multivariate Chebyshev polynomial approximation.
+
+
+                                        1            Introduction
+                                        Graph signal processing provides an innovative framework to handle data residing on spatially
+                                        distributed networks (SDN), such as the wireless sensor networks, smart grids and social network
+                                        and many other irregular domains, [7, 17, 33, 38, 45, 51]. Graphs provide a flexible tool to model
+                                        the underlying topology of the networks, and the edges present the interrelationship between data
+                                        elements. For instance, an edge between two vertices may indicate the availability of a direct data
+                                        exchanging channel between sensors of a distributed network, the functional connectivity between
+                                        neural regions in brain, or the correlation between temperature records of neighboring locations.
+                                        By leveraging graph spectral theory and applied harmonic analysis, graph signal processing has
+                                                ∗
+                                                    Corresponding author
+
+
+                                                                                                       1
+been extensively exploited, and many important concepts in classical signal processing, such as
+Fourier transform and wavelet filter banks, have been extended to graph setting [7, 16, 30, 33, 36,
+37, 38, 45, 47].
+    Let G := (V, E) be an undirected and unweighted graph with vertex set V = {1, . . . , N } and
+edge set E ⊂ V × V , and define the geodesic distance ρ(i, j) between vertices i, j ∈ V by the
+number of edges in a shortest path connecting i, j ∈ V and set ρ(i, j) = ∞ if vertices i, j ∈ V
+belong to its different connected components. A graph filter on the graph G maps one graph signal
+x = (x(i))i∈V linearly to another graph signal y = Hx, and it is usually represented by a matrix
+H = (H(i, j))i,j∈V . Graph filters and their implementations are fundamental in graph signal
+processing, and they have been used in denoising, smoothing, consensus of multi-agent systems,
+the estimation of time series and many other applications [20, 46, 49, 50]. In the classical signal
+processing, filters are categorized into two families, finite impulse response (FIR) filters and infinite
+impulse response (IIR) filters. The FIR concept has been extended to graph filters with the duration
+of an FIR filter being replaced by the geodesic-width of a graph filter. Here the geodesic-width ω(H)
+of a graph filter H = (H(i, j))i,j∈V is the smallest nonnegative integer ω(H) such that H(i, j) = 0
+hold for all i, j ∈ V with ρ(i, j) > ω(H) [5, 7, 10, 21, 22].
+    An elementary graph filter is a graph shift, which has one as its geodesic-width [13, 21, 36, 40].
+In this paper, we introduce the concept of multiple commutative graph shifts S1 , . . . , Sd , i.e.,
+
+                                        Sk Sk0 = Sk0 Sk , 1 ≤ k, k 0 ≤ d,                                   (1.1)
+
+and we consider the implementation of filtering and inverse filtering associated with a polynomial
+graph filter
+                                                 L1
+                                                 X      Ld
+                                                        X
+                       H = h(S1 , . . . , Sd ) =    ···    hl1 ,...,ld Sl11 · · · Sldd ,      (1.2)
+                                                           l1 =0         ld =0
+
+where the polynomial
+                                                        L1
+                                                        X             Ld
+                                                                      X
+                                h(t1 , . . . , td ) =           ···           hl1 ,...,ld tl11 . . . tldd
+                                                        l1 =0         ld =0
+
+in variables t1 , · · · , td has polynomial coefficients hl1 ,...,ld , 0 ≤ lk ≤ Lk , 1 ≤ k ≤ d. The commutativ-
+ity of graph shifts S1 , . . . , Sd guarantees that the polynomial graph filter H in (1.2) is independent
+on equivalent expressions of the multivariate polynomial h, and also the well-definedness of their
+joint spectrum, see Appendix A.3. The concept of commutative graph shifts S1 , . . . , Sd may play
+a similar role in graph signal processing as the one-order delay z1−1 , . . . , zd−1 in classical multi-
+dimensional signal processing, and in practice graph shifts may have specific features and physical
+interpretation, see Appendix A and Section 5 for some illustrative examples. We remark that the
+commutative assumption on graph shifts S1 , . . . , Sd is trivial for d = 1 and polynomial graph filters
+of a single shift have been widely used in graph signal processing [6, 9, 19, 29, 40, 46, 49].
+     Polynomial graph filters H in (1.2) have geodesic-width ω(H) no more than the degree dk=1 Lk
+                                                                                                       P
+of the polynomial h. Our study of polynomial graph filters of multiple shifts is mainly motivated by
+signal processing on time-varying signals, such as video and data collected by a sensor network over
+a period of time, which carry different correlation characteristics for different dimensions/directions.
+In such a scenario, graph filters should be designed to reflect spectral characteristic on the vertex
+domain and also on the temporal domain, hence polynomial graph filters of multiple commutative
+shifts are preferable, see [26, 33, 38] and also Subsections 5.2 and 5.3. The design of polynomial
+filters of multiple graph shifts and their inverses with specific features and physical interpretation
+for engineering applications is beyond the scope of this paper and it will be discussed in our future
+work. Our discussion is also motivated by directional frequency analysis in [26], feature separation
+in [12] and graph filtering in [1] for time-varying graph signals.
+
+                                                                 2
+     For polynomial graph filters of a single shift, algorithms have been proposed to implement
+their filtering procedure in finite steps, with each step including data exchanging between adjacent
+vertices only, see [6, 19, 41, 46, 49, 50] and also Algorithm 2.1. The first main contribution is to
+extend the one-hop implementation in Algorithm 2.1 to the filtering procedure associated with
+polynomial graph filters of multiple shifts, see Algorithm 2.2 in Section 2. Therefore the filtering
+procedure associated with polynomial graph filters can be implemented on an SDN on which each
+agent is equipped with a data processing subsystem having limited data storage and computation
+power, and with a communication subsystem for data exchanging to its adjacent agents.
+     Inverse filtering associated with the graph filter having small geodesic-width plays an important
+role in graph signal processing, such as denoising, graph semi-supervised learning, non-subsampled
+filter banks and signal reconstruction [2, 3, 6, 9, 19, 21, 29, 32, 41, 46]. The challenge arisen in the
+inverse filtering is on its implementation, as the inverse filter H−1 usually has full geodesic-width
+even if the original filter H has small geodesic-width. For the case that the filter H is strictly
+positive definite, the inverse filtering procedure b 7−→ H−1 b can be implemented by applying
+the iterative gradient descent method in a distributed network, see [2, 35, 41] and Remark 3.2.
+Denote the identity matrix by I. To consider implementation of inverse filtering of an arbitrary
+invertible filter H with small geodesic-width, in Section 3 we start from selecting a graph filter
+G with small geodesic-width to approximate the inverse filter H−1 so that the spectral radius of
+I − HG is strictly less than 1, and then we propose an exponential convergent algorithm (3.5)
+and (3.6) to implement the inverse filtering procedure with each iteration mainly including two
+filtering procedures associated with filters H and G, see Theorem 3.1.
+     For an invertible polynomial graph filter of a single shift, there are several methods to imple-
+ment the inverse filtering in a distributed network approximately [6, 9, 19, 41, 46], see Remark
+4.7. The second main contribution of this paper is that we introduce optimal polynomial filters
+and multivariate Chebyshev polynomial filters to provide good approximations to the inverse of an
+invertible polynomial graph filter H of multiple shifts, see Section 4. Then, based on the iterative
+approximation algorithm in Section 3, we propose the iterative optimal polynomial approximation
+algorithm (4.7) and the iterative Chebyshev polynomial approximation algorithm (4.16) to imple-
+ment the inverse filtering procedure b 7−→ H−1 b, see Theorems 4.2 and 4.4 for their exponential
+convergence. More importantly, as shown in Algorithms 4.1 and 4.2, each iteration in the proposed
+iterative algorithms mainly contains two filtering procedures involving data exchanging between
+adjacent vertices only and hence they can be implemented in a distributed network of large
+size, where each vertex is equipped with systems for limited data storage, computation power and
+data exchanging facility to its adjacent vertices.
+     The paper is organized as follows. In Section 2, we consider distributed implementation of the
+filtering procedure associated with polynomial graph filters of multiple shifts at the vertex level.
+In Section 3, we propose an iterative approximation algorithm to implement an inverse filtering
+procedure. In Section 4, we propose the iterative optimal polynomial approximation algorithm and
+the iterative Chebyshev polynomial approximation algorithm to implement the inverse filtering
+procedure associated with a polynomial filter. The effectiveness of these two iterative algorithms
+to implement the inverse filtering procedure is demonstrated in Section 5. In Appendix A, we
+introduce two illustrative families of commutative graph shifts on circulant graphs and product
+graphs respectively, and we define joint spectrum (A.5) of multiple commutative graph shifts, which
+is crucial for us to develop the iterative algorithms for inverse filtering in Section 4. In Appendix
+A, we also consider the problem when a graph filter is a polynomial of multiple commutative graph
+shifts and how to measure the distance between a graph filter and the set of polynomial filters of
+commutative graph shifts.
+
+
+2    Polynomial filter and distributed implementation
+
+
+                                                   3
+Algorithm 2.1 Backward iteratively
+                           PL         synchronous realization of the filtering procedure x 7−→ Hx
+                                    l
+for a polynomial filter H = l=0 hl S at a vertex i ∈ V .
+  Inputs: Polynomial coefficients h0 , h1 , . . . , hL , entries S(i, j), j ∈ Ni in the i-th row of the shift
+  S, and the value x(i) of the input signal x = (x(i))i∈V at the vertex i.
+  Initialization: z (0) (i) = hL x(i) and n = 0.
+  1) Send z (n) (i) to its adjacent vertices j ∈ Ni and receive z (n) (j) from its adjacent vertices
+  j ∈ Ni .
+  2) Update z (n+1) (i) = hL−n−1 x(i) +         S(i, j)z (n) (j).
+                                          P
+                                             j∈Ni
+  3) Set n = n + 1 and return to Step 1) if n ≤ L − 1.
+  Output: The value x̃(i) = z (L) (i) is the output signal Hx = (x̃(i))i∈V at the vertex i.
+
+
+    Let G = (V, E) be a connected, undirected and unweighted graph of order N . Graph shifts
+S on G are building blocks of a polynomial filter. Our familiar examples of graph shifts are
+the adjacency matrix AG , Laplacian matrix LG := DG − AG , symmetric normalized Laplacian
+                   −1/2      −1/2
+matrix Lsym
+          G   = DG LG DG          and their variants, where DG is the degree matrix of the graph G
+[13, 21, 36, 40]. The filtering procedure x 7−→ Sx associated with a graph shift S = (S(i, j))i,j∈V
+is a local operation that updates signal value at each vertex i ∈ V by a “weighted” sum of signal
+values at adjacent vertices j ∈ Ni ,
+                                                     X
+                                           x̃(i) =          S(i, j)x(j),
+                                                     j∈Ni
+
+
+where x = (x(i))i∈V , Sx = (x̃(i))i∈V , and Ni is the set of adjacent vertices of i ∈ V . The
+abovePlocal implementation of filtering procedure has been extended to a polynomial graph filter
+H= L           l
+       l=0 hl S of the shift S,
+                            (0)
+                            z = hL x,
+                             z(n+1) = hL−n−1 x + Sz(n) , n = 0, . . . , L − 1,                         (2.1)
+                             Hx = z(L) ,
+                           
+
+
+where the filtering procedure x 7−→ Hx is divided into (L+1)-steps with the procedure in each step
+being a local operation [6, 19, 46, 49]. The parallel realization of the above implementation (2.1)
+at the vertex level is presented in Algorithm 2.1. In this section, we extend the above synchronized
+implementation at the vertex level to the filtering procedure associated withP   a polynomial  graph
+                                                                                   d−1 Qm+1
+filter H of multiple shifts, and propose a recursive algorithm containing about m=0 k=1 (Lk +1)
+steps with the output value at each vertex in each step being updated from some weighted sum of
+the input values at adjacent vertices of its preceding step, see Algorithm 2.2.
+     Let Sk = (Sk (i, j))i,j∈V , 1 ≤ k ≤ d, be commutative graph shifts and H be the polynomial
+graph filter in (1.2) with d ≥ 2. For 1 ≤ m ≤ d − 1 we use
+                                                                                m
+                                                                                Y
+                      vm (l1 , . . . , lm ) = lm + lm−1 (Lm + 1) + · · · + l1       (Lk + 1)           (2.2)
+                                                                                k=2
+
+
+                         Qd−1order of (l1 , . . . , lm ) with 0 ≤ lk ≤ Lk , 1 ≤ k ≤ m. Now we define a
+to denote the lexicographical
+matrix Ud−1 of size N × k=1 (Lk + 1) with its vd−1 (l1 , . . . , ld−1 )-th column given by
+
+                                                              Ld
+                                                            X
+                          Ud−1 :, vd−1 (l1 , . . . , ld−1 ) =    hl1 ,...,ld−1 ,ld Sldd x.             (2.3)
+                                                                 ld =0
+
+
+                                                         4
+Follow the procedure in (2.1), we can evaluate Ud−1 (:, vd−1 (l1 , . . . , ld−1 )) in (Ld + 1)-steps with
+the filtering procedure in each step being a local operation, see Step 1 in Algorithm 2.2 for the
+distributed implementation at vertex level. Moreover, one may verify that
+
+                              L1              Ld−1
+                                                                      l
+                              X               X
+                       Hx =           ···             Sl11 · · · Sd−1
+                                                                   d−1
+                                                                       Ud−1 (:, vd−1 (l1 , . . . , ld−1 ))          (2.4)
+                              l1 =0         ld−1 =0
+                                                                                                             Qm
+by (1.2) and (2.3). By induction on m = d−2, . . . , 1, we define matrices Um of size N ×                     k0 =1 (Lk0 +
+1) by
+                                             Lm+1
+                                             X l                                            
+                                                   m+1
+               Um :, vm (l1 , . . . , lm ) =      Sm+1 Um+1 :, vm+1 (l1 , . . . , lm , lm+1 )                       (2.5)
+                                                     lm+1 =0
+
+where 0 ≤ lk ≤ Lk , 1 ≤ k ≤ m. By induction on m = d − 2, . . . , 1 we obtain from (2.5) that every
+column of the matrix Um can be evaluated from Um+1 in (Lm+1 +1)-steps, see Step 3 in Algorithm
+2.2 for the distributed implementation at vertex level. By (2.4) and (2.5), we can prove
+                                      L1
+                                      X             Lm
+                                                    X
+                           Hx =               ···           Sl11 · · · Slmm Um (:, vm (l1 , . . . , lm ))           (2.6)
+                                      l1 =0         lm =0
+
+by induction on m = d − 2, . . . , 1. Taking m = 1 in (2.6) yields
+                                                              L1
+                                                              X
+                                                    Hx =              Sl11 U1 (:, l1 ).                             (2.7)
+                                                              l1 =0
+
+By (2.7), we finally evaluated the output Hx of the filtering procedure from the matrix U1 in
+(L1 + 1)-steps with the filtering procedure in each step being a local operation, see Step 4 in
+Algorithm 2.2 for the implementation at vertex level.
+     Denote the degree of the graph G by deg G, and for two positive quantities a and b, we denote
+a = O(b) if a ≤ Cb for some absolute constant C, which is always independent of the order N
+of the graph G and it could be different at different occurrences. Recall from the definition of
+a graph shift on a graph G that the number of nonzero entries in every row of a graph shift on
+the graph G is no more than deg G + 1. To implement (2.3), (2.5) andQ(2.7) in a central facility,
+the operations of addition and multiplication are about 2N (deg G + 1) dk=1 (Lk + 1), 2N (deg G +
+1) d−2
+   P      Qm+1
+      m=1    k=1 (L k + 1) and 2N (deg G + 1)(L1 + 1) respectively, and memory required are about
+d(deg G + 1)N + dk=1 (Lk + 1) + 2N + N d−1
+                   Q                          P     Qm
+                                                m=0    k=1 (Lk + 1) to store the graph shifts S1 , . . . , Sd ,
+the polynomial coefficients of the polynomial graph filter H, the original graph signal x, the output
+Hx of the filtering procedure and matrices Um , 1 ≤ m ≤ d − 1, in (2.3), (2.5) and (2.6). Hence for
+the implementation of the filter procedure x 7−→ Hx in a central facility via             applying (2.3),
+                                                                                       Qd−1              (2.5)
+and (2.7), the total computational cost is about O N deg G + (N + Ld + 1) k=1               (Lk + 1) and the
+memory requirement is about O N (deg G + 1) dk=1 (Lk + 1) .
+                                                   Q                   
+
+     Shown in Algorithm 2.2 is the implementation of (2.3), (2.5) and (2.7) at the vertex level. Hence
+it is implementable in a distributed network where each agent is equipped with a data processing
+subsystem for limited data storage and computation power, and a communication subsystem for
+direct data exchange to its adjacent vertices. Denote the cardinality of a set E by #E. To
+                                                Pd−1 Qwe
+implement Algorithm 2.2 in a distributed network,           see that the     data processing Q subsystem at a
+                                                         m+1
+vertex i ∈ V performs about O (#Ni + 1) m=0 k=1 (Lk + 1) = O (deg G + 1) dk=1 (Lk + 1)
+                                                                                             Qd
+operations of addition and multiplication, and it stores data of size about O                   k=1 (Lk + 1) +
+                    Pd−1 Qm                                            Qd−1           
+(#Ni + 1)(d + 2 + m=0 k=1 (Lk + 1)) = O (deg G + Ld + 1) k=1 (Lk + 1) , including polynomial
+coefficients of the filter H, the i-th row of graph shifts S1 , . . . , Sd , and the i-th and its adjacent j-th
+
+                                                                      5
+Algorithm 2.2 Synchronous realization of the filtering procedure x 7−→ Hx for the polynomial
+filter H of multiple graph shifts at a vertex i ∈ V .
+   Inputs: Polynomial coefficients hl1 ,...,ld , 0 ≤ l1 ≤ L1 , . . . , 0 ≤ ld ≤ Ld of the polynomial filter
+   H in (1.2), entries Sk (i, j), j ∈ Ni of the i-th row of graph shifts Sk = (Sk (i, j))i,j∈V , 1 ≤ k ≤ d,
+   and the value x(i) of the input graph signal x = (x(k))k∈V at vertex i.
+   Step 1: Find the i-th     Q row of the matrix Ud−1 .
+        for p = 0, 1, . . . , d−1
+                               k=1 (Lk + 1) − 1
+          Step 1a: Write p = vd−1 (l1 , . . . , ld−1 ) for some 0 ≤ lk ≤ Lk , 1 ≤ k ≤ d − 1.
+          Step 1b: Apply Algorithm 2.1 with polynomial coefficients and entries of the graph shift
+   being replaced by polynomial coefficients hl1 ,...,ld−1 ,ld , 0 ≤ ld ≤ Ld , and entries Sd (i, j), j ∈ Ni in
+   the i-th row of the shift Sd , and denote the corresponding output by z (Ld ) (i).
+          Step 1c: Set Ud−1 (i, p) = z (Ld ) (i).
+       end
+   Step 2: if d = 2, set W(i, j) = Ud−1 (i, j), 0 ≤ j ≤ L1 and do Step 4, otherwise do Step 3.
+   Step 3: Find the i-th row of the matrix Um , d − 2 ≥ m ≥ 1.
+        for m = d − 2, . . . ,Q 2, 1
+          for p = 0, 1, . . . , mk=1 (Lk + 1) − 1
+            Step 3a: Apply Algorithm 2.1 with polynomial coefficients, entries of the graph shift
+   and the value of input being replaced by polynomial coefficients hl = 1, 0 ≤ l ≤ Lm+1 , entries
+                                                                             (0)
+           j), j ∈ Ni in the i-th row of the shift Sm+1 , and the value z (i) = Um+1 i, p(Lm+1 +1)+
+   Sm+1 (i,
+   Lm+1 of the (p(Lm+1 + 1) + Lm+1 )-column of the matrix Um+1 , and denote the corresponding
+   output by z (Lm+1 ) (i).
+            Step 3b: Set Um (i, p) = z (Lm+1 ) (i).
+          end
+        end
+      Set W(i, j) = U1 (i, j), 0 ≤ j ≤ L1 .
+   Step 4: Find the value of the output signal Hx at vertex i.
+            Step 4a: Apply Algorithm 2.1 with polynomial coefficients, entries of the graph shift
+   and the value of input being replaced by polynomial coefficients hl = 1, 0 ≤ l ≤ L1 , entries
+   S1 (i, j), j ∈ Ni in the i-th row of the shift S1 , and the value u(0) (i) = W i, L1 of the L1 -column
+   of the matrix W.
+            Step 4b: Denote the corresponding output by u(L1 ) (i).
+   Output: The value x̃(i) = u(L1 ) (i) is the output signal Hx = (x̃(i))i∈V at the vertex i.
+
+
+
+
+components of the original graph signal x, the output Hx of the filtering procedure and the matrices
+Um , 1 ≤ m ≤ d − 1, where j ∈ Ni . Comparing the implementation of (2.3), (2.5) and (2.7) in a
+central facility, the total computational cost to implement Algorithm 2.2 in a distributed network
+is almost the same, while the total memory is slightly large, since the polynomial coefficients of
+the polynomial graph filter H need to be stored at every agent in a distributed network while only
+one copy of the coefficients needs to be stored in a central facility. In addition to data processing
+in a central facility, the implementation of Algorithm 2.2 in a distributed network requires that
+every agent i ∈ V communicates with its adjacent agents j ∈ Ni with the j-th components of the
+original graph signal x,Qmatrices Um, 1 ≤ m ≤ d − 1 and Qd the output Hx of filtering procedure,
+                            d
+which is about O #Ni k=1 (Lk + 1) = O((deg G + 1) k=1 (Lk + 1)) loops. We observe that for
+the implementation of the proposed Algorithm 2.2 in a distributed network, the computational
+cost, memory requirement and communication expense for the data processing and communication
+subsystems equipped at each agent is independent on the size N of the network.
+
+                                                      6
+3    Inverse filtering and iterative approximation algorithm
+Let H be an invertible graph filter on the graph G. In some applications, such as signal denoising,
+inpainting, smoothing, reconstructing and semi-supervised learning [2, 3, 6, 9, 19, 21, 29, 41, 46],
+an inverse filtering procedure
+                                             x = H−1 b                                        (3.1)
+is involved. In this section, we select a graph filter G which provides an approximation to the
+inverse filter H−1 , propose an iterative approximation algorithm with each iteration including
+filtering procedures associated with filters H and G, and show that the proposed algorithm (3.5)
+and (3.6) converges exponentially. The challenge to apply the iterative approximation algorithm
+(3.5) and (3.6) is how to select the filter G to approximate the inverse filter H−1 appropriately,
+which will be discussed in the next section when H is a polynomial filter of commutative graph
+shifts.
+     Denote the spectral radius of a matrix A by ρ(A). Take a graph filter G such that the spectral
+radius of I − HG is strictly less than 1, i.e.,
+
+                                          ρ(I − HG) < 1.                                         (3.2)
+
+By Gelfand’s formula on spectral radius, the requirement (3.2) can be reformulated as
+                                                                  1/n
+                              ρ(I − HG) = lim k(I − HG)n k2             < 1,                     (3.3)
+                                            n→∞
+
+where kxk2 is Euclidean norm of a vector x and kAk2 = supkxk2 =1 kAxk2 is the operator norm of
+a matrix A. By (3.3), we can rewrite the inverse filtering procedure (3.1) as
+                                                            ∞
+                                                −1         X
+                          x = G I − (I − HG)          b=G       (I − HG)n b                      (3.4)
+                                                            n=0
+
+by applying Neumann series to I − HG. Based on the above expansion, we propose the following
+iterative algorithm to implement the inverse filtering procedure (3.1):
+                                (m)
+                                z      = Ge(m−1) ,
+                                   e(m) = e(m−1) − Hz(m) ,                              (3.5)
+                                (m)        (m−1)      (m)
+                                   x    =x         + z , m ≥ 1,
+
+with initials
+                                      e(0) = b and x(0) = 0.                                     (3.6)
+Due to the approximation property (3.2) of the graph filter G to the inverse filter H−1 , we call
+the above algorithm (3.5) and (3.6) as an iterative approximation algorithm. In the following
+theorem, we show that the requirement (3.2) for the approximation filter is a sufficient and necessary
+condition for the exponential convergence of the iterative approximation algorithm (3.5) and (3.6).
+
+Theorem 3.1. Let H be an invertible graph filter and G be a graph filter. Then G satisfies (3.2)
+if and only if for any graph signal b, the sequence x(m) , m ≥ 1, in the iterative approximation
+algorithm (3.5) and (3.6) converges exponentially to H−1 b. Furthermore, for any r ∈ (ρ(I −
+HG), 1), there exists a positive constant C such that
+
+                               kx(m) − H−1 bk2 ≤ Ckxk2 rm , m ≥ 1.                               (3.7)
+
+Proof. =⇒: Applying the first two equations in (3.5) gives
+
+                                  e(m) = (I − HG)e(m−1) , m ≥ 1.
+
+                                                  7
+Applying the above expression repeatedly and using the initial in (3.6) yields
+                                          e(m) = (I − HG)m b, m ≥ 0.                                     (3.8)
+Combining (3.8) and the first and third equations in (3.5) gives
+
+                                x(m) = x(m−1) + G(I − HG)m−1 b, m ≥ 1.
+
+Applying the above expression for x(m) , m ≥ 1, repeatedly and using the initial in (3.6), we obtain
+                                                    m−1
+                                                    X
+                                         (m)
+                                     x         =G         (I − HG)n b, m ≥ 1.                            (3.9)
+                                                    n=0
+By (3.3), there exists a positive constant C0 for any r ∈ (ρ(I − HG), 1) such that
+
+                                         k(I − HG)n k2 ≤ C0 rn , n ≥ 1.                                 (3.10)
+
+Combining (3.2), (3.4) and (3.9), we obtain
+                                                             ∞
+                                                             X
+                                        (m)
+                                   kx          − xk2 = G         (I − HG)n b .                          (3.11)
+                                                                            2
+                                                            n=m
+From (3.10) and (3.11) it follows that
+                               ∞                                                ∞
+     (m)
+                               X
+                                                    n
+                                                                                X          C0 kGk2 kHk2 m
+kx         − xk2 ≤ kGk2 kbk2         k(I − HG) k2 ≤ C0 kGk2 kHk2 kxk2               rn ≤               r kxk2
+                               n=m                                          n=m
+                                                                                               1−r
+
+for all m ≥ 1. This proves the exponential convergence of x(m) , m ≥ 0 to H−1 b.
+    ⇐=: Suppose on the contrary that (3.2) does not hold. Then there exist an eigenvalue λ of
+I − HG and an eigenvector b0 such that
+
+                                      |λ| ≥ 1 and (I − HG)b0 = λb0 .                                    (3.12)
+
+Then the sequence x(m) , m ≥ 1, in the iterative approximation algorithm (3.5) and (3.6) with b
+replaced by b0 becomes
+                                       m−1               λm −1
+                                                            λ−1 Gb0 if λ 6= 1
+                                        X         
+                           x(m) =               λn Gb0 =
+                                                           mGb0     if λ = 1
+                                          n=0
+
+by (3.9) and (3.12). Hence the sequence x(m) , m ≥ 1, does not converge to the nonzero vector
+H−1 b0 , since it is identically zero if Gb0 = 0, and it diverges by the assumption that |λ| ≥ 1 if
+Gb0 6= 0. This contradicts to the exponential convergence assumption and completes the proof.
+
+    By Theorem 3.1, the inverse filtering procedure (3.1) can be implemented by applying the
+iterative approximation algorithm (3.5) and (3.6) with the graph filter G being chosen so that
+(3.2) holds.
+    We finish this section with two remarks on the comparison among the gradient descent method
+[41], the autoregressive moving average (ARMA) method [19], and the proposed iterative approxi-
+mation algorithm (3.5) and (3.6), cf. Remark 4.3.
+Remark 3.2. For a positive definite graph filter H, the inverse filtering procedure (3.1) can be
+implemented by the gradient descent method
+
+                                x(m) = x(m−1) − γ(Hx(m−1) − b), m ≥ 1,                                  (3.13)
+
+associated with the unconstrained optimization problem having the objective function F (x) =
+xT Hx − xT b, where γ is an appropriate step length and xT is the transpose of a vector x. The
+
+                                                            8
+above iterative method is shown in [41] to be convergent when 0 < γ < 2/α2 and to have fastest
+convergence when γ = 2/(α1 + α2 ), where α1 and α2 are the minimal and maximal eigenvalues of
+the matrix H, cf. Remark 4.3. By (3.13), we have that
+
+                                       m−1
+                                       X
+                            (m)
+                        x         =γ         (I − γH)n b + (I − γH)m x(0) , m ≥ 1.            (3.14)
+                                       n=0
+
+
+By (3.14) and (3.9) in Theorem 3.1, the sequence x(m) , m ≥ 1, in the gradient descent algorithm
+with zero initial coincides with the sequence in the iterative approximation algorithm (3.5) and
+(3.6) with G = γI, in which the requirement (3.2) is met as the spectrum of I − HG is contained
+in [1 − γα2 , 1 − γα1 ] ⊂ (−1, 1) whenever 0 < γ < 2/α2 .
+
+Remark 3.3. Let S be a graph shift and h be a polynomial of order L with its distinct nonzero
+roots 1/bl satisfying
+                                             |bl |kSk2 < 1, 1 ≤ l ≤ L.                        (3.15)
+
+Applying partial fraction decomposition to the rational function 1/h(t) gives
+
+                                                         L
+                                                         X
+                                                −1
+                                        (h(t))       =          ak (1 − bk t)−1
+                                                         k=1
+
+
+for some coefficients ak , 1 ≤ k ≤ L. Then for the polynomial filter H = h(S), we can decompose
+the inverse filter H−1 into a family of elementary inverse filters (I − bk S)−1 ,
+
+                                                     L
+                                                     X
+                                         H−1 =             ak (I − bk S)−1 .
+                                                     k=1
+
+
+Due to the above decomposition, the inverse filtering procedure (3.1) can be implemented as follows,
+
+                                        L
+                                        X                                   L
+                                                                            X
+                                                                −1
+                                   x=          ak (I − bk S)         b =:         a k xk .    (3.16)
+                                        k=1                                 k=1
+
+
+The autoregressive moving average (ARMA) method has widely and popularly been known in the
+time series model [19]. The ARMA can also be applied for the inverse filtering procedure (3.1),
+where it uses the decomposition (3.16) with the elementary inverse procedure xk = (I − bk S)−1 b
+implemented by the following iterative approach,
+
+                                        (m)              (m−1)
+                                       xk      = bk Sxk           + b, m ≥ 1
+
+             (0)
+with initial xk = 0. We remark that the above approach is the same as the iterative approximation
+algorithm (3.5) and (3.6) with H and G replaced by I − bk S and I respectively. Moreover, in the
+above selection of the graph filters H and G, the requirement (3.2) is met as it follows from (3.15)
+that
+                                  ρ(I − HG) ≤ kI − HGk2 ≤ |bk |kSk2 < 1                       (3.17)
+
+for all 1 ≤ k ≤ L. Applying (3.17), we see that the convergence rate to apply ARMA in the
+implementation of the inverse filtering procedure is (max1≤k≤L |bk |)ρ(S) < 1.
+
+                                                            9
+4     Iterative polynomial approximation algorithms for inverse fil-
+      tering
+Let Sk = (Sk (i, j))i,j∈V , 1 ≤ k ≤ d, be commutative graph shifts on a connected, undirected and
+unweighted graph G = (V, E) of order N , Λ be their joint spectrum (A.5), and H = h(S1 , . . . , Sd )
+be an invertible polynomial filter in (1.2). For polynomial graph filters of a single shift, there are
+several methods to implement the inverse filtering in a distributed network [6, 9, 19, 40, 41, 46]
+approximately, see Remark 4.7. In this section, we propose two iterative algorithms to implement
+the inverse filtering associated with a polynomial graph filter of commutative graph shifts in a
+distributed network with limited data processing and communication requirement for its agents
+and also in a centralized facility with linear complexity. For the case that the joint spectrum Λ is
+fully known, we construct the polynomial interpolation approximation GI and optimal polynomial
+approximations G     e L , L ≥ 0, to approximate the inverse filter H−1 in Subsection 4.1, and propose
+the iterative optimal polynomial approximation algorithm (4.7) to implement the inverse filtering
+procedure b 7−→ H−1 b, see Theorem 4.2. For a graph G of large order, it is often computationally
+expensive to find the joint spectrum Λ exactly. However, the graph shifts Sk , 1 ≤ k ≤ d, in
+some engineering applications are symmetric and their spectrum sets are known being contained in
+some intervals [8, 30, 39, 47]. For instance, the normalized Laplacian matrix on a simple graph is
+symmetric and its spectrum is contained in [0, 2]. In Subsection 4.2, we consider the implementation
+of the inverse filtering procedure b 7−→ H−1 b when the joint spectrum Λ of commutative shifts
+S1 , ..., Sd is contained in a cube. Based on multivariate Chebyshev polynomial approximation to the
+function h−1 , we introduce Chebyshev polynomial filters GK , K ≥ 0, to approximate the inverse
+filter H−1 , and propose the iterative Chebyshev polynomial approximation algorithm (4.16) to
+implement the inverse filtering procedure b 7−→ H−1 b, see Theorem 4.4. In addition to the
+exponential convergence, the proposed iterative optimal polynomial approximation algorithm and
+Chebyshev polynomial approximation algorithm can be implemented at vertex level in a distributed
+network, see Algorithms 4.1 and 4.2.
+
+4.1    Polynomial interpolation and optimal polynomial approximation
+Let U be the unitary matrix in (A.4) and denote its conjugate transpose by UH . For polynomial
+filters H = h(S1 , . . . , Sd ) and G = g(S1 , . . . , Sd ), one may verify that U(I − HG)UH is an upper
+triangular matrix with diagonal entries 1 − h(λ       λi )g(λλi ), λ i ∈ Λ. Consequently, the requirement (3.2)
+for the polynomial graph filter G becomes
+
+                                 ρ(I − GH) = sup 1 − h(λ     λi ) < 1.
+                                                       λi )g(λ                                           (4.1)
+                                                 λ i ∈Λ
+
+A necessary condition for the existence of a multivariate polynomial g such that (4.1) holds is that
+
+                                           λi ) 6= 0 for all λ i ∈ Λ,
+                                         h(λ                                                             (4.2)
+
+                                                                                 λi )), 1 ≤ i ≤ N , can be
+                                                                        λi , 1/h(λ
+or equivalently the filter H is invertible. Conversely if (4.2) holds, (λ
+interpolated by a polynomial gI of degree at most N − 1 [4], i.e.,
+
+                                                        λi ), λ i ∈ Λ.
+                                             λi ) = 1/h(λ
+                                         gI (λ                                                           (4.3)
+
+Take GI = gI (S1 , . . . , Sd ). Then all eigenvalues of I − GI H are zero and I − GI H is similar to
+a strictly upper triangular matrix. Therefore ρ(I − GI H) = 0 and the iterative approximation
+algorithm (3.5) and (3.6) converges in at most N steps.
+
+Remark 4.1. We remark that the polynomial filter GI constructed above is the inverse filter
+H−1 when all elements λ i , 1 ≤ i ≤ N , in the joint spectrum Λ in (A.5) of graph shifts S1 , . . . , Sk
+
+                                                          10
+Figure 1: Plotted on the left are the original function 1/h1 on [0, 2] (marked as “Original”) and its
+optimal polynomial approximations g̃L , 0 ≤ L ≤ 5 (marked with different L), while on the right are
+the original function 1/h1 on [0, 2] and its Chebyshev polynomial approximations gK , 0 ≤ K ≤ 5
+(marked with different K), where h1 (t) = (9/4 − t)(3 + t) is the polynomial in (5.4), the underlying
+graph is the circulant graph C(1000, Q0 ) in (5.1) generated by Q0 = {1, 2, 5} and the graph shift is
+the symmetric normalized Laplacian matrix on the circulant graph. The approximation errors aL in
+(4.10) to measure the approximation property between g̃L , 0 ≤ L ≤ 5 and 1/h1 are 0.4502, 0.1852,
+0.0612, 0.0212, 0.0072, 0.0025 respectively, while approximation errors bK in (4.17) to measure
+the approximation property between gK , 0 ≤ K ≤ 5 and 1/h1 are 1.0463, 0.5837, 0.2924, 0.1467,
+0.0728, 0.0367 respectively. This confirms the observation numerically that optimal/Chebyshev
+polynomials with higher degrees provide better approximations to the function 1/h1 either on the
+spectrum of normalized Laplacian on the circulant graph or on the interval [0, 2] containing the
+spectrum.
+
+
+
+are distinct. The above conclusion can be proved by following the argument used in the proof of
+Theorem A.3 in Appendix A.4 and the observation that the matrix I − GI H has all eigenvalues
+being zero and it commutes with Sk , 1 ≤ k ≤ d. However in general, the above conclusion does not
+hold without the distinct assumption on the joint spectrum Λ. For instance, one may verify that
+for the polynomial filter H = I + A on the directed line graph of order N , the identity matrix I can
+be chosen to be the polynomial filter GI and it is not the same as the inverse filter H, where the
+graph shift A is the adjacent matrix associated with the directed line graph and has all eigenvalues
+being zero.
+
+    For L ≥ 0, denote the set of all polynomials of degree at most L by PL . In practice, we may not
+use the interpolation polynomial gI in (4.3), and hence the polynomial filter G = gI (S1 , . . . , Sd )
+in the iterative approximation algorithm (3.5) and (3.6), as it is of high degree in general. By
+(3.7), the convergence rate of the iterative approximation algorithm (3.5) and (3.6) depends on the
+spectral radius in (4.1). Due to the above observation, we select g̃L ∈ PL such that
+
+                                    g̃L = arg min sup |1 − g(λ     λi )|,
+                                                             λi )h(λ                                     (4.4)
+                                              g∈PL λ i ∈Λ
+
+
+see Figure 1 for the approximation property of g̃L , L ≥ 0 to the reciprocal 1/h1 of the polynomial
+h1 (t) = (9/4 − t)(3 + t) in (5.4). For a multivariate polynomial g ∈ PL , we write
+                                                   X
+                                           g(t) =      ck tk ,
+                                                      |k|≤L
+
+
+where |k| = k1 + · · · + kd and tk = tk11 · · · tkdd for t = (t1 , . . . , td ) and k = (k1 , . . . , kd ). Set
+c = (ck )|k|≤L . Then for the case that all eigenvalues of Sk , 1 ≤ k ≤ d, are real, i.e., Λ ⊂ Rd , the
+
+                                                      11
+Algorithm 4.1 The IOPA algorithm to implement the inverse filtering procedure b 7−→ H−1 b at
+a vertex i ∈ V .
+  Inputs: Polynomial coefficients of H and G      e L , entries Sk (i, j), j ∈ Ni in the i-th row of the shift
+  Sk , 1 ≤ k ≤ d, the value b(i) of the input signal b = (b(i))i∈V at the vertex i, and number M of
+  iteration.
+  Initialization: Initial e(0) (i) = b(i), x(0) (i) = 0 and n = 0.
+  Iteration:
+     For m = 1, 2, . . . , M
+       Step 1: Use Algorithm 2.1 for d = 1 and Algorithm 2.2 for d ≥ 2 to implement the filtering
+  procedure e(m−1) 7−→ z(m) = G      e L e(m−1) at the vertex i, and the output is the i-th entry z (m) (i)
+  of the vector z(m) .
+       Step 2: Use Algorithm 2.1 for d = 1 and Algorithm 2.2 for d ≥ 2 to implement the filtering
+  procedure z(m) 7−→ w(m) = Hz(m) at the vertex i, and the output is the i-th entries w(m) (i) of
+  the vector w(m) .
+       Step 3: Update i-th entries of e(m) and x(m) by e(m) (i) = e(m−1) (i) − w(m) (i) and x(m) (i) =
+  x (m−1) (i) + z (m) (i) respectively.
+     end
+  Output: The approximated value x(i) ≈ x(M ) (i) is the output signal H−1 b = (x(i))i∈V at the
+  vertex i.
+
+
+minimization problem (4.4) can be reformulated as a linear programming,
+
+                            min s subject to − (s − 1)1 ≤ Pc ≤ (s + 1)1,                                (4.5)
+
+                 λki )1≤i≤N,|k|≤L , 1 is the vector with all entries taking value 1, and we use standard
+             λi )λ
+where P = (h(λ
+componentwise ordering for real vectors.
+   Taking polynomial filters
+                                     Ge L = g̃L (S1 , . . . , Sd ), L ≥ 0,                          (4.6)
+to approximate the inverse filter H−1 , the iterative approximation algorithm (3.5) and (3.6) with
+the graph filter G replaced by Ge L becomes
+                                     (m)
+                                     z     =Ge L e(m−1) ,
+                                      e (m) = e(m−1) − Hz(m) ,                                          (4.7)
+                                     (m)
+                                      x     = x(m−1) + z(m) , m ≥ 1,
+
+with initials e(0) and x(0) given in (3.6). We call the above iterative algorithm (4.7) by the iterative
+optimal polynomial approximation algorithm, or IOPA in abbreviation.
+    Presented in Algorithm 4.1 is the implementation of IOPA algorithm at the vertex level in
+a distributed network. In each iteration       of Algorithm 4.1, each vertex/agent of the distributed
+network needs about O((L+1)d−1 + d−1
+                                      Q
+                                         k=1 (L k +1)) steps containing data exchanging among adjacent
+vertices and weighted sum of values at adjacentQvertices in each iteration. The memory requirement
+for each vertex is about O (deg G + Lk + 1) d−1                                               d−1 ) . The
+                                                                                                   
+                                                     k=1 (Lk + 1) + (det G) + L + 1)(L + 1)
+total operations of addition and multiplication in each iteration to implement the inverse filtering
+procedure b 7−→ H−1 b via Algorithm 4.1 in a distributed network and        Q procedure (4.7) in a central
+facility are almost the same, which are both about O N (deg G + 1)( dk=1 (Lk + 1) + (L + 1)d ) .
+                                                                                                       
+
+    By (4.4), we have
+                                 ρ(I − Ge L H) = sup |1 − g̃L (λ      λi )|
+                                                                λi )h(λ                               (4.8)
+                                                   λ i ∈Λ
+
+          e L H), 0 ≤ L ≤ N − 1, is a nonnegative decreasing sequence with the last term ρ(I −
+and ρ(I − G
+
+                                                     12
+e N −1 H) being the same as ρ(I − GI H) = 0 by (4.3), i.e.,
+G
+0 = ρ(I − GI H) = ρ(I − G                  e L+1 H) ≤ ρ(I − G
+                         e N −1 H) ≤ ρ(I − G                               e 0 H), 0 ≤ L ≤ N − 1.
+                                                            e L H) ≤ ρ(I − G
+                                                                                            (4.9)
+This implies that the polynomial filters GL with larger L provide better approximation to the
+inverse filter H−1 and hence the corresponding IOPA algorithm (4.7) has faster convergence. In
+the following theorem, we show that the IOPA algorithm (4.7) converges exponentially when L is
+appropriately chosen, see Subsection 5.1 for the numerical demonstration.
+Theorem 4.2. Let S1 , ..., Sd be commutative graph shifts, H = h(S1 , . . . , Sd ) be an invertible
+polynomial graph filter for some multivariate polynomial h, and let degree L ≥ 0 be so chosen that
+                                 aL := sup |1 − g̃L (λ     λi )| < 1.
+                                                     λi )h(λ                                  (4.10)
+                                        λ i ∈Λ
+
+Then for any graph signal b, the sequence x(m) , m ≥ 1, in the IOPA algorithm (4.7) converges
+exponentially to H−1 b. Moreover, for any r ∈ (aL , 1), there exists a positive constant C such that
+(3.7) holds.
+                                                                                    e L.
+Proof. The conclusion follows from (4.8), (4.10) and Theorem 3.1 with G replaced by G
+
+    Let L0 be the minimal nonnegative integer so that aL0 < 1. By (4.9) and Theorem 4.2, the
+inverse filtering procedure (3.1) can be implemented by applying the IOPA algorithm (4.7) with
+L ≥ L0 and the IOPA algorithm (4.7) converges faster when the higher degree L of the optimal
+polynomial g̃L is selected, see Subsection 5.1 for the numerical demonstration. However, the im-
+plementation of IOPA algorithm (4.7) with larger L at every agent/vertex in a distributed network
+has higher computational cost in each iteration and requires more memory for each agent/vertex,
+and also it takes higher computational cost to solve the the minimization problem (4.4) for larger
+L.
+    We finish this subsection with a remark on the IOPA algorithm (4.7) and the gradient descent
+method (3.13).
+Remark 4.3. For the case that the graph filter H has its spectrum contained in [α1 , α2 ], the
+solution of the minimization problem (4.4) with L = 0 is given by g̃0 = 2/(α1 + α2 ), where α1 =
+                                      λi ) are the minimal and maximal eigenvalues of H respectively.
+            λi ) and α2 = maxλ i ∈Λ h(λ
+minλ i ∈Λ h(λ
+Therefore, to implement the inverse filtering procedure (3.1), the gradient descent method (3.13)
+with zero initial and optimal step length γ = 2/(α1 + α2 ) is the same as the proposed IOPA
+algorithm (4.7) with L = 0, cf. Remark 3.2. By (4.9), we see that the IOPA algorithm with L ≥ 1
+has faster convergence than the gradient descent method does, at the cost of heavier computational
+cost at each iteration, see Table 1 and Figure 4 in Subsection 5.1 for numerical demonstrations.
+
+4.2   Chebyshev polynomial approximation
+In this subsection, we assume that commutative graph shifts S1 , ..., Sd have their joint spectrum Λ
+                        µ, ν ] = [µ1 , ν1 ] × · · · × [µd , νd ],
+contained in the cubic [µ
+                                           µ, ν ] for all λi ∈ Λ,
+                                     λi ∈ [µ                                                  (4.11)
+and h be a multivariate polynomial satisfying
+                                    h(t) 6= 0 for all t ∈ [µ
+                                                           µ, ν ].                            (4.12)
+Define Chebyshev polynomials Tk , k ≥ 0, by
+                                   
+                                    1                      if k = 0,
+                        Tk (s) =      s                     if k = 1,
+                                      2sTk−1 (s) − Tk−2 (s) if k ≥ 2,
+                                   
+
+
+                                                 13
+and shifted multivariate Chebyshev polynomials T̄k , k = (k1 , . . . , kd ) ∈ Zd+ , on [µ
+                                                                                        µ, ν ] by
+
+                                    d            2t − µ − ν 
+                                                       i          i      i
+                                    Y
+                        T̄k (t) =         Tki                                 , t = (t1 , ..., td ) ∈ [µ
+                                                                                                       µ, ν ].
+                                                           νi − µi
+                                    i=1
+
+By (4.12), 1/h is an analytic function on [µ µ, ν ], and hence it has Fourier expansion in term of
+                                         d
+shifted Chebyshev polynomials T̄k , k ∈ Z+ ,
+
+                                           1     X
+                                               =    ck T̄k (t), t ∈ [µ
+                                                                     µ, ν ],
+                                          h(t)    d        k∈Z+
+
+
+where
+                               2d−p(k)
+                                                Z
+                                                        T̄k (t1 (θθ ), . . . , td (θθ ))
+                          ck =                                                           dθ, k ∈ Zd+ ,
+                                 πd              [0,π]d h(t1 (θ θ ), . . . , td (θθ ))
+
+p(k) is the number of zero components in k ∈ Zd+ , and ti (θθ ) = νi +µ
+                                                                     2
+                                                                       i
+                                                                         + νi −µ
+                                                                              2
+                                                                                i
+                                                                                  cos(θi ), 1 ≤ i ≤ d, for
+θ = (θ1 , ..., θd ). Define partial sum of the expansion (4.2) by
+                                                    X
+                                           gK (t) =     ck T̄k (t),                                (4.13)
+                                                                      |k|≤K
+
+
+where |k| = di=1 ki for k = (k1 , ..., kd )T ∈ Zd+ . Due to the analytic property of the polynomial h,
+             P
+the partial sum gK , K ≥ 0, converges to 1/h exponentially [34],
+
+                              bK := sup |1 − h(t)gK (t)| ≤ Cr0K , K ≥ 0,                                         (4.14)
+                                             µ,νν ]
+                                          t∈[µ
+
+for some positive constants C ∈ (0, ∞) and r0 ∈ (0, 1), see Figure 1 for the approximation property
+of gK , K ≥ 0 to the reciprocal 1/h1 of the polynomial h1 (t) = (9/4 − t)(3 + t) in (5.4).
+    Set
+                                   GK = gK (S1 , . . . , Sd ), K ≥ 0,                         (4.15)
+and call the iterative approximation algorithm (3.5) and (3.6) with the graph filter G replaced by
+GK by the iterative Chebyshev polynomial approximation algorithm, or ICPA in abbreviation,
+                                 (m)
+                                 z     = GK e(m−1) ,
+                                   e(m) = e(m−1) − Hz(m) ,                                   (4.16)
+                                 (m)
+                                   x    = x(m−1) + z(m) , m ≥ 1,
+
+with initials e(0) and x(0) given in (3.6). In the following theorem, we show that the ICPA algorithm
+(4.16) converges exponentially, when the degree K is so chosen that (4.17) holds, see Subsection
+5.1 for the demonstration.
+
+Theorem 4.4. Let S1 , ..., Sd be commutative graph shifts, H be a polynomial graph filter of the
+graph shifts, and let degree K ≥ 0 of Chebyshev polynomial approximation be so chosen that
+
+                                      bK := sup |1 − h(t)gK (t)| < 1.                                            (4.17)
+                                                         µ,νν ]
+                                                      t∈[µ
+
+
+Then for any graph signal b, x(m) , m ≥ 0, in the ICPA algorithm (4.16) converges exponentially
+to H−1 b. Moreover for any r ∈ (bK , 1), there exists a positive constant C such that
+
+                                    kx(m) − H−1 bk2 ≤ Ckxk2 rm , m ≥ 1.                                          (4.18)
+
+                                                                       14
+Algorithm 4.2 The ICPA algorithm to implement the inverse filtering procedure b 7−→ H−1 b at
+a vertex i ∈ V .
+  Inputs: Polynomial coefficients of polynomial filters H and GK , entries Sk (i, j), j ∈ Ni in the
+  i-th row of the shifts Sk , 1 ≤ k ≤ d, the value b(i) of the input signal b = (b(i))i∈V at the vertex
+  i, and number M of iteration.
+  Initialization: Initial e(0) (i) = b(i), x(0) (i) = 0 and n = 0.
+  Iteration: Use the iteration in Algorithm 4.1 except replacing G      e L by GK in (4.15), and the
+              (M )
+  output is x (i).
+  Output: The approximated value x(i) ≈ x(M ) (i) is the output signal H−1 b = (x(i))i∈V at the
+  vertex i.
+
+
+Proof. Following the argument used in (4.8), one may verify that
+
+                            ρ(I − GK H) = sup |1 − gK (λ     λi )| ≤ bK ,
+                                                       λi )h(λ                                  (4.19)
+                                            λ i ∈Λ
+
+where the inequality holds by (4.11) and the definition (4.14) of bK , K ≥ 0. Then the desired
+conclusion follows from (4.19) and Theorem 3.1 with G replaced by GK .
+
+Remark 4.5. We remark that the convergence conclusion (4.18) in Theorem 4.4 can be improved
+as
+                                    kHk2 kGK k2
+                 kx(m) − H−1 bk2 ≤              (bK )m kH−1 bk2 , m ≥ 1.              (4.20)
+                                      1 − bK
+provided that the commutative graph shifts S1 , . . . , Sd are symmetric. Under the assumption
+that S1 , . . . , Sd are symmetric, there exists a unitary matrix U such that they can be diago-
+nalized simultaneously and hence UT (I − HGK )U is a diagonal matrix with diagonal entries
+1 − h(λ
+      λi )gK (λ   λi ), 1 ≤ i ≤ N , where λ 1 , . . . , λ N ∈ Λ. Therefore
+
+                   kI − GK Hk2 = ρ(I − GK H) = sup |1 − h(λ       λi )| ≤ bK
+                                                          λi )gK (λ                             (4.21)
+                                                          1≤i≤N
+
+where the last inequality follows from (4.11) and (4.14). The desired exponential convergence can
+be obtained by applying the similar argument used in Theorem 3.1 with (3.2) and (3.3) replaced
+by (4.17) and (4.21).
+
+Remark 4.6. We remark that each iteration in the ICPA algorithm (4.16) can be implemented
+at vertex level, see Algorithm 4.2. In each iteration of the ICPA algorithm  (4.16), every agent in a
+                                                                          Qd−1
+distributed network (vertex of the graph) needs about O((K + 1)    d−1  + k=1 (Lk + 1)) steps with
+each step containing data exchanging among adjacent vertices and weighted linear combination of
+values at adjacent vertices. The memory requirement for each agent is about O (deg G + Ld +
+1) d−1                                     d−1 . The total operations of addition and multiplication
+   Q                                           
+     k=1 (Lk + 1) + (deg G + K + 1)(K + 1)
+to implement each iteration of Algorithm 4.2 in a distributed network andQto implement (4.16) in a
+central facility are almost the same, which are both about O N (deg G+1)( dk=1 (Lk +1)+(K+1)d ) .
+
+Remark 4.7. By (4.14), an inverse filtering procedure (3.1) can be approximately implemented by
+the filter procedure GK x with large K, i.e., H−1 x ≈ GK x for large K. The above implementation
+of the inverse filtering has been discussed in [6, 46] for the case that H is a polynomial graph filter
+of one shift, and it is known as the Chebyshev polynomial approximation algorithm (CPA). We
+remark that in the single graph shift setting, the approximation GK x in the CPA is the same as
+the first term x(1) in the ICPA algorithm (4.16). To implement the inverse filtering with high
+accuracy, the CPA requires Chebyshev polynomial approximation of high degree, which means
+more integrals involved in coefficient calculations. On the other hand, we can select Chebyshev
+
+                                                     15
+polynomial approximation of lower degree in the ICPA algorithm (4.16) to reach the same accuracy
+with few iterations. By Theorem 4.4, the ICPA algorithm (4.16) has exponential convergent rate
+bK , which has limit zero as K → ∞. This indicates that the ICPA algorithm converges faster for
+large K, however for each agent in a distributed network, its data processing system need more
+memory to store data and time to process data, and its communication system costs more for larger
+K too. Our simulation in the next section confirms the above observation, see Table 1 and Figure
+4 in Subsection 5.1.
+
+
+5     Numerical simulations
+In this section, we demonstrate the iterative optimal polynomial approximation (IOPA) algorithm
+(4.7) and the iterative Chebyshev polynomial approximation (ICPA) algorithm (4.16) to implement
+an inverse filtering procedure, and compare their performances with the gradient descent method
+(3.13) with zero initial [41], and the autoregressive moving average (ARMA) algorithm (3.16) and
+(3.17) [19].
+    Let N ≥ 1 and Q = {q1 , . . . , qM } be a set of integers ordered so that 1 ≤ q1 < . . . < qM < N/2.
+The circulant graph C(N, Q) generated by Q has the vertex set VN = {0, 1, . . . , N − 1} and the
+edge set
+                             EN (Q) = {(i, i ± q mod N ), i ∈ VN , q ∈ Q},                          (5.1)
+where a = b mod N if (a − b)/N is an integer. Shown in Figure 2 is a circulant graph with N = 50
+and Q = {1, 2, 5}. Circulant graphs are widely used in image processing [10, 11, 23, 24, 48]. In
+Subsection 5.1, we demonstrate the performance of the proposed IOPA and ICPA algorithms on
+the implementation of the inverse filtering on circulant graphs.
+    Graph signal denoising is one of the most popular applications in graph filtering [7, 9, 13, 19,
+21, 37, 40, 49, 50]. and in some cases, it can be recasted as an inverse filtering procedure. In
+Subsection 5.2, we consider denoising noisy sampling data
+
+                                     bi = x(ti ) + η i , 1 ≤ i ≤ M,                                (5.2)
+
+of some time-varying graph signal x(t) on random geometric graphs, which is governed by a differ-
+ential equation
+                                         x00 (t) = Px(t),                                  (5.3)
+where η i , 1 ≤ i ≤ M , are noises with noise level η = max1≤i≤M kηη i k∞ , the sampling procedure is
+taken uniformly at ti = t1 + (i − 1)δ, 1 ≤ i ≤ M , with uniform sampling gap δ > 0, and P is a
+graph filter with small geodesic-width.
+   Finally in Subsection 5.3, we apply the proposed IOPA and ICPA algorithms to denoise the
+hourly temperature dataset collected at 218 locations in the United States.
+
+5.1   Iterative approximation algorithms on circulant graphs
+In this section, we consider the circulant graph C(N, Q0 ) generated by Q0 = {1, 2, 5}, the input
+graph signal x with entries randomly selected in the interval [−1, 1], and the graph signal b = H1 x
+as the observation, where
+                                      h1 (t) = (9/4 − t)(3 + t)                                 (5.4)
+and
+                                          H1 = h1 (Lsym
+                                                    C(N,Q0 ) )
+
+is a polynomial graph filter of the symmetric normalized Laplacian Lsym
+                                                                     C(N,Q0 ) on C(N, Q0 ), see
+Remark A.1 for commutative graph shifts on circulant graphs. We implement the inverse filtering
+b 7−→ H−1
+        1 b through the IOPA algorithm (4.7) and ICPA algorithm (4.16) on the circulant graph
+
+
+                                                   16
+Table 1: Average relative iteration error over 1000 trials for the ARMA method, GD0 algorithm,
+and IOPA and ICPA algorithms with different degrees to implement the inverse filtering b 7−→
+H−1
+  1 b on the circulant graph C(1000, Q0 ).
+
+  AE m
+              1       2       3       4       5         7       9       11      14      17      20
+  Alg.
+  ARMA      .3259   .2583   .1423   .1098   .0718      .0381   .0207   .0113   .0047   .0019   .0008
+   GD0      .2350   .0856   .0349   .0147   .0063      .0012   .0002   .0000   .0000   .0000   .0000
+  ICPA0     .5686   .4318   .3752   .3521   .3441      .3460   .3577   .3743   .4061   .4451   .4913
+  ICPA1     .4494   .2191   .1103   .0566   .0295      .0082   .0024   .0007   .0001   .0000   .0000
+  ICPA2     .1860   .0412   .0098   .0024   .0006      .0000   .0000   .0000   .0000   .0000   .0000
+  IOPA1     .1545   .0266   .0047   .0008   .0002      .0000   .0000   .0000   .0000   .0000   .0000
+  ICPA3     .0979   .0113   .0014   .0002   .0000      .0000   .0000   .0000   .0000   .0000   .0000
+  ICPA4     .0499   .0030   .0002   .0000   .0000      .0000   .0000   .0000   .0000   .0000   .0000
+  IOPA2     .0365   .0019   .0001   .0000   .0000      .0000   .0000   .0000   .0000   .0000   .0000
+  ICPA5     .0225   .0007   .0000   .0000   .0000      .0000   .0000   .0000   .0000   .0000   .0000
+  IOPA3     .0167   .0003   .0000   .0000   .0000      .0000   .0000   .0000   .0000   .0000   .0000
+  IOPA4     .0044   .0000   .0000   .0000   .0000      .0000   .0000   .0000   .0000   .0000   .0000
+  IOPA5     .0019   .0000   .0000   .0000   .0000      .0000   .0000   .0000   .0000   .0000   .0000
+
+
+C(N, Q0 ). By Theorems 4.2 and 4.4, the IOPA algorithm with L ≥ 0 and the ICPA algorithm with
+K ≥ 1 converge, and we denote those algorithms by IOPAL and ICPAK for abbreviation. Notice
+that the filter H1 is positive definite, and
+                                        1       4/21    4/21
+                                             =        +
+                                      h1 (t)   9/4 − t 3 + t
+meets the requirement (3.15) for the ARMA. For the circulant graph C(N, Q0 ) with N = 1000,
+we also implement the inverse filtering b 7−→ H−1  1 b by the gradient descent method with zero
+initial, GD0 in abbreviation, with the optimal step length γ = 2/(6.7500 + 2.5588), and the ARMA
+method, where 2.5588 and 6.7500 are the minimal and maximal eigenvalues for H1 respectively.
+    Set the relative iteration error
+
+                               E(m, x) = kx(m) − xk2 /kxk2 , m ≥ 1,
+
+where x(m) , m ≥ 1, are the output at m-th iteration. Shown in Table 1 are the comparisons
+of the ARMA algorithm, the GD0 algorithm, and IOPAL and ICPAK algorithms regard to the
+average of the relative iteration error for implementing the inverse filtering on the circulant graph
+C(1000, Q0 ) over 1000 trials, where 0 ≤ L, K ≤ 5. This confirms that exponential convergence and
+applicability of the inverse filtering procedure b 7−→ H−11 b of IOPAL, 0 ≤ L ≤ 5 and ICPAK,
+1 ≤ K ≤ 5 on the circulant graph C(1000, Q0 ). The average exponential convergence rates of
+IOPAL, 0 ≤ L ≤ 5, over 1000 trials are 0.4401, 0.1820, 0.0593, 0.0208, 0.0067, 0.0023 respectively,
+and the average exponential convergence rates of ICPAK, 1 ≤ K ≤ 5, are 0.5485, 0.2804, 0.1459,
+0.0685, 0.0334 respectively. It is observed that average exponential convergence rates of IOPAL,
+0 ≤ L ≤ 5 and ICPAK, 1 ≤ K ≤ 5, are close to their theoretical bounds aL , 0 ≤ L ≤ 5 in (4.10)
+and bK , 1 ≤ K ≤ 5 in (4.17) respectively, which are listed in the caption of Figure 1. By the
+third row in Table 1, we see that the ICPA0 does not yield the desired inverse filtering result.
+
+                                                  17
+Figure 2: The circulant graph with 50 nodes and generating set Q0 = {1, 2, 5}, where edges in
+red/green/blue are also edges of the circulant graphs C1 , C2 and C5 generated by {1}, {2}, {5}
+respectively.
+
+
+
+
+Figure 3: Plotted from top to bottom are the average exponential convergence rate r in the log-
+arithmic scale over 1000 trials by ARMA, ICPA1, GD0, ICPA2, IOPA1, ICPA3, ICPA4, IOPA2,
+ICPA5, IOPA3, IOPA4, IOPA5 to implement the inverse filtering b 7−→ H−11 b on circulant graphs
+C(N, Q0 ) with 100 ≤ N ≤ 2000, respectively.
+
+
+The reason for the divergence is that the theoretical bound b0 = 1.0463 in (4.17) is strictly larger
+than one. From Table 1, we observe that the IOPAL algorithms with higher degree L (resp. the
+ICPAK with higher degree K) have faster convergence, and the IOPAL algorithm outperforms the
+ICPAK algorithm when the same degree L = K is selected. Comparing with the ARMA algorithm
+and the GD0 algorithm, we observe that the proposed IOPAL algorithms with L ≥ 1 and ICPAK
+algorithms with K ≥ 2 have faster convergence, while the GD0=IOPA0 algorithm outperforms the
+ICPAK when K = 1 and the ARMA has slowest convergence.
+     We also apply ARMA, GD0, and IOPAL and ICPAK with 1 ≤ L, K ≤ 5 to implement inverse
+filtering procedure associated with H1 = h1 (Lsym
+                                                C(N,Q0 ) ) on the circulant graph C(N, Q0 ) with h1 in
+(5.4) and N ≥ 100. All experiments were performed on MATLAB R2017b, running on a DELL
+T7910 workstation with two Intel Core E5-2630 v4 CPUs (2.20 GHz) and 32GB memory. From
+the simulations, we observe that the exponential convergence rate r for the proposed algorithms is
+almost independent on N ≥ 100, see Figure 3, and the number of iterations to ensure the relative
+iteration error E(m, x) ≤ 10−3 are 20, 8, 11, 5, 4, 4, 3, 3, 2, 2, 2, 2 for ARMA, GD0, ICPA1, ICPA2,
+IOPA1, ICPA3, ICPA4, IOPA2, ICPA5, IOPA3, IOPA4, IOPA5 respectively. Shown in Figure 4 is
+the average running time T in the logarithmic scale over 1000 trials, where the running time T is
+measured in seconds to ensure the relative iteration error E(m, x) ≤ 10−3 . From our simulations,
+we see that there is a complicated trade-off between the convergence rate and the running time
+to apply our proposed algorithms, ARMA and GD0 for the implementation of an inverse filtering
+procedure.
+
+                                                 18
+Figure 4: Plotted are the average of total running time T in the logarithmic scale for the GD0,
+ARMA and the IOPAL and ICPAK algorithms with 1 ≤ L, K ≤ 5 to implement the inverse
+filtering on circulant graphs C(N, Q0 ) with 100 ≤ N ≤ 16000.
+
+5.2    Denoising time-varying signals
+In this section, we consider denoising noisy sampling data of some time-varying graph signal x(t)
+on random geometric graphs, which is governed by the differential equation (5.3). Discretizing the
+differential equation (5.3) gives
+
+                              δ −2 x(ti+1 ) + x(ti−1 ) − 2x(ti ) ≈ Px(ti ),
+                                                                
+                                                                                             (5.5)
+
+where i = 1, . . . , M . Applying the trivial extension x(t0 ) = x(t1 ) and x(tM +1 ) = x(tM ) around the
+boundary, we can reformulate (5.5) in a recurrence relation,
+
+                             x(ti ) ≈ (2I + δ 2 P)x(ti−1 ) − x(ti−2 ), 2 ≤ i ≤ M,                            (5.6)
+
+with x(t0 ) = x(t1 ). Let T = (T, F ) be the line graph with the vertex set T = {t1 , · · · , tM } and
+edge set F = {(t1 , t2 ), . . . , (tM −1 , tM )} ∪ {(tM , tM −1 ), . . . , (t2 , t1 )}. Denote Kronecker product of
+two matrices A and B by A ⊗ B, and the Laplacian matrix of the line graph T with vertices
+{t1 , . . . , tM } by LT . Then we can reformulate the recurrence relation (5.6) in the matrix form
+
+                                         (δ −2 LT ⊗ I + I ⊗ P)X ≈ 0,                                         (5.7)
+
+where X is the vectorization of discrete time signals x(t1 ), . . . , x(tM ). In most of applications
+[10, 14, 28, 49], the time-varying signal x(t) at every moment t has certain smoothness in the
+vertex domain, which is usually described by
+
+                                     (x(ti ))T Lsym
+                                                G x(ti ) ≈ 0, 1 ≤ i ≤ M,                                     (5.8)
+
+where Lsym
+         G   is the symmetric normalized Laplacian on the connected, undirected and unweighted
+graph G = (V, E). Based on the observations (5.7) and (5.8), we propose the following Tikhonov
+regularization approach
+             b := arg min kY − Bk2 + αYT (I ⊗ Lsym )Y + βYT (δ −2 LT ⊗ I + I ⊗ P)Y,
+             X                                                                                               (5.9)
+                                 2             G
+                         Y
+
+where B is the vectorization of the observed noisy data b1 , . . . , bM , and α, β are penalty constants
+in the vertex and “temporal” domains to be appropriately chosen [26].
+    Set
+                    Dα,β = I + αI ⊗ LsymG  + β(δ −2 LT ⊗ I + I ⊗ P), α, β ≥ 0.
+The minimization problem (5.9) has an explicit solution
+                                               b = (Dα,β )−1 B,
+                                               X                                                            (5.10)
+
+                                                        19
+Figure 5: Presented on the left and right are the first snapshot xp (t1 ) and the middle snapshot
+xp (t12 ) of a time-varying signal xp (tm ), 1 ≤ m ≤ 24, on the random geometric graph G512 respec-
+tively. The qualities (xp (tm ))T Lsym
+                                   G512 xp (tm ) to measure smoothness of xp (tm ) in the vertex domain
+are 84.1992 and 42.4746 for m = 1, 12 respectively, which indicates that the graph signal x(t12 ) in
+the last snapshot is smoother than the initial graph signal x(t1 ).
+
+
+when I + αLsym    G   + βP is positive definite. Set S1 = I ⊗ Lsym  G    and S2 = 21 LT ⊗ I. As shown
+in Proposition A.2 of Appendix A.2, S1 and S2 are commutative graph shifts on the Cartesian
+product graph T × G. Moreover one may obtain from (A.3) and (A.5) that S1 and S2 have their
+joint spectrum contained in [0, 2]2 . Therefore for the case that P = p(Lsym    G ) for some polynomial
+p, Dα,β = hα,β (S1 , S2 ) is a polynomial graph filter of commutative graph filters S1 and S2 , where
+hα,β (t1 , t2 ) = 1 + αt1 + βp(t1 ) + 2βδ −2 t2 . Moreover, one may verify that Dα,β is positive definite if
+                                      hα,β (t1 , t2 ) > 0, 0 ≤ t1 , t2 ≤ 2,
+which is satisfied if 1 + βp(t1 ) > 0 for all 0 ≤ t1 ≤ 2. Hence we may use the IOPA algorithm (4.7)
+and the ICPA algorithm (4.16) with the polynomial filter H being replaced by Dα,β to implement
+the denoising procedure (5.10). By the exponential convergence of the proposed algorithms, we
+may use their outputs at m-th iteration with large m as denoised time-varying signals.
+       Let G512 be the random geometric graph reproduced by the GSPToolbox, which has 512 vertices
+randomly deployed in the region p      [0, 1]2 and an edge existing between two vertices if their physical
+distance is not larger than 2/512 = 1/16 [21, 31]. Denote the symmetric normalized Laplacian
+matrix on G512 by Lsym  G512 and the coordinates of a vertex i in G512 by (ix , iy ). For the simulations in
+this section, the time-varying signal x(tm ), 1 ≤ m ≤ M , is given in (5.5), where M = 24, δ = 0.1,
+the governing filter is given by P = −I + Lsym    G512 /2, and the initial graph signal xp (t1 ) is a blockwise
+polynomial consisting of four strips and imposing (0.5 − 2ix ) on the first and third diagonal strips
+and (0.5 + i2x + i2y ) on the second and fourth strips respectively [21]. Shown in Figure 5 are two
+snapshots of the above time-varying graph signal.
+       Appropriate selection of the penalty constants α, β in the vertex and temporal domains is
+crucial to have a satisfactory denoising performance. In the simulations, we let noise entries of
+η i , 1 ≤ i ≤ 24 in (5.3), be i.i.d. variables uniformly selected in the range [−η, η], and we take
+                       EkB − Xk22                  M N η 2 /3               η2
+               α=                       =                             ≈              ,                  (5.11)
+                    E BT (I ⊗ Lsym        XT (I ⊗ Lsym
+                                      
+                               G512 )B
+                                                                  2
+                                                   G512 )X + M N η /3   0.2306 + η 2
+and
+                                            EkB − Xk22
+                              β=                                 ≈ 0.0026                              (5.12)
+                                   2E BT (δ −2 LT ⊗ I + I ⊗ P)B
+to balance the fidelity term and the regularization terms on the vertex and temporal domains in
+the Tikhonov regularization approach (5.9).
+
+                                                       20
+Figure 6: Presented on the left and right sides are the temperature data w1 and w12 , where wi ,
+1 ≤ i ≤ 24, are the hourly temperature of 218 locations in the United States on August 1st, 2010.
+
+
+    We use the IOPA algorithm (4.7) with L = 1, the ICPA algorithm (4.16) with K = 1 and the
+gradient descent method (3.13) with zero initial to implement the inverse filter procedure B 7−→
+Xb = D−1 B, denoted by IOPA1(α, β), ICPA1(α, β) and GD0(α, β) respectively. Let X     b (m) , m ≥ 1,
+       α,β
+be the outputs of either the IOPA1(α, β) algorithm, or the ICPA1(α, β) algorithm, or the GD0(α, β)
+method at m-th iteration. To measure the denoising performance of our approaches, we define the
+input signal-to-noise ratio
+                                ISNR = −20 log10 kB − Xk2 /kXk2 ,
+and the output signal-to-noise ratio
+                                             b (m) − Xk2 /kXk2 , m ≥ 1,
+                         SNR(m) = −20 log10 kX
+
+and
+                                                   b − Xk2 /kXk2 .
+                               SNR(∞) = −20 log10 kX
+ Presented in Table 2 are the average over 1000 trials of ISNR and SNR(m), m = 1, 2, 4, 6, ∞. From
+Table 2, we observe that the denoising procedure B 7−→ X    b = D−1 B via Tikhonov regularization
+                                                                  α,β
+(5.9) on the temporal-vertex domain can improve the signal-to-noise ratio in the range from 2dBs
+to 5dBs, depending on the noise level η. Also we see that the denoising procedure B 7−→ X       b (m)
+via the output of the m-th iteration in IOPA1(α, β) algorithm with m ≥ 2, the GD0(α, β) method
+and the ICPA1(α, β) algorithm with m ≥ 4 have similar denoising performance. Due to the
+correlation of time-varying signals across the joint temporal-vertex domains, it is expected that
+the Tikhonov regularization (5.9) on the temporal-vertex domain has better denoising performance
+than Tikhonov regularization either only on the vertex domain (i.e., β = 0 in (5.9)) or only on
+the temporal domain (i.e., α = 0 in (5.9)) do. The above performance expectation is confirmed
+in Table 2. We remark that denoising approach via the Tikhonov regularization on the temporal-
+vertex domain is an inverse filtering procedure of a polynomial graph filter of two shifts, while the
+one either on the vertex domain or on the temporal domain only is an inverse filtering procedure
+of a polynomial graph filter of one shift.
+
+5.3   Denoising an hourly temperature dataset
+In the section, we consider denoising the hourly temperature dataset collected at 218 locations
+in the United States on August 1st, 2010, measured in Fahrenheit [5, 52]. The above real-world
+dataset is of size 218 × 24, and it can be modelled as a time-varying signal w(i), 1 ≤ i ≤ 24,
+on the product graph C × W, where C := C(24, {1}) is the circulant graph with 24 vertices and
+generator {1}, and W is the undirected graph with 218 locations as vertices and edges constructed
+by the 5 nearest neighboring algorithm, see Figure 6 for two snapshots of the dataset. Unlike in the
+simulation in the last subsection, the above time-varying signal w(ti ), 1 ≤ i ≤ 24, is not necessarily
+to be governed by a different equation of the form (5.3).
+
+                                                  21
+    Given noisy temperature data
+
+                                        e i = wi + η i , i = 1, . . . , 24,
+                                        w
+
+we propose the following denoising approach,
+                                     f 2 + α̃ZT (I ⊗ Lsym )Z + β̃ZT (Lsym ⊗ I)Z,
+                   c := arg min kZ − Wk
+                   W                                                                                   (5.13)
+                                       2              W               C
+                               Z
+
+where Wf is the vectorization of the noisy temperature data w              e 24 with noises η i , 1 ≤ i ≤ 24
+                                                              e 1, . . . , w
+in (5.3) having their components randomly selected in [−η, η] in a uniform distribution, Lsym       W and
+  sym
+LC are normalized Laplacian matrices on the graph W and C respectively, and α̃, β̃ ≥ 0 are
+penalty constants in the vertex and temporal domains to be appropriately selected.
+    Set S̃1 = I ⊗ Lsym
+                    W , S̃2 = LC
+                                 sym
+                                     ⊗ I and Fα̃,β̃ = I + α̃S̃1 + β̃ S̃2 , α̃, β̃ ≥ 0. One may verify
+that the explicit solution of the minimization problem (5.13) is given by W       c = (F )−1 W,     f and
+                                                                                           α̃,β̃
+the proposed approach to denoise the temperature dataset becomes an inverse filtering procedure
+(3.1) with H and b replaced by Fα̃,β̃ and W f respectively. In absence of notation, we still denote
+the IOPA algorithm (4.7) with L = 1, the ICPA algorithm (4.16) with K = 1 and the gradient
+descent method (3.13) with initial zero to implement the inverse filter procedure W       f 7−→ F−1 W        f
+                                                                                                       α̃,β̃
+by IOPA1(α̃, β̃), ICPA1(α̃, β̃) and GD0(α̃, β̃) respectively.
+   In our simulations, we take
+                                              f 2
+                                       EkZ − Wk             1744η 2
+                                                  2
+                                α̃ =                =
+                                         f T S̃1 W)
+                                       E W       f    WT S̃1 W + 1744η 2
+
+and
+                                       EkZ − Wkf 2          1744η 2
+                                                  2
+                                β̃ =                =
+                                         f T S̃2 W)
+                                       E(W       f    WT S̃2 W + 1744η 2
+to balance three terms in the regularization approach (5.13). Presented in Table 3 are the average
+over 1000 trials of the input signal-to-noise ratio ISNR and the output signal-to-noise ratio
+                                                    c (m) − Wk2
+                                                   kW
+                            SNR(m) = −20 log10                  , m ≥ 1,
+                                                       kWk2
+which are used to measure the denoising performance of the IOPA1(α̃, β̃), ICPA1(α̃, β̃) and GD0(α̃, β̃)
+at the mth iteration, where W c (∞) := Wc and W  c (m) , m ≥ 1, are outputs of the IOPA1(α̃, β̃) al-
+gorithm, or the ICPA1(α̃, β̃), or the GD0(α̃, β̃) at m-th iteration. From Table 3, we see that the
+Tikhonov regularization on the temporal-vertex domain has better performance on denoising the
+hourly temperature dataset than the Tikhonov regularization only either on the vertex domain (i.e.
+β̃ = 0) or on the temporal domain (i.e. α̃ = 0) do. Also we observe that the temporal correlation
+has larger influence than the vertex correlation for small noise corruption η ≤ 10, while the influ-
+ence of the vertex correlation is more significant than the temporal correlation for the moderate
+and larger noise corruption.
+
+6     Conclusions and further works
+Polynomial graph filters of multiple shifts are preferable for denoising and extracting features along
+different dimensions/directions for multidimensional graph signals, such as video or time-varying
+signals. A necessary condition is derived in this paper for a graph filter to be a polynomial of
+multiple shifts and the necessary condition is shown to be sufficient if the elements in the joint
+spectrum of multiple shifts are distinct. The design methodology of polynomial filters of multiple
+graph shifts and their inverses with specific features and physical interpretation for engineering
+applications will be discussed in our future works.
+
+                                                        22
+    Some Tikhonov regularization approaches on the temporal-vertex domain to denoise a time-
+varying signal can be reformulated as an inverse filtering procedure for a polynomial graph filter
+of two shifts which represent the features on the temporal and vertex domain respectively. Two
+exponentially convergent iterative algorithms are introduced for the inverse filtering procedure
+of a polynomial graph filter, and each iteration of the proposed algorithms can be implemented
+in a distributed network, where each vertex is equipped with systems for limited data storage,
+computation power and data exchanging facility to its adjacent vertices. The proposed iterative
+algorithms are demonstrated to implement the inverse filtering procedure effectively and to have
+satisfactory performance on denoising multidimensional graph signals.
+
+
+
+Appendix A               Commutative graph shifts
+Graph shifts are building blocks of a polynomial filter and the concept of commutative graph
+shifts S1 , . . . , Sd is similar to the one-order delay z1−1 , . . . , zd−1 in classical multi-dimensional signal
+processing. In Appendices A.1 and A.2, we introduce two illustrative families of commutative graph
+shifts on circulant/Cayley graphs and product graphs respectively, see also Subsections 5.2 and 5.3
+for commutative graph shifts with specific features. For commutative graph shifts S1 , . . . , Sd , we
+define their joint spectrum (A.5) in Appendix A.3, which is crucial for us to develop the IOPA and
+ICPA algorithms in Section 4.
+    Commutativity of multiple graph shifts are essential to design polynomial graph filters with
+certain spectral characteristic. If a graph filter H is a polynomial of commutative multiple graph
+shifts S1 , ..., Sd , then it commutes with Sk , 1 ≤ k ≤ d, i.e., commutators [H, Sk ] := HSk − Sk H
+between H and Sk , 1 ≤ k ≤ d are always the zero matrix,
+
+                                           [H, Sk ] = 0, 1 ≤ k ≤ d.                                        (A.1)
+
+The above necessary condition for a graph filter H to be a polynomial of S1 , ..., Sd is not sufficient
+in general. For instance, one may verify that any filter H satisfies (A.1) with d = 1 and S1 = I,
+while H is not necessarily a polynomial h(I) = h(1)I of the identity matrix I. For d = 1, it is
+shown in [36, Theorem 1] that any filter satisfying (A.1) is a polynomial filter if the graph shift has
+distinct eigenvalues. In Theorem A.3 of Appendix A.4, we show that the necessary condition (A.1)
+is also sufficient under the additional assumption that elements in the joint spectrum of multiple
+graph shifts S1 , . . . , Sd are distinct.
+    Let A be a Banach algebra of graph filters with its norm denoted by k · kA . Our representative
+examples are the algebra of graph filters with Frobenius norm k · kF , operator algebras B(`p ), 1 ≤
+p ≤ ∞, on the space `p of all p-summable graph signals, Gröchenig-Schur algebras, Wiener algebra,
+Beurling algebras, Jaffard algebras and Baskakov-Gohberg-Sjöstrand algebras, see [15, 25, 42, 43,
+44] for historical remarks and various applications. Denote the set of polynomials of commutative
+graph shifts S1 , ..., Sd by P := P(S1 , . . . , Sd ). Under the assumption that Sk ∈ A, 1 ≤ k ≤ d, one
+may verify that all polynomials of S1 , ..., Sd reside in the Banach algebra A too, i.e., P ⊂ A. For
+any filter H ∈ A, define its distance to the polynomial set P of graph shifts S1 , ..., Sd by
+
+                                        dist(H, P) = inf kH − PkA .                                        (A.2)
+                                                       P∈P
+
+
+Under the assumption that the elements of joint spectrum of multiple graph shifts S1 , . . . , Sd
+are distinct, we obtain from Theorem A.3 that dist(H, P) = 0 for any filter H ∈ A satisfying
+(A.1). In Theorem A.4 of Appendix A.5, we establish some quantitative estimates to the distance
+dist(H, P), H ∈ A, in terms of norms of commutators [H, Sk ], 1 ≤ k ≤ d, on an unweighted and
+undirected finite graph.
+
+                                                       23
+A.1    Commutative graph shifts on circulant graphs and Cayley graphs
+Let C(N, Q) = (VN , EN (Q)) be the circulant graph of order N generated by Q = {q1 , . . . , qM },
+where 1 ≤ q1 < . . . < qM < N/2, see (5.1) and Figure 2. Observe that
+                                            
+                           EN (Q) = ∪1≤k≤d (i, i ± qk mod N ), i ∈ VN .
+
+Then the circulant graph C(N, Q) can be decomposed into a family of circulant graphs C(N, Qk )
+generated by Qk = {qk }, 1 ≤ k ≤ d, and the symmetric normalized Laplacian matrix Lsym  C(N,Q) on
+                                                                   sym
+C(N, Q) is the average of symmetric normalized Laplacian matrices LC(N,Qk ) on C(N, Qk ), 1 ≤ k ≤
+d, i.e.,                                        d
+                                              1 X sym
+                                    Lsym
+                                     C(N,Q) =      LC(N,Qk ) ,
+                                              d
+                                                   k=1
+where Qk = {qk }, 1 ≤ k ≤ d. In the following proposition, we establish the commutativity of
+Lsym
+ C(N,Qk ) , 1 ≤ k ≤ d.
+
+Proposition A.1. The symmetric normalized Laplacian matrices Lsym   C(N,Qk ) of the circulant graphs
+C(N, Qk ), 1 ≤ k ≤ d, are commutative graph shifts on the circulant graph C(N, Q).
+
+Proof. Clearly Lsym
+                C(N,Qk ) , 1 ≤ k ≤ d, are graph shifts on the circulant graph C(N, Q). Define
+
+                                    B = (b(i − j mod N ))1≤i,j≤N ,
+
+where b(0) = · · · = b(N − 2) = 0 and b(N − 1) = 1. Then one may verify that
+                                     1 qk             1
+                     Lsym
+                      C(N,Qk ) = I − 2 (B + B
+                                             −qk
+                                                 ) = − B−qk (Bqk − I)2 ,
+                                                      2
+                                       0
+where 1 ≤ k ≤ d. Therefore for 1 ≤ k, k ≤ d,
+                                    1 −qk −qk0 qk
+             Lsym        sym
+              C(N,Qk0 ) LC(N,Qk ) = 4 B       (B − I)2 (Bqk0 − I)2 = Lsym       sym
+                                                                      C(N,Qk ) LC(N,Qk0 ) .
+
+This completes the proof.
+
+     Following the proof of Proposition A.1, we have that the adjacent matrices 2(I − Lsym
+                                                                                       C(N,Qk ) ) =
+  q
+B +B
+   k      −qk of the circulant graphs C(N, Qk ), 1 ≤ k ≤ d, (and their linear combinations) are
+commutative graph shifts on the circulant graph C(N, Q).
+
+    Connected circulant graphs are regular undirected Cayley graphs of finite cyclic groups. In
+general, for an Abelian group G generated by a finite set S of non-identity elements and a color
+assignment cs to each element s ∈ S, the Cayley graph G is defined to have elements in the group
+G as its vertices and directed edges of color cs between vertices g to gs in G. For the case that
+the generator S is symmetric (i.e., S −1 = S) and the same color is assigned for any element in the
+generator S and its inverse (i.e., cs = cs−1 , s ∈ S), one may verify that the Cayley graph G is a
+regular undirected graph, it can be decomposed into a family of regular subgraphs Gs , s ∈ S1 with
+the same colored edges,
+                                           G = ∪s∈S1 Gs ,
+and the adjacent matrix of the Cayley graph is the summation of the adjacent matrices associated
+with the regular subgraphs Gs , s ∈ S1 , where the subset S1 ⊂ S is chosen so that different colors
+are assigned for distinct elements in S1 and all colors cs , s ∈ S are represented in S1 . Furthermore,
+similar to the commutativity for symmetric normalized Laplacian matrices in Proposition A.1, we
+can show that the adjacent matrices, Laplacian matrices, symmetric normalized Laplacian matrices
+associated with the regular subgraphs Gs , s ∈ S1 , are commutative graph shifts of the Cayley graph
+G.
+                                                  24
+         Figure 7: Cartesian product T × G of a line graph T and an undirected graph G.
+
+A.2     Commutative graph shifts on Cartesian product graphs
+Let G1 = (V1 , E1 ) and G2 = (V2 , E2 ) be two finite graphs with adjacency matrices A1 and A2 .
+Their Cartesian product graph G1 × G2 has vertex set V1 × V2 and adjacency matrix given by
+A = A1 ⊗ I#V2 + I#V1 ⊗ A2 [14, 28]. Shown in Figure 7 is an illustrative example of product graphs
+and the time-varying graph signal X can be considered as a signal on the Cartesian product graph
+T × G, see Subsection 5.2.
+    Denote symmetric normalized Laplacian matrices and orders of the graph Gi , i = 1, 2 by Lsym
+                                                                                               i
+and Ni respectively. By the mixed-product property
+                               (A ⊗ B)(C ⊗ D) = (AC) ⊗ (BD)                                  (A.3)
+for Kronecker product of matrices A, B, C, D of appropriate sizes [27], one may verify that Lsym
+                                                                                             1   ⊗
+                 sym
+IN2 and IN1 ⊗ L2 are graph filters of the Cartesian product graph G1 × G2 . In the following
+proposition, we show that they are commutative.
+Proposition A.2. Let G1 = (V1 , E1 ) and G2 = (V2 , E2 ) be two finite graphs with normalized
+Laplacian matrices Lsym
+                     1   and Lsym
+                               2  respectively. Then Lsym
+                                                      1 ⊗I#V2 and I#V1 ⊗L2
+                                                                          sym
+                                                                              are commutative
+graph shifts of the Cartesian product graph G1 × G2 .
+Proof. Let Ni = #Vi , i = 1, 2 and set C1 = Lsym
+                                             1   ⊗IN2 and C2 = IN1 ⊗Lsym
+                                                                     2 . By the mixed-product
+property (A.3) of Kronecker product, Then
+                                        C1 C2 = Lsym
+                                                 1   ⊗ Lsym
+                                                        2   = C2 C1 .
+
+
+
+A.3     Joint spectrum of commutative shifts
+Let S1 , ..., Sd be commutative graph shifts. An important property in [18, Theorem 2.3.3] is that
+they can be upper-triangularized simultaneously over C, i.e.,
+                                           b k = USk UH , 1 ≤ k ≤ d,
+                                           S                                                                  (A.4)
+are upper triangular matrices for some unitary matrix U. Write S               b k = (Sbk (i, j))1≤i,j≤N , 1 ≤ k ≤ d,
+and set
+                              Λ = λ i = Sb1 (i, i), ..., Sbd (i, i) , 1 ≤ i ≤ N ⊂ Cd .
+                                                                  
+                                                                                                                (A.5)
+As Sk (i, i), 1 ≤ i ≤ N , are complex eigenvalues of Sk , 1 ≤ k ≤ d, we call Λ as the joint spectrum of
+     b
+S1 , . . . , Sd . The joint spectrum Λ of commutative shifts S1 , . . . , Sd plays an essential role in Sec-
+tion 4 in the construction of optimal polynomial approximation filters and Chebyshev polynomial
+approximation filters to the inverse filter of a polynomial filter of S1 , ..., Sd .
+     We remark that a sufficient condition for the graph shifts S1 , . . . , Sd to be commutative is
+that they can be diagonalized simultaneously, i.e., there exists a nonsingular matrix P such that
+P−1 Sk P, 1 ≤ k ≤ d, are diagonal matrices, which a necessary condition is that they can be upper-
+triangularized simultaneously, see (A.4).
+
+                                                         25
+A.4    Polynomial graph filters of commutative filters
+Let S1 , ..., Sd be commutative graph shifts. In the following theorem, we show that the necessary
+condition (A.1) for a filter to be a polynomial of multiple graph shifts is also sufficient under the
+additional assumption that the joint eigenvalues λ i , 1 ≤ i ≤ N , in the joint spectrum Λ in (A.5)
+are distinct.
+
+Theorem A.3. Let S1 , . . . , Sd be commutative graph filters, and the joint spectrum Λ be as in
+(A.5). If all elements λ i , 1 ≤ i ≤ N , in the set Λ are distinct, then any graph filter H satisfying
+(A.1) is a polynomial of S1 , ..., Sd , i.e., H = h(S1 , ..., Sd ) for some polynomial h.
+                                             b1, . . . , S
+Proof. Let U be the unitary matrix in (A.4), S           b d be upper triangular matrices in (A.4),
+               H
+and H = UHU = (H(i, j))1≤i,j≤N . By the assumption on the set Λ, there exist an interpolating
+    b               b
+polynomial h such that
+                                                                     b i), 1 ≤ i ≤ N,
+                                    h(Sb1 (i, i), ..., Sbd (i, i)) = H(i,                                                  (A.6)
+see [4, Theorem 1 on p. 58]. Set
+                            F = U H − h(S1 , ..., Sd ) UH = H
+                                                      
+                                                            b − h(S           b d ).
+                                                                  b1, . . . , S                                            (A.7)
+Then it suffices to prove that F is the zero matrix.
+   Write F = (F (i, j))1≤i,j≤N . By (A.1), we have that FS  bk = S b k F for all 1 ≤ k ≤ d. This together
+with the upper triangular property for S b k , 1 ≤ k ≤ d, implies that
+                            j
+                            X                             N
+                                                          X
+                                   F (i, l)Sbk (l, j) =         Sbk (i, l)F (l, j), 1 ≤ i, j ≤ N.                          (A.8)
+                             l=1                          l=i
+By the assumption on Λ, we can find 1 ≤ k(i, j) ≤ d for any 1 ≤ i 6= j ≤ N such that
+                                   Sbk(i,j) (i, i) 6= Sbk(i,j) (j, j).                                                     (A.9)
+Now we apply (A.8) and (A.9) to prove
+                                                          F (i, j) = 0                                                    (A.10)
+by induction on j = 1, . . . , N and i = N, . . . , 1.
+    For i = N and j = 1, applying (A.8) with k replaced by k(N, 1), we obtain
+                                   F (N, 1)Sbk(N,1) (1, 1) = Sbk(N,1) (N, N )F (N, 1),
+which together with (A.9) proves (A.10) for (i, j) = (N, 1). Inductively we assume that the con-
+clusion (A.10) for all pairs (i, j) satisfying either 1 ≤ j ≤ j0 and i = i0 , or 1 ≤ j ≤ N and
+i0 < i ≤ N .
+    For the case that j0 < i0 − 1, we have
+                                                                            0 +1
+                                                                           jX
+                  F (i0 , j0 + 1)Sbk(i0 ,j0 +1) (j0 + 1, j0 + 1) =                 F (i0 , l)Ŝk(i0 ,j0 +1) (l, j0 + 1)
+                                                                           l=1
+                  N
+                  X
+              =          Sbk(i0 ,j0 +1) (i0 , l)F (l, j0 + 1) = Sbk(i0 ,j0 +1) (i0 , i0 )F (i0 , j0 + 1),
+                  l=i0
+
+where the first and third equalities hold by the inductive hypothesis and the second equality is
+obtained from (A.8) with k replaced by k(i0 , j0 +1). This together with (A.9) proves the conclusion
+(A.10) for i = i0 and j = j0 + 1 ≤ i0 − 1, and hence the inductive proof can proceed for the case
+that j0 < i0 − 1.
+    For the case that j0 = i0 − 1, it follows from the construction of the polynomial h and the upper
+triangular property for Sb k , 1 ≤ k ≤ d, that the diagonal entries of F are
+                              b i) − h(Sb1 (i, i), ..., Sbd (i, i)) = 0, 1 ≤ i ≤ N
+                             H(i,
+
+                                                                26
+by (A.6). Hence the conclusion (A.10) holds for i = i0 and j = j0 + 1, and hence the inductive
+proof can proceed for the case that j0 = i0 − 1.
+     For the case that i0 ≤ j0 ≤ N − 1, we can follow the argument used in the proof for the case
+that j0 < i0 − 1 to establish the conclusion (A.10) for i = i0 and j = j0 + 1 ≤ N , and hence the
+inductive proof can proceed for the case that i0 ≤ j0 ≤ N − 1.
+     For the case that j0 = N and i0 ≥ 2, we obtain
+                                    N
+                                    X
+ F (i0 − 1, 1)Sbk(i0 −1,1) (1, 1) =   Sbk(i0 −1,l) (i0 − 1, l)F (l, 1) = Sbk(i0 −1,1) (i0 − 1, i0 − 1)F (i0 − 1, 1),
+                                   l=i0 −1
+
+where the first equality follows from (A.8) with k replaced by k(i0 − 1, 1) and the second equality
+holds by the inductive hypothesis. This together with (A.9) proves the conclusion (A.10) for
+i = i0 − 1 and j = 1, and hence the inductive proof can proceed for the case that j0 = N and
+i0 ≥ 2.
+    For the case that j0 = N and i0 = 1, the inductive proof of the zero matrix property for the
+matrix F is complete. This completes the inductive proof.
+
+A.5     Distance between a graph filter and the set of polynomial of commutative
+        graph shifts
+Let G = (V, E) be a connected, unweighted and undirected finite graph, A be a Banach algebra of
+graph filters on the graph G with norm denoted by k · kA , S1 , . . . , Sd be nonzero commutative graph
+shifts in A, and P be the set of all polynomial filters of graph shifts In this Appendix, we consider
+estimating the distance dist(H, P) in (A.2) between a graph filter H and the set P of polynomial
+filters.
+Theorem A.4. If the commutative graph shifts S1 , . . . , Sd can be diagonalized simultaneously
+by a unitary matrix and elements in their joint spectrum Λ are distinct, then there exist positive
+constants C0 and C1 such that
+                     d
+                    X                    1/2                        d
+                                                                     X                   1/2
+               C0          k[H, Sk ]k2A          ≤ dist(H, P) ≤ C1         k[H, Sk ]k2A          , H ∈ A,   (A.11)
+                     k=1                                             k=1
+
+where [H, Sk ] = HSk − Sk H, 1 ≤ k ≤ d.
+Proof. Take H ∈ A. For any P ∈ P, we have
+           k[H, Sk ]kA ≤ k(H − P)Sk kA + kSk (H − P)kA ≤ 2kSk kA kH − PkA , 1 ≤ k ≤ d.
+Therefore
+                                                               k[H, Sk ]kA
+                                           dist(H, P) ≥ max                ,
+                                                          1≤k≤d 2kSk kA
+
+and the first inequality in (A.11) follows.
+     Now we prove the second inequality in (A.11). Let U be the unitary matrix to diagonalize
+S1 , . . . , Sd simultaneously, i.e., (A.4) holds for some diagonal matrices S          b i))i∈V , 1 ≤
+                                                                             b k = diag(S(i,
+k ≤ d. Then one may verify that polynomial filters of graph shifts S1 , . . . , Sd can also be diago-
+nalized by the unitary matrix U. Moreover by the distinct assumption on elements in the joint
+spectrum Λ of the graph shifts, we have
+                                  P = {UH DU, D are diagonal matrices}.                                     (A.12)
+Set UHUH = (H(i, b j))i,j∈V . and denote the Frobenius norm of a matrix A by kAkF . Therefore
+it follows from (A.12) that
+                                                             X               1/2
+        inf kH − PkF =          inf        kUH HU − DkF =              b j)|2
+                                                                     |H(i,         .  (A.13)
+       P∈P                   D are diagonal matrices
+                                                                               i,j∈V,j6=i
+
+
+                                                           27
+On the other hand, we have
+                                                               
+                    U[H, Sk ]UH = H(i,
+                                   b j)(Sbk (j, j) − Sbk (i, i))                     , 1 ≤ k ≤ d.
+                                                                             i,j∈V
+
+This implies that
+      d                      d                                                     d
+                                                                                  X                                   
+                                                                                                                   2
+      X                      X                                 X
+            k[H, Sk ]k2F =         kUH |[H, Sk ]Uk2F =                   b j)|2
+                                                                        |H(i,              Sbk (j, j) − Sbk (i, i)
+      k=1                    k=1                           i,j∈V,j6=i                k=1
+                                           d
+                                          X                              
+                                                                        2
+                        ≥       inf             Sbk (j, j) − Sbk (i, i)     × inf kH − Pk2F ,                              (A.14)
+                             i,j∈V,j6=i                                     P∈P
+                                          k=1
+
+where the last inequality follows from (A.13). Then the second inequality in (A.11) follows from
+(A.14), the equivalence of norms on a finite-dimensional linear space and the distinct assumption
+on the joint spectrum Λ.
+
+   We believe that the estimate (A.11) should hold without the simultaneous diagonalization
+assumption on commutative graph shifts S1 , . . . , Sd .
+
+    Acknowledgement: This work is partially supported by the National Natural Science Foun-
+dation of China (61761011, 62171146, 12171490) and the National Science Foundation (DMS-
+1816313). The authors would like to thank anonymous reviewers to provide many constructive
+comments for the improvement of the paper. On behalf of all authors, the corresponding author
+states that there is no conflict of interest.
+
+
+References
+ [1] A. W. Bohannon, B. M. Sadler, and R. V. Balan, “A filtering framework for time-varying
+     graph signals,” in Vertex-Frequency Analysis of Graph Signals, Springer, pp. 341-376, 2019.
+
+ [2] S. Chen, A. Sandryhaila, and J. Kovačević, “Distributed algorithm for graph signal in-
+     painting,” 2015 IEEE International Conference on Acoustics, Speech and Signal Processing
+     (ICASSP), Brisbane, QLD, 2015, pp. 3731-3735.
+
+ [3] S. Chen, A. Sandryhaila, J. M. F. Moura, and J. Kovačević, “Signal recovery on graphs:
+     variation minimization,” IEEE Trans. Signal Process., vol. 63, no. 17, pp. 4609-4624, Sept.
+     2015.
+
+ [4] W. Cheney and W. Light. A Course in Approximation Theory, Brook/Cole Publishing Com-
+     pany, 2000.
+
+ [5] C. Cheng, N. Emirov, and Q. Sun, “Preconditioned gradient descent algorithm for inverse
+     filtering on spatially distributed networks”, IEEE Signal Process. Lett., vol. 27, pp. 1834-1838,
+     Oct. 2020.
+
+ [6] C. Cheng, J. Jiang, N. Emirov, and Q. Sun, “Iterative Chebyshev polynomial algorithm for
+     signal denoising on graphs,” in Proceeding 13th Int. Conf. on SampTA, Bordeaux, France, Jul.
+     2019, pp. 1-5.
+
+ [7] C. Cheng, Y. Jiang, and Q. Sun, “Spatially distributed sampling and reconstruction,” Appl.
+     Comput. Harmon. Anal., vol. 47, no. 1, pp. 109-148, Jul. 2019.
+
+ [8] F. Chung, Spectral Graph Theory, CBMS Regional Conference Series in Mathematics, No. 92.
+     Providence, RI, Amer. Math. Soc., 1997.
+
+                                                          28
+ [9] M. Coutino, E. Isufi, and G. Leus, “Advances in distributed graph filtering,” IEEE Trans.
+     Signal Process., vol. 67, no. 9, pp. 2320-2333, May 2019.
+
+[10] V. N. Ekambaram, G. C. Fanti, B. Ayazifar, and K. Ramchandran, “Circulant structures and
+     graph signal processing,” in Proc. IEEE Int. Conf. Image Process., 2013, pp. 834-838.
+
+[11] V. N. Ekambaram, G. C. Fanti, B. Ayazifar, and K. Ramchandran, “Multiresolution graph sig-
+     nal processing via circulant structures,” in Proc. IEEE Digital Signal Process. Signal Process.
+     Educ. Meeting (DSP/SPE), 2013, pp. 112-117.
+
+[12] J. Fan, C. Tepedelenlioglu, and A. Spanias, “Graph filtering with multiple shift matrices,” in
+     IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP ), pp.
+     3557-3561, May 2019.
+
+[13] A. Gavili and X. Zhang, “On the shift operator, graph frequency, and optimal filtering in
+     graph signal processing,” IEEE Trans. Signal Process., vol. 65, no. 23, pp. 6303-6318, Dec.
+     2017.
+
+[14] F. Grassi, A. Loukas, N. Perraudin, and B. Ricaud, “A time-vertex signal processing frame-
+     work: scalable processing and meaningful representations for time-series on graphs,” IEEE
+     Trans. Signal Process., vol. 66, no. 3, pp. 817-829, Feb. 2018.
+
+[15] K. Gröchenig, Wiener’s lemma: theme and variations, an introduction to spectral invariance
+     and its applications, In Four Short Courses on Harmonic Analysis: Wavelets, Frames, Time-
+     Frequency Methods, and Applications to Signal and Image Analysis, edited by P. Massopust
+     and B. Forster, Birkhauser, Boston 2010.
+
+[16] D. K. Hammod, P. Vandergheynst, and R. Gribonval, “Wavelets on graphs via spectral graph
+     theory,” Appl. Comput. Harmon. Anal., vol. 30, no. 4, pp. 129-150, Mar. 2011.
+
+[17] R. Hebner, “The power grid in 2030,” IEEE Spectrum, vol. 54, no. 4, pp. 50-55, Apr. 2017.
+
+[18] R. A. Horn and C. R. Johnson. Matrix Analysis, Cambridge University Press, 2012.
+
+[19] E. Isufi, A. Loukas, A. Simonetto, and G. Leus, “Autoregressive moving average graph filter-
+     ing,” IEEE Trans. Signal Process., vol. 65, no. 2, pp. 274-288, Jan. 2017.
+
+[20] E. Isufi, A. Loukas, N. Perraudin, and G. Leus, “Forecasting time series with VARMA recur-
+     sions on graphs,” IEEE Trans. Signal Process., vol. 67, no. 18, pp. 4870-4885, Sept. 2019.
+
+[21] J. Jiang, C. Cheng, and Q. Sun, “Nonsubsampled graph filter banks: Theory and distributed
+     algorithms,” IEEE Trans. Signal Process., vol. 67, no. 15, pp. 3938-3953, Aug. 2019.
+
+[22] J. Jiang, D. B. Tay, Q. Sun, and S. Ouyang, “Design of nonsubsampled graph filter banks via
+     lifting schemes,” IEEE Signal Process. Lett., vol. 27, pp. 441-445, Feb. 2020.
+
+[23] M. S. Kotzagiannidis and P. L. Dragotti, “Splines and wavelets on circulant graphs,” Appl.
+     Comput. Harmon. Anal., vol. 47, no. 2, pp. 481-515, Sept. 2019.
+
+[24] M. S. Kotzagiannidis and P. L. Dragotti, “Sampling and reconstruction of sparse signals on
+     circulant graphs – an introduction to graph-FRI,” Appl. Comput. Harmon. Anal., vol. 47, no.
+     3, pp. 539-565, Nov. 2019.
+
+[25] I. Krishtal, Wiener’s lemma: pictures at exhibition, Rev. Un. Mat. Argentina, 52(2011), 61–79.
+
+[26] T. Kurokawa, T. Oki, and H. Nagao, “Multi-dimensional graph Fourier transform,” arXiv:
+     1712.07811, Dec. 2017.
+
+                                                29
+[27] A. J. Laub, Matrix Analysis for Scientists and Engineers, PA, Philadelphia, SIAM, 2005.
+[28] A. Loukas and D. Foucard, “Frequency analysis of time-varying graph signals,” in IEEE Global
+     Conf. Signal Inf. Process. (GlobalSIP), 2016, pp. 346-350.
+[29] K. Lu, A. Ortega, D. Mukherjee and Y. Chen, “Efficient rate-distortion approximation and
+     transform type selection using Laplacian operators,” in 2018 Picture Coding Symposium
+     (PCS), San Francisco, CA, 2018, pp. 76-80.
+[30] S. K. Narang and A. Ortega, “Perfect reconstruction two-channel wavelet filter banks for graph
+     structured data,” IEEE Trans. Signal Process., vol. 60, no. 6, pp. 2786-2799, Jun. 2012.
+[31] P. Nathanael, J. Paratte, D. Shuman, L. Martin, V. Kalofolias, P. Vandergheynst, and D.
+     K. Hammond, “GSPBOX: A toolbox for signal processing on graphs,” arXiv:1408.5781, Aug.
+     2014.
+[32] M. Onuki, S. Ono, M. Yamagishi, and Y. Tanaka, “Graph signal denoising via trilateral filter
+     on graph spectral domain,” IEEE Trans. Signal Inf. Process. Netw., vol. 2, no. 2, pp. 137-148,
+     Jun. 2016.
+[33] A. Ortega, P. Frossard, J. Kovačević, J. M. F. Moura, and P. Vandergheynst, “Graph signal
+     processing: Overview, challenges, and applications,” Proc. IEEE, vol. 106, no. 5, pp. 808-828,
+     May 2018.
+[34] G. M. Phillips, Interpolation and Approximation by Polynomials, CMS Books Math., Springer-
+     Verlag, 2003.
+[35] K. Qiu, X. Mao, X. Shen, X. Wang, T. Li, and Y. Gu, “Time-varying graph signal reconstruc-
+     tion,” IEEE J. Sel. Topics Signal Process., vol. 11, no. 6, pp. 870-883, Sept. 2017.
+[36] A. Sandryhaila and J. M. F. Moura, “Discrete signal processing on graphs,” IEEE Trans.
+     Signal Process., vol. 61, no. 7, pp. 1644-1656, Apr. 2013.
+[37] A. Sandryhaila and J. M. F. Moura, “Discrete signal processing on graphs: Frequency analy-
+     sis,” IEEE Trans. Signal Process., vol. 62, no. 12, pp. 3042-3054, Jun. 2014.
+[38] A. Sandryhaila and J. M. F. Moura, “Big data analysis with signal processing on graphs:
+     Representation and processing of massive data sets with irregular structure,” IEEE Signal
+     Process. Mag., vol. 31, no. 5, pp. 80-90, Sept. 2014.
+[39] A. Sakiyama, K. Watanabe, Y. Tanaka, and A. Ortega, “Two-channel critically sampled graph
+     filter banks with spectral domain sampling,” IEEE Trans. Signal Process., vol. 67, no. 6, pp.
+     1447-1460, Mar. 2019.
+[40] S. Segarra, A. G. Marques, and A. Ribeiro, “Optimal graph-filter design and applications
+     to distributed linear network operators,” IEEE Trans. Signal Process., vol. 65, no. 15, pp.
+     4117-4131, Aug. 2017.
+[41] X. Shi, H. Feng, M. Zhai, T. Yang, and B. Hu, “Infinite impulse response graph filters in
+     wireless sensor networks,” IEEE Signal Process. Lett., vol. 22, no. 8, pp. 1113-1117, Aug.
+     2015.
+[42] C. E. Shin and Q. Sun, Wiener’s lemma: localization and various approaches, Appl. Math. J.
+     Chinese Univ., 28(2013), pp. 465–484.
+[43] C. E. Shin and Q. Sun, Polynomial control on stability, inversion and powers of matrices on
+     simple graphs, J. Funct. Anal., 276(2019), pp. 148–182.
+
+                                                30
+[44] C. E. Shin and Q. Sun, Differential subalgebras and norm-controlled inversion, In Operator
+     Theory, Operator Algebras and Their Interactions with Geometry and Topology, Birkhauser,
+     2020, pp. 467–485.
+
+[45] D. I. Shuman, S. K. Narang, P. Frossard, A. Ortega, and P. Vandergheynst, “The emerging
+     field of signal processing on graphs: Extending high-dimensional data analysis to networks
+     and other irregular domains,” IEEE Signal Process. Mag., vol. 30, no. 3, pp. 83-98, May 2013.
+
+[46] D. I. Shuman, P. Vandergheynst, D. Kressner, and P. Frossard, “Distributed signal processing
+     via Chebyshev polynomial approximation,” IEEE Trans. Signal Inf. Process. Netw., vol. 4,
+     no. 4, pp. 736-751, Dec. 2018.
+
+[47] O. Teke and P. P. Vaidyanathan, “Extending classical multirate signal processing theory to
+     graphs Part II: M-channel filter banks,” IEEE Trans. Signal Process., vol. 65, no. 2, pp. 423-
+     437, Jan. 2017.
+
+[48] D. Valsesia, G. Fracastoro, and E. Magli, “Deep graph-convolutional image denoising,” IEEE
+     Trans. Image Process., vol. 29, pp. 8226-8237, Aug. 2020.
+
+[49] W. Waheed and D. B. H. Tay, “Graph polynomial filter for signal denoising,” IET Signal
+     Process., vol. 12, no. 3, pp. 301-309, Apr. 2018.
+
+[50] J. Yi and L. Chai, “Graph filter design for multi-agent system consensus,” in IEEE 56th
+     Annual Conference on Decision and Control (CDC), Melbourne, VIC, 2017, pp. 1082-1087.
+
+[51] J. Yick, B. Mukherjee, and D. Ghosal, “Wireless sensor network survey,” Comput. Netw., vol.
+     52, no. 12, pp. 2292-2330, Aug. 2008.
+
+[52] J. Zeng, G. Cheung, and A. Ortega, “Bipartite approximation for graph wavelet signal decom-
+     position,” IEEE Trans. Signal Process., vol. 65, no. 20, pp. 5466-5480, Oct. 2017.
+
+
+
+
+                                                31
+Table 2: The average of the signal-to-noise ratio SNR(m), m = 1, 2, 4, 6, ∞ for the noise level
+η = 3/4, 1/2, 1/4, 1/8 over 1000 trials, where penalty constants α and β are given in (5.11) and
+(5.12) respectively.
+
+                  SNR m
+                                  1         2         4         6        ∞
+                  Alg.
+                                    η=3/4, ISNR= 3.3755
+                IOPA1(α, 0)    6.5777   6.8047   6.7927      6.7926    6.7926
+                IOPA1(0, β)    6.0597   6.0907   6.0735      6.0735    6.0735
+                IOPA1(α, β)    7.4797   8.5330   8.4942      8.4931    8.4930
+                ICPA1(α, 0)    6.4581   6.8169   6.7928      6.7926    6.7926
+                ICPA1(0, β)    6.0433   6.0899   6.0735      6.0735    6.0735
+                ICPA1(α, β)    7.4036   8.4602   8.4924      8.4930    8.4930
+                 GD0(α, 0)     4.9399   6.7283   6.8062      6.7943    6.7926
+                 GD0(0, β)     5.0027   6.3873   6.1225      6.0787    6.0735
+                 GD0(α, β)     4.1778   6.9998   8.3432      8.4750    8.4930
+                                    η=1/2, ISNR=6.8975
+                IOPA1(α, 0)    9.2211   9.3576   9.3544      9.3544    9.3544
+                IOPA1(0, β)    9.4981   9.6116   9.5949      9.5949    9.5949
+                IOPA1(α, β)    10.0425 11.0678 11.0624       11.0620   11.0620
+                ICPA1(α, 0)    9.1525   9.3617   9.3544      9.3544    9.3544
+                ICPA1(0, β)    9.5037   9.6110   9.5949      9.5949    9.5949
+                ICPA1(α, β)    9.7218 11.0092 11.0613        11.0620   11.0620
+                 GD0(α, 0)     7.1610   9.2163   9.3568      9.3546    9.3544
+                 GD0(0, β)     6.8746   9.5953   9.6392      9.6000    9.5949
+                 GD0(α, β)     5.3263   8.9866 10.8804       11.0423   11.0620
+                                   η=1/4, ISNR= 12.9164
+                IOPA1(α, 0)    13.8837 13.9053 13.9053       13.9053   13.9053
+                IOPA1(0, β)    15.0923 15.6251 15.6109       15.6108   15.6108
+                IOPA1(α, β)    14.6334 15.9121 15.9192       15.9192   15.9192
+                ICPA1(α, 0)    13.8693 13.9055 13.9053       13.9053   13.9053
+                ICPA1(0, β)    15.2045 15.6255 15.6109       15.6108   15.6108
+                ICPA1(α, β)    14.1329 15.8756 15.9190       15.9192   15.9192
+                 GD0(α, 0)     12.2195 13.8694 13.9052       13.9053   13.9053
+                 GD0(0, β)     8.5703 14.2275 15.6302        15.6153   15.6108
+                 GD0(α, β)     7.2800 12.7687 15.7309        15.9044   15.9192
+                                   η=1/8, ISNR= 18.9370
+                IOPA1(α, 0)    19.2287 19.2299 19.2299       19.2299   19.2299
+                IOPA1(0, β)    19.7355 21.6233 21.6187       21.6187   21.6187
+                IOPA1(α, β)    19.1231 21.6012 21.6335       21.6336   21.6336
+                ICPA1(α, 0)    19.2275 19.2299 19.2299       19.2299   19.2299
+                ICPA1(0, β)    20.1427 21.6275 21.6187       21.6187   21.6187
+                ICPA1(α, β)    18.9606 21.5903 21.6335       21.6336   21.6336
+                 GD0(α, 0)     18.5134 19.2279 19.2299       19.2299   19.2299
+                 GD0(0, β)     9.1228 17.0384 21.5398        21.6206   21.6187
+                 GD0(α, β)     8.6071 16.0831 21.3347        21.6140   21.6336
+
+
+
+                                                32
+Table 3: The average over 1000 trials of the signal-to-noise ratio SNR(m), m = 1, 2, 4, 6, ∞ denoise
+the US hourly temperature dataset collected at 218 locations on August 1st, 2010, where η =
+35, 20, 10.
+
+                   SNR m
+                                    1          2         4         6         ∞
+                   Alg.
+                                     η=35, ISNR= 11.5496
+                IOPA1(α̃, 0)    14.8906 16.2623 16.2499         16.2497   16.2497
+                IOPA1(0, β̃)    13.3792 15.7143 15.6925         15.6911   15.6911
+                IOPA1(α̃, β̃)   11.2985 18.1294 19.0536         19.0491   19.0487
+                ICPA1(α̃, 0)    14.2783 16.3118 16.2509         16.2498   16.2497
+                ICPA1(0, β̃)    14.0451 15.7475 15.6925         15.6911   15.6911
+                ICPA1(α̃, β̃)    9.8634   16.9294 19.0281       19.0486   19.0487
+                 GD0(α̃, 0)      7.2407   13.2001 16.1692       16.2523   16.2497
+                 GD0(0, β̃)      5.7453   10.8805 15.3374       15.7069   15.6911
+                 GD0(α̃, β̃)     3.9579    7.8606 14.4865       17.9663   19.0487
+                                     η=20, ISNR= 16.4086
+                IOPA1(α̃, 0)    18.3271 20.2473 20.2470         20.2470   20.2470
+                IOPA1(0, β̃)    15.4936 20.4129 20.5195         20.5183   20.5183
+                IOPA1(α̃, β̃)   12.3927 21.0773 22.8075         22.8097   22.8095
+                ICPA1(α̃, 0)    17.5792 20.2654 20.2474         20.2470   20.2470
+                ICPA1(0, β̃)    16.73029 20.5223 20.5196        20.5183   20.5183
+                ICPA1(α̃, β̃)   10.7460 19.4217 22.7759         22.8092   22.8095
+                 GD0(α̃, 0)      8.4637   15.7834 20.1310       20.2470   20.2470
+                 GD0(0, β̃)      5.9817   11.7217 19.1824       20.4607   20.5183
+                 GD0(α̃, β̃)     4.2594    8.4753 16.1761       21.0514   22.8095
+                                      η=10, ISNR=22.4320
+                IOPA1(α̃, 0)    23.3572 24.5564 24.5565         24.5565   24.5565
+                IOPA1(0, β̃)    16.9511 25.9123 26.4291         26.4284   26.4284
+                IOPA1(α̃, β̃)   14.2863 24.9125 26.9961         26.9990   26.9990
+                ICPA1(α̃, 0)    22.5720 24.5572 24.5565         24.5565   24.5565
+                ICPA1(0, β̃)    18.6319 26.2493 26.4294         26.4285   26.4284
+                ICPA1(α̃, β̃)   12.7428 23.3488 26.9816         26.9989   26.9990
+                 GD0(α̃, 0)     11.7089 21.2276 24.5387         24.5566   24.5565
+                 GD0(0, β̃)      6.2342   12.3916 22.7545       26.1414   26.4284
+                 GD0(α̃, β̃)     4.9806    9.9239 19.2003       25.2121   26.9990
+
+
+
+
+                                                   33

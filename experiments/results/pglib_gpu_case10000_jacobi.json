@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "case": "pglib_opf_case10000_goc.m",
+  "matrix": {
+    "shape": [
+      9999,
+      9999
+    ],
+    "nnz": 49303
+  },
+  "tolerance": 1e-08,
+  "maxiter": 20000,
+  "preconditioner": "jacobi",
+  "spmv_repeats": 1000,
+  "environment": {
+    "platform": "Windows-11-10.0.26100-SP0",
+    "python": "3.13.5",
+    "numpy": "2.3.3",
+    "scipy": "1.17.1",
+    "cupy": "14.2.0",
+    "cupyx": null,
+    "cuda_runtime": 12090,
+    "cuda_driver": 13020,
+    "gpu": "NVIDIA GeForce RTX 5080",
+    "mpi": false
+  },
+  "preprocessing_seconds": {
+    "parse_seconds": 0.051065700012259185,
+    "build_seconds": 0.10723830002825707
+  },
+  "transfer_seconds": {
+    "host_to_device_matrix_and_vectors": 0.06478630006313324,
+    "device_to_host_solution_and_spmv": 7.309997454285622e-05
+  },
+  "warmup_seconds": 0.09623519994784147,
+  "algorithm_seconds": {
+    "cpu_spmv_total": 0.0176414999878034,
+    "gpu_spmv_total": 0.039276800001971424,
+    "cpu_cg": 0.23509710002690554,
+    "gpu_cg": 1.9411941999569535
+  },
+  "correctness": {
+    "spmv_relative_cpu_gpu_difference": 1.1122728586719036e-16,
+    "cpu_cg_info": 0,
+    "gpu_cg_info": 0,
+    "cpu_cg_iterations": 7470,
+    "gpu_cg_iterations": 7476,
+    "cpu_relative_residual": 9.279157595587399e-09,
+    "gpu_relative_residual": 8.682315027376359e-09
+  },
+  "interpretation": "Only same-matrix SpMV and unpreconditioned CG are compared. Transfer, warmup, and preprocessing are separate. No MPI and no sparse direct GPU solve are claimed."
+}

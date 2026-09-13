@@ -1,0 +1,61 @@
+# Locality benchmark skeleton
+
+This directory is isolated from the literature survey. It contains a small CPU-only
+benchmark that checks mathematical locality quantities for synthetic block WLS
+instances. It is not yet the production HPC implementation.
+
+The benchmark deliberately does **not** form `J^{-1}`. For sampled target nodes it
+solves `J^T y=e_i` and measures the target block row outside an `r`-hop ball. It also
+compares:
+
+- the centralized sparse WLS solve;
+- an `r`-ball Dirichlet/truncated solve;
+- a Schur-complement oracle (small instances only);
+- a degree-`r` Chebyshev inverse polynomial.
+
+It records residuals, state error, exact sampled operator-row tails, sampled raw-data
+operator-tail exceedance fractions with a Dvoretzky–Kiefer–Wolfowitz confidence band,
+rounds, message width,
+bit-hop proxies, wall time, sparse nonzeros, and process RSS.
+
+The smoke configuration gives full-rank node measurements to only 20% of nodes; the
+remaining nodes have no local anchor. Edge measurements are initially held by both
+endpoints. Factor variable support and measurement holders are represented separately.
+The current generator intentionally builds dense temporary factor rows before converting
+to CSR, so it is a mathematical interface test only, not the large-scale generator.
+
+Run the seconds-scale smoke case from the repository root:
+
+```powershell
+python experiments/locality_benchmark.py --config experiments/configs/smoke.json
+```
+
+A stricter smoke case gives a full-rank node measurement to only one of 72 nodes:
+
+```powershell
+python experiments/locality_benchmark.py --config experiments/configs/single_anchor_smoke.json
+```
+
+The theorem-level numerical regression tests check the Schur factorization and
+norm sandwich, the sharp spectral-window constant, the scalar robust Schur-window
+minimax formula, the grounded-Laplacian oracle/Dirichlet/Neumann ordering, and the
+single-ground path counterexample:
+
+```powershell
+python -m unittest experiments.test_theory_identities -v
+```
+
+The grounded-network completion checks verify the matrix-forest/DPP projection
+identities, high-conductance limits, raw pairwise-WLS realization, optimized
+intermediate-cut and bounded-weight counterexamples, the strict Petersen gap, and
+the raw-measurement metric orthogonalization audit plus uniform/heterogeneous
+hidden-node partial-partition bounds with degree-two converses:
+
+```powershell
+python experiments/theory_search/forest_partition_extrema.py
+python experiments/theory_search/hidden_partial_partition_checks.py
+```
+
+Results are JSON and may be redirected by the caller. Large sweeps should use a
+separate output directory and the cluster workflow described in
+`research/agent_reports/hpc_experiments_phase2.md`.

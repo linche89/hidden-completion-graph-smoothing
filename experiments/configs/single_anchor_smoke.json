@@ -1,0 +1,20 @@
+{
+  "graph": "cycle",
+  "n": 72,
+  "block_dim": 2,
+  "seed": 20260913,
+  "anchor_weight": 0.2,
+  "anchor_fraction": 0.0138888888888889,
+  "edge_weight": 1.0,
+  "edge_holder_mode": "both",
+  "noise_std": 0.02,
+  "bad_fraction": 0.15,
+  "bad_anchor_scale": 0.0001,
+  "bad_edge_scale": 0.03,
+  "radii": [0, 1, 2, 4, 8, 16],
+  "root_samples": 16,
+  "failure_thresholds": [0.01, 0.03, 0.1],
+  "bits_per_scalar": 32,
+  "confidence_alpha": 0.05,
+  "schur_oracle_max_state_dim": 300
+}

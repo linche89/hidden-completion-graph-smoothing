@@ -1,0 +1,292 @@
+                                                 Finite-Time In-Network Computation of Linear
+                                                                  Transforms
+                                                                               Soummya Kar,† Markus Püschel,‡ and José M. F. Moura†
+
+
+                                                                                                                Abstract
+                                                    This paper focuses on finite-time in-network computation of linear transforms of distributed graph data. Finite-time transform
+arXiv:2104.01502v1 [math.OC] 3 Apr 2021
+
+
+
+
+                                               computation problems are of interest in graph-based computing and signal processing applications in which the objective is to
+                                               compute, by means of distributed iterative methods, various (linear) transforms of the data distributed at the agents or nodes of
+                                               the graph. While finite-time computation of consensus-type or more generally rank-one transforms have been studied, systematic
+                                               approaches toward scalable computing of general linear transforms, specifically in the case of heterogeneous agent objectives in
+                                               which each agent is interested in obtaining a different linear combination of the network data, are relatively less explored. In
+                                               this paper, by employing ideas from algebraic geometry, we develop a systematic characterization of linear transforms that are
+                                               amenable to distributed in-network computation in finite-time using linear iterations. Further, we consider the general case of
+                                               directed inter-agent communication graphs. Specifically, it is shown that almost all linear transformations of data distributed on
+                                               the nodes of a digraph containing a Hamiltonian cycle may be computed using at most N linear distributed iterations. Finally, by
+                                               studying an associated matrix factorization based reformulation of the transform computation problem, we obtain, as a by-product,
+                                               certain results and characterizations on sparsity-constrained matrix factorization that are of independent interest.
+
+
+                                                                                                          I. I NTRODUCTION
+                                            Suppose we have N agents with (possibly complex-valued) data zn ∈ C, i = 1, · · · , N , distributed across the agents. Given
+                                          a matrix T ∈ CN ×N , we are interested in computing the linear transformation
+                                                                                                                y = T z,                                                                     (1)
+                                          z = [z1 z2 · · · zN ]⊤ , in a distributed fashion such that agent n obtains the n-th component yn = t⊤         n z of the transform vector,
+                                          with t⊤n  denoting    the  n-th  row   of T . This  basic problem  of distributed  transform   computation    forms   a key building block
+                                          in numerous applications in distributed information processing and control ranging from distributed inference, learning, to
+                                          optimization in networked multi-agent systems and control in networked dynamical systems such as cyber-physical systems.
+                                          Note that, to obtain yn = t⊤   n z at agent n, it needs access (possibly indirectly) to data zl at all agents l such that the corresponding
+                                          entry in the transform vector t⊤    n is non-zero. In what follows, we are interested in distributed computation, in that, an agent
+                                          may not directly communicate or exchange information with all other agents but inter-agent communication is restricted to a
+                                          preassigned digraph G defined on the set of N agents. Denote by Ā ∈ {0, 1}N ×N the (directed) unweighted adjacency matrix
+                                          induced by G, i.e., agent l can directly send information to agent n iff Ānl = 1. (We assume Ānn = 1 for all n, i.e., agents can
+                                          access their own information.) Adopting the widely studied framework of consensus or gossip type distributed algorithms [1],
+                                          we propose to develop iterative approaches of the form described below to compute the linear transform T z of the agent data
+                                          in a distributed fashion: each agent n iteratively updates an information state zn (k) ∈ C as a linear combination of its current
+                                          information state and those of its neighbors l, i.e.,
+                                                                                                          X
+                                                                                             zn (k + 1) =      anl (k)zl (k), t ≥ 0,                                              (2)
+                                                                                                             l∈Ωn
+
+                                          where k denotes the iteration or discrete time counter, Ωn denotes the communication neighborhood of agent n, i.e., l ∈ Ωn
+                                          iff Ānl = 1 or agent l can send its information state zl (k) directly to agent n, and the anl (k)’s are time-varying combination
+                                          weights to be designed. The agent iterates are initialized as zn (0) = zn for all n. First, note that the iterative update in (2) is
+                                          fully distributed in that each agent uses its local information and information in its (direct) communication neighborhood to
+                                          implement its state update. Depending on the transform T of interest, the goal is to design the weights anl (k)’s in (2) such that
+                                          agents get to successfully compute the transformation (1) in a finite number d of iterations, i.e., such that zn (d) = yn = t⊤  nz
+                                          for all n. In this paper we address the following question: under what conditions on the graph adjacency structure Ā it is
+                                          possible to design the weights anl (k)’s in (2) to achieve finite-time distributed computation of almost all1 linear transforms,
+                                          and, if so, how many iterations are required to achieve such computation? The main challenge here is that the transform T of
+                                            This work was supported in part by NSF under grant CCF-1513936.
+                                            † Department of Electrical and Computer Engineering, Carnegie Mellon University, Pittsburgh, PA, USA (soummyak@andrew.cmu.edu,
+                                          moura@andrew.cmu.edu).
+                                            ‡ Department of Computer Science, ETH Zurich, Zürich, Switzerland (pueschel@inf.ethz.ch).
+                                            1 By almost all, we mean all transforms or matrices in CN×N except a set a set of matrices whose closure is nowhere dense in CN×N . In particular, if
+                                          we are able to implement almost all transforms, we can implement any transform with arbitrary accuracy.
+
+
+
+                                                                                                                    1
+                                                                                                                                    2
+
+
+
+interest and the inter-agent communication adjacency structure Ā could be very different, for instance, Ā might correspond to
+a sparsely connected digraph whereas T could be a full or very dense matrix.
+   While the literature on asymptotic distributed linear transform computation, primarily based on consensus or gossip type
+procedures [1]–[3], is extensive, the development in finite-time computation is relatively sparse. Most of the development so far
+in finite-time distributed transform computation has focused on the specific case of rank-one transforms where T = uv⊤ with
+u, v ∈ CN , i.e., in other words, the scenario in which the agents are interested in obtaining the same linear combination v⊤ z
+of the data z (up to scalings). A further special case is the celebrated average consensus problem in which T = (1/N )11⊤ ,
+i.e., all agents have the homogeneous objective of computing the average of the network data. For connected undirected graphs,
+the rank-one case is known to be solvable within N steps, where N denotes the number of agents, see, for example, [4]–[6]
+for representative work.
+   We provide a brief outline of the rest of the paper. In Section II we formally present the finite-time distributed transform
+computation problem and obtain a reformulation based on a graph-structured matrix factorization problem. Section III provides
+a general graph-structured matrix factorization result that is of independent interest and used to obtain solutions to the finite-
+time distributed transform computation problem in Section IV. Finally, Section V concludes the paper and presents avenues
+for future research.
+
+                                      II. P ROBLEM F ORMULATION AND P RELIMINARIES
+   In this section, we set up some notation and introduce the distributed transform computation problem formally. We provide
+a brief review of the literature relevant to finite-time in-network computation of linear transforms. Additionally, we show that
+the distributed transform computation problem may be reformulated as a graph-structured matrix factorization problem that is
+of independent interest and forms the technical basis of our solution approach.
+Notation. For a digraph G = (V, E) on N agents, V = [1, · · · , N ] denotes the set of (labeled) agents and E the set of edges
+or direct communication links among agents. The (unweighted) adjacency matrix A ∈ {0, 1}N ×N of G is given by, A(n,l) = 1
+if (n, l) ∈ E, or 0 otherwise. Unless stated otherwise, the digraphs to be studied in this paper possess self-loops at all vertices,
+i.e., (n, n) ∈ E for all n ∈ V or equivalently the associated adjacency matrix A contains a strictly non-zero diagonal.
+By Ir we denote the r × r identity matrix.
+For a matrix P ∈ CN ×N , we will denote by P ∈ {0, 1}N ×N the structural matrix of P , i.e., P (n,l) = 1 if P(n,l) 6= 0,
+and P (n,l) = 0 otherwise. Thus, to any P ∈ CN ×N , we can associate a digraph on V specified by the adjacency matrix
+P ∈ {0, 1}N ×N . This correspondence between digraphs on V and matrices in CN ×N will be used throughout. Finally, by 
+we will denote the partial order on {0, 1}N ×N , such that P  Q implies P (n,l) = 0 if Q(n,l) = 0 for all (n, l) ∈ V 2 .
+By meas(·), we denote the Lebesgue measure on CN ×N . Similarly, for X , a (closed) subspace of CN ×N , we denote by
+measX (·) the Lebesgue measure on X ; thus, measX (U ) denotes the measure of U as a subset of the space X .
+For P ∈ CN ×N , by spr(P ), the sparsity class induced by P , we will denote the subspace of matrices in CN ×N whose
+non-zero entry locations are a subset of those of P , i.e.,
+                                               n                                             o
+                                   spr(P ) = Ṕ ∈ CN ×N : P(n,l) = 0 implies Ṕ(n,l) = 0 .
+
+Note that, by the above constructions, for P, Q ∈ CN ×N , spr(P ) is a subspace of spr(Q) if P  Q.
+Problem formulation. Suppose we have N agents with (possibly complex-valued) data zn ∈ C, i = 1, · · · , N , distributed
+across the agents. Given a matrix T ∈ CN ×N , we are interested in computing the linear transformation y = T z, z =
+[z1 z2 · · · zN ]⊤ , in a distributed fashion using linear iterations of the form (2) such that in a prescribed number of iterations,
+say d, each agent n obtains the n-th component yn = t⊤                                             ⊤
+                                                               n z of the transform vector, with tn denoting the n-th row of T . To
+formalize, note that the distributed update at an iteration k may be written in a compact form as
+                                                       z(k) = Ak z(k − 1),                                                       (3)
+where z(k) denotes the vector of the agent (computation states) and the weight matrix Ak ∈ spr(A), i.e., it respects the sparsity
+of the communication adjacency matrix A. The underlying design objective, i.e., to obtain a sequence of weight matrices to
+achieve finite-time computation, leads to the notion of d-step finite-time computability that we pursue in this paper:
+  Definition 1: A linear transformation T ∈ CN ×N is said to be finite-time computable in d-steps in a distributed fashion if
+there exist a sequence of matrices Ai , i = 1, · · · , d, in spr(A) such that, for all z ∈ CN , the (d-step) iterative procedure
+                                               z(k) = Ak z(k − 1), k = 1, · · · , d,
+initialized with z(0) = z, yields z(d) = T z.
+Note that, in contrast to classical time-invariant consensus type protocols, we allow the weight matrices Ak ’s to be time varying.
+In this paper, we aim to characterize the class of transforms T that are d-step finite-time computable, and how to compute
+such transforms efficiently, i.e., in a small number of iterations d.
+A graph-structured matrix factorization based reformulation. Clearly, we have the following equivalence between d-step
+finite-time computability of a transform T and an associated graph-structured matrix factorization of T : the linear transform
+                                                                                                                                 3
+
+
+
+T ∈ CN ×N is finite-time computable in d-steps in a distributed fashion if and only if there exists a sequence of matrices Ai ,
+i = 1, · · · , d, in spr(A) such that
+                                                      T = Ad Ad−1 · · · A1 .                                                  (4)
+In what follows, we work with the factorization reformulation to analyze d-step finite computability.
+Key technical challenges. We explain the key technical challenges through the matrix factorization based reformulation, i.e.,
+obtaining Ak ’s such that (4) holds. Clearly, a major issue is that the factors Ai ∈ spr(A) could be sparse (if A is sparse),
+whereas, the transform T could be arbitrary, for instance, a dense matrix. We briefly review how existing approaches handle
+this issue in the rank-one case that is relatively well studied. For definiteness, consider a further special (but technically
+equivalent) case, the average consensus problem, i.e., T = (1/N )11T ; in this case, the problem reduces to obtaining Ai ’s,
+i = 1, · · · , d, such that Ai ∈ spr(A) and Ad Ad−1 · · · A1 = (1/N )11T . Usually, this is addressed in the setting of undirected
+connected graphs (i.e., symmetric and irreducible A) using eigenvalue matching techniques based on spectral properties of
+matrix polynomials. For instance, in [4], assuming A is symmetric and irreducible, the idea is to design factors Ai ’s of the form
+Ai = (I + αi W ), where W ∈ spr(A) is appropriately chosen (typically an irreducible symmetric doubly stochastic matrix).
+The resulting product is a polynomial in W and the idea is to choose the αi ’s such that all but one of the eigenvalues of the
+polynomial are nulled; further, it can be shown that this eigenvalue nulling requires at most N steps or factors. However, this
+O(N ) matrix polynomial based idea breaks down in the case of general transforms T as the underlying eigenvalue matching
+by using factors of the form Ai = (I + αi W ) becomes infeasible when T is of higher rank. Nonetheless, a naive solution
+requiring d = O(N 2 ) iterations may be obtained for connected undirected graphs: we simply repeat N rounds of computation,
+one for each of the linear combinations corresponding to each row of T and noting that each of these linear combinations may
+be obtained in O(N ) iterations by leveraging the above mentioned finite-time approaches.
+   Broadly speaking, in this work, we show that, under broad types of inter-agent connectivity conditions including strictly
+directed networks, the O(N 2 ) complexity can be reduced to O(N ) for almost all transformations. To this end, we develop a
+fundamentally different design approach based on ideas in algebraic geometry. Intuitively, the main idea is to cast the sparsity
+constrained matrix factorization formulation (see (4)) as a system of polynomial equations in the free components of the
+constituent factor matrices and obtain conditions on the structure (connectivity) of the communication adjacency matrix A that
+guarantee solutions to (4) exist with at most d = O(N ) factors.
+
+                                        III. A G ENERIC S TRUCTURAL FACTORIZATION
+              N ×N
+  For A ∈ C          , denote by E(A) the set
+                                                E(A) = (n, l) ∈ V 2 : Anl 6= 0 .
+                                                      
+                                                                                                                              (5)
+Now, let A, B ∈ {0, 1}N ×N , and suppose that IN ∈ spr(A) and IN ∈ spr(B), i.e., both A and B contain strictly non-zero
+diagonals. Consider the product AB and the associated set E(AB). Note,
+                                                              N
+                                             (                                      )
+                                                             X
+                                   E(AB) = (n, l) ∈ V 2 :        A(n,m) B (m,l) 6= 0 .                              (6)
+                                                                  m=1
+
+Since A, B have non-negative entries and both spr(A) and spr(B) contain the identity IN , it readily follows that
+                                                     E(A) ∪ E(B) ⊆ E(AB).                                                     (7)
+For each (n, l) ∈ E(AB), let
+                                                    
+                                        E(n,l) (B) = (m, l) ∈ E(B) : A(n,m) B (m,l) 6= 0                                      (8)
+                                                     for some (n, m) ∈ E(A) ,
+and note, by construction, E(n,l) (B) 6= ∅ for all (n, l) ∈ E(AB).
+We make an observation here. The above development asserts that as long as IN ∈ spr(A) and IN ∈ spr(B), the sets of
+non-zero entries of A and B are both contained in the set of non-zero entries of the product AB (see (7)). In terms of associated
+digraphs, the above means that the edge-set of the digraph associated with the product matrix AB contains (at least) the edges
+in the digraphs associated with A and B. In a sense, the product AB leads to a digraph that is an extension of the digraphs
+associated with A and B. Intuitively, the above notion of extension will play a crucial role in obtaining a generic factorization
+of elements of CN ×N in terms of products of certain structured sparse matrices in CN ×N . The following concept of simple
+extension will be useful.
+   Definition 2: An ordered tuple (A, B) of matrices in {0, 1}N ×N , with both A and B possessing strict non-zero diagonals,
+is said to be compatible if E(B) ⊂ E(A).
+For a compatible tuple (A, B), by β(m,l) (B), for each (m, l) ∈ E(B), we denote the set
+                                                
+                                   β(m,l) (B) = (n, l) ∈ E(AB) \ E(A) : An,m B (m,l) 6= 0 .                                   (9)
+                                                                                                                                    4
+
+
+
+In other words, for (m, l) ∈ E(B), β(m,l) (B) denotes the subset of new edges in E(AB), i.e., those that are not present in
+E(A) (and hence in E(B)), that make use of the edge (m, l) in their generation. Note that β(m,l) (B) could be empty in general;
+clearly, β(m,l) (B) = ∅ if m = l.
+   Definition 3: Let (A, B) be a compatible tuple of matrices in {0, 1}N ×N . We say that the product AB is a simple extension
+of (A, B) if β(m,l) (B) ≤ 1 for all (m, l) ∈ E(B).
+Recall that, for A ∈ {0, 1}N ×N , spr(A) is a (closed) subspace of CN ×N . For A, B ∈ {0, 1}N ×N with strictly positive diagonal
+entries, we have ÁB́ ∈ spr(AB) for all Á ∈ spr(A) and B́ ∈ spr(B). Denote by FA,B : spr(A) × spr(B) 7→ spr(AB) the
+                                                                                                       
+product map FA,B (Á, B́) = ÁB́ for (Á, B́) ∈ spr(A) × spr(B). Denote by FA,B sprA × spr(B) ⊆ spr(AB) the range
+of this mapping.                                                           
+We now obtain conditions under which the range FA,B sprA × spr(B) is an everywhere dense subset of spr(AB). Note,
+                                      
+showing that FA,B sprA × spr(B) is an everywhere dense subset of spr(AB) is equivalent to showing that the system of
+alegbraic equations
+                                                             XY = Ć                                                            (10)
+has a solution in X ∈ spr(A) and Y ∈ spr(B) for almost all Ć ∈ spr(AB). To this end, we have the following result.
+  Theorem 3.1: Let the ordered tuple (A, B) of matrices in {0, 1}N ×N be compatible in the sense of Definition 2 such
+                                                                                                                   that
+the product AB is a simple extension of (A, B) (in the sense of Definition 3). Then, the range FA,B sprA × spr(B) of the
+product mapping FA,B (·) contains an open dense subset of spr(AB) such that
+                                                                                        
+                                    measspr(AB) cl spr(AB) \ FA,B sprA × spr(B)               = 0,                               (11)
+
+ i.e., the system of alegbraic equations in (10) has a solution in X ∈ spr(A) and Y ∈ spr(B) for almost all Ć ∈ spr(AB).
+The proof of Theorem 3.1 is omitted. First, we note that the algebraic system (10) constitutes a system of polynomial equations
+in the free entries of the matrices X and Y , i.e., those entries Xn,l ’s and Yn,l ’s that are unconstrained in spr(A) and spr(B)
+respectively. With this observation, the key technical step is to show that the system of equations is alegbraically independent [7],
+thus guaranteeing a solution for almost all Ć ∈ spr(AB); this involves a technical construction where we show that an
+associated Jacobian is of generic full rank by employing the structural assumption that the product AB is a simple extension
+of (A, B).
+
+                                                       IV. M AIN R ESULTS
+   We now return to the problem of finite-time computability of a linear transform T ∈ CN ×N (in the sense of Definition 1), or
+equivalently, the graph-structured matrix factorization reformulation (4). The results we state below on finite-time computability
+shows that, under appropriate connectivity conditions on the inter-agent communication adjacency matrix, almost all linear
+transforms T may be computed in at most N steps, i.e., in the sense of Definition 1, almost all linear transforms are N -step
+finite-time computable.
+Before proceeding to the case of general digraphs, we consider the case in which the adjacency matrix A corresponds to a
+directed cycle with self-loops on the N vertices. We have the following result.
+   Theorem 4.1: Let the communication adjacency matrix A ∈ {0, 1}N ×N correspond to the directed cycle digraph with self-
+loops on the N vertices, i.e., An,n = 1 for all n ∈ V , An,n+1 = 1 for all n ∈ V \ {N }, AN,1 = 1, and all other entries of A
+are zero. Then, for almost all T ∈ CN ×N , there exist matrices Ai ∈ spr(A), i = 1, · · · , N , such that
+                                                      T = AN AN −1 · · · A1 .                                                   (12)
+The proof is omitted but essentially consists of a recursive application of Theorem 3.1. Roughly, by using the directed cycle
+structure of A, we are able to verify the simple extension requirement of Theorem 3.1 at each stage of the recursive construction,
+leading to the assertion that the set of matrices that may not be written as the product of N factor matrices in spr(A) has a
+negligible (of Lebesgue measure zero) closure. To obtain this assertion and that we need at most N factors, we also leverage
+the fact that the diameter of the directed cycle is bounded by N and hence, intuitively, we are able to match all the entries of
+T (which could be a full matrix) with at most N products.
+   Theorem 4.1 may be extended to the case of general strongly connected digraphs as follows:
+   Theorem 4.2: Let the communication adjacency matrix A ∈ {0, 1}N ×N be such that Ann = 1 for all n = 1, · · · , N and
+there exists a Hamiltonian cycle in the associated digraph. Then, for almost all T ∈ CN ×N , there exist matrices Ai ∈ spr(A),
+i = 1, · · · , N , such that T = AN AN −1 · · · A1 .
+Note, the Hamiltonian cycle means that the associated communication digraph contains a directed cycle as a subgraph. The
+Hamiltonian cycle requirement is stronger than the strongly connectedness of the inter-agent communication digraph. By the
+Hamiltonian cycle assumption, by retaining the diagonal entries in A and by zeroing certain off-diagonal entries, we can obtain
+a matrix Ared  A in {0, 1}N ×N that corresponds to a directed cycle with self-loops as used in the hypotheses of Theorem 4.1.
+By restricting attention to factor matrices in spr(Ared ) and noting that spr(Ared ) ⊆ spr(A), the desired factorization follows
+immediately as a consequence of Theorem 4.1.
+                                                                                                                                                           5
+
+
+
+                                                                    V. D ISCUSSION
+   In this paper, we have considered finite-time (iterative) in-network computation of linear transforms via distributed linear
+iterations that conform to the sparsity of the (communication) network adjacency structure. By reformulating the finite-time
+computability problem to a sparsity constrained matrix factorization problem and employing tools from algebraic geometry,
+we have obtained a generic solution to the former problem: specifically, we have shown that almost all linear transforms are
+computable in at most N steps (iterations) as long as the communication graph contains a directed Hamiltonian cycle. The
+results obtained extend the existing literature on finite-time distributed linear transform computation, that primarily focuses
+on the case of computing rank-one transforms (corresponding to homogeneous agent computation objectives) over undirected
+graphs, on multiple fronts including the computation of arbitrary transforms that correspond to potentially heterogeneous
+computation objectives at the network agents (i.e., each agent being interested in a possibly different linear combination of the
+network data) and over general directed communication graphs.
+   There are several future research directions and extensions that are worth exploring. The above results, in a sense, provide
+a qualitative characterization, i.e., whether a transform T is finite-time computable with guarantees on the computation time.
+However, in practice, the associated design question, i.e., how to obtain the factor matrices in (12) or equivalently the (time-
+varying) weights in the linear distributed iterations (2), needs to be handled in a systematic and efficient way. Given that N
+factors are sufficient, we may resort to (non-convex) optimization techniques to obtain approximate factorizations and hence
+weight designs. Secondly, the characterization may be conservative, i.e., for specific classes of transforms T and depending
+on the communication digraph, fewer than N factors (equivalently iterations) may be sufficient; this is a direction for future
+research. Another research issue, related to the above, is to explore to what extent the Hamiltonian cycle requirement may be
+relaxed or modified.
+
+                                                                     R EFERENCES
+[1] A. G. Dimakis, S. Kar, J. M. Moura, M. G. Rabbat, and A. Scaglione, “Gossip algorithms for distributed signal processing,” Proceedings of the IEEE,
+    vol. 98, no. 11, pp. 1847–1864, Nov. 2010.
+[2] S. Kar and J. M. Moura, “Consensus + innovations distributed inference over networks: cooperation and sensing in networked systems,” IEEE Signal
+    Processing Magazine, vol. 30, no. 3, pp. 99–109, 2013.
+[3] O. Teke and P. P. Vaidyanathan, “Random node-asynchronous graph computations: Novel opportunities for discrete-time state-space recursions,” IEEE
+    Signal Processing Magazine, vol. 37, no. 6, pp. 64–73, 2020.
+[4] A. Sandryhaila, S. Kar, and J. M. Moura, “Finite-time distributed consensus through graph filters,” in 2014 IEEE International Conference on Acoustics,
+    Speech and Signal Processing (ICASSP). IEEE, 2014, pp. 1080–1084.
+[5] S. Safavi and U. A. Khan, “Revisiting finite-time distributed algorithms via successive nulling of eigenvalues,” IEEE Signal Processing Letters, vol. 22,
+    no. 1, pp. 54–57, 2014.
+[6] S. Segarra, A. G. Marques, and A. Ribeiro, “Optimal graph-filter design and applications to distributed linear network operators,” IEEE Transactions on
+    Signal Processing, vol. 65, no. 15, pp. 4117–4131, 2017.
+[7] J. S. Milne, Algebraic geometry. Allied Publishers, 2012.

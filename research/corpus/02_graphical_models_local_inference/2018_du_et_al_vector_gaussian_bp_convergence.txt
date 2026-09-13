@@ -1,0 +1,2396 @@
+Journal of Machine Learning Research 18 (2018) 1-38            Submitted 11/16; Revised 2/18; Published 4/18
+
+
+
+
+        Convergence Analysis of Distributed Inference with
+           Vector-Valued Gaussian Belief Propagation
+
+Jian Du                                                                        jiand@andrew.cmu.edu
+Department of Electrical and Computer Engineering
+Carnegie Mellon University
+Pittsburgh, PA 15213, USA
+Shaodan Ma                                                                       shaodanma@umac.mo
+Department of Electrical and Computer Engineering
+University of Macau
+Avenida da Universidade, Taipa, Macau
+Yik-Chung Wu                                                                         ycwu@eee.hku.hk
+Department of Electrical and Electronic Engineering
+The University of Hong Kong
+Pokfulam Road, Hong Kong
+Soummya Kar                                                              soummyak@andrew.cmu.edu
+José M. F. Moura                                                           moura@andrew.cmu.edu
+Department of Electrical and Computer Engineering
+Carnegie Mellon University
+Pittsburgh, PA 15213, USA
+
+
+Editor: Qiang Liu
+
+
+                                                Abstract
+
+
+     This paper considers inference over distributed linear Gaussian models using factor graphs
+     and Gaussian belief propagation (BP). The distributed inference algorithm involves only
+     local computation of the information matrix and of the mean vector, and message passing
+     between neighbors. Under broad conditions, it is shown that the message information
+     matrix converges to a unique positive definite limit matrix for arbitrary positive semidefinite
+     initialization, and it approaches an arbitrarily small neighborhood of this limit matrix at
+     an exponential rate. A necessary and sufficient convergence condition for the belief mean
+     vector to converge to the optimal centralized estimator is provided under the assumption
+     that the message information matrix is initialized as a positive semidefinite matrix. Further,
+     it is shown that Gaussian BP always converges when the underlying factor graph is given
+     by the union of a forest and a single loop. The proposed convergence condition in the setup
+     of distributed linear Gaussian models is shown to be strictly weaker than other existing
+     convergence conditions and requirements, including the Gaussian Markov random field
+     based walk-summability condition, and applicable to a large class of scenarios.
+
+
+
+     Keywords: Graphical Model, Large-Scale Networks, Linear Gaussian Model, Markov
+     Random Field, Walk-summability.
+
+c 2018 Jian Du, Shaodan Ma, Yik-Chung Wu, Soummya Kar, and José M. F. Moura.
+License: CC-BY 4.0, see https://creativecommons.org/licenses/by/4.0/. Attribution requirements are provided
+at http://jmlr.org/papers/v18/16-556.html.
+                              Du, Ma, Wu, Kar, and Moura
+
+
+
+
+1. Introduction
+Inference based on a set of measurements from multiple agents on a distributed network is
+a central issue in many problems. While centralized algorithms can be used in small-scale
+networks, they face difficulties in large-scale networks, imposing a heavy communication
+burden when all the data is to be transported to and processed at a central processing unit.
+Dealing with highly distributed data has been recognized by the U.S. National Research
+Council as one of the big challenges for processing big data (National Research Council,
+2013). Therefore, distributed inference techniques that only involve local communication
+and computation are important for problems arising in distributed networks.
+    In large-scale linear parameter learning with Gaussian measurements, Gaussian Belief
+Propagation (BP) (Weiss and Freeman, 2001a) provides an efficient distributed algorithm
+for computing the marginal means of the unknown parameters, and it has been adopted
+in a variety of topics including image interpolation (Xiong et al., 2010), distributed power
+system state inference (Hu et al., 2011), distributed beamforming (Ng et al., 2008), dis-
+tributed synchronization (Du and Wu, 2013b), fast solver for system of linear equations
+(Shental et al., 2008a), distributed rate control in ad-hoc networks (Zhang et al., 2010),
+factor analyzer network (Frey, 1999), sparse Bayesian learning (Tan and Li, 2010), inter-
+cell interference mitigation (Lehmann, 2012), and peer-to-peer rating in social networks
+(Bickson and Malkhi, 2008).
+    Although with great empirical success (Murphy et al., 1999), it is known that a major
+challenge that hinders BP is the lack of theoretical guarantees of convergence in loopy net-
+works (Chertkov and Chernyak, 2006; Gómez et al., 2007). Convergence of other forms of
+loopy BP are analyzed by Ihler et al. (2005), Mooij and Kappen (2005, 2007), Noorshams
+and Wainwright (2013), and Ravanbakhsh and Greiner (2015), but their analyses are not
+directly applicable to Gaussian BP. Sufficient convergence conditions for Gaussian BP have
+been developed in Weiss and Freeman (2001a); Malioutov et al. (2006); Moallemi and Roy
+(2009a); Su and Wu (2015) when the underlying Gaussian distribution is expressed in terms
+of pairwise connections between scalar variables, i.e., it is a Markov random field (MRF).
+However, depending on how the underlying joint Gaussian distribution is factorized, Gaus-
+sian BP may exhibit different convergence properties as different factorizations (different
+Gaussian models) lead to fundamentally different recursive update structures. In this pa-
+per, we study the convergence of Gaussian BP derived from the distributed linear Gaussian
+model. The motivation is twofold. From the factorization viewpoint, by specifically em-
+ploying a factorization based on the linear Gaussian model, we are able to bypass difficulties
+in existing convergence analyses ((Malioutov et al., 2006) and references therein) based on
+Gaussian Markov random field factorization. From the distributed inference viewpoint, the
+linear Gaussian model and associated message passing requirements for implementing the
+Gaussian BP readily conform to the physical network topology arising in large-scale net-
+works such as in (Hu et al., 2011; Ng et al., 2008; Du and Wu, 2013b; Shental et al., 2008a;
+Zhang et al., 2010; Frey, 1999; Tan and Li, 2010; Lehmann, 2012; Bickson and Malkhi,
+2008), thus it is practically important.
+    Recently, Giscard et al. (2012, 2013, 2016) present a path-sum method to compute the
+information matrix inverse of a joint Gaussian distribution. Then, the marginal mean is
+obtained using the information matrix inverse. The path-sum method converges for an
+
+                                              2
+                          Guassian BP Convergence Analysis
+
+
+
+
+arbitrary valid Gaussian model, however, it is not clear how to adapt it to the distributed
+and parallel inference setup. In contrast, Gaussian BP is a parallel and fully distributed
+method that computes the marginal means by computing only the block diagonal elements of
+the information matrix inverse. Though the block diagonal elements computed by Gaussian
+BP may not be correct, it is shown that the belief mean still converges to the correct value
+once Gaussian BP converges. This explains the popularity of Gaussian BP in distributed
+inference applications, even though its convergence properties are not fully understood.
+    To fill this gap, this paper studies the convergence of Gaussian BP for linear Gaussian
+models. Specifically, for the first time, by establishing certain contractive properties of
+the distributed information matrix (inverse covariance matrix) updates with respect to the
+Birkhoff metric, we show that, with arbitrary positive semidefinite (p.s.d.) initial message
+information matrix, the belief covariance for each local variable converges to a unique posi-
+tive definite limit, and it approaches an arbitrarily small neighborhood of this limit matrix
+at an exponential rate. Consequently, the recursive equation for the message mean, which
+depends on the information matrix, can be reduced to a linear recursive equation. Further,
+we derive a necessary and sufficient convergence condition for this linear recursive equation
+under the assumption that the initial message information matrix is p.s.d. Furthermore,
+we show that, when the structure of the factor graph is the union of a single loop and a
+forest, Gaussian BP always converges. Finally, it is demonstrated that the proposed conver-
+gence condition for the linear Gaussian model encompasses the walk-summable convergence
+condition for Gaussian MRFs (Malioutov et al., 2006).
+    Note that there exist other distributed estimation frameworks, e.g., consensus+inn-
+ovations (Kar and Moura, 2013; Kar et al., 2013) and diffusion algorithms (Cattivelli and
+Sayed, 2010) that enable distributed estimation of parameters and processes in multi-agent
+networked environments. The consensus+innovation algorithms converge in mean square
+sense to the centralized optimal solution under the assumption of global observability of
+the (aggregate) sensing model and connectivity (on the average) of the inter-agent com-
+munication network. In particular, these algorithms allow the communication or message
+exchange network to be different from the physical coupling network of the field being es-
+timated where either networks can be arbitrarily connected with cycles. The results in
+Kar and Moura (2013); Kar et al. (2013) imply that the unknown field or parameter can
+be reconstructed completely at each agent in the network. For large-scale networks with
+high dimensional unknown variable, it may be impractical though to estimate all the un-
+knowns at every agent. Reference (Kar, 2010, section 3.4) develops approaches to address
+this problem, where under appropriate conditions, each agent can estimate only a subset
+of the unknown parameter variables. This paper studies a different distributed inference
+problem where each agent learns only its own unknown random variables; this leads to lower
+dimensional data exchanges between neighbors.
+    The rest of this paper is organized as follows. Section 2 presents the system model for
+distributed inference. Section 3 derives the vector-valued distributed inference algorithm
+based on Gaussian BP. Section 4 establishes convergence conditions, and Section 5 discloses
+the relationship between the derived results and existing convergence conditions of Gaussian
+BP. Finally, Section 6 presents our conclusions.
+    Notation: Boldface uppercase and lowercase letters represent matrices and vectors, re-
+spectively. For a matrix A, A−1 and AT denote its inverse (if it exists) and transpose,
+
+                                             3
+                                   Du, Ma, Wu, Kar, and Moura
+
+
+
+
+respectively. The symbol IN denotes the N × N identity matrix, and N (x|µ, R) stands for
+the probability density function (PDF) of a Gaussian random vector x with mean µ and
+covariance matrix R. The notation ||x − y||2W stands for (x − y)T W (x − y). The symbol
+∝ represents the linear scalar relationship between two real valued functions. For Hermitian
+matrices X and Y, X  Y (X  Y) means that X − Y is positive semidefinite (definite).
+The sets [A, B] are defined by [A, B] = {X : B  X  A}. The symbol Bdiag {·} stands
+for block diagonal matrix with elements listed inside the bracket; ⊗ denotes the Kronecker
+product; and Xi,j denotes the component of matrix X on the i-th row and j-th column.
+
+2. Problem Statement and Markov Random Field
+Consider a general connected network1 of M agents, with V = {1, . . . , M } denoting the set
+of agents, and ENet ⊂ V × V the set of all undirected communication links in the network,
+i.e., if i and j can communicate or exchange information directly, (i, j) ∈ ENet . At every
+agent n ∈ V, the local observations are given by a linear Gaussian model:
+                                         X
+                                 yn =         An,i xi + zn ,                             (1)
+                                              i∈n∪I(n)
+
+where I (n) denotes the set of neighbors of agent n (i.e., all agents i with (n, i) ∈ ENet ), An,i
+is a known coefficient matrix with full column rank, xi is the local unknown parameter at
+agent i with dimension Ni × 1 and with prior distribution xi ∼ N (xi |0, Wi ) (Wi  0), and
+zn is the additive noise with distribution zn ∼ N (zn |0, Rn ), where Rn  0. It is assumed
+that p (xi , xj ) = p (xi ) p (xj ) and p (zi , zj ) = p (zi ) p (zj ) for i 6= j, and the xi ’s and zj ’s are
+independent for all i and j. The goal is to learn xi , based on yn , p (xi ), and p (zn ).2
+    In centralized estimation, all the observations yn ’s at different agents are forwarded to
+a central processing unit. Define vectors x, y, and z as the stacking of xn , yn , and zn in
+ascending order with respect to n, respectively; then, we obtain
+
+                                               y = Ax + z,                                                (2)
+
+where A is constructed from An,i , with specific arrangement dependent on the network
+topology. Assuming A is of full column rank, and since (2) is a standard linear model,
+                                                        h                   iT
+the optimal minimum mean squared error estimate x   b , x               bTM
+                                                          bT1 , . . . , x      of x is given by
+(Murphy, 2012)
+               Z
+                     p (x) p (y|x)                           −1 T −1
+          x
+          b = xR                     dx = W−1 + AT R−1 A            A R y,                  (3)
+                    p (x) p (y|x) dx
+
+where W and R are block diagonal matrices containing Wi and Ri as their diagonal blocks,
+respectively. Although well-established, centralized estimation in large-scale networks has
+1. A connected network is one where any two distinct agents can communicate with each other through a
+   finite number of hops.
+2. By slightly modifying (1), the local model would allow two neighboring agents to share a common
+   observation and the analyses in the following sections still apply. Please refer to Du et al. (2017b) for
+   details, and Du et al. (2017a) for the corresponding models and associated (distributed) convergence
+   conditions.
+
+
+                                                      4
+                            Guassian BP Convergence Analysis
+
+
+
+
+several drawbacks including: 1) the transmission of yn , An,i and Rn from peripheral agents
+to the computation center imposes large communication overhead; 2) knowledge of global
+network topology is needed in order to construct A; 3) the computation burden at the
+          center scales
+computation             up due to the matrix inversion required in (3) with complexity
+           P|V|      3
+order O      i=1 Ni     , i.e., cubic in the dimension in general.
+   On the other hand, Gaussian BP running over graphical models representing the joint
+posterior distribution of all xi ’s provides a distributed way to learn xi locally, thereby
+mitigating the disadvantages of the centralized approach. In particular, with Gaussian
+MRF, the joint distribution p (x) p (y|x) is expressed in a pairwise form (Malioutov et al.,
+2006):                                                   
+                             Y                              Y
+             p (x) p (y|x) =      ψn xn , {yi }i∈{n∪I(n)}         ψn,i (xn , xi ) ,     (4)
+                              n∈V                            (n,i)∈EMRF
+
+where
+
+   EMRF , ENet ∪ {(n, i) |∃k, k 6= n, k 6= i, such that (n, k) ∈ ENet , and (i, k) ∈ ENet } ;   (5)
+
+                                                                                     
+                                           1                     X                    
+           ψn xn , {yi }i∈n∪I(n)       = exp    xTn W−1
+                                                      n xn +               yTi R−1
+                                                                                i  x n         (6)
+                                             2                                          
+                                                                i∈n∪I(n)
+
+is the potential function at agent n, and
+                                 
+                                   1                                       T −1
+          ψn,i (xn , xi ) = exp −     (An,n xn )T R−1
+                                                   n (An,i xi ) + (Ai,n xn ) Ri (Ai,i xi )
+                                   2
+                                                                     
+                            +
+                                  X
+                                                     T −1
+                                           (Ak,n xn ) Rk (Ak,i xi )
+                                                                                               (7)
+                            k∈{e   k,i)∈ENet ,
+                                k|(e
+                              (k,n)∈ENet }
+                               e
+
+
+is the edge potential between xn and xi . After setting up the graphical model representing
+the joint distribution in (4), messages are exchanged between pairs of agents n and i with
+(n, i) ∈ EMRF . More specifically, according to the standard derivation of Gaussian BP, at
+the `-th iteration, the message passed from agent n to agent i is
+                       Z                     
+           (`)                                                      (`−1)
+                                                              Y
+          wn→i (xi ) = ψn xn , {yk }k∈n∪I(n) ψn,i (xn , xi )       wk→n (xn ) dxn .     (8)
+                                                                k∈I(n)\i
+
+   As shown by (8), Gaussian BP is iterative with each agent alternatively receiving mes-
+sages from its neighbors and forwarding out updated messages. At each iteration, agent i
+computes its belief on variable xi as
+                                                        Y
+                      (`)                                    (`)
+                     bMRF (xi ) ∝ ψi xi , {yn }n∈i∪I(i)     wk→i (xi ) .              (9)
+                                                           k∈I(n)
+
+It is known that, as the messages (8) converge, the mean of the belief (9) is the exact mean
+of the marginal distribution of xi (Weiss and Freeman, 2001a).
+
+                                                 5
+                               Du, Ma, Wu, Kar, and Moura
+
+
+
+
+    It might seem that our distributed inference problem is now solved, as a solution is read-
+ily available. However, there are two serious limitations for the Gaussian MRF approach.
+    First, messages are passed between pairs of agents in EMRF , which according to the
+definition (5) includes not only those direct neighbors, but also pairs that are two hops
+away but share a common neighbor. This is illustrated in Fig. 1, where Fig. 1(a) shows a
+network of 4 agents with a line between two neighboring agents indicating the availability
+of a physical communication link, and Fig. 1(b) shows the equivalent pairwise graph. For
+this example, in the physical network, there is no direct connection between agents 1 and
+4, nor between agents 1 and 3. But in the pairwise representation, those connections are
+present. We summarize the above observations in the following remark.
+
+
+
+
+Remark 1 For a network with communication edge set ENet and local observations follow-
+ing (1), the corresponding MRF graph edge set satisfies EMRF ⊇ ENet . Thus, Gaussian BP
+for Gaussian MRFs cannot be applied to the distributed inference problem with the local
+observation model (1).3
+
+
+
+    The consequence of the above findings is that, not only does information need to be
+shared among agents two hops away from each other to construct the edge potential func-
+tion in (7), but also the messages (8) may be required to be exchanged among non-direct
+neighbors, where a physical communication link is not available. This complicates signifi-
+cantly the message exchange scheduling.
+    Secondly, even if the message scheduling between non-neighboring agents can be re-
+alized, the convergence of (8) is not guaranteed in loopy networks. For Gaussian MRF
+with scalar variables, sufficient convergence conditions have been proposed in (Weiss and
+Freeman, 2001a; Malioutov et al., 2006; Su and Wu, 2015). However, depending on how
+the factorization of the underlying joint Gaussian distribution is performed, Gaussian BP
+may exhibit different convergence properties as different factorizations (different Gaussian
+models) lead to fundamentally different recursive update structures. Furthermore, these
+results apply only to scalar Gaussian BP, and extension to vector-valued Gaussian BP is
+nontrivial as we show in this paper.
+   The next section derives distributed vector inference based on Gaussian BP with high
+order interactions (beyond pairwise connections), where information sharing and message
+exchange requirement conform to the physical network topology. Furthermore, convergence
+conditions will be studied in Section 4, and we show in Section 5 that the convergence
+condition obtained is strictly weaker than, i.e., subsumes the convergence conditions in
+(Weiss and Freeman, 2001a; Malioutov et al., 2006; Su and Wu, 2015).
+
+
+3. In Section 5, we further show that the convergence condition of Gaussian BP obtained in this paper
+   for model (1) encompasses all existing convergence conditions of Gaussian BP for the corresponding
+   Gaussian MRF.
+
+
+                                                 6
+                           Guassian BP Convergence Analysis
+
+
+
+
+                                             (a)
+
+
+
+
+                                              (b)
+
+
+
+
+                                              (c)
+
+
+Figure 1: (a) A physical network with 4 agents, where {1, 2} and {2, 3, 4} are two groups
+          of agents that are within the communication range of each other, respectively.
+          xi is the local unknown vector, and yi is the local observation      at agent i that
+          follows (1); (b) The corresponding MRF of Fig. 1 (a) with ψn xn , {yi }i∈n∪I(n)
+          and ψn,i (xn , xi ) defined in (6) and (7), respectively. (c) The corresponding factor
+          graph of Fig. 1 (a) with fi defined in (10). Since p(xi ) does not involve message
+          passing, the p(xi ) associated to each variable node is not drawn to keep the figure
+          simple.
+
+
+
+
+                                               7
+                              Du, Ma, Wu, Kar, and Moura
+
+
+
+
+3. Distributed Inference with Vector-Valued Gaussian BP and
+  Non-Pairwise Interaction
+The joint distribution p (x) p (y|x) is first written as the product of the prior distribution
+and the likelihood function of each local linear Gaussian model in (1) as
+                                     Y            Y                      
+                     p (x) p (y|x) =      p (xn )     p yn | {xi }i∈n∪I(n) .              (10)
+                                     n∈V          n∈V |        {z         }
+                                                             ,fn
+
+To facilitate the derivation of the distributed inference algorithm, the factorization in (10) is
+expressed in terms of a factor graph (Kschischang et al., 2001), where every vector variable
+xi is represented by a circle (called variable node) and the probability distribution of a vector
+variable or a group of vector variables is represented by a square (called factor node). A
+variable node is connected to a factor node if the variable is involved in that particular
+factor. For example, Fig. 1(c) shows the factor graph representation for the network in
+Fig. 1(a).
+    We derive the Gaussian BP algorithm over the corresponding factor graph to learn xn
+for all n ∈ V (Kschischang et al., 2001). It involves two types of messages: one is the
+message from a variable node xj to its neighboring factor node fn , defined as
+                             (`)                            (`−1)
+                                                   Y
+                           mj→fn (xj ) = p (xj )          mfk →j (xj ) ,                     (11)
+                                               fk ∈B(j)\fn
+
+                                                                               (`−1)
+where B (j) denotes the set of neighbouring factor nodes of xj , and mfk →j (xj ) is the
+message from fk to xj at time ` − 1. The second type of message is from a factor node fn
+to a neighboring variable node xi , defined as
+                            Z     Z
+                (`)                              (`)
+                                             Y
+              mfn →i (xi ) = · · · fn ×        mj→fn (xj ) d {xj }j∈B(fn )\i ,      (12)
+                                           j∈B(fn )\i
+
+where B (fn ) denotes the set of neighboring variable nodes of fn . The process iterates
+between equations (11) and (12). At each iteration `, the approximate marginal distribution,
+also referred to as belief, on xi is computed locally at xi as
+                               (`)                      (`)
+                                                  Y
+                              bBP (xi ) = p (xi )    mfn →i (xi ) .                     (13)
+                                               fn ∈B(i)
+
+                                                                         (`)           (`)
+   In the sequel, we derive the exact expressions for the messages mj→fn (xj ), mfn →i (xi ),
+            (`)
+and belief bBP (xi ). First, let the initial messages at each variable node and factor node be
+in Gaussian function forms as
+                                                                      
+                            (0)                  1        (0)   2
+                         mfn →i (xi ) ∝ exp − ||xi − vfn →i || (0)       .                (14)
+                                                 2              Jfn →i
+
+In Appendix A, it is shown that the general expression for the message from variable node
+j to factor node fn is
+                                                                 
+                        (`)                 1        (`)    2
+                       mj→fn (xj ) ∝ exp − ||xj − vj→fn || (`)      ,                 (15)
+                                            2               Jj→fn
+
+
+                                               8
+                                       Guassian BP Convergence Analysis
+
+
+
+
+with
+                                          (`)                                             (`−1)
+                                                                           X
+                                         Jj→fn = W−1
+                                                  j +                                    Jfk →j ,                                   (16)
+                                                                     fk ∈B(j)\fn
+                                                                                                      
+                                             h             i−1
+                                   (`)           (`)                                     (`−1) (`−1)
+                                                                         X
+                                 vj→fn = Jj→fn                                     Jfk →j vfk →j  ,                               (17)
+                                                                 fk ∈B(j)\fn
+         (`−1)                 (`−1)
+where Jfk →j and vfk →j are the message information matrix (inverse of covariance ma-
+trix) and mean vector received at variable node j at the (` − 1)-th iteration, respectively.
+Furthermore, the message from factor node fn to variable node i is given by
+                                                                     
+                     (`)           (`)         1        (`)    2
+                   mfn →i (xi ) ∝ αfn →i exp − ||xi − vfn →i || (`)     ,              (18)
+                                               2               Jfn →i
+
+with
+                                                                                                      −1
+                                                                               h           i−1
+                         (`)                                                       (`)
+                                                           X
+                     Jfn →i = ATn,i Rn +                            An,j Jj→fn                  ATn,j      An,i ,                 (19)
+                                                       j∈B(fn )\i
+
+                                                                                −1                                                      
+         h           i−1                                        h      i−1
+ (`)         (`)                                                  (`)                                                               (`)
+                                                 X                                                                X
+vfn →i = Jfn →i                ATn,i Rn +                  An,j Jj→fn     ATn,j  yn −                                    An,j vj→fn  ,
+                                             j∈B(fn )\i                                                        j∈B(fn )\i
+                                                                                                                                    (20)
+and                                              Z         Z                                    
+                                    (`)                             1    (`)
+                                   αfn →i ∝          ...       exp − zT Λfn →i z                     dz.                            (21)
+                                                                    2
+          (`)
+In (21), Λfn →i is a diagonal matrix containing the eigenvalues of ATn,{B(fn )\i} R−1
+                                                                                   n An,{B(fn )\i} +
+ (`)
+J{B(fn )\i}→fn , with An,{B(fn )\i} denoting a row block matrix containing An,j as row elements
+                                                                                   (`)
+for all j ∈ B (fn )\i arranged in ascending order, and J{B(fn )\i}→fn denoting a block diagonal
+                   (`)
+matrix with Jj→fn as its block diagonal elements for all j ∈ B (fn ) \ i arranged in ascending
+order.
+                                                                     (`)
+   Obviously, the validity of (18) depends on the existence of αfn →i . It is evident that
+                                                                                                                              (`)
+(21) is the integral of a Gaussian distribution and equals to a constant when Λfn →i  0
+                                                                         (`)                                          (`)
+or equivalently ATn,{B(fn )\i} R−1
+                                n An,{B(fn )\i} + J{B(fn )\i}→fn  0. Otherwise, αfn →i does not
+                                                                                                                      (`)
+exist. Therefore, the necessary and sufficient condition for the existence of mfn →i (xi ) is
+                                                                                   (`)
+                                ATn,{B(fn )\i} Rn−1 An,{B(fn )\i} + J{B(fn )\i}→fn  0.                                             (22)
+                                                                                                                        (`)
+In general, the necessary and sufficient condition is difficult to be verified, as J{B(fn )\i}→fn
+changes in each iteration. However, as R−1                                         −1  eT e
+                                            n  0, it can be decomposed as Rn = Rn Rn .
+Then
+                                                           T                  
+         ATn,{B(fn )\i} R−1
+                         n An,{B(fn )\i} = Rn An,{B(fn )\i}
+                                            e                    e n An,{B(f )\i}  0.
+                                                                 R          n
+
+
+
+                                                                     9
+                              Du, Ma, Wu, Kar, and Moura
+
+
+
+                                                                                    (`)
+Hence, one simple sufficient condition to guarantee (22) is J{B(fn )\i}→fn  0 or equivalently
+                            (`)
+its diagonal block matrix Jj→fn  0 for all j ∈ B (fn ) \ i. The following lemma shows that
+                                            (0)                                               (`)
+setting the initial message covariances Jfn →i  0 for all (n, i) ∈ ENet guarantees Jj→fn  0
+for ` ≥ 1 and all (n, j) ∈ ENet .
+Lemma 2 Let the initial messages at factor node fk be in Gaussian forms with the initial
+                            (0)                                              (`)
+message information matrix Jfk →j  0 for all k ∈ V and j ∈ B (fk ). Then Jj→fn  0
+      (`)
+and Jfk →j  0 for all ` ≥ 1 with j ∈ V and fn , fk ∈ B (j). Furthermore, in this case, all
+             (`)             (`)
+messages mj→fn (xj ) and mfk →j (xi ) are well defined.
+Proof See Appendix B.
+
+
+   For this factor graph based approach, according to the message updating procedure (15)
+and (18), message exchange is only needed between neighboring agents (an agent refers to
+a variable-factor pair as shown in Fig. 1 (c)). For example, the messages transmitted from
+                                          (`)            (`)
+agent n to its neighboring agent i are mfn →i (xi ) and mn→fi (xn ). Thus, the factor graph
+does impose a clear messaging schedule, and the message passing scheme given in (11)
+                                                                                  (`)
+and (12) conforms with the network topology. Furthermore, if the messages mj→fn (xj )
+       (`)
+and mfn →i (xi ) exist for all ` (which can be achieved using Lemma 2), the messages are
+Gaussian, therefore only the corresponding mean vectors and information matrices (inverse
+of covariance matrices) are needed to be exchanged.
+     Finally, if the Gaussian BP messages exist, according to the definition of belief in (13),
+ (`)
+bBP (xi ) at iteration ` is computed as
+                               (`)                     (`)
+                                                  Y
+                              bBP (xi ) = p (xi )    mfn →i (xi ) ,
+                                                    fn ∈B(i)
+                                                                          
+                                                         (`)         (`)
+                                        ∝ N xi |µi , Pi                        ,
+
+where the belief covariance matrix
+                                                                                  −1
+                                  (`)                                 (`)
+                                                         X
+                             Pi = W−1
+                                    i +                              Jfn →i              ,         (23)
+                                                    fn ∈B(i)
+
+and mean vector                                                                    
+                              (`)  (`)                         (`)          (`)
+                                                  X
+                             µi = Pi                     Jfn →i vfn →i  .                         (24)
+                                             fn ∈B(i)
+
+    The iterative algorithm based on Gaussian BP is summarized as follows. The algorithm
+is started by setting the messages from factor nodes to variable nodes as in (14). At
+each round of message exchange, every variable node computes the output messages to its
+neighboring factor nodes according to (16) and (17). After receiving the messages from its
+neighboring variable nodes, each factor node computes its output messages according to
+(19) and (20). The iterative computation terminates when the iterates in (15) or (18) tend
+to approach a fixed value or the maximum number of iterations is reached.
+
+                                                    10
+                                  Guassian BP Convergence Analysis
+
+
+
+
+Remark 3 We assume that Rn  0 in this paper. If, however, somePof the observa-
+tions are noiseless, for example, Rn = 0, the local observation is yn = i∈n∪I(n) An,i xi .
+Then
+P      the corresponding local likelihood function is represented by the Dirac measure δ(yn −
+   i∈n∪I(n) An,i xi ). Suppose, for example, there is only one agent with Rn = 0, and all
+others are Ri  0. The the joint distribution is written as
+                                     X               Y         Y                   
+           p (x) p (y|x) = δ(yn −          An,i xi )   p (xj )  p yk | {xi }i∈k∪I(k) .
+                                         i∈n∪I(n)              j∈V           k∈V
+
+
+       case,P
+In this      if An,n is invertible,
+                                   then, by the definition of the Dirac measure, we have xn =
+  −1
+An,n yn − i∈I(n) An,i xi . By substituting this equation into all of the likelihood functions
+involving xn , we have the equivalent joint distribution as in (10) with all the likelihood
+functions having a positive definite noise covariance. We thereafter can apply Gaussian BP
+to this new factorization and the convergence analysis in this paper still applies. Therefore,
+without loss of generality, we assume all Rn  0. Note that when Rn = 0 for all n, this
+problem is equivalent to solving algebraic equations, which has been studied in (Shental et al.,
+2008b) using Gaussian BP.
+
+4. Convergence Analysis
+The challenge of deploying the Gaussian BP algorithm for large-scale networks is in de-
+termining whether it will converge or not. In particular, it is generally known that if the
+factor graph contains cycles, the Gaussian BP algorithm may diverge. Thus, determining
+convergence conditions for the Gaussian BP algorithm is very important. Sufficient condi-
+tions for the convergence of Gaussian BP with scalar variables in loopy graphs are available
+in (Weiss and Freeman, 2001a; Malioutov et al., 2006; Su and Wu, 2015). However, these
+conditions are derived based on pairwise graphs with local functions in the form of (6) and
+(7). This contrasts with the model considered in this paper, where the fn in (10) involves
+high-order interactions between vector variables, and thus the convergence results in (Weiss
+and Freeman, 2001a; Malioutov et al., 2006; Su and Wu, 2015) cannot be applied to the
+factor graph based vector-form Gaussian BP.
+                                                 (`)              (`)
+    Due to the recursive updating property of mj→fn (xj ) and mfn →i (xi ) in (15) and (18),
+the message evolution can be simplified by combining these two kinds of messages into one.
+                    (`)
+By substituting Jj→fn in (16) into (19), the updating of the message covariance matrix
+inverse, referred to as message information matrix in the following, can be denoted as
+                                                                                             −1           −1
+        (`)                                                                            (`−1)
+                                          X                                  X
+       Jfn →i     =     ATn,i    Rn +                An,j W−1
+                                                           j +                        Jfk →j         ATn,j         An,i
+                                        j∈B(fn )\i                      fk ∈B(j)\fn
+                         n       o                            
+                            (`−1)
+                  , Fn→i   Jfk →j                                  ,                                                      (25)
+                                             (fk ,j)∈B(f
+                                                     e n ,i)
+
+                                                                                                             (`)
+where Be (fn , i) = {(fk , j) |j ∈ B (fn ) \ i, fk ∈ B (j) \ fn }. Observing that Jfn →i in (25) is
+                      (`)          (`)
+independent of vj→fn and vfn →i in (17) and (18), so we can first focus on the convergence
+                (`)                                                    (`)
+property of Jfn →i alone and then later on that of vfn →i . With the convergence characteri-
+
+                                                         11
+                               Du, Ma, Wu, Kar, and Moura
+
+
+
+           (`)          (`)
+zation of Jfn →i and vfn →i , we will further investigate the convergence of belief covariances
+and means in (23) and (24), respectively.
+                              (`)
+    Note that computing Pj requires all the incoming messages from neighboring nodes
+            (`)
+including Jfn →j as shown in (23) by replacing the subscript i with j in (23). However,
+                                       (`)                    (`−1)
+according to (25), when computing Jfn →i the quantity Jfn →j is excluded, i.e., the quantity
+                                             (`−1) −1      (`−1)
+inside the inner square brackets equals [Pj      ]      − Jfn →j . Therefore, one cannot compute
+ (`)              (`)
+Jfn →i from Pj alone.
+
+4.1 Convergence of Message Information Matrices
+To efficiently represent the updates of all message information matrices, we introduce the
+following definitions. Let
+                                           n        o         
+                                               (`−1)
+                           J(`−1) , Bdiag    Jfn →i
+                                                          n∈V,i∈B(fn )
+
+be a block diagonal matrix with diagonal blocks being the message information matrices
+in the network at time ` − 1 with index arranged in ascending order first on n and then
+                                                             (`−1)
+on i. Using the definition of J(`−1) , the term fk ∈B(j)\fn Jfk →j in (25) can be written as
+                                               P
+
+Ξn,j J(`−1) ΞTn,j , where Ξn,j is for selecting appropriate components from J(`−1) to form the
+                                           h               i              n       o           
+                                                                                −1
+summation. Further, define Hn,i = {An,j }j∈B(fn )\i , Ψn,i = Bdiag           Wj
+                                                                                    j∈B(fn )\i
+                                       
+and Kn,i = Bdiag {Ξn,j }j∈B(fn )\i , all with component blocks arranged with ascending
+order on j. Then (25) can be written as
+                         h                                     i−1       −1
+   (`)
+  Jfn →i = ATn,i Rn + Hn,i Ψn,i + Kn,i I|B(fn )|−1 ⊗ J(`−1) KTn,i     HTn,i     An,i .       (26)
+
+                                                                                         (`)
+ Now, we define the function F , {F1→k , . . . , Fn→i , . . . , Fn→M } that satisfies J =
+                               (`)
+F J(`−1) . Then, by stacking Jfn →i on the left side of (26) for all n and i as the block
+diagonal matrix J(`) , we obtain
+                                     h                i−1
+                                                                            −1
+                   J(`) = AT Ω + H Ψ + K Iϕ ⊗ J(`−1) KT     HT
+                            
+                                                                                 A,
+                                 
+                        , F J(`−1) ,                                                         (27)
+
+where A, H, Ψ, and K are block diagonal matrices with block elements An,i , Hn,i , Ψn,i , and
+Kn,i , respectively, arranged in ascending order, first on n and then on i (i.e., the same order
+    (`)
+as Jfn →i in J(`) ). Furthermore, ϕ = M
+                                       P
+                                         n=1 |B (fn ) | (|B (fn ) | − 1) and Ω is a block diagonal
+matrix with diagonal blocks I|B(fn )| ⊗ Rn with ascending order on n. We first present some
+properties of the updating operator F (·), the proofs being provided in Appendix C.
+
+Proposition 4 The updating operator F (·) satisfies the following properties:
+
+                                               12
+                           Guassian BP Convergence Analysis
+
+
+
+                         
+P 4.1: F J(`)  F J(`−1) , if J(`)  J(`−1)  0.
+                                                            
+P 4.2: αF J  (`)
+                    F αJ (`)
+                                and F α J−1   (`)     −1
+                                                    α F J     (`)
+                                                                     , if J(`)  0 and α > 1.
+                      T −1                T            −1 HT −1 A. With arbitrary J(0)  0,
+                                                            
+P4.3: Define
+             U   , A  Ω   A   and
+                                  L ,
+                                       A    Ω    + HΨ
+F J(`) is bounded by U  F J(`)  L  0 for ` ≥ 1.
+   Based on the above properties of F (·), we can establish the convergence of the infor-
+mation matrices.
+Theorem 5 There exists a unique positive definite fixed point J∗ for the mapping F (·).
+Proof The set [L, U] is a compact set. Further, according to Proposition 4, P 4.3, for
+arbitrary J(0)  0, F maps [L, U] into itself starting from ` ≥ 1. Next, we show that
+[L, U] is a convex set. Suppose that X, Y ∈ [L, U], and 0 ≤ t ≤ 1, then tX − tL and
+(1 − t) Y − (1 − t) L are positive semidefinite (p.s.d.) matrices. Since the sum of two
+p.s.d. matrices is a p.s.d. matrix, tX + (1 − t) Y  L. Likewise, it can be shown that
+tX + (1 − t) Y  U. Thus, the continuous function F maps a compact convex subset of
+the Banach space of positive definite matrices into itself. Therefore, the mapping F has a
+fixed point in [L, U] according to Brouwer’s Fixed-Point Theorem (Zeidler, 1985), and the
+fixed point is positive definite (p.d.).
+     Next, we prove the uniqueness of the fixed point. Suppose that there exist two fixed
+points J∗  0 and J  e∗  0. Since J∗ and Je∗ are p.d., their components J∗              e∗
+                                                                              fn →i and Jfn →i are
+also p.d. matrices. For the component blocks of J∗ and J     e∗ , there are two possibilities: 1)
+e∗         ∗            e∗       ∗                                             e∗         ∗
+J fn →i −Jfn →i  0 or Jfn →i −Jfn →i is indefinite for some n, i ∈ V, and 2) Jfn →i −Jfn →i  0
+for all n, i ∈ V.
+                                                                                e∗
+     For the first case, there must exist ξfn ,i > 1 such that ξfn ,i J∗fn →i − J fn →i has one or
+more zero eigenvalues, while all other eigenvalues are positive. Pick the component matrix
+with the maximum ξfn ,i among those falling into this case, say ξf% ,τ , then, we can write
+
+                                                      e∗
+                                     ξf% ,τ J∗f% →τ − J f% →τ  0,                           (28)
+
+or in terms of the information matrices for the whole network
+                                               ∗
+                                 ξf% ,τ J∗  J
+                                             e  0,       ξf% ,τ > 1.                        (29)
+
+Applying F on both sides of (29), according to the monotonic property of F (·) as shown
+in Proposition 4, P 4.1, we have
+                                                ∗
+                                F ξf% ,τ J∗  F J    e∗ ,
+                                           
+                                                e =J                                (30)
+                                 ∗
+where the equality is due    to J being a fixed point. According∗ to Proposition
+                                 e                                                 4, P 4.2,
+           ∗              ∗                                              ∗
+ξf% ,τ F (J )  F ξf% ,τ J . Therefore, from (30), we obtain ξf%,τ J  J . Consequently,
+                                                                       e
+
+                                                        e∗ .
+                                         ξf%,τ J∗f%,τ  J f%,τ
+
+                                          e∗ having one or more zero eigenvalues as discussed
+But this contradicts with ξf% ,τ J∗f%,τ − J f%,τ
+before (28). Therefore, we must have J∗ = J      e∗ .
+
+                                                   13
+                              Du, Ma, Wu, Kar, and Moura
+
+
+
+
+                                                     e∗        ∗
+   On the other hand, if we have case two, which is J fn →i − Jfn →i  0 for all n, i ∈ V, we
+                                                   ∗
+                                                  e and J∗ reversed, and we would again
+can repeat the above derivation with the roles of J
+              ∗
+            e . Consequently, J∗ is unique.
+obtain J∗ = J
+
+
+    Lemma 2 states that with arbitrary p.s.d. initial message information matrices, the
+message information matrices will be kept as p.d. at every iteration. On the other hand,
+Theorem 5 indicates that there exists a unique fixed point for the mapping F. Next, we
+will show that, with arbitrary initial value J(0)  0, J(`) converges to a unique p.d. matrix.
+
+                                    n     o
+Theorem 6 The matrix sequence        J(`)              defined by (27) converges to a unique pos-
+                                           l=0,1,...
+itive definite matrix J∗ for any initial covariance matrix J(0)  0.
+
+Proof With arbitrary initial value J(0)  0, following Proposition 4, P 4.3, we have
+U  J(1)  L  0. On the other hand, according to Theorem 5, (27) has a unique fixed
+point J∗  0. Notice that we can always choose a scalar α > 1 such that
+
+                                      αJ∗  J(1)  L.                                       (31)
+
+Applying F (·) to (31) ` times, and using Proposition 4, P 4.1, we have
+                                                  
+                            F ` (αJ∗ )  F `+1 J(0)  F ` (L) ,                             (32)
+
+where F ` (X) denotes applying F on X ` times.
+    We start from the left inequality in (32). According to Proposition 4, P 4.2, αJ∗ 
+F (αJ∗ ). Applying F again gives F (αJ∗ )  F 2 (αJ∗ ). Applying F (·) repeatedly, we can
+obtain F 2 (αJ∗ )  F 3 (αJ∗ )  F 4 (αJ∗ ), etc. Thus F ` (αJ∗ ) is a non-increasing sequence
+with respect to the partial order induced by the cone of p.s.d. matrices as ` increases. Fur-
+thermore, since F (·) is bounded below by L, F ` (αJ∗ ) converges. Finally, since there exists
+only one fixed point for F (·), liml→∞ F ` (αJ∗ ) = J∗ . On the other hand, for the right hand
+side of (32), as F (·)  L, we have F (L)  L. Applying F repeatedly gives successively
+F 2 (L)  F (L), F 3 (L)  F 2 (L), etc. So, F ` (L) is an non-decreasing sequence (with
+respect to the partial order induced by the cone of p.s.d. matrices). Since F (·) is upper
+bounded by U, F ` (L) is a convergent sequence. Again, due to the uniqueness of the fixed
+                          `         ∗
+point, we have lim
+                  l→∞  F (L) = J . Finally, taking the limit with respect to ` on (32), we
+have liml→∞ F ` J(0) = J∗ , for arbitrary initial J(0)  0.
+
+
+                                                                     (`)
+Remark 7 According to Theorem 6, the information matrix Jfn →i converges if all initial
+                                         (0)
+information matrices are p.s.d., i.e., Jfn →i  0 for all i ∈ V and fn ∈ B (i). However,
+for the pairwise model, the messages are derived based on the classical Gaussian MRF
+based factorization (in the form of equations (6) and (7)) of the joint distribution. This
+differs from the model considered in this paper, where the factor fn follows equation (10),
+which leads to intrinsically different recursive equations. More specifically, for BP on the
+
+                                               14
+                           Guassian BP Convergence Analysis
+
+
+
+
+Gaussian MRF based factorization, the information matrix does not necessarily converge for
+all initial nonnegative values (for the scalar variable case) as shown in (Malioutov et al.,
+2006; Moallemi and Roy, 2009a).
+                                            (`)
+Remark 8 Due to the computation of Jfn →i being independent of the local observations
+yn , as long as the network topology does not change, the converged value J∗fn →i can be
+precomputed offline and stored at each agent, and there is no need to re-compute J∗fn →i
+even if yn varies.
+
+    Another fundamental question is how fast the convergence is, and this is the focus of the
+discussion below. Since the convergence of a dynamic system is often studied with respect
+to the part metric (Chueshov, 2002), in the following, we start by introducing the part
+metric.
+
+Definition 9 Part (Birkhoff ) Metric (Chueshov, 2002): For arbitrary symmetric matrices
+                                               α ≥ 1 such that −1
+X and Y with the same dimension, if there exists                   αX  Y  α−1 X, X
+and Y are called the parts, and d (X, Y) , inf log α : αX  Y  α X, α ≥ 1 defines a
+metric called the part metric.
+
+   As it is useful to have an estimate of the convergence rate of J(`) in terms of the more
+standard induced matrix norms, we further introduce the notion of monotone norms. The
+norms || · ||2 and || · ||F (Frobenus norm) are monotone norms.
+Definition 10 Monotone Norm (Ciarlet, 1989, 2.2-10): A matrix norm k · k is monotone
+if
+                              X  0, Y  X ⇒ kYk ≥ kXk.
+                                               n     o
+   Next, for arbitrary  > 0, we will show that J(`)   approaches the -neighborhood
+                                                              l=1,..
+of the fixed point J? exponentially fast with respect to the monotone norm. To this end,
+for a fixed  > 0, define the set
+                     n                       o n                        o
+                 C = J(`) |U  J(`)  J∗ + I ∪ J(`) |J∗ − I  J(`)  L .          (33)
+
+
+Theorem 11 With the initial message   n information
+                                            o       matrix set to be an arbitrary p.s.d.
+               (0)                      (`)
+matrix, i.e., Jfn →i  0, the sequence J           approaches an arbitrarily small neigh-
+                                                  l=0,1,...
+borhood of the fixed positive definite matrix J∗ at an exponential rate with respect to any
+matrix norm.
+Proof Fix  > 0 and consider the set C defined in (33). It suffices to show that the quantity
+kJ(`) − J∗ k, where k · k is a monotone norm as defined in Definition 10, decays exponentially
+                                                                            ∗
+as long as J(s) ∈ C for all s ∈ {0, 1, · · ·`}. To this         (`)
+                                                      end,nfor J ∈ C, and J 6∈ C (necessarily),
+                                                                                      o
+according to Definition 9, we have d J(`) , J∗ , inf log α : αJ(`)  J∗  α−1 J(`) . Since
+          
+d J(`) , J∗ is the smallest number satisfying αJ(`)  J∗  α−1 J(`) , this is equivalent to
+                     n          o              n           o
+                  exp d J(`) , J∗ J(`)  J∗  exp −d J(`) , J∗ J(`) .                      (34)
+
+                                                  15
+                                 Du, Ma, Wu, Kar, and Moura
+
+
+
+
+Applying Proposition 4, P 4.1 to (34), we have
+               n           o                n           o   
+         F exp d J(`) , J∗ J(`)  F (J∗ )  F exp −d J(`) , J∗ J(`) .
+                                                           n           o
+Then applying Proposition 4, P 4.2 and considering that exp d J(`) , J∗    > 1 and
+   n            o
+exp −d J(`) , J∗    < 1, we obtain
+                   n          o                   n           o    
+                exp d J(`) , J∗ F J(`)  F (J∗ )  exp −d J(`) , J∗ F J(`) .
+
+Notice that, for arbitrary p.d. matrices X and Y, if X − kY  0, then, by definition, we
+have xT Xx − kxT Yx > 0 for arbitrary x 6= 0. Then, there must exist o > 0 that is small
+enough such that xT Xx−(k + o) xT Yx > 0 or equivalently X  (k + o) Y. Thus, as exp (·)
+is a continuous function, there must exist some 4d > 0 such that
+       n                 o                       n              o       
+   exp −4d + d J(`) , J∗ F J(`)  F (J∗ )  exp 4d − d J(`) , J∗ F J(`) . (35)
+
+Now, using the definition of the part metric, (35) is equivalent to
+                                                                
+                                    (`) ∗              (`)         ∗
+                       −4d + d J , J ≥ d F J                 , F (J ) .
+                                             
+Hence, we obtain d F J(`) , F (J∗ ) < d J(`) , J∗ . Since this result holds for any J(`) ∈
+                                                                         d(F (J(`) ),F (J∗ ))
+                                            
+C, we also have d F J(`) , F (J∗ ) < cd J(`) , J∗ , where c = supJ(`) ∈C    d(J(`) ,J∗ )
+                                                                                              <
+                       
+1. Since J(`+1) = F J(`) and J∗ = F (J∗ ), we have
+                                                           
+                                  d J(`) , J∗ < c` d J(0) , J∗ .                                 (36)
+
+                                                                                       (`)
+     According to (Krause and Nussbaum,
+                                              Lemma 2.3), the convergence rate of ||J −
+                                           1993,
+J∗ || can be determined by that of d J(`) , J∗ . More specifically,
+                          n        o      n         o       n              o
+       (`)      ∗              (`) ∗              (`) ∗               (`)     ∗
+ ||J         − J || ≤ 2 exp d J , J     − exp −d J , J     − 1 min ||J ||, ||J || , (37)
+
+where || · || is a monotone norm defined on the p.s.d. cone:
+    As we show in Proposition 4, P 4.3 n    that J(`) is bounded,
+                                                            o       then ||J(`) || and ||J∗ || must be
+finite. Let ζ be the largest value of min ||J(`) ||, ||J∗ || for all {J(`) } with ` ≥ 0, then ζ > 0.
+According to (36) and (37), we have that
+                                              n     o        n       o      
+                      ||J(`) − J∗ || < ζ 2 exp c` d0 − exp −c` d0 − 1 ,                           (38)
+                                        
+with 0 < c < 1 and d0 = d J(0) , J∗ , which is a constant.     The above inequality is
+equivalent to
+                                    n     o     n     o     n      o   
+             ||J(`) − J∗ || < ζ 3 exp c` d0 − exp c` d0 − exp −c` d0 − 1 .        (39)
+
+                                                 16
+                            Guassian BP Convergence Analysis
+
+
+
+
+Since both exp c` d0 and exp −c` d0 are positive and exp c` d
+                                                                          `
+                                                                     0 exp −c d0 = 1, ac-
+cording to the arithmetic-geometric mean inequality, we have exp c` d0 + exp −c` d0 ≥
+                            1/2
+2 exp c` d0 exp −c` d0
+                 
+                                  = 2. Then, the right-hand side of (39) is further amplified,
+and we obtain
+                                       n     o               n     o     
+                ||J(`) − J∗ || < ζ 3 exp c` d0 − 3 = 3ζ exp c` d0 − 1 .
+                          n     o
+Therefore, the sequence    J(`)              approaches the -neighborhood (and hence any arbi-
+                                 l=0,1,...
+trarily small neighborhood) of the fixed positive definite matrix J∗ at an exponential rate
+with respect to any matrix norm.
+The physical meaning of Theorem 11 is that the distance between J(`) and J∗ decreases ex-
+ponentially fast before J(`) enters J∗ ’s neighborhood, which can be chosen to be arbitrarily
+small. Next, we study how to choose the initial value J(0) so that J(`) converges faster.
+
+Theorem 12 With 0  J(0)  L, J(`) is a monotonic increasing sequence, and J(`) con-
+verges most rapidly with J(0) = L. Moreover, with J(0)  U, J(`) is a monotonic decreasing
+sequence, and J(`) converges most rapidly with J(0) = U.
+
+Proof Following Proposition 4, P 4.3, it can be verified that for 0  J(0)  L, we have
+J(1)  J(0) . Then, according to Proposition 4, P 4.1, and by induction, this relationship
+can be extended to J(`)  . . . J(1)  J(0) , which states that J(`) is a monotonic increasing
+sequence. Now, suppose that there are two sequences J(`) and J       e(`) that are started with
+different initial values 0  J(0) ≺ L and 0  J     e(0) ≺ L, respectively. Then these two
+sequences are monotonically increasing and bounded by J∗ . To prove that J(0) = L leads to
+                                                               e(`) for ` = 0, 1 . . .. First, note
+the fastest convergence, it is sufficient to prove that J(`)  J
+                (0)                   (n)
+that J(0) J
+            e  . Assume J(n)
+                       (n)   J for some n ≥ 0. According
+                                  e                                  to Proposition 4, P 4.1,
+            (n)                                  (n+1)    (n+1)
+we have F J       F J e     , or equivalently J       J
+                                                        e       . Therefore, by induction, we
+have proven that, with J(0) = L, J(`) converges more rapidly than with any other initial
+value 0  J(0) ≺ L.
+    With similar logic, we can show that, with J(0)  U, J(`) is a monotonic decreasing
+sequence; and, with J(0) = U, J(`) converges more rapidly than that with any other initial
+value J(0)  U.
+
+
+   Notice that it is a common practice in the Gaussian BP literature that the initial infor-
+                                                                               (0)
+mation matrix (or inverse variance for the scalar case) is set to be 0, i.e., Jfn →i = 0 (Weiss
+and Freeman, 2001a; Malioutov et al., 2006). Theorem 12 reveals that there is a better
+choice to guarantee faster convergence.
+
+4.2 Convergence of Message Mean Vector
+                                                                  (0)
+According to Theorems 6 and 11, as long as we choose Jfk →j  0 for all j ∈ V and
+                                     (`)                                                      (`)
+fk ∈ B (j), the distance between Jfk →j and J∗fk →j decreases exponentially fast before Jfk →j
+enters J∗fk →j ’s neighborhood, which can be chosen to be arbitrarily small. Furthermore,
+
+                                                  17
+                                      Du, Ma, Wu, Kar, and Moura
+
+
+
+                  h         i−1
+                    (`)                                               (`)
+according to (16), Jj→fn        also converges to a p.d. matrix once Jfk →j converges, and the
+                    h         i−1                        −1
+                        (`)
+                                   is denoted by J∗j→fn
+                                                  
+converged value for Jj→fn                                    . Then for arbitrary initial value
+ (0)                            (`)
+vfk →j , the evolution of vj→fn in (17) can be written in terms of the converged message
+information matrices, which is
+                             (`)           −1                   X                (`−1)
+                            vj→fn = J∗j→fn                              J∗fk →j vfk →j .
+                                   
+                                                                                                                   (40)
+                                                          fk ∈B(j)\fn
+
+                                                                                           (`−1)
+Using (20), and replacing indices j, i, n with z, j, k respectively, vfk →j is given by
+
+                        "                                                        #−1                                     
+ (`−1)
+                                          X                     −1 T                              X              (`−1)
+vfk →j = [J∗fk →j ]−1 ATk,j Rk +                    Ak,z J∗z→fk
+                                                        
+                                                                   Ak,z             yk −                   Ak,z vz→fk  .
+                                       z∈B(fk )\j                                              z∈B(fk )\j
+                            |                        {z                      }
+                                                    ,Mk,j
+                                                                                                                   (41)
+
+Putting (41) into (40), we have
+
+              (`)                                                                                  (`−1)
+                                             X         X
+             vj→fn = bj→fn −                                      [J∗j→fn ]−1 ATk,j M−1
+                                                                                     k,j Ak,z vz→fk ,              (42)
+                                       fk ∈B(j)\fn z∈B(fk )\j
+
+                                                        −1
+where bj→fn = [J∗j→fn ]−1                          T
+                                 P
+                                      fk ∈B(j)\fn Ak,j Mk,j yk .        The above equation can be further
+written in compact form as
+                                       (`)
+                                      vj→fn = bj→fn − Qj→fn v(`−1) ,
+
+                                                          (`−1)
+with the column vector v(`−1) containing vz→fk for all z ∈ V and fk ∈ B (z) as subvector
+with ascending index first on z and then on k. The matrix Qj→fn is a row block matrix
+with component block [J∗j→fn ]−1 ATk,j M−1
+                                        k,j Ak,z if fk ∈ B (j) \ fn and z ∈ B (fk ) \ j, and 0
+otherwise. Let Q be the block matrix that stacks Qj→fn with the order first on j and then
+on n, and b be the vector containing bj→fn with the same stacking order as Qj→fn . We
+have
+                           v(`) = −Qv(`−1) + b, ` ≥ 1, 2, . . . .                          (43)
+
+It is known that for arbitrary initial value v(0) , v(`) converges if and only if the spectral
+                                                                               (0)
+radius ρ (Q) < 1 (Demmel, 1997, pp. 280). Since the elements of v(0) , i.e., vj→fn , depends
+       (0)                                   (0)
+on vfk →j , we can choose arbitrary vfk →j . Furthermore, as v(`) depends on the convergence
+of J(`) , we have the following result.
+
+Theorem 13 The vector sequence v(`) l=1,2,... defined by (43) converges to a unique value
+                                      
+                          n      o
+                            (0)
+under any initial value vfk →j          and initial message information matrix J(0)  0
+                                        k∈V,j∈B(fk )
+if and only if ρ (Q) < 1.
+
+                                                            18
+                            Guassian BP Convergence Analysis
+
+
+
+
+    The row block matrix Qj , a row block of Q, contains only block entries 0 and Qj→fn .
+When the observation model (1) reduces to the pairwise model, where only two unknown
+variables are involved in each local observation, it can be shown that Qj and Qi are or-
+thogonal if i 6= j. A distributed convergence condition is obtained utilizing this orthogonal
+property in Du et al. (2017a). However, for the more general case studied in this paper,
+properties of Qj and Q need to be further exploited to show when ρ(Q) < 1 is satisfied.
+    In the sequel, we will show that ρ (Q) < 1 is satisfied for a single loop factor graph with
+multiple chains/trees (an example is shown in Fig. 2), thus Gaussian BP converges in such
+a topology. Although Weiss (2000) shows the convergence of Gaussian BP on the MRF
+with a single loop, the analysis cannot be applied here since the local observations model
+(1) is different from the pairwise model in (Weiss, 2000).
+
+Theorem 14 For any factor graph that is the union of a single loop and a forest, with
+                                                                    (0)
+arbitrary positive semi-definite initial information matrix, i.e., Jfn →i  0 for all i ∈ V and
+                                                     (`)                            (`)
+fn ∈ B (i), the message information matrix Jfn →i and mean vector vi→fn is guaranteed to
+converge to their corresponding unique points.
+
+Proof In this proof, Fig. 2 is being used as a reference throughout. For a single loop
+factor graph with chains/trees as shown in Fig. 2 (a), there are two kinds of nodes. One
+is the factors/variables in the loop, and they are denoted by fn /xj . The other is the
+                                                                            zi . Then message
+factors/variables on the chains/trees but outside the loop, denoted as fek /e
+from a variable node to a neighboring factor node on the graph can be categorized into
+three groups:
+                                                                    xz ) and m∗ e (e
+1) message on a tree/chain passing towards the loop, e.g., m∗ze→fk (e                 xs ) ;
+                                                                         se→fk
+                                                                 (`)      (`)
+2) message on a tree/chain passing away from the loop, e.g., m e (xj ), m e (xs ) and
+                                                                 j→fk     se→fs
+  (`)
+m e (xz );
+  ze→fz
+                               (`)          (`)             (`)
+3) message in the loop, e.g., mj→fn (xj ), mz→fk (xz ) and mi→fn (xi ).
+    According to (11), computation of the messages in the first group does not depend on
+messages in the loop and is thus convergence guaranteed. Therefore, the message iteration
+number is replaced with a ∗ to denote the converged message. Also, from the definition
+of message computation in (11), if messages in the third group converge, the second group
+messages should also converge. Therefore, we next focus on showing the convergence of
+messages in the third group.
+    For a factor node fk in the loop with xz and xj being its two neighboring variable nodes
+in the loop and x ez being its neighboring variable node outside the loop, according to the
+definition of message computation in (12), we have
+                    Z Z
+    (`)                           (`)
+                                                Y
+   mfk →j (xj ) =         fk × mz→fk (xz )                 m∗ze→fk (e       xz }ze∈B(fk )\j dxz ,
+                                                                    xz ) d {e
+                                             ze∈B(fk )\j
+                    Z
+                                      
+                                       Z
+                                                                                                       (44)
+                         (`)
+                                                  Y
+                =       mz→fk   (xz )  fk ×                 m∗ze→fk (e       xz }ze∈B(fk )\j  dxz .
+                                                                      xz ) d {e
+                                               ze∈B(fk )\j
+
+
+                                                   19
+                             Du, Ma, Wu, Kar, and Moura
+
+
+
+
+                                           (a)
+
+
+
+
+                                            (b)
+
+
+Figure 2: (a) An example of factor graph with a single loop and chains/trees topology,
+          where the dashed line indicates possible chains/trees; (b) The equivalent factor
+          graph of Fig 2 (a) with new factor functions that do not have neighboring variable
+          nodes except those in the loop.
+
+
+
+
+                                            20
+                               Guassian BP Convergence Analysis
+
+
+
+
+As shown in Lemma 2, m∗ze→fk (e     xz ) must be in Gaussian function form, which is denoted by
+                               h        i−1 
+m∗ze→fk (e
+         xz ) ∝ N xez |v∗ze→fk , J∗ze→fk       . Besides, from (1) we obtain
+                                                                                           
+                                                                   X
+                      fk = N yk |Ak,z xz + Ak,j xj +                          Ak,ez x
+                                                                                     ez , Rk  .
+                                                                 ze∈B(fk )
+
+It can be shown that the inner integration in the second line of (44) is given by
+                                                       
+                           N yk |Ak,z xz + Ak,j xj , Rk , f k ,
+where the overbar is used to denote the new constant matrix or vector. Then (44) can be
+written as
+                                        Z
+                            (`)                 (`)
+                          mfk →j (xj ) = f k × mz→fk (xz ) dxz .                   (45)
+
+                                               (`)                       (`)
+Comparing (45) with (12), we obtain mfk →j (xj ) as if mf →j (xj ) is being passed to a factor
+                                                                          k
+node f k . Therefore, a factor graph with a single loop and multiple trees/chains is equivalent
+to a single loop factor graph in which each factor node has no neighboring variable node
+outside the loop. As a result, the example of Fig. 2 (a) is equivalent to Fig. 2 (b). In the
+following, we focus on this equivalent topology for the convergence analysis.
+    Note that, for arbitrary variable node j in the loop, there are two neighboring factor
+nodes in the loop. Further, using the notation for the equivalent topology, (42) is reduced
+to
+                       h         i−1
+            (`)                          T                (`−1)
+           vj→f = − J∗j→f              Ak,j T−1
+                                              k,j Ak,z vz→f
+                n              n                              k
+                                                   X h                i−1
+                                        X                                  T    −1
+                    + bj→f −                                  J∗j→f       Ak,j Mk,j Ak,es v∗se→fe , (46)
+                             n                                      n                            k
+                                   fek ∈B(j)\fn se∈B(fek )\j
+                       |                                     {z                                  }
+                                                             ,cj→f
+                                                                     n
+
+
+where v∗ e is the converged mean vector on the chain/tree;
+       se→fk
+                                    h      i−1               X             T         −1
+                              bj→f = J∗j→f                               Ak,j Mk,j yk
+                                     n          n
+                                                        f k ∈B(j)\f n
+                                  h        i−1
+                                                T
+with Mk,j = Rk + se∈B(fe )\j Ak,es J∗se→fe
+                P
+                                               Ak,es , and
+                                k                   k
+
+                                                    h      i−1
+                                                                T
+                                    Tk,j = Rk + Ak,z J∗z→f     Ak,z ,                                      (47)
+                                                                  k
+                                                                   
+with xz and f k in the loop where f k ∈ B (j) \ f n and xz ∈ B f k \ j. By multiplying
+h       i1/2                                           h      i1/2
+                                                  (`)               (`)
+  J∗j→f      on both sides of (46), and defining βj→f = J∗j→f      vj→f , we have
+      n                                                           n                  n             n
+
+                  h          i−1/2                   h      i−1/2           h      i1/2
+      (`)                             T                             (`−1)
+     βj→f = − J∗j→f                  Ak,j T−1
+                                           k,j A k,z  J ∗
+                                                        z→f
+                                                                  β z→f
+                                                                          +   J∗
+                                                                               j→f
+                                                                                        cj→f ,             (48)
+            n            n                                   k                   k            n        n
+
+
+
+                                                        21
+                                     Du, Ma, Wu, Kar, and Moura
+
+
+
+                      (`−1)
+Let β (`−1) contain βz→f for all xz with z ∈ B f k and f k being in the loop, and the index
+                                                  
+                          k
+is arranged first on k and then on z. Then, the above equation is written in a compact form
+as
+                              (`)
+                                                  h      i                      1/2
+                          βj→f = −Qj→f β (`−1) + J∗j→f                                cj→f ,       (49)
+                                     n                   n                  n             n
+
+where Qj→f is a row block matrix with the only nonzero block
+            n
+
+                                h                i−1/2                   h      i−1/2
+                                                          T
+                                    J∗j→f                Ak,j T−1
+                                                               k,j A k,z  J ∗
+                                                                            z→f
+                                             n                                  k
+
+                                                                         (`)
+located at the position corresponding to the position βz→f in β (`) . Then let Q be a matrix
+                                                            k                  
+that stacks Qj→f as its row, where j and f n are in the loop with j ∈ B f n . Besides, let
+                  n
+                                           h       i1/2
+c be the vector containing the subvector J∗j→f          cj→f with the same order as Qj→f
+                                                 n          n                              n
+in Q. We have
+                                   β (`) = −Qβ (`−1) + c.                               (50)
+                                    q
+Since Q is a square matrix, ρ (Q) ≤ ρ QQT and therefore ρ QQT < 1 is the sufficient
+                                                                       
+
+condition for the convergence of β (`) . We next investigate the elements in QQT .
+                                                            (`)
+   Due to the single loop structure of the graph, every βj→f in (48) would be dependent
+               (`)                                            n
+on a unique βz→f , where f k ∈ B (j) \ f n and z ∈ B f k \ j (i.e., the message two hops
+                  k
+backward along the loop in the factor graph). Thus, the position of the non-zero block
+in Qj→f will be different and non-overlapping for different combinations of (j, f n ). As
+         n
+a result, there exists a column permutation matrix Ξ such that QΞ is a block diagonal
+matrix. Therefore, (QΞ) (QΞ)T = QQT is also a diagonal matrix, and we can write
+                                      n             o
+                         QQT = Bdiag Qj→f QTj→f            
+                                                                   n    n   j ∈ B fn .
+
+                                                                
+As a consequence, ρ QQT < 1 is equivalent to ρ Qj→f QTj→f < 1 for all j and f n in
+                          
+                                                         n     n
+                       
+the loop with j ∈ B f n . Following the definition of Qj→f below (49), we obtain
+                                                                                 n
+
+                      h             i−1/2    h        i−1              h         i−1/2
+                                T                          T
+   Qj→f QTj→f = J∗j→f          Ak,j T−1 A
+                                     k,j k,z  J ∗
+                                                z→f k
+                                                          A   T−1
+                                                                  A
+                                                           k,z k,j k,j   J ∗
+                                                                           j→f n
+       n     n         n
+                h        i−1/2                                 h       i −1/2
+                                                                                                   (51)
+                                T
+                               Ak,j T−1
+                                                      −1
+               = J∗j→f               k,j Tk,j − Rk Tk,j Ak,j Jj→f
+                                                                  ∗
+                                                                              ,
+                                n                                                              n
+
+
+where the second equation follows from the definition of Tk,j in (47). Besides, since Rk  0,
+we have Tk,j − Rk ≺ Tk,j . Following P B.2 in Appendix B, and due to Tk,j = TTk,j , we
+have
+                                −1/2             −1/2
+                               Tk,j Tk,j − Rk Tk,j ≺ I.                                  (52)
+
+Applying P B.2 in Appendix B again to (52), and making use of (51), we obtain
+                             h      i−1/2                 h       i−1/2
+                                           T
+                 Qj→f QTj→f ≺ J∗j→f       Ak,j T−1
+                                                k,j A k,j   J ∗
+                                                              j→f
+                                                                        .                          (53)
+                          n              n                n                               n
+
+
+
+                                                              22
+                                 Guassian BP Convergence Analysis
+
+
+
+
+   According to (47), we have
+                                                                    h       i−1          −1
+                     T                T                                             T
+                    Ak,j T−1
+                          k,j Ak,j = Ak,j       Rk + Ak,z J∗z→f                    Ak,z         Ak,j .                 (54)
+                                                                k
+
+                                               
+On the other hand, using (19), due to B f k \ j = xz in the considered topology, the right
+hand side of (54) is J∗f →j . Therefore, (53) is further written as
+                         k
+
+                                    h      i−1/2       h      i−1/2
+                        Qj→f QTj→f ≺ J∗j→f       Jf∗ →j J∗j→f       .                                                  (55)
+                                 n    n               n                  k          n
+
+
+From (16), J∗j→f = W−1      ∗
+                                                   J∗      , thus Jf∗ →j  J∗j→f . Therefore,
+                                    P
+                n
+                      j + Jf k →j +   fek ∈B(j)\f n fek →j           k          n
+h     i−1/2       h     i−1/2
+  ∗           ∗     ∗
+ Jj→f       Jf →j Jj→f         I, and, together with (55), we have
+      n         k                n
+
+
+                                          Qj→f QTj→f ≺ I.
+                                                  n              n
+
+                            
+Hence ρ Qj→f QTj→f < 1 for all j and f n in the loop and j ∈ B f n , and equivalently
+                                                                  
+               n     n
+ρ (Q) < 1. This completes the proof.
+
+
+
+4.3 Convergence of Belief Covariance and Mean Vector
+                                                          (`)
+As the computation of the belief covariance Pi depends on the message information matrix
+ (`)
+Jfn →i , using Theorems 6 and 11, we can derive the convergence and uniqueness properties
+    (`)
+of Pi .
+    Before we present the main result, we first present some properties of the part metric
+d (X, Y), with positive definite arguments X, Y, and 4X. The proofs are provided in
+Appendix D.
+
+Proposition 15 The part metric d (X, Y) satisfies the following properties
+
+P 15.1: d (X1 + X2 , Y1 + Y2 ) ≤d (X1 , Y1 ) + d (X2 , Y2 );
+P 15.2: d (X, Y) = d X−1 , Y−1 .
+
+We now have the following result.
+
+                                                                                            (0)
+Corollary 16 With arbitrary initial message information matrix Jfn →i  0 for all i ∈ V
+                                                               (`)
+and fn ∈ B (i), the belief covariance matrix Pi converges to a unique p.d. matrix at an
+                                                         (`)
+exponential rate with respect to any matrix norm before Pi enters P∗i ’s neighborhood, which
+can be chosen to be arbitrarily small.
+
+                (`)                                                                                  (`)
+Proof Since Jfn →i converges to a p.d. matrix, and according to (23), Pi                                   also converges.
+                                         (`)                                                                   (`)
+Below, we study the convergence rate of Pi .                    According to the definition of Pi                    in (23)
+
+                                                          23
+                                       Du, Ma, Wu, Kar, and Moura
+
+
+
+
+and part metric in Definition 9, we have
+                                                                                                    
+                                     
+                 (`)                                                 (`)
+                                                          X                         X
+            d [Pi ]−1 , [P∗i ]−1 = d W−1
+                                       i +                         Jfn →i , W−1
+                                                                             i +              J∗fn →i  .
+                                                        fn ∈B(i)                   fn ∈B(i)
+
+
+By applying P 15.1 to the above equation, we obtain
+                                                                          
+    (`)                            X    (`)                    (`)
+                                                           X
+d [Pi ]−1 , [P∗i ]−1 ≤ d W−1   −1
+                          i , Wi   +  d Jfn →i , J∗fn →i =   d Jfn →i , J∗fn →i .
+                                                   fn ∈B(i)                        fn ∈B(i)
+
+
+According to (36), for all i ∈ V and fn ∈ B(i), there exist a c < 1 such that
+                                                                           
+                                       (`)                     (0)
+                                    d Jfn →i , J∗fn →i < c` d Jfn →i , J∗fn →i .
+
+                                          (`) −1
+                                        h    i
+Applying the above inequality to compute Pi      in (24), we obtain
+
+                                                                    
+                             (`)                        (0)
+                                                   X
+                         d [Pi ]−1 , [P∗i ]−1 < c`   d Jfn →i , J∗fn →i .
+                                                          fn ∈B(i)
+
+
+Following P 15.2, the above inequality is equivalent to
+                                                                    
+                                      (`)               (0)
+                                                   X
+                                   d Pi , P∗i < c`   d Jfn →i , J∗fn →i ,
+                                                      fn ∈B(i)
+
+                                  
+        P               (0)      ∗
+where    fn ∈B(i) d   J      , J
+                        fn →i fn →i is a constant. Following the same procedure as that from
+                                             (`)
+(36) to (38), we can prove that Pi converges at an exponential rate with respect to the
+                        (`)
+monotone norm before Pi enters P∗i ’s neighborhood, which can be chosen to be arbitrarily
+small.
+
+                                                                                                       (`)
+    On the other hand, as shown in (24), the computation of the belief mean µi depends
+                          (`)                      (`)
+on the belief covariance Pi and the message mean vfn →i . Thus, under the same condition
+                             (`)
+as in Theorem 13, µi is convergence guaranteed. Moreover, it is shown in (Weiss and
+Freeman, 2001b, Appendix) that, for Gaussian BP over a factor graph, the converged value
+of belief mean equals the optimal estimate in (3). Together with the convergence guaranteed
+topology revealed in Theorem 14, we have the following Corollary.
+
+                                           (0)                             (0)
+Corollary 17 With arbitrary Jfn →i  0 and arbitrary vfn →i for all i ∈ V and fn ∈ B (i),
+                       (`)
+the mean vector µi in (24) converges to the optimal estimate x bi in (3) if and only if
+ρ (Q) < 1, where Q is defined in (43). Furthermore, a sufficient condition to guarantee
+ρ (Q) < 1 is when the factor graph contains only one single loop connected to multiple
+chains/trees.
+
+                                                         24
+                            Guassian BP Convergence Analysis
+
+
+
+
+5. Relationships with Existing Convergence Conditions
+
+In this section, we show the relationship between our convergence condition for Gaussian
+BP and the recent proposed path-sum method (Giscard et al., 2016). We also show that
+our convergence condition is more general than the walk-summable condition (Malioutov
+et al., 2006) for the scalar case.
+
+5.1 Relationship with the Path-sum Method
+                                                                                                   −1
+The path-sum method is proposed in (Giscard et al., 2012, 2013, 2016) to compute W−1 + AT R−1 A
+                                                      −1
+in (3), in which the matrix inverse W−1 + AT R−1 A        is interpreted as the sum of simple
+paths and simple cycles on a weighted graph. The resulting formulation is guaranteed to
+converge to the correct value for any valid multivariate Gaussian distribution.
+    The BP message update equations (16), (17), (19), and (20) can be seen as a cut-off of
+path-sum by retaining only self-loops and backtracks (simple cycles of lengths one and two).
+In the presence of a graph with one or more loops, equations (16), (17), (19), and (20) do not
+include the terms related to simple cycles with length larger than 2. This may be a potential
+cause for the possible divergence of the Gaussian BP algorithm. From this perspective, the
+divergence can be averted if none of the walks going around the loop(s) have weight greater
+than one, or equivalently, that the spectral radius of the block matrix representing the
+loop(s) is strictly less than one. This is an intuitive explanation of the condition ρ(Q) < 1
+obtained in Theorem 13. It also immediately follows from these considerations that the
+convergence rate is at least geometric, with a cut-off of order ` yielding an O(ρ(Q)` ) error4 .
+     While the path-sum framework provides an insightful interpretation of the results ob-
+tained in this paper, the path-sum algorithm may not be efficiently implementable in dis-
+tributed and parallel settings, as it requires the summation over all the paths of any length.
+In contrast, Gaussian BP, while paying the price of non-convergence in general loopy mod-
+els, makes it possible to realize parallel and fully distributed inference. In summary, though
+the path-sum method converges for arbitrary valid Gaussian models, it is difficult to be
+adapted to a distributed and parallel inference setup as the Gaussian BP method.
+
+5.2 Relationship with the Walk-Summable Condition
+
+We show next that, in the setup of linear Gaussian models, the condition ρ(Q) < 1 as
+in Corollary 17 encompasses the Gaussian MRF based walk-summable (Malioutov et al.
+(2006)) in terms of convergence. As all existing results on Gaussian BP convergence
+(Malioutov et al., 2006; Moallemi and Roy, 2009b) only apply to scalar variables, we restrict
+the following discussion to only the scalar case. In (Malioutov et al., 2006), the starting
+point for the convergence analysis for Gaussian MRF is a joint multivariate Gaussian dis-
+tribution
+                                         n 1               o
+                                                T       T
+                              q(x) ∝ exp − x Jx + h x ,                                 (56)
+                                             2
+
+4. We thank an anonymous reviewer for this interpretation.
+
+
+                                                 25
+                             Du, Ma, Wu, Kar, and Moura
+
+
+
+
+expressed in the normalized information form such that Ji,i = 1 for all i. The underlying
+Gaussian distribution is factorized as (Malioutov et al. (2006))
+                                   Y           Y
+                           q (x) ∝    ψi (xi )       ψi,j (xi , xj ) ,               (57)
+                                   i∈V         Ji,j 6=0;i≤j
+
+where
+                                          
+                          1
+          ψi (xi ) = exp − Ji,i x2i + hi       and ψi,j (xi , xj ) = exp {−xi Ji,j xj } .
+                          2
+
+    In Malioutov et al. (2006, Proposition 1), based on the interpretation that J−1 i,j is
+                                                                                    
+
+the sum of the weights of all the walks from variable j to variable i on the corresponding
+Gaussian MRF, a sufficient Gaussian BP convergence condition known as walk-summability
+is provided, which is equivalent to
+
+                                           I − |R|  0,                                     (58)
+
+together with the initial message variance inverse being set to 0, where R = I − J and |R|
+is matrix of entrywise absolute values of R. In the following, we establish the relationship
+between walk-summable Gaussian MRF and linear Gaussian model by utilizing properties
+of H-matrices (Boman et al., 2005). We show that, with Gaussian MRF satisfying the walk-
+summable condition, the joint distribution q(x) in (57) can be reformulated as a special case
+of the linear Gaussian model based factorization in (10). Moreover, Gaussian BP on this
+particular linear Gaussian model always converges.
+Definition 18 H-Matrices (Boman et al., 2005): A matrix X is an H-matrix if all eigen-
+values of the matrix H(X), where [H(X)]i,i = |Xi,i |, and [H(X)]i,j = −|Xi,j | have positive
+real parts.
+
+Proposition 19 Factor width at most 2 factorization (Boman et al., 2005, Theorem 9):
+A symmetric H-matrix X that has non-negative diagonals can always be factorized as X =
+VVT , where V is a real matrix with each column of V containing at most 2 non-zeros.
+
+   Let ω be an arbitrary positive value that is smaller than the minimum eigenvalue of
+I − |R| and also satisfies 0 < ω < 1. According to (58), we have (1 − ω)I − |R|  0.
+Furthermore, by applying H(·) to (1 − ω)I − R, we have [H((1 − ω)I − R)]i,i = |(1 −
+ω)I − R|i,i = 1 − ω and [H((1 − ω)I − R)]i,j = −|[(1 − ω)I − R)]i,j | = −|Ri,j |. Thus,
+H((1 − ω)I − R) = (1 − ω)I − |R|  0, and we conclude that (1 − ω)I − R is an H-matrix.
+According to Proposition 19, (1 − ω)I − R = J − ωI = VVT , where each column of V
+contains at most 2 non-zeros. Now, we can rewrite the joint distribution in (57) as
+                                                            
+                           1 T               1 T         T
+            q(x) ∝ exp − x (J − ωI) x − ωx x + h x
+                           2                 2
+                                                                  
+                           1       T           1
+                 = exp − VT x         VT x −       ωxT x − 2hT x
+                                                               
+                           2                   2                                    (59)
+                             M                                M
+                       (                                                    )
+                           1X                        2 1 X            hn 2
+                 ∝ exp −        Vn,ni xni + Vn,nj xnj −         ω(xn −    ) ,
+                           2                               2           ω
+                             n=1                                 n=1
+
+
+                                               26
+                                Guassian BP Convergence Analysis
+
+
+
+
+where Vn,ni and Vn,nj denote the two possible non-zero elements on the n-th column and
+ni -th and nj -th rows, and M is the dimension of x. Thus, a walk-summable Gaussian MRF
+in (56) (or equivalently (57)) can always be written as
+
+                              M                           M
+                              Y           1    1 Y
+                    q(x) ∝         N (xn | hn , )  N (0|Vn,ni xni + Vn,nj xnj , 1) .                           (60)
+                                          ω    ω}
+                             n=1                        n=1
+                                   |      {z       |             {z              }
+                                         p(xn )                                          fn
+
+
+Note that, in the above equation, p(xn ) serves as the prior distribution for xn as that in
+(10) and fn is the local likelihood function with local observation being yn = 0 and noise
+distribution zn ∼ N (zn |0, 1)5 . Thus the above equation is a special case of the linear
+Gaussian model based factorization in (10) with the local likelihood function fn containing
+only a pair of variables. For this pairwise linear Gaussian model with scalar variables,
+it is shown in (Moallemi and Roy, 2009b) that ρ(Q) < 1 is fulfilled. Thus by Corollary
+17, Gaussian BP always converges. In summary, for the factorization based on Gaussian
+MRF, if the walk-summable convergence condition is fulfilled, there is an equivalent joint
+distribution factorization based on linear Gaussian model; and Gaussian BP is convergence
+guaranteed for this linear Gaussian model.
+    In the following, we further demonstrate through an example that there exist Gaussian
+MRFs, in which the information matrix J fails to satisfy the walk-summable condition, but a
+convergence guaranteed Gaussian BP update based on the distributed linear Gaussian model
+representation can still be obtained. More specifically, consider the following information
+matrix J in a Gaussian MRF:
+                                                    √ 
+                                              1   1   2
+                                        
+                                                    1         √       √
+                                                                               3
+                                                          3       2       3
+                                              3√1 2          1       0        1
+                                                                               3
+                                                                                    
+                                           J=
+                                              √13            0       1       √1
+                                                                                    .
+                                                                                                              (61)
+                                                    √                           6
+                                                      2       1       √1
+                                                     3        3
+                                                                              1
+                                                                        6
+
+
+The eigenvalues of I − |R| to 4 decimal places are −0.0754, 0.9712, 1.4780, and 1.6262.
+According to the walk-summable definition in (58), it is non walk-summable and the con-
+vergence condition in (Malioutov et al., 2006) is inconclusive as to whether Gaussian BP
+converges. On the other hand, we can study the Gaussian BP convergence of this example by
+employing a linear Gaussian model representation, and rewriting J as J = AT R−1 A+W−1 ,
+where                                                              
+                          2
+                           √    0   √1    √1
+                                                        6 0 0 0
+                             6        2     3          0 3 0 0
+                    A =  √16 √13 0        0 , W =  0 0 2 0 ,
+                                                                   
+                           0 √13 0 √13
+                                                         0 0 0 3
+and R = I. In Fig. 3, the joint distribution of this example with Gaussian MRF and
+the corresponding linear Gaussian model are represented by factor graphs. As it is shown
+in Corollary 17, for a factor graph that is the union of a forest and a single loop, as in
+Fig. 3(b), Gaussian BP always converges to the exact value. This is in sharp contrast to
+5. For a particular fn , if there is only one non-zero coefficient, fn × N (xn | ω1 hn , ω1 ) is also proportional to
+   a Gaussian distribution, which can be seen as a prior distribution in (10).
+
+
+                                                          27
+                             Du, Ma, Wu, Kar, and Moura
+
+
+
+
+Figure 3: The Gaussian MRF corresponding to J in (61) with the factorization following (4);
+          (b) The factor graph corresponding to J in (61) with the factorization following
+          (10).
+
+
+
+
+Figure 4: Venn diagram summarizing various subclasses of Gaussian models: the three
+          inner most conditions are all for the BP algorithm while the path-sum in general
+          does not constitute a BP algorithm.
+
+
+
+the inconclusive convergence property when the same joint distribution is expressed using
+the classical Gaussian MRF in (4).
+    In summary, we have shown that the linear Gaussian model with ρ(Q) < 1 encompasses
+walk-summable Gaussian MRF. Further, it is shown in (Malioutov et al., 2006) that the
+diagonally dominant convergence condition in (Weiss and Freeman, 2001a) for Gaussian BP
+is a special case of the walk-summable condition. Also, the convergence condition in (Su
+and Wu, 2015) is encompassed by walk-summable condition. Therefore, we have the Venn
+diagram in Fig. 4 summarizing the relations (in terms of convergence guarantees) between
+the convergence condition proposed in this paper and existing conditions.
+
+
+6. Conclusions
+This paper shows that, depending on how the factorization of the underlying joint Gaussian
+distribution is performed, Gaussian belief propagation (BP) may exhibit different conver-
+gence properties as different factorizations lead to fundamentally different recursive update
+structures. The paper studies the convergence of Gaussian BP derived from the factorization
+
+                                             28
+                          Guassian BP Convergence Analysis
+
+
+
+
+based on the distributed linear Gaussian model. We show that the condition we present for
+convergence of the marginal mean based on factorizations using the linear Gaussian model
+is more general than the walk-summable condition (Malioutov et al., 2006) (and references
+therein) that is based on the Gaussian Markov random field factorization. Further, the lin-
+ear Gaussian model that is studied in this paper readily conforms to the physical network
+topology arising in large-scale networks.
+    Further, the paper analyzes the convergence of the Gaussian BP based distributed infer-
+ence algorithm. In particular, we show analytically that, with arbitrary positive semidefinite
+matrix initialization, the message information matrix exchanged among agents converges
+to a unique positive definite matrix, and it approaches an arbitrarily small neighborhood
+of this unique positive definite matrix at an exponential rate (with respect to any matrix
+norm). Regarding the initial information matrix, there exist positive definite initializa-
+tions that guarantee faster convergence than the commonly used all-zero matrix. Moreover,
+under the positive semidefinite initial message information matrix condition, we present
+a necessary and sufficient condition of the belief mean vector to converge to the optimal
+centralized estimate. We also prove that Gaussian BP always converges if the correspond-
+ing factor graph is a union of a single loop and a forest. In particular, we show that the
+proposed convergence condition for Gaussian BP based on the linear Gaussian model leads
+to a strictly larger class of models in which Gaussian BP converges than those postulated
+by the Gaussian Markov random field based walk-summable condition. Finally, we discuss
+connections of Gaussian BP with the general path-sum algorithm. In the future, it will
+be interesting to explore if these path-sum interpretations can lead to modifications of the
+standard Gaussian BP algorithm that guarantee the convergence of Gaussian BP for larger
+classes of topologies while being also parallel and fully distributed.
+
+
+Acknowledgments
+
+ We thank the reviewers for giving detailed comments and suggestions that have been helpful
+in improving this paper.
+    We would like to acknowledge support for this project from the National Science Foun-
+dation (NSF grant # CCF1513936), National Natural Science Foundation of China (NSFC
+grant 61601524), Macau Science and Technology Development Fund under grant FDCT
+091/2015/A3, Research Committee of University of Macau under Grant MYRG2014-00146-
+FST and Grant MYRG2016-00146-FST, and the General Research Fund (GRF) from Hong
+Kong Research Grant Council (Project No.: 17212416).
+
+
+
+
+                                             29
+                                            Du, Ma, Wu, Kar, and Moura
+
+
+
+
+Appendix A.
+
+                              updating message 
+We first compute the first round                from variable node to factor node.
+                    (0)                                             (0)
+Substituting mfn →i (xi ) ∝ exp − 21 ||xj − vfn →i ||2 (0)                               into (11) and, after algebraic ma-
+                                                                             Jfn →i
+nipulations, we obtain
+                                                                                                     
+                                     (1)                             1        (1)
+                                    mj→fn (xj ) ∝ exp               − ||xj − vj→fn ||2 (1)                ,           (62)
+                                                                     2               Jj→fn
+
+
+with
+                                                (1)                                      (0)
+                                                                             X
+                                            Jj→fn = W−1
+                                                     j +                               Jfk →j ,
+                                                                         fk ∈B(j)\fn
+
+and                                                                                                  
+                                                    h         i−1
+                                      (1)               (1)                            (0)      (0)
+                                                                             X
+                                    vj→fn = Jj→fn                                 Jfk →j vfk →j  .
+                                                                     fk ∈B(j)\fn
+
+                                      (1)                                        (1)
+   Next, we evaluate mfn →i (xi ). By substituting mj→fn (xj ) in (62) into (12), we obtain
+                    Z           Z
+  (1)                                       1
+                                            n         X             T               X            o
+ mfn →i (xi ) ∝           ...         exp       −
+                                               yn −          An,j xj R−1 yn −              An,j xj ×
+                                            2
+                                                    j∈B(fn )                      j∈B(fn )
+                                          n 1                       o                                (63)
+                                                      (1)
+                           Y
+                                                              2
+                                       exp − ||xj − vj→fn || (1)      d{xj }j∈B(fn )\i .
+                                             2                Jj→fn
+                     j∈B(fn )\i
+
+                                      (1)                                                                       (1)
+    Let x{B(fn )\i} and v{B(fn )\i}→fn be stacked vectors containing xj and vj→fn as vector
+elements for all j ∈ B (fn ) \ i arranged in ascending order on j, respectively; An,{B(fn )\i}
+denotes a row block matrix containing An,j as row elements for all j ∈ B (fn ) \ i arranged
+                            (1)                                                   (1)
+in ascending order; and J{B(fn )\i}→fn is a block diagonal matrix with Jj→fn as its block
+diagonal elements for all j ∈ B (fn ) \ i arranged in ascending order. Then, (63) can be
+reformulated as
+              Z      Z                                                          
+  (1)                           1                               T           2
+mfn →i (xi ) ∝ . . . exp − ||yn − An,i xi − An,{B(fn )\i} x{B(fn )\i} ||R−1
+                                2
+                                                                           
+                             1                (1)            2
+                   × exp − ||x{B(fn )\i} − v{B(fn )\i}→fn )||e(1)               dx{B(fn )\i}
+                             2                               J{B(fn )\i}→fn
+                                            
+                        1
+             ∝ exp − ||yn − An,i xi ||2R−1
+                        2
+                   Z    Z                                                                 
+                                   1 T            (1)                  (1)    T
+                 × . . . exp − (x{B(fn )\i} Kfn →i x{B(fn )\i}−2[hfn →i ] x{B(fn )\i} ) dx{B(fn(64)
+                                                                                               )\i} ,
+                                   2
+
+where
+                                (1)                                                            (1)
+                           Kfn →i = ATn,{B(fn )\i} R−1 An,{B(fn )\i} + J{B(fn )\i}→fn
+and
+              (1)                                                                  (1)                    (1)
+            hfn →i = ATn,{B(fn )\i} R−1 (yn − An,i xi ) + J{B(fn )\i}→fn v{B(fn )\i}→fn .
+
+                                                                        30
+                                      Guassian BP Convergence Analysis
+
+
+
+
+By completing the square for the integrand of (64), we obtain
+                                                                                 
+     (1)            (1)        1                        1 h (1) iT h (1) i−1 (`)
+    mfn →i (xi ) ∝ αfn →i exp − ||yn − An,i xi ||2R−1 +    hfn →i   Kfn →i  hfn →i ,(65)
+                               2                   n    2
+with
+                    Z         Z                               i−1                 
+        (1)                            1               h
+                                                         (1)        (1)
+       αfn →i =         ...       exp − ||x{B(fn )\i} − Kfn →i     hfn →i ||2 (1)    dx{B(fn )\i} .
+                                       2                                    Kfn →i
+
+                                                                  (1)
+    Next, by applying the spectral theorem to Kfn →i and after some algebraic manipula-
+tions, we simplify (65) as
+                                                                       
+                       (1)           (1)        1        (1)
+                     mfn →i (xi ) ∝ αfn →i exp − ||xi − vfn →i ||J(1)     ,
+                                                2                 fn →i
+
+
+with the inverse of the covariance, the information matrix
+                                                                  −1
+                                                   h     i−1
+                 (1)                                 (1)
+                                        X
+                Jfn →i = ATn,i Rn +          An,j Jj→fn     ATn,j  An,i ,
+                                                 j∈B(fn )\i
+
+and the mean vector
+                                                                           −1                                
+         h          i−1                                    h      i−1
+ (1)          (1)                                            (1)                                         (1)
+                                             X                                          X
+vfn →i = Jfn →i           AH
+                           n,i Rn +
+                                                      An,j Jj→fn     ATn,j  yn −                An,j vj→fn  ,
+                                          j∈B(fn )\i                                  j∈B(fn )\i
+
+and                                          Z         Z
+                                   (1)                         1    (1)
+                                  αfn →i ∝       ...       exp − zT Λfn →i z dz,                         (66)
+                                                                2
+        (1)
+where Λfn →i is a diagonal matrix containing the eigenvalues of ATn,{B(fn )\i} R−1
+                                                                                n An,{B(fn )\i} +
+ (1)
+J{B(fn )\i}→fn .
+   By induction, and following similar derivations as in (62) to (66), we obtain the general
+updating expressions as in (15) to (21).
+
+Appendix B.
+Before going into the proof of Lemma 2, we note the following properties of positive definite
+(p.d.) matrices. If X  0, Y  0, Z  0 are of the same dimension, then we have (Du and
+Wu, 2013a):
+P B.1: X + Y  0 and X + Z  0.
+P B.2: AT XA  0, AT ZA  0, AXAT  0 and AZAT  0 for any full column rank
+matrix A with compatible dimension.
+                                      (`−1)
+    Now, we prove Lemma 2. If Jfk →j  0 for all fk ∈ B (j) \ fn , according to P B.1,
+P               (`−1)             −1               −1 P                (`−1)
+  fk ∈B(j)\fn Jfk →j  0. As Wj  0, we have Wj + fk ∈B(j)\fn Jfk →j  0, which, accord-
+                                                                                 h      i−1
+                               (`)                                                 (`)
+ing to (16), is equivalent to Jj→fn  0. Besides, as An,j is full column rank, if Jj→fn     0
+
+                                                             31
+                                    Du, Ma, Wu, Kar, and Moura
+
+
+
+                                                h       i−1
+                                                  (`)
+for all j ∈ B (fn )\i, according to P B.2, An,j Jj→fn        ATn,j  0. With Rn  0, following P
+                                      h       i−1        −1
+                                          (`)
+                                                   ATn,j
+                        P
+B.1, we have Rn + j∈B(fn )\i An,j Jj→fn                        0. As An,i is of full column rank,
+                                                                    h     i−1        −1
+                                        T         P                    (`)        T
+by applying P B.2 again, we have An,i Rn + j∈B(fn )\i An,j Jj→fn                An,j      An,i  0,
+                                                     (`)
+which according to (19) is equivalent to Jfn →i  0.
+                                                       (`−1)                                                        (`)
+    In summary, we have proved that 1) if Jfk →j  0 for all fk ∈ B (j) \ fn , then Jj→fn  0;
+     h      i−1
+        (`)                                        (`)                                (0)
+2) if Jj→fn      0 for all j ∈ B (fn ) \ i, then Jfn →i  0. Therefore, by setting Jfk →j  0
+                                                                                                                    (1)
+for all k ∈ V and j ∈ B (fk ), according to the results of the first case, we have Jj→fn  0
+                                                                                                              (1)
+for all j ∈ V and fn ∈ B (j). Then, applying the second case, we further have Jfn →i  0 for
+all n ∈ V and i ∈ B (fn ). By repeatedly using the above arguments, it follows readily that
+  (`)             (`)
+Jfk →j  0 and Jj→fn  0 for ` ≥ 1 and with j ∈ V, fn , fk ∈ B (j). Furthermore, according
+                                                                      (`)                     (`)
+to the discussion before Lemma 2, all messages mj→fn (xj ) and mfn →i (xi ) exist, and are
+in Gaussian form as in (15) and (18).
+
+Appendix C.
+                                                                                                        (`)               (`−1)
+First, Proposition 4, P 4.1 is proved. Suppose that J(`)  J(`−1)  0, i.e., Jfk →j  Jfk →j 
+0 for all (fk , j) ∈ Be (fn , i), we have
+                                             (`)                                          (`−1)
+                                    X                                        X
+                      W−1
+                       j +                  Jfk →j  W−1
+                                                      j +                             Jfk →j  0.
+                              fk ∈B(j)\fn                               fk ∈B(j)\fn
+
+Then, according to the fact that if X  Y  0, Y−1  X−1  0, we have
+                                      −1                      −1
+                                 (`−1)                      (`) 
+                        X                             X
+            W−1 +             J           W−1 +         J           0.
+                  j                      fk →j                    j                        fk →j
+                         fk ∈B(j)\fn                                        fk ∈B(j)\fn
+
+Since An,j is of full column rank and following P B.2 in Appendix B, we have
+                                   −1                                −1
+                              (`−1)                               (`)
+                        X                                  X
+      An,j W−1 j +          Jfk →j  ATn,j  An,j W−1
+                                                     j +         Jfk →j  ATn,j  0.
+                      fk ∈B(j)\fn                                              fk ∈B(j)\fn
+
+Following the same procedure of the proof above and due to R  0, we can further prove
+that
+                                                           −1     −1
+                                                       (`)
+                         X                      X
+            ATn,i Rn +        An,j W−1j +           Jfk →j  ATn,j  An,i
+                            j∈B(fn )\i                          fk ∈B(j)\fn
+                                                                                      −1         −1
+                                                                                (`−1)
+                               X                                      X
+           ATn,i Rn +                  An,j W−1
+                                                j +                            Jfk →j        ATn,j      An,i ,
+                            j∈B(fn )\i                          fk ∈B(j)\fn
+
+
+                                                           32
+                              Guassian BP Convergence Analysis
+
+
+
+
+which is equivalent to
+                    n        o                                 n       o                              
+                        (`)                                         (`−1)
+              Fn→i     Jfk →j                              Fn→i   Jfk →j                                    .
+                                    (fk ,j)∈B(f
+                                            e n ,i)                                   (fk ,j)∈B(f
+                                                                                              e n ,i)
+
+Since F contains Fn→i (·) as its component, Proposition 4, P 4.1 is proved.
+                                                        (`)
+   Next, Proposition 4, P 4.2 is proved. Suppose that Jfk →j  0 for all (fk , j) ∈ Be (fn , i).
+As α > 1, we have
+                                      (`)                        (`)
+                            X                          X
+               αW−1j  +            αJ fk →j  W −1
+                                                j  +          αJfk →j  0,
+                             fk ∈B(j)\fn                             fk ∈B(j)\fn
+
+where the equality holds when W−1 j = 0, which corresponds to non-informative prior for
+xj . Applying the fact that if X  Y  0, Y−1  X−1  0, and, according to P B.2 in
+Appendix B, we obtain
+                                −1                                 −1
+                            (`)                                 (`)
+                    X                                   X
+      An,j W−1
+              j +        αJfk →j  ATn,j  An,j αW−1
+                                                   j +        αJfk →j  ATn,j  0.
+                    fk ∈B(j)\fn                                              fk ∈B(j)\fn
+
+Since Rn  α1 Rn  0, we have
+                                                                                    −1            −1
+                 1 Rn +                                                      (`)
+                         X                                        X
+                                         An,j αW−1
+                                                 j +                    αJfk →j               ATn,j 
+                  α
+                            j∈B(fn )\i                         fk ∈B(j)\fn
+                                                                                           −1         −1
+                                                                                    (`)
+                                  X                                 X
+                     Rn +                 An,j W−1
+                                                   j +                        αJfk →j             ATn,j         .
+                               j∈B(fn )\i                       fk ∈B(j)\fn
+
+Finally, applying P B.2 in Appendix B to the above equation and taking out the common
+factor α, we obtain
+                                                                                    −1            −1
+                                                                              (`)
+                                  X                               X
+            αATn,i Rn +                  An,j W−1
+                                                 j +                         Jfk →j           ATn,j        An,i
+                             j∈B(fn )\i                        fk ∈B(j)\fn
+                                                                                          −1          −1
+                                                                                    (`)
+                                  X                                X
+             ATn,i Rn +                   An,j W−1
+                                                   j +                        αJfk →j             ATn,j        An,i .
+                              j∈B(fn )\i                        fk ∈B(j)\fn
+                 n       o                                   n        o                                  
+                    (`)                                            (`)                                                (`)
+Therefore, αFn→i   Jfk →j                                Fn→i   αJfk →j                                         if Jfk →j  0
+                                  (fk ,j)∈B(f
+                                          e n ,i)                                         (fk ,j)∈B(f
+                                                                                                  e n ,i)
+
+for all (fk , j) ∈ Be (fn , i) and α > 1. As F contains Fn→i
+                                                          (·) asits component,
+                                                                                 Proposition
+4, P 4.2 is proved. In the same way, we can prove F α J     −1 (`)      −1
+                                                                    α F J    (`)
+                                                                                    if J(`)  0
+and α > 1.
+    At last, Proposition 4, P 4.3 is proved. From Lemma 2, if we have initial message
+                           (0)                                               (`)
+information matrix Jfk →j  0 for all j ∈ V and fk ∈ B (j), then we have Jfk →j  0 for all
+
+                                                          33
+                                  Du, Ma, Wu, Kar, and Moura
+
+
+
+
+j ∈ V and fk ∈ B (j). In such case, obviously, J(`)  0. Applying
+                                                                    F to both sides of this
+                                                         (`)
+equation, and using Proposition 4, P 4.1, we have F J           F (0). On the other hand,
+                                                                      −1
+using (27), it can be easily checked that F (0) = AT Ω + HΨ−1 HT
+                                                     
+                                                                          A  0, where the
+inequality is from Lemma 2. For proving the upper bound, we start from the fact that
+                                                                             −1
+                                                                      (`−1)
+                           X                                X
+                                    An,j W−1
+                                           j +                       Jfk →j        ATn,j
+                       j∈B(fn )\i                      fk ∈B(j)\fn
+
+
+in (25), and equivalently the corresponding term
+                         h                                     i−1
+                     Hn,i Wn,i + Kn,i I|B(fn )|−1 ⊗ J(`−1) KTn,i     HTn,i
+
+in (26), are p.s.d. matrices. In (27), since
+                     h                                                        i−1
+                                                                     (`−1)    T
+                    H Ψ + K IPM             |B(fn )|(|B(fn )|−1) ⊗ J         K      HT
+                                      n=1
+
+                h                                  i−1
+contains Hn,i Wn,i + Kn,i I|B(fn )|−1 ⊗ J(`−1) KTn,i     HTn,i as its block diagonal elements,
+it is also a p.s.d. matrix. With Ω  0, adding to the above result gives
+                           h                 i−1
+                      Ω + H Ψ + K Iϕ ⊗ J(`) KT     HT  Ω  0.
+
+                                                           h                                   i−1       −1
+Inverting both sides, we obtain Ω−1              Ω + H Ψ + K Iϕ ⊗ J            (`)
+                                                                                          K   T         T
+                                                                                                        H         . Finally,
+applying P B.2 again gives
+                                   h                    i−1    −1           
+          T   −1       T                          (`)    T      T
+       A Ω         AA         Ω + H Ψ + K Iϕ ⊗ J       K      H      AT = F J(`) .
+
+                                                    −1
+Therefore, we have AT Ω−1 A  F J(`)  AT Ω + HΨ−1 HT
+                                         
+                                                          A  0.
+
+
+Appendix D.
+Let d (X1 , Y1 ) = exp{a1 } and d (X2 , Y2 ) = exp{a2 }, and d (X1 + X2 , Y1 + Y2 ) = exp{a3 }.
+First, P 15.1 is proved. According to the definition of part metric in Definition 9, for
+arbitrary symmetric p.d matrix X1 , X2 , Y1 , and Y2 , we have d (X1 , Y1 ), d (X2 , Y2 ), and
+d (X1 + X2 , Y1 + Y2 ) correspond to
+
+                                             1                                1
+                           a1 X 1  Y 1        X1 ,        a2 X2  Y2          X2 ,                                  (67)
+                                             a1                               a2
+
+                                                                1
+                           a3 (X1 + X2 )  Y1 + Y2                (X1 + X2 ) .                                        (68)
+                                                                a3
+
+                                                       34
+                           Guassian BP Convergence Analysis
+
+
+
+
+Since d (X1 , Y1 ) > 0 and d (X2 , Y2 ) > 0, we have a1 , a2 ≥ 1. And therefore a1 + a2 > a1
+and a1 + a2 > a2 . Then, according to (67), we have
+                                                            1
+                   (a1 + a2 ) (X1 + X2 )  Y1 + Y2              (X1 + X2 ).                (69)
+                                                         a1 + a2
+Following the definition of part matric, a3 is the smallest value satisfy the inequality in (68).
+Thus, by comparing (69) with (68), we obtain a1 + a2 ≥ a3 Hence, d (X1 + X2 , Y1 + Y2 ) ≤
+d (X1 , Y1 ) + d (X2 , Y2 ).
+    Next, P 15.2 is proved. Following the part metric definition of d (X1 , Y1 ), a1 X1 
+Y1  a11 X1 , which is equivalent to Y−1        1   −1          −1       −1
+                                        1  a1 X1 and a1 X1  Y1 . Thus, d (X, Y) =
+d X−1 , Y−1 .
+              
+
+
+References
+D. Bickson and D. Malkhi. A unifying framework for rating users and data items in peer-
+  to-peer and social networks. Peer-to-Peer Networking and Applications (PPNA) Journal,
+  1(2):93–103, 2008.
+
+E. G. Boman, D. Chen, O. Parekh, and S. Toledo. On factor width and symmetric H-
+  matrices. Linear algebra and its applications, 405:239–248, 2005.
+
+F. S. Cattivelli and A. H. Sayed. Diffusion LMS strategies for distributed estimation. IEEE
+  Trans. Signal Processing, 58(3):1035–1048, 2010.
+
+M. Chertkov and V. Y. Chernyak. Loop series for discrete statistical models on graphs.
+ Journal of Statistical Mechanics: Theory and Experiment, 2006(06):P06009, 2006.
+
+I. Chueshov. Monotone Random Systems Theory and Applications. New York: Springer,
+   2002.
+
+P. G. Ciarlet. Introduction to Numerical Linear Algebra and Optimisation. Cambridge
+  University Press, 1989.
+
+J. W. Demmel. Applied Numerical Linear Algebra. SIAM, 1997.
+
+J. Du and Y. C. Wu. Network-wide distributed carrier frequency offsets estimation and
+  compensation via belief propagation. IEEE Trans. Signal Processing, 61(23):5868–5877,
+  December 2013a.
+
+J. Du and Y. C. Wu. Distributed clock skew and offset estimation in wireless sensor net-
+   works: Asynchronous algorithm and convergence analysis. IEEE Trans. Wireless Com-
+   mun., 12(11):5908–5917, Nov 2013b.
+
+J. Du, S. Kar, and J. M. F. Moura. Distributed convergence verification for Gaussian belief
+   propagation. In Asilomar Conference on Signals, Systems, and Computers, 2017a.
+
+J. Du, S. Ma, Y. C. Wu, S. Kar, and J. M. F. Moura. Convergence analysis of belief
+  propagation for pairwise linear Gaussian models. In IEEE Global Conference on Signal
+  and Information Processing, 2017b.
+
+                                               35
+                             Du, Ma, Wu, Kar, and Moura
+
+
+
+
+B. J. Frey. Local probability propagation for factor analysis. In Neural Information Pro-
+  cessing Systems (NIPS), pages 442–448, December 1999.
+P.-L. Giscard, S. Thwaite, and D. Jaksch. Walk-sums, continued fractions and unique
+  factorisation on digraphs. arXiv preprint arXiv:1202.5523, 2012.
+P.-L. Giscard, S. Thwaite, and D. Jaksch. Evaluating matrix functions by resummations on
+  graphs: the method of path-sums. SIAM Journal on Matrix Analysis and Applications,
+  34(2):445–469, 2013.
+P.-L. Giscard, Z. Choo, S. Thwaite, and D. Jaksch. Exact inference on Gaussian graphical
+  models of arbitrary topology using path-sums. Journal of Machine Learning Research, 7
+  (2):1–19, February 2016.
+V. Gómez, J. M. Mooij, and H. J. Kappen. Truncating the loop series expansion for belief
+  propagation. Journal of Machine Learning Research, 8:1987–2016, 2007.
+Y. Hu, A. Kuh, T. Yang, and A. Kavcic. A belief propagation based power distribution
+  system state estimator. IEEE Comput. Intell. Mag., 2011.
+A. T. Ihler, J. W. Fisher III, and A. S. Willsky. Loopy belief propagation: Convergence
+  and effects of message errors. Journal of Machine Learning Research, 6:905–936, 2005.
+S. Kar. Large Scale Networked Dynamical Systems: Distributed Inference. PhD thesis,
+  Carnegie Mellon University, Pittsburgh, PA, Department of Electrical and Computer
+  Engineering, June 2010.
+S. Kar and J. M. F. Moura. Consensus + innovations distributed inference over networks:
+  cooperation and sensing in networked systems. IEEE Signal Process. Mag., 30(3):99–109,
+  2013.
+S. Kar, J. M. F. Moura, and H.V. Poor. Distributed linear parameter estimation: asymp-
+  totically efficient adaptive strategies. SIAM Journal on Control and Optimization, 51(3):
+  2200–2229, 2013.
+U. Krause and R. Nussbaum. A limit set trichotomy for self-mappings of normal cones
+  in Banach spaces. Nonlinear Analysis, Theory, Methods & Applications, 20(7):855–870,
+  1993.
+F. R. Kschischang, B. J. Frey, and H.-A. Loeliger. Factor graphs and the sum-product
+  algorithm. IEEE Trans. Information Theory, 47(2):498–519, February 2001.
+F. Lehmann. Iterative mitigation of intercell interference in cellular networks based on
+  Gaussian belief propagation. IEEE Trans. Veh. Technol., 61(6):2544–2558, July 2012.
+D. M. Malioutov, J. K. Johnson, and A. S. Willsky. Walk-sums and belief propagation
+  in Gaussian graphical models. Journal of Machine Learning Research, 7(2):2031–2064,
+  February 2006.
+C. C. Moallemi and B. Van Roy. Convergence of min-sum message passing for quadratic
+  optimization. IEEE Trans. Information Theory, 55(5):2413–2423, 2009a.
+
+                                            36
+                          Guassian BP Convergence Analysis
+
+
+
+
+C. C. Moallemi and B. Van Roy. Convergence of min-sum message passing for quadratic
+  optimization. IEEE Transactions on Information Theory, 55(5):2413–2423, 2009b.
+
+J. M. Mooij and H. J. Kappen. Sufficient conditions for convergence of loopy belief propaga-
+   tion. In F. Bacchus and T. Jaakkola, editors, Proceedings of the 21st Annual Conference
+   on Uncertainty in Artificial Intelligence (UAI-05), pages 396–403, Corvallis, Oregon,
+   2005. AUAI Press.
+
+J. M. Mooij and H. J. Kappen. Sufficient conditions for convergence of the sum-product
+   algorithm. IEEE Transactions on Information Theory, 53(12):4422–4437, December 2007.
+
+K. P. Murphy. Machine Learning: A Probabilistic Perspective. The MIT Press, 2012.
+
+K. P. Murphy, Y. Weiss, and M. I. Jordan. Loopy belief propagation for approximate
+  inference: an empirical study. In 15th Conf. Uncertainty in Artificial Intelligence (UAI),
+  Stockholm, Sweden, pages 467–475, July 1999.
+
+National Research Council. Frontiers in Massive Data Analysis. Washington, DC: The
+ National Academies Press, 2013.
+
+B. L. Ng, J. S. Evans, S. V. Hanly, and D. Aktas. Distributed downlink beamforming with
+  cooperative base stations. IEEE Trans. Information Theory, 54(12):5491–5499, December
+  2008.
+
+N. Noorshams and M. J. Wainwright. Belief propagation for continuous state spaces:
+  Stochastic message-passing with quantitative guarantees. Journal of Machine Learning
+  Research, 14:2799–2835, 2013.
+
+S. Ravanbakhsh and R. Greiner. Perturbed message passing for constraint satisfaction
+  problem. Journal of Machine Learning Research, 16:1249–1274, 2015.
+
+O. Shental, P. H. Siegel, J. K. Wolf, D. Bickson, and D. Dolev. Gaussian belief propaga-
+  tion solver for systems of linear equations. In 2008 IEEE International Symposium on
+  Information Theory (ISIT 2008), pages 1863–1867, July 2008a.
+
+O. Shental, P. H. Siegel, J. K. Wolf, D. Bickson, and D. Dolev. Gaussian belief propaga-
+  tion solver for systems of linear equations. In 2008 IEEE International Symposium on
+  Information Theory, pages 1863–1867, 2008b.
+
+Q. Su and Y. C. Wu. On convergence conditions of Gaussian belief propagation. IEEE
+  Trans. Signal Processing, 63(5):1144–1155, March 2015.
+
+X. Tan and J. Li. Computationally efficient sparse Bayesian learning via belief propagation.
+  IEEE Trans. Signal Processing, 58(4):2010–2021, April 2010.
+
+Y. Weiss. Correctness of local probability propagation in graphical models with loops.
+  Neural Computation,, 12:1–41, 2000.
+
+Y. Weiss and W. T. Freeman. Correctness of belief propagation in Gaussian graphical
+  models of arbitrary topology. Neural Computation, 13(10):2173–2200, March 2001a.
+
+                                            37
+                           Du, Ma, Wu, Kar, and Moura
+
+
+
+
+Y. Weiss and W. T. Freeman. On the optimality of solutions of the max-product belief-
+  propagation algorithm in arbitrary graphs. IEEE Trans. Information Theory, 47(2):
+  736–744, February 2001b.
+
+R. Xiong, W. Ding, S. Ma, and W. Gao. A practical algorithm for tanner graph based
+  image interpolation. In 2010 IEEE International Conference on Image Processing (ICIP
+  2010), pages 1989–1992, 2010.
+
+E. Zeidler. Nonlinear Analysis and its Applications IV-Applications to Mathematical
+  Physics. Springer-Verlag New York Inc., 1985.
+
+G. Zhang, W. Xu, and Y. Wang. Fast distributed rate control algorithm with QoS support
+  in ad-hoc networks. In 2010 IEEE Global Telecommunications Conference (GLOBECOM
+  2010), pages 1–5, December 2010.
+
+
+
+
+                                          38

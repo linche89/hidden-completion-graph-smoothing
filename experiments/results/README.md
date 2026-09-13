@@ -1,0 +1,29 @@
+# Result files
+
+- `pglib_cpu_final.json`: final six-case CPU correctness/scale run. OpenBLAS and
+  OpenMP were fixed to one thread. Tails use 32 uniform root draws with replacement.
+- `pglib_gpu_case10000_final.json`: final same-matrix CPU/CuPy comparison using
+  Jacobi-preconditioned CG at relative tolerance `1e-8` and 1,000 repeated SpMVs.
+- `pglib_cpu_recheck.json` and `pglib_gpu_case10000_recheck.json`: independent
+  reruns by the coordinating process.  Structural counts, checksums, convergence
+  status, iteration counts, and residuals reproduce the final runs; wall times are
+  retained separately rather than expected to match exactly.
+- `grid_gpu_scale_v4.json`: final six-case grid throughput run produced by the
+  implementation task. `grid_gpu_scale_v5_recheck.json` is the coordinating
+  process's independent rerun after the exact degree/radius wording correction;
+  it reproduces all structural and numerical invariants while retaining timing
+  variation instead of selecting only the fastest run.
+- `pglib_gpu_case10000.json`: retained negative result from unpreconditioned CG;
+  both devices reached 20,000 iterations without meeting tolerance.
+- `grid_gpu_scale_v4.json`: final direct-sparse 2-D grid CPU/GPU scale run through
+  about one million states, including separate SpMV, batched SpMM, and 40-round
+  local Richardson timings. `grid_gpu_scale_v3.json` is the preceding independent
+  run with a colder CUDA/JIT path; earlier `grid_gpu_scale*.json` files are retained
+  development runs.
+- `pglib_cpu_small.json`, `pglib_cpu_large.json`, and
+  `pglib_gpu_case10000_jacobi.json`: development runs retained for auditability;
+  use the two `final` files for reported numbers.
+
+CPU RSS is the maximum of explicit process checkpoints, not an operating-system
+peak-memory measurement. DKW intervals are conditional on one fixed graph and valid
+per fixed radius, not simultaneously over all radii.

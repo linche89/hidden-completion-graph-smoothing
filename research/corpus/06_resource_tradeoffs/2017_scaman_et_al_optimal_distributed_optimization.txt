@@ -1,0 +1,695 @@
+                     Optimal Algorithms for Smooth and Strongly Convex
+                           Distributed Optimization in Networks
+
+
+               Kevin Scaman 1 Francis Bach 2 Sébastien Bubeck 3 Yin Tat Lee 3 Laurent Massoulié 1
+
+
+                         Abstract                                  nate local incremental improvement steps (such as gradient
+                                                                   steps) with communication steps between nodes in the net-
+     In this paper, we determine the optimal conver-               work, and come with a variety of convergence rates (see
+     gence rates for strongly convex and smooth dis-               for example Shi et al. (2014; 2015); Jakovetić et al. (2015);
+     tributed optimization in two settings: central-               Nedich et al. (2016)).
+     ized and decentralized communications over a
+     network. For centralized (i.e. master/slave) al-              Two main regimes have been looked at: (a) centralized
+     gorithms, we show that distributing Nesterov’s                where communications are precisely scheduled and (b) de-
+     accelerated gradient descent is optimal and                   centralized where communications may not exhibit a pre-
+                                              √                    cise schedule. In this paper, we consider these two regimes
+     achieves a precision ε > 0 in time O( κg (1 +
+     ∆τ ) ln(1/ε)), where κg is the condition num-                 for objective functions which are smooth and strongly-
+     ber of the (global) function to optimize, ∆ is                convex and for which algorithms are linearly (exponen-
+     the diameter of the network, and τ (resp. 1)                  tially) convergent. The main contribution of this paper is
+     is the time needed to communicate values be-                  to propose new and matching upper and lower bounds of
+     tween two neighbors (resp. perform local com-                 complexity for this class of distributed problems.
+     putations). For decentralized algorithms based                The optimal complexity bounds depend on natural quan-
+     on gossip, we provide the first optimal algorithm,            tities in optimization and network theory. Indeed, (a) for
+     called the multi-step dual accelerated (MSDA)                 a single machine the optimal number of gradient steps to
+     method, that achieves a precision ε > 0 in time
+         √                                                         optimize a function is proportional to the square root of
+     O( κl (1 + √τγ ) ln(1/ε)), where κl is the con-               the condition number (Nesterov, 2004), and (b) for mean
+     dition number of the local functions and γ is the             estimation, the optimal number of communication steps is
+     (normalized) eigengap of the gossip matrix used               proportional to the diameter of the network in centralized
+     for communication between nodes. We then ver-                 problems or to the square root of the eigengap of the Lapla-
+     ify the efficiency of MSDA against state-of-the-              cian matrix in decentralized problems (Boyd et al., 2006).
+     art methods for two problems: least-squares re-               As shown in Section 3, our lower complexity bounds hap-
+     gression and classification by logistic regression.           pen to be combinations of the two contributions above.
+                                                                   These lower complexity bounds are attained by two sepa-
+                                                                   rate algorithms. In the centralized case, the trivial distri-
+1. Introduction
+                                                                   bution of Nesterov’s accelerated gradient attains this rate,
+Given the numerous applications of distributed optimiza-           while in the decentralized case, as shown in Section 4, the
+tion in machine learning, many algorithms have recently            rate is achieved by a dual algorithm. We compare favorably
+emerged, that allow the minimization of objective functions        our new optimal algorithms to existing work in Section 5.
+                            Pn
+f defined as the average n1 i=1 fi of functions fi which
+                                                                   Related Work. Decentralized optimization has been ex-
+are respectively accessible by separate nodes in a network
+                                                                   tensively studied and early methods such as decentral-
+(Nedic & Ozdaglar, 2009; Boyd et al., 2011; Duchi et al.,
+                                                                   ized gradient descent (Nedic & Ozdaglar, 2009; Jakovetić
+2012; Shi et al., 2015). These algorithms typically alter-
+                                                                   et al., 2014) or decentralized dual averaging (Duchi et al.,
+   1
+     MSR-INRIA Joint Center, Palaiseau, France 2 INRIA, Ecole      2012) exhibited sublinear convergence rates. More re-
+Normale Supérieure, Paris, France 3 Theory group, Microsoft Re-   cently, a number of methods with provable linear con-
+search, Redmond, United States. Correspondence to: Kevin Sca-      vergence rates were developed, including EXTRA (Shi
+man <kevin.scaman@gmail.com>.                                      et al., 2015; Mokhtari & Ribeiro, 2016), augmented La-
+Proceedings of the 34 th International Conference on Machine       grangians (Jakovetić et al., 2015), and more recent ap-
+Learning, Sydney, Australia, PMLR 70, 2017. Copyright 2017         proaches (Nedich et al., 2016). The most popular of
+by the author(s).
+                 Optimal Algorithms for Smooth and Strongly Convex Distributed Optimization in Networks
+
+such approaches is the distributed alternating direction        2.2. Decentralized Communication
+method of multipliers (D-ADMM) (Boyd et al., 2011;
+                                                                A large body of literature considers a decentralized ap-
+Wei & Ozdaglar, 2012; Shi et al., 2014) and has led to
+                                                                proach to distributed optimization based on the gossip al-
+a large number of variations and extensions. In a dif-
+                                                                gorithm (Boyd et al., 2006; Nedic & Ozdaglar, 2009; Duchi
+ferent direction, second order methods were also investi-
+                                                                et al., 2012; Wei & Ozdaglar, 2012). In such a case, com-
+gated (Mokhtari et al., 2016; Tutunov et al., 2016). How-
+                                                                munication is represented as a matrix multiplication with a
+ever, to the best of our knowledge, the field still lacks
+                                                                matrix W verifying the following constraints:
+a coherent theoretical understanding of the optimal con-
+vergence rates and its dependency on the characteristics
+of the communication network. In several related fields,         1. W is an n × n symmetric matrix,
+complexity lower bounds were recently investigated, in-
+                                                                 2. W is positive semi-definite,
+cluding the sequential optimization of a sum of functions
+(Arjevani & Shamir, 2016a;b), distributed optimization in        3. The kernel of W is the set of constant vectors:
+flat (i.e. totally connected) networks (Shamir, 2014; Arje-         Ker(W ) = Span(1), where 1 = (1, ..., 1)> ,
+vani & Shamir, 2015), or distributed stochastic optimiza-
+tion (Shamir & Srebro, 2014).                                    4. W is defined on the edges of the network: Wij 6= 0
+                                                                    only if i = j or (i, j) ∈ E.
+2. Distributed Optimization Setting
+                                                                The third condition will ensure that the gossip step con-
+2.1. Optimization Problem                                       verges to the average of all the vectors shared between the
+Let G = (V, E) be a connected simple (i.e. undirected)          nodes. We will denote the matrix W as the gossip matrix,
+graph of n computing units and diameter ∆, each having          since each communication step will be represented using
+access to a function fi (θ) over θ ∈ Rd . We consider mini-     it. Note that a simple choice for the gossip matrix is the
+mizing the average of the local functions                       Laplacian matrix L = D − A, whereP       A is the
+                                                                                                                 adjacency
+                                                                matrix of the network and D = diag         i Aij . However,
+                                   n
+                                1X                              in the presence of large degree nodes, weighted Laplacian
+                  min f¯(θ) =         fi (θ)             (1)    matrices are usually a better choice, and the problem of op-
+                 θ∈Rd           n i=1
+                                                                timizing these weights is known as the fastest distributed
+in a distributed setting. More specifically, we assume that:    consensus averaging problem and is investigated by Xiao
+                                                                & Boyd (2004); Boyd et al. (2009).
+ 1. Each computing unit can compute first-order charac-         We will denote by λ1 (W ) ≥ · · · ≥ λn (W ) = 0 the spec-
+    teristics, such as the gradient of its own function or      trum of the gossip matrix W , and its (normalized) eigengap
+    its Fenchel conjugate. By renormalization of the time       the ratio γ(W ) = λn−1 (W )/λ1 (W ) between the second
+    axis, and without loss of generality, we assume that        smallest and the largest eigenvalue. Equivalently, this is
+    this computation is performed in one unit of time.          the inverse of the condition number of W projected on the
+ 2. Each computing unit can communicate values (i.e.            space orthogonal to the constant vector 1. This quantity
+    vectors in Rd ) to its neighbors. This communication        will be the main parameter describing the connectivity of
+    requires a time τ (which may be smaller or greater          the communication network in Section 3.3 and Section 4.
+    than 1).
+                                                                3. Optimal Convergence Rates
+These actions may be performed asynchronously and in
+                                                                In this section, we prove oracle complexity lower bounds
+parallel, and each node i possesses a local version of the
+                                                                for distributed optimization in two settings: strongly con-
+parameter, which we refer to as θi . Moreover, we as-
+                                                                vex and smooth functions for centralized (i.e. master/slave)
+sume that each function fi is α-strongly convex and β-
+                                   β                            and decentralized algorithms based on a gossip matrix W .
+smooth, and we denote by κl = α      ≥ 1 the local condition
+number. We also denote by αg , βg and κg , respectively,        In the first setting, we show that distributing accelerated
+the strong convexity, smoothness and condition number           gradient descent matches the optimal convergence rate,
+of the average (global) function f¯. Note that we always        while, in the second setting, the algorithm proposed in Sec-
+have κg ≤ κl , while the opposite inequality is, in gen-        tion 4 is shown to be optimal. Note that we will use the
+eral, not true (take for example f1 (θ) = 1{θ < 0}θ2 and        notation g(ε) = Ω(f (ε)) for ∃C > 0 s.t. ∀ε > 0, g(ε) ≥
+f2 (θ) = 1{θ > 0}θ2 for which κl = +∞ and κg = 1).              Cf (ε), and will, for simplicity, omit the additive terms that
+However, the two quantities are close (resp. equal) when        do not depend on the precision ε in Corollary 1 and Corol-
+the local functions are similar (resp. equal) to one another.   lary 2.
+                 Optimal Algorithms for Smooth and Strongly Convex Distributed Optimization in Networks
+
+3.1. Black-box Optimization Procedures                            Arjevani & Shamir (2015), and are natural since at least
+                                                                     √
+                                                                  Ω( κg ln(1/ε)) steps are necessary to solve a strongly
+The lower bounds provided hereafter depend on a new no-
+                                                                  convex and smooth problem up to a fixed precision, and
+tion of black-box optimization procedures for the problem
+                                                                  at least ∆ communication steps are required to transmit a
+in Eq. (1), where we consider distributed algorithms veri-
+                                                                  message between any given pair of nodes.
+fying the following constraints:
+                                                                  In order to simplify the proofs of the following theorems,
+ 1. Local memory: each node i can store past values in            and following the approach of Bubeck (2015), we will
+    a (finite) internal memory Mi,t ⊂ Rd at time t ≥ 0.           consider the limiting situation d → +∞. More specifi-
+    These values can be accessed and used at time t by                        P assume
+                                                                  cally, we now          that we are working in `2 = {θ =
+                                                                                    2
+    the algorithm run by node i, and are updated either           (θk )k∈N :      θ
+                                                                                 k k  < +∞}    rather than Rd .
+    by local computation or by communication (defined             Theorem 1. Let G be a graph of diameter ∆ > 0 and
+    below), that is, for all i ∈ {1, ..., n},                     size n > 0, and βg ≥ αg > 0. There exists n functions
+                                                                  fi : `2 → R such that f¯ is αg strongly convex and βg
+                  Mi,t ⊂ Mcomp
+                          i,t  ∪ Mcomm
+                                  i,t  .                   (2)    smooth, and for any t ≥ 0 and any black-box procedure
+                                                                  one has, for all i ∈ {1, ..., n},
+ 2. Local computation: each node i can, at time t, com-
+                                                                                                             t
+                                                                                                       1+ 1+∆τ
+    pute the gradient of its local function ∇fi (θ) or its
+                                                                                            
+                                                                    ¯          ¯   ∗    αg          4
+    Fenchel conjugate ∇fi∗ (θ) for a value θ ∈ Mi,t in the         f (θi,t ) − f (θ ) ≥        1− √            kθi,0 − θ∗ k2 ,
+                                                                                        2           κg
+    node’s internal memory, that is, for all i ∈ {1, ..., n},                                                              (6)
+                                                                  where κ = β /α .
+                                                                          g     g   g
+   Mcomp
+      i,t   = Span ({θ, ∇fi (θ), ∇fi∗ (θ) : θ ∈ Mi,t−1 }) .
+                                                                  The proof of Theorem 1 relies on splitting the function
+                                                            (3)
+                                                                  used by Nesterov to prove oracle complexities for strongly
+ 3. Local communication: each node i can, at time t,              convex and smooth optimization (Nesterov, 2004; Bubeck,
+    share a value to all or part of its neighbors, that is, for   2015) on two nodes at distance ∆. One can show that most
+    all i ∈ {1, ..., n},                                          dimensions of the parameters θi,t will remain zero, and lo-
+                                 [               
+                                                                  cal gradient computations may only increase the number
+             Mcomm
+                 i,t     = Span           M  j,t−τ .        (4)   of non-zero dimensions by one. Finally, at least ∆ com-
+                                  (i,j)∈E
+                                                                  munication rounds are necessary in-between every gradi-
+ 4. Output value: each node i must, at time t, specify one        ent computation, in order to share information between the
+    vector in its memory as local output of the algorithm,        two nodes. The detailed proof is available as supplemen-
+    that is, for all i ∈ {1, ..., n},                             tary material.
+                                                                  Corollary 1. For any graph of diameter ∆ and any black-
+                          θi,t ∈ Mi,t .                    (5)    box procedure, there exists functions fi such that the time
+                                                                  to reach a precision ε > 0 is lower bounded by
+Hence, a black-box procedure will return n output values—                         
+                                                                                     √              1 
+one for each node of the network—and our analysis will                          Ω     κg 1 + ∆τ ln            ,            (7)
+                                                                                                         ε
+focus on ensuring that all local output values are converg-
+ing to the optimal parameter of Eq. (1). Moreover, we will        This optimal convergence rate is achieved by distributing
+say that a black-box procedure uses a gossip matrix W if          Nesterov’s accelerated gradient descent on the global func-
+the local communication is achieved by multiplication of a        tion. Computing the gradient of f¯ is performed by send-
+vector with W . For simplicity, we assume that all nodes          ing all the local gradients ∇fi to a single node (denoted
+start with the simple internal memory Mi,0 = {0}. Note            as master node) in ∆ communication steps (which may
+that communications and local computations may be per-            involve several simultaneous messages), and then return-
+formed in parallel and asynchronously.                            ing the new parameter θt+1 to every node in the network
+                                                                  (which requires another ∆ communication steps). In prac-
+3.2. Centralized Algorithms                                       tice, summing the gradients can be distributed by comput-
+                                                                  ing a spanning tree (with the root as master node), and ask-
+In this section, we show that, for any black-box optimiza-
+                           √                                      ing for each node to perform the sum of its children’s gra-
+tion procedure, at least Ω( κg ln(1/ε)) gradient steps and
+     √                                                            dients before sending it to its parent. Standard methods as
+Ω(∆ κg ln(1/ε)) communication steps are necessary to
+                                                                  described by Bertsekas & Tsitsiklis (1989) can be used for
+achieve a precision ε > 0, where κg is the global condi-
+                                                                  performing this parallelization of gradient computations.
+tion number and ∆ is the diameter of the network. These
+lower bounds extend the communication complexity lower            This algorithm has three limitations: first, the algorithm is
+bounds for totally connected communication networks of            not robust to machine failures, and the central role played
+                  Optimal Algorithms for Smooth and Strongly Convex Distributed Optimization in Networks
+
+by the master node also means that a failure of this particu-               Corollary 2. For any γ > 0, there exists a gossip matrix
+lar machine may completely freeze the procedure. Second,                    W of eigengap γ and α-strongly convex, β-smooth func-
+and more generally, the algorithm requires precomputing a                   tions such that, with κl = β/α, for any black-box proce-
+spanning tree, and is thus not suited to time-varying graphs,               dure using W the time to reach a precision ε > 0 is lower
+in which the connectivity between the nodes may change                      bounded by
+through time (e.g. in peer-to-peer networks). Finally, the                                  
+                                                                                              √
+                                                                                                  
+                                                                                                        τ
+                                                                                                             
+                                                                                                                  1
+algorithm requires every node to complete its gradient com-                              Ω      κl 1 + √     ln         .          (9)
+                                                                                                         γ        ε
+putation before aggregating them on the master node, and
+the efficiency of the algorithm thus depends on the slow-                   We will see in the next section that this lower bound is met
+est of all machines. Hence, in the presence of non-uniform                  for a novel decentralized algorithm called multi-step dual
+latency of the local computations, or the slow down of a                    accelerated (MSDA) and based on the dual formulation of
+specific machine due to a hardware failure, the algorithm                   the optimization problem. Note that these results provide
+will suffer a significant drop in performance.                              optimal convergence rates with respect to κl and γ, but do
+                                                                            not imply that γ is the right quantity to consider on gen-
+3.3. Decentralized Algorithms                                                                             √
+                                                                            eral graphs. The quantity 1/ γ may indeed be very large
+The gossip algorithm (Boyd et al., 2006) is a standard                      compared to ∆, for example
+                                                                                                    √      for star networks, for which
+                                                                                            √
+method for averaging values across a network when its con-                  ∆ = 2 and 1/ γ = n. However, on many simple net-
+nectivity may vary through time. This approach was shown                    works, the diameter ∆ and the eigengap of the Laplacian
+                                                                                                                         √
+to be robust against machine failures, non-uniform laten-                   matrix are tightly connected, and ∆ ≈ 1/ γ. For exam-
+                                                                                                                        √
+cies and asynchronous or time-varying graphs, and a large                   ple, for linear graphs, ∆ = n − 1 and 1/ γ ≈ 2n/π, for
+                                                                                                                          √
+body of literature extended this algorithm to distributed op-               totally connected networks, ∆ = 1 and 1/ γ = 1, and
+                                                                                                      √
+timization (Nedic & Ozdaglar, 2009; Duchi et al., 2012;                     for regular networks, 1/ γ ≥ 2√2∆ln n (Alon & Milman,
+                                                                                                                   2
+
+Wei & Ozdaglar, 2012; Shi et al., 2015; Jakovetić et al.,                  1985). Finally, note that the case of totally connected net-
+2015; Nedich et al., 2016; Mokhtari et al., 2016).                          works corresponds to a previous complexity lower bound
+                                                                            on communications proven by Arjevani & Shamir (2015),
+The convergence analysis of decentralized algorithms usu-                   and is equivalent to our result for centralized algorithms
+ally relies on the spectrum of the gossip matrix W used                     with ∆ = 1.
+for communicating values in the network, and more specif-
+ically on the ratio between the second smallest and the
+largest eigenvalue of W , denoted γ. In this section, we                    4. Optimal Decentralized Algorithms
+show that, with respect to this quantity and κl , reaching a                In this section, we present a simple framework for solving
+                                √
+       qε requires at least Ω( κl ln(1/ε)) gradient steps
+precision                                                                   the optimization problem in Eq. (1) in a decentralized set-
+            κl
+and Ω       γ ln(1/ε) communication steps, by exhibiting                    ting, from which we will derive several variants, including
+a gossip matrix such that a corresponding lower bound ex-                   a synchronized algorithm whose convergence rate matches
+ists.                                                                       the lower bound in Corollary 2. Note that the naive ap-
+                                                                            proach of distributing each (accelerated) gradient step by
+Theorem 2. Let α, β > 0 and γ ∈ (0, 1]. There exists a                      gossiping does not lead to a linear convergence rate, as the
+gossip matrix W of eigengap γ(W ) = γ, and α-strongly                       number of gossip steps has to increase with the number of
+convex and β-smooth functions fi : `2 → R such that, for                    iterations to ensure the linear rate is preserved. We begin
+any t ≥ 0 and any black-box procedure using W one has,                      with the simplest form of the algorithm, before extending
+for all i ∈ {1, ..., n},                                                    it to more advanced scenarios.
+                                        1+ 1+ t√τ
+                      3α          16            5     γ
+                                                                            4.1. Single-Step Dual Accelerated Method
+f¯(θi,t ) − f¯(θ∗ ) ≥          1− √                       kθi,0 − θ∗ k2 ,
+                       2            κl
+                                                                     (8)    A standard approach for solving Eq. (1) (see Boyd et al.
+where κl = β/α is the local condition number.                               (2011); Jakovetić et al. (2015)) consists in rewriting the op-
+                                                                            timization problem as
+The proof of Theorem 2 relies on the same technique as                                                               n
+                                                                                                                 1X
+that of Theorem 1, except that we now split the two func-                               min f¯(θ) =      min           fi (θi ).      (10)
+tions on a subset of a linear graph. These networks have                                θ∈Rd          θ1 =···=θn n
+                                                                                                                   i=1
+                                     √
+the appreciable property that ∆ ≈ 1/ γ, and we can thus
+use a slightly extended version of Theorem 1 to derive the                                 √ equality constraint θ1 = · · · = θn is
+                                                                            Furthermore, the
+desired result. The complete proof is available as supple-                  equivalent to Θ W = 0, where Θ = (θ1 , . . . , θn ) and
+mentary material.                                                           W is a gossip matrix verifying the assumptions described
+                 Optimal Algorithms for Smooth and Strongly Convex Distributed Optimization in Networks
+
+Algorithm 1 Single-Step Dual Accelerated method                  This theorem relies on proving that the condition number
+Input: number of iterations √T >√0, gossip matrix W ∈            of the dual objective function is upper bounded by κγl , and
+                   α             κ − γ                           noting that the convergence rate for accelerated gradient
+    Rn×n , η = λ1 (W  ), µ =
+                               √ l √
+                                 κl + γ
+Output: θi,T , for i = 1, ..., n                                 descent depends on the square root of the condition number
+ 1: x0 = 0, y0 = 0
+                                                                 (see, e.g., Bubeck (2015)). A detailed proof is available as
+ 2: for t = 0 to T − 1 do
+                                                                 supplementary material.
+ 3:   θi,t = ∇fi∗ (xi,t ), for all i = 1, ..., n
+ 4:   yt+1 = xt − ηΘt W                                          4.2. Multi-Step Dual Accelerated Method
+ 5:   xt+1 = (1 + µ)yt+1 − µyt                                   The main problem of Alg. (1) is that it always performs the
+ 6: end for                                                      same number of gradient and gossip steps. When commu-
+                                                                 nication is cheap compared to local computations (τ  1),
+                                                                 it would be preferable to perform more gossip steps than
+√ Section 2. Note that, since W
+in                               √ is positive semi-definite,    gradient steps in order to propagate the local gradients fur-
+   W exists and is defined as W = V > Σ1/2 V , where
+                                                                 ther than the local neighborhoods of each node. This can be
+W = V > ΣV √    is the singular value decomposition of W .
+                                                                 achieved by replacing W by PK (W ) in Alg. (1), where PK
+The equality Θ √  W = 0 implies that each row of Θ is con-
+                                                                 is a polynomial of degree at most K. If PK (W ) is itself a
+stant (since Ker( W ) = Span(1)), and is thus equivalent
+                                                                 gossip matrix, then the analysis of the previous section can
+to θ1 = · · · = θn . This leads to the following primal ver-
+                                                                 be applied and the convergence rate of the resulting algo-
+sion of the optimization problem:
+                                                                 rithm depends on the eigengap of PK (W ). Maximizing
+                       min √      F (Θ),                 (11)    this quantity for a fixed K leads to a common accelera-
+                  Θ∈Rd×n : Θ W =0                                tion scheme known as Chebyshev acceleration (Auzinger,
+where F (Θ) =
+                  Pn                                             2011; Arioli & Scott, 2014) and the choice
+                    i=1 fi (θi ). Since Eq. (11) is a convex
+problem, it is equivalent to its dual optimization problem:                                   TK (c2 (1 − x))
+                                    √                                          PK (x) = 1 −                   ,          (16)
+                     max −F ∗ (λ W ),                    (12)                                    TK (c2 )
+                   λ∈Rd×n
+                                                                                1+γ
+                                                                 where c2 = 1−γ     and TK are the Chebyshev polynomials
+where F ∗ (y) = supx∈Rd×n hy, xi − F (x) is the Fenchel          (Auzinger, 2011) defined as T0 (x) = 1, T1 (x) = x, and,
+conjugate of F , and hy, xi = tr(y > x) is the standard scalar   for all k ≥ 1,
+product between matrices.
+                                                                              Tk+1 (x) = 2xTk (x) − Tk−1 (x).            (17)
+The optimization problem in Eq. (12) is unconstrained and
+convex, and can thus be solved using a variety of convex         Finally, verifying that this particular choice of PK (W ) is
+optimization techniques. The proposed single-step dual ac-       indeed a gossip matrix, and taking K = b √1γ c leads to
+celerated (SSDA) algorithm described in Alg. (1) uses Nes-       Alg. (2) with an optimal convergence rate with respect to γ
+terov’s accelerated gradient descent, and can be thought of      and κl .
+as an accelerated version of the distributed augmented La-
+                                                                 Theorem 4. The iterative scheme in Alg. (2) converges to
+grangian method of Jakovetić et al. (2015) for ρ = 0. The
+                                                                 Θ = θ∗ 1> where θ∗ is the solution of Eq. (1). Further-
+algorithm is derived by noting that a gradient step of size
+                                                                 more, the time needed for this algorithm to reach any given
+η > 0 for Eq. (12) is
+                                    √ √                          precision ε > 0 is
+            λt+1 = λt − η∇F ∗ (λt W ) W ,              (13)                      
+                                                                                   √
+                                                                                        
+                                                                                                τ
+                                                                                                     
+                                                                                                          1
+                                    √                                          O     κl 1 + √        ln         .       (18)
+and the change of variable yt = λt W leads to                                                    γ        ε
+
+                yt+1 = yt − η∇F ∗ (yt )W.                (14)    The proof of Theorem 4 relies on standard properties of
+This equation can be interpreted as gossiping the gra-           Chebyshev polynomials that imply that, for the particular
+dients of the local conjugate functions ∇fi∗ (yi,t ), since      choice of K = b √1γ c, we have √ 1          ≤ 2. Hence,
+                                                                                                     γ(PK (W ))
+∇F ∗ (yt )ij = ∇fj∗ (yj,t )i .                                   Theorem 3 applied to the gossip matrix W 0 = PK (W )
+Theorem 3. The iterative scheme in Alg. (1) converges to         gives the desired convergence rate. The complete proof is
+Θ = θ∗ 1> where θ∗ is the solution of Eq. (1). Further-          available as supplementary material.
+more, the time needed for this algorithm to reach any given
+precision ε > 0 is                                               4.3. Discussion and Further Developments
+                          r          
+                              κl      1                          We now discuss several extensions to the proposed algo-
+               O (1 + τ )         ln        .          (15)      rithms.
+                               γ      ε
+                 Optimal Algorithms for Smooth and Strongly Convex Distributed Optimization in Networks
+
+Algorithm 2 Multi-Step Dual Accelerated method                    tion αg . However, their convergence rates are not optimal,
+Input: number of iterations
+                      √
+                                T > 0, gossip matrix W ∈          and it is still an open question to know if a rate close to
+                                                                       √
+                                                                                              
+                    1− γ             1+γ
+    Rn×n , c1 = 1+√γ , c2 = 1−γ                      2
+                                         , c3 = (1+γ)λ 1 (W )
+                                                              ,   O      κg (1 + √τγ ) ln(1/ε) can be achieved with a decen-
+                              2K               K √     K
+          j k
+                      α(1+c )            (1+c ) κ −1+c
+    K = √1γ , η = (1+cK1)2 , µ = (1+c1K )√κll +1−c1K              tralized algorithm.
+                             1                 1       1
+Output: θi,T , for i = 1, ..., n                                  Asynchronous Setting. Accelerated stochastic gradient
+ 1: x0 = 0, y0 = 0                                                descent such as SVRG (Johnson & Zhang, 2013) or SAGA
+ 2: for t = 0 to T − 1 do                                         (Defazio et al., 2014) can be used on the dual problem in
+ 3:   θi,t = ∇fi∗ (xi,t ), for all i = 1, ..., n                  Eq. (12) instead of accelerated gradient descent, in order
+ 4:   yt+1 = xt − η ACCELERATED G OSSIP(Θt ,W ,K)                 to obtain an asynchronous algorithm with a linear conver-
+ 5:   xt+1 = (1 + µ)yt+1 − µyt                                    gence rate. The details and exact convergence rate of such
+ 6: end for                                                       an approach are left as future work.
+ 7: procedure ACCELERATED G OSSIP(x,W ,K)
+ 8: a0 = 1, a1 = c2                                               5. Experiments
+ 9: x0 = x, x1 = c2 x(I − c3 W )
+                                                                  In this section, we compare our new algorithms, single-step
+10: for k = 1 to K − 1 do
+                                                                  dual accelerated (SSDA) descent and multi-step dual accel-
+11:   ak+1 = 2c2 ak − ak−1
+                                                                  erated (MSDA) descent, to standard distributed optimiza-
+12:   xk+1 = 2c2 xk (I − c3 W ) − xk−1
+                                                                  tion algorithms in two settings: least-squares regression
+13: end for
+                                                                  and classification by logistic regression. Note that these ex-
+14: return x0 − xaK
+                  K
+                                                                  periments on simple generated datasets are made to assess
+15: end procedure
+                                                                  the differences between existing state-of-the-art algorithms
+                                                                  and the ones provided in Section 4, and do not address the
+Computation of ∇fi∗ (xi,t ). In practice, it may be hard          practical implementation details nor the efficiency of the
+to apply the dual algorithm when conjugate functions are          compared algorithms on real-world distributed platforms.
+hard to compute. We now provide three potential solutions         The effect of latency, machine failures or variable commu-
+to this problem: (1) warm starts may be used for the op-          nication time is thus left for future work.
+timization problem ∇fi∗ (xi,t ) = argminθ fi (θ) − x>   i,t θ
+by starting from the previous iteration θi,t−1 . This will        5.1. Competitors and Setup
+drastically reduce the number of steps required for con-          We compare SSDA and MSDA to four state-of-the-art dis-
+vergence. (2) SSDA and MSDA can be extended to com-               tributed algorithms that achieve linear convergence rates:
+posite functions of the form fi (θ) = gi (Bi θ) + ckθk22 for      distributed ADMM (D-ADMM) (Shi et al., 2014), EXTRA
+Bi ∈ Rmi ×d and gi smooth, and for which we know how              (Shi et al., 2015), a recent approach named DIGing (Nedich
+to compute the proximal operator. This allows applications        et al., 2016), and the distributed version of accelerated gra-
+in machine learning such as logistic regression. See sup-         dient descent (DAGD) described in Section 3.2 and shown
+plementary material for details. (3) Beyond the composite         to be optimal among centralized algorithms.
+case, one can also add a small (well-chosen) quadratic term
+to the dual, and by applying accelerated gradient descent on      When available in the literature, we used the optimal pa-
+the corresponding primal, get an algorithm that uses primal       rameters for each algorithm (see Theorem 2 by Shi et al.
+gradient computations and achieves almost the same guar-          (2014) for D-ADMM and Remark 3 by Shi et al. (2015)
+antee as SSDA and MSDA (off by a log(κl /γ) factor).              for EXTRA). For the DIGing algorithm, the parameters
+                                                                  provided by Nedich et al. (2016) are very conservative,
+Local vs. Global Condition Number. MSDA and SSDA                  and lead to a very slow convergence. We thus manually
+depend on the worst strong convexity of the local functions       optimized the parameter for this algorithm. The experi-
+mini αi , which may be very small. A simple trick can be          ments are simulated using a generated dataset consisting of
+used to depend on the average strong convexity. Using the         10, 000 samples randomly distributed to the nodes of a net-
+proxy functionsPgi (θ) = fi (θ)−(αi − ᾱ)kθk22 instead of fi ,    work of size 100. In order to assess the effect of the con-
+             1
+where ᾱ = n i αi is the average strong convexity, will           nectivity of the network, we ran each experiment on two
+improve the local condition number from κl = max     i βi
+                                                 mini αi to       networks: one 10 × 10 grid and an Erdös-Rényi random
+                      maxi βi − αi                                network of average degree 6. The quality metric used in
+                  κ0l =             − 1.            (19)          this section is the maximum approximation error
+                            ᾱ
+Several algorithms, including EXTRA (Shi et al., 2015)                            et = max f¯(θi,t ) − f¯(θ∗ ),            (20)
+and DIGing (Nedich et al., 2016), have convergence rates                                 i∈V
+
+that depend on the strong convexity of the global func-           where θ∗ is the optimal parameter of the optimization prob-
+                                               Optimal Algorithms for Smooth and Strongly Convex Distributed Optimization in Networks
+
+
+     max. approximation error (et)
+
+
+
+
+                                                                                                   max. approximation error (et)
+                                                                              D−ADMM
+                                      0
+                                     10                                       EXTRA
+                                                                                                                                   10
+                                                                                                                                     0
+                                                                              DIGing
+                                                                              DAGD
+                                                                              SSDA
+                                                                              MSDA                                                   −5
+                                                                                                                                   10
+                                      −10
+                                     10
+                                                                                                                                     −10
+                                                                                                                                   10
+
+                                           0        500     1000       1500     2000                                                      0    2000   4000 6000         8000 10000
+                                                              time (t)                                                                                    time (t)
+                                          (a) high communication time: τ = 10                                                           (a) high communication time: τ = 10
+     max. approximation error (et)
+
+
+
+
+                                                                                                   max. approximation error (et)
+                                      0
+                                     10                                                                                              0
+                                                                                                                                   10
+
+
+                                                                                                                                     −5
+                                                                                                                                   10
+                                      −10
+                                     10
+                                                                                                                                     −10
+                                                                                                                                   10
+
+
+                                           0         50      100       150      200                                                       0    200     400       600    800   1000
+                                                              time (t)                                                                                       time (t)
+                                          (b) low communication time: τ = 0.1                                                           (b) low communication time: τ = 0.1
+
+Figure 1. Maximum approximation error for least-squares regres-                               Figure 2. Maximum approximation error for least-squares regres-
+sion on an Erdös-Rényi random network of average degree 6                                   sion on a 10 × 10 grid graph (n = 100).
+(n = 100).
+
+                                                                                              that the choice of function to regress y does not impact the
+lem in Eq. (1). The computation time attributes a unit time
+                                                                                              Hessian of the objective function, and thus the convergence
+per local computation and a time τ per communication.
+                                                                                              rate of the optimization algorithms.
+
+5.2. Least-squares Regression                                                                 Figure 1 and Figure 2 show the performance of the com-
+                                                                                              pared algorithms on two networks: a 10 × 10 grid graph
+The regularized least-squares regression problem consists                                     and an Erdös-Rényi random graph of average degree 6. All
+in solving the optimization problem                                                           algorithms are linearly convergent, although their conver-
+                                                   1                                          gence rates scale on several orders of magnitude. In all
+                                            min      ky − X > θk22 + ckθk22 ,          (21)   experiments, the centralized optimal algorithm DAGD has
+                                            θ∈Rd   m
+                                                                                              the best convergence rate, while MSDA has the best con-
+where X ∈ Rd×m is a matrix containing the m data points,                                      vergence rate among decentralized methods. In all our ex-
+and y ∈ Rm is a vector containing the m associated val-                                       periments, MSDA outperforms SSDA, indicating that per-
+ues. The task is thus to minimize the empirical quadratic                                     forming several communication rounds per gradient itera-
+error between a function yi = g(Xi ) of d variables and its                                   tion never degrades the efficiency of the algorithm, while
+linear regression ĝ(Xi ) = Xi> θ on the original dataset (for                                significantly improving it when τ  1.
+i = 1, ..., m), while smoothing the resulting approximation
+by adding a regularizer ckθk22 . For our experiments, we                                      5.3. Logistic Classification
+fixed c = 0.1, d = 10, and sampled m = 10, 000 Gaussian
+random variables Xi ∼ N (0, 1) of mean 0 and variance 1.                                      The logistic classification problem consists in solving the
+The function to regress is then yi = Xi> 1+cos(Xi> 1)+ξi                                      optimization problem
+where ξi ∼ N (0, 1/4) is an i.i.d. Gaussian noise of vari-                                                                                    m
+ance 1/4. These data points are then distributed randomly                                                                               1 X                >
+                                                                                                                                                               
+                                                                                                                                   min        ln 1 + e−yi ·Xi θ + ckθk22 ,           (22)
+and evenly to the n = 100 nodes of the network. Note                                                                               θ∈Rd m
+                                                                                                                                          i=1
+                                                 Optimal Algorithms for Smooth and Strongly Convex Distributed Optimization in Networks
+                                       0                                                                                             0
+                                      10                                                                                            10
+      max. approximation error (et)
+
+
+
+
+                                                                                                    max. approximation error (et)
+                                                                            D−ADMM
+                                                                            EXTRA
+                                                                            DIGing
+                                                                            DAGD
+                                                                            SSDA
+                                                                            MSDA
+                                       −10
+                                      10                                                                                             −10
+                                                                                                                                    10
+
+
+
+
+                                             0      2000   4000 6000      8000                                                             0    2000    4000 6000       8000
+                                                             time (t)                                                                                     time (t)
+                                           (a) high communication time: τ = 10                                                           (a) high communication time: τ = 10
+                                       0                                                                                             0
+                                      10                                                                                            10
+      max. approximation error (et)
+
+
+
+
+                                                                                                    max. approximation error (et)
+                                       −10                                                                                           −10
+                                      10                                                                                            10
+
+
+
+
+                                            0       200     400     600    800                                                            0      200     400     600    800
+                                                              time (t)                                                                                     time (t)
+                                           (b) low communication time: τ = 0.1                                                           (b) low communication time: τ = 0.1
+
+Figure 3. Maximum approximation error for logistic classification                             Figure 4. Maximum approximation error for logistic classification
+on an Erdös-Rényi random network of average degree 6 (n =                                   on a 10 × 10 grid graph (n = 100).
+100).
+
+
+                                                                                              improve the efficiency of the algorithm and MSDA sub-
+where X ∈ Rd×m is a matrix containing m data points,
+                                                                                              stantially outperforms SSDA. Note that, in Figure 4(a), D-
+and y ∈ {−1, 1}m is a vector containing the m class as-
+                                                                                              ADMM requires 383 iterations to reach the same error ob-
+signments. The task is thus to classify a dataset by learning
+                                                                                              tained after only 10 iterations of SSDA, demonstrating a
+a linear classifier mapping data points Xi to their associated
+                                                                                              substantial improvement over state-of-the-art methods.
+class yi ∈ {−1, 1}. For our experiments, we fixed c = 0.1,
+d = 10, and sampled m = 10, 000 data points, 5, 000 for
+the first class and 5, 000 for the second. Each data point                                    6. Conclusion
+Xi ∼ N (yi 1, 1) is a Gaussian random variable of mean
+                                                                                              In this paper, we derived optimal convergence rates for
+yi 1 and variance 1, where yi = 21{i ≤ 5, 000} − 1 is
+                                                                                              strongly convex and smooth distributed optimization in two
+the true class of Xi . These data points are then distributed
+                                                                                              settings: centralized and decentralized communications in
+randomly and evenly to the n = 100 nodes of the network.
+                                                                                              a network. For the decentralized setting, we introduced
+Figure 3 and Figure 4 show the performance of the com-                                        the multi-step dual accelerated (MSDA) algorithm with a
+pared algorithms for logistic classification on two net-                                      provable optimal linear convergence rate, and showed its
+works: a 10 × 10 grid graph and an Erdös-Rényi random                                       high efficiency compared to other state-of-the-art methods,
+graph of average degree 6. As for least-squares regression,                                   including distributed ADMM and EXTRA. The simplic-
+all algorithms are linearly convergent, and their conver-                                     ity of the approach makes the algorithm extremely flexible,
+gence rates scale on several orders of magnitude. In this                                     and allows for future extensions, including time-varying
+case, the centralized optimal algorithm DAGD is outper-                                       networks and an analysis for non-strongly-convex func-
+formed by MSDA, although the two convergence rates are                                        tions. Finally, extending our complexity lower bounds to
+relatively similar. Again, when the communication time is                                     time delays, variable computational speeds of local sys-
+smaller than the computation time (τ  1), performing                                         tems, or machine failures would be a notable addition to
+several communication rounds per gradient iteration will                                      this work.
+                 Optimal Algorithms for Smooth and Strongly Convex Distributed Optimization in Networks
+
+References                                                     Duchi, John C, Agarwal, Alekh, and Wainwright, Mar-
+                                                                 tin J. Dual averaging for distributed optimization: Con-
+Alon, N. and Milman, V. D. λ1 , isoperimetric inequalities
+                                                                 vergence analysis and network scaling. IEEE Transac-
+  for graphs, and superconcentrators. Journal of Combi-
+                                                                 tions on Automatic control, 57(3):592–606, 2012.
+  natorial Theory, series B, 38:73–88, 1985.
+                                                               Jakovetić, Dušan, Xavier, Joao, and Moura, José MF. Fast
+Arioli, M. and Scott, J. Chebyshev acceleration of itera-
+                                                                 distributed gradient methods. IEEE Transactions on Au-
+  tive refinement. Numerical Algorithms, 66(3):591–608,
+                                                                 tomatic Control, 59(5):1131–1146, 2014.
+  2014.
+
+Arjevani, Yossi and Shamir, Ohad. Communication com-           Jakovetić, Dušan, Moura, José MF, and Xavier, Joao. Lin-
+  plexity of distributed convex learning and optimization.       ear convergence rate of a class of distributed augmented
+  In Advances in Neural Information Processing Systems           lagrangian algorithms. IEEE Transactions on Automatic
+  28, pp. 1756–1764, 2015.                                       Control, 60(4):922–936, 2015.
+
+Arjevani, Yossi and Shamir, Ohad. On the iteration com-        Johnson, Rie and Zhang, Tong. Accelerating stochastic
+  plexity of oblivious first-order optimization algorithms.      gradient descent using predictive variance reduction. In
+  In 33nd International Conference on Machine Learning,          Advances in Neural Information Processing Systems 26,
+  pp. 908–916, 2016a.                                            pp. 315–323, 2013.
+
+Arjevani, Yossi and Shamir, Ohad. Dimension-free itera-        Mokhtari, A., Shi, W., Ling, Q., and Ribeiro, A. A de-
+  tion complexity of finite sum optimization problems. In       centralized second-order method with exact linear con-
+  Advances in Neural Information Processing Systems 29,         vergence rate for consensus optimization. IEEE Trans-
+  pp. 3540–3548, 2016b.                                         actions on Signal and Information Processing over Net-
+                                                                works, 2(4):507–522, 2016.
+Auzinger, W. Iterative Solution of Large Linear Systems.
+  Lecture notes, TU Wien, 2011.                                Mokhtari, Aryan and Ribeiro, Alejandro. DSA: Decen-
+                                                                tralized double stochastic averaging gradient algorithm.
+Bertsekas, Dimitri P. and Tsitsiklis, John N. Parallel and      Journal of Machine Learning Research, 17(1):2165–
+  distributed computation : numerical methods. Prentice-        2199, 2016.
+  Hall International, 1989.
+                                                               Nedic, Angelia and Ozdaglar, Asuman. Distributed subgra-
+Boyd, Stephen, Ghosh, Arpita, Prabhakar, Balaji, and             dient methods for multi-agent optimization. IEEE Trans-
+  Shah, Devavrat.    Randomized gossip algorithms.               actions on Automatic Control, 54(1):48–61, 2009.
+  IEEE/ACM Transactions on Networking (TON), 14(SI):
+  2508–2530, 2006.                                             Nedich, A., Olshevsky, A., and Shi, W. Achieving geomet-
+                                                                 ric convergence for distributed optimization over time-
+Boyd, Stephen, Diaconis, Persi, Parrilo, Pablo, and Xiao,        varying graphs. ArXiv e-prints, 2016.
+  Lin. Fastest mixing markov chain on graphs with sym-
+  metries. SIAM Journal on Optimization, 20(2):792–819,        Nesterov, Yurii. Introductory lectures on convex optimiza-
+  2009.                                                          tion : a basic course. Kluwer Academic Publishers,
+                                                                 2004.
+Boyd, Stephen, Parikh, Neal, Chu, Eric, Peleato, Borja, and
+  Eckstein, Jonathan. Distributed optimization and statisti-   Shamir, Ohad. Fundamental limits of online and distributed
+  cal learning via the alternating direction method of mul-      algorithms for statistical learning and estimation. In Ad-
+  tipliers. Foundations and Trends in Machine Learning,          vances in Neural Information Processing Systems 27, pp.
+  3(1):1–122, 2011.                                              163–171, 2014.
+
+Bubeck, Sébastien. Convex optimization: Algorithms and        Shamir, Ohad and Srebro, Nathan. Distributed stochas-
+  complexity. Foundations and Trends in Machine Learn-           tic optimization and learning. In 52nd Annual Allerton
+  ing, 8(3-4):231–357, 2015.                                     Conference on Communication, Control, and Computing
+                                                                 (Allerton), pp. 850–857. IEEE, 2014.
+Defazio, Aaron, Bach, Francis, and Lacoste-Julien, Simon.
+  SAGA: A fast incremental gradient method with support        Shi, Wei, Ling, Qing, Yuan, Kun, Wu, Gang, and Yin,
+  for non-strongly convex composite objectives. In Ad-           Wotao. On the linear convergence of the ADMM in de-
+  vances in Neural Information Processing Systems 27, pp.        centralized consensus optimization. IEEE Transactions
+  1646–1654, 2014.                                               on Signal Processing, 62(7):1750–1761, 2014.
+                 Optimal Algorithms for Smooth and Strongly Convex Distributed Optimization in Networks
+
+Shi, Wei, Ling, Qing, Wu, Gang, and Yin, Wotao. EXTRA:
+  An exact first-order algorithm for decentralized consen-
+  sus optimization. SIAM Journal on Optimization, 25(2):
+  944–966, 2015.
+Tutunov, R., Ammar, H. B., and Jadbabaie, A. A distributed
+  newton method for large scale consensus optimization.
+  ArXiv e-prints, 2016.
+Wei, Ermin and Ozdaglar, Asuman. Distributed alternating
+ direction method of multipliers. In 51st Annual Confer-
+ ence on Decision and Control (CDC), pp. 5445–5450.
+ IEEE, 2012.
+
+Xiao, Lin and Boyd, Stephen. Fast linear iterations for dis-
+  tributed averaging. Systems & Control Letters, 53(1):
+  65–78, 2004.

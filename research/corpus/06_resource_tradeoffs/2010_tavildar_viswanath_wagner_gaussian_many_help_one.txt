@@ -1,0 +1,2302 @@
+                                             The Gaussian Many-Help-One Distributed Source
+                                                           Coding Problem
+arXiv:0805.1857v1 [cs.IT] 13 May 2008
+
+
+
+
+                                                Saurabha Tavildar, Pramod Viswanath, and Aaron B. Wagner
+                                                                             19 January, 2008
+
+
+                                                                                        Abstract
+                                                 Jointly Gaussian memoryless sources are observed at N distinct terminals. The
+                                             goal is to efficiently encode the observations in a distributed fashion so as to enable
+                                             reconstruction of any one of the observations, say the first one, at the decoder sub-
+                                             ject to a quadratic fidelity criterion. Our main result is a precise characterization of
+                                             the rate-distortion region when the covariance matrix of the sources satisfies a “tree-
+                                             structure” condition. In this situation, a natural analog-digital separation scheme
+                                             optimally trades off the distributed quantization rate tuples and the distortion in the
+                                             reconstruction: each encoder consists of a point-to-point Gaussian vector quantizer
+                                             followed by a Slepian-Wolf binning encoder. We also provide a partial converse that
+                                             suggests that the tree structure condition is fundamental.
+
+
+                                        1    Introduction
+                                        The focus of this study is the problem of distributed source coding of memoryless Gaussian
+                                        sources with quadratic distortion constraints. The rate-distortion region of this problem with
+                                        two terminals has been recently characterized [13]. Our focus, hence, is on the case when
+                                        there are at least 3 terminals. In this paper, we study a special case of this general problem:
+                                        the so-called “many-help-one” situation depicted in Figure 1. The setup is the following:
+
+                                                                                         R1
+                                                                    x1      Encoder 1
+
+
+
+
+                                                                                                   Decoder   x̂1
+                                                                                          RN
+                                                                    xN     Encoder N
+
+
+
+
+                                                                   Figure 1: The many-help-one problem.
+
+
+
+                                                                                              1
+    • Sources: Each of the N encoders observes a memoryless discrete-time source: encoder
+      i observes, over n discrete time instants, the memoryless source xni . The observations
+      across the encoders are correlated, however. Specifically, the joint observations at
+      time m (x1 (m), . . . , xN (m)) are jointly Gaussian. Further, the joint observations are
+      memoryless over time m.
+
+    • Encoders: Each encoder i maps the vector of analog observations (over n time instants,
+      say) into a vector of bits (of length Ri n, say) that is then communicated without loss
+      to a single decoder (on a link with rate Ri ).
+
+    • Decoder: The decoder is only interested in reconstructing one of the sources, (say, xn1 ).
+      The fidelity criterion considered here is a quadratic one: the average (over the statistics
+      of the sources) l2 distance between the original source vector and the reconstructed
+      vector is required to be no more than Dn.
+
+    • Problem statement: The problem is to characterize the minimum set of rates at which
+      the encoders can communicate with the decoder while still conveying enough informa-
+      tion to satisfy the quadratic distortion constraint on the reconstruction.
+
+    In this paper, we precisely characterize the rate-distortion region of a class of many-help-
+one problems. A crucial step towards solving this problem involves the introduction of a
+related distributed source coding problem where the source has a “binary tree” structure;
+this is done in Section 2. We show that the natural analog-digital separation strategy of
+point-to-point Gaussian vector quantization followed by a distributed Slepian-Wolf binning
+scheme is optimal for this problem (this is done in Sections 2.3 and 2.4). Next, we show how
+this result can be used to solve various instances of the many-help-one problem of interest;
+this is done in Section 3. Finally, various ancillary aspects of the problem at hand are
+discussed in Section 4: specifically the worst-case property of the Gaussian distribution with
+respect to the analog-digital separation architecture is demonstrated and a partial converse
+for the necessity of the tree-structure condition is provided.
+
+
+2     The Binary Tree Structure Problem
+In this section, we take a short detour away from the many-help-one problem of interest (c.f.
+Figure 1). Specifically, we introduce a related distributed source coding problem that we
+call the “binary tree structure problem”. We show that the natural analog-digital separation
+architecture is optimal in terms of the rate-distortion tradeoff for this problem. The connec-
+tion between the original many-help-one problem and this binary tree structure problem is
+made in the next section.
+    The outline of this section is as follows:
+
+    • we introduce the source variables and their statistical relationships first (Section 2.1);
+
+    • next we specify precisely the binary tree structure problem (Section 2.2);
+
+
+
+                                                2
+   • we evaluate the performance of the natural analog-digital architecture in terms of the
+     rate-distortion tradeoff for the binary tree structure problem (Section 2.3);
+
+   • under the assumption that certain variables have positive variance, we derive a novel
+     outer bound to the rate-distortion region—this involves a careful use of the entropy-
+     power inequality (extracting critical ideas from [7, 9]) and is one of the most important
+     technical contributions of this paper (Section 2.4);
+
+   • again under the positive variance assumption, we show that the outer bound to the
+     rate-distortion region indeed matches the inner bound derived by evaluating the natural
+     analog-digital separation architecture (Section 2.4);
+
+   • using a continuity argument, we relax the positive variance assumption and show
+     that the separation architecture is optimal for all binary tree structure problems (Sec-
+     tion 2.5);
+
+   • finally, we show that Gaussian sources are the worst case in the sense that a non-
+     Gaussian source has a larger rate-distortion region than a Gaussian source with the
+     same covariance matrix, so long as the Gaussian source satisfies the tree structure
+     (Section 2.6).
+
+2.1    Binary Gauss-Markov Trees
+Consider the Markov binary tree structure of Gaussian random variables depicted in Figure 2.
+Formally, the Gauss-Markov tree structure represents the following Markov chain conditions:
+                                                       (k)
+consider the node denoted by the random variable xi . We define the set of left descendants,
+                                               (k)
+the set of right descendants, and the tree of xi to be
+                                                                             
+                       (k)         (l)        2l (i − 1)           2l (i − 0.5)
+                   L xi      =    xj : l > k,              <j≤                    ,
+                                                   2k                     2k
+                                                                        
+                       (k)         (l)        2l (i − 0.5)            2l i
+                  R xi       =    xj : l > k,                <j≤ k ,
+                                                    2k                2
+                              n      o                      
+                       (k)         (k)         (k)           (k)
+                  T xi       = xi        ∪ R xi       ∪ L xi       ,
+                                               
+                                            (k)
+respectively. We define the set of nodes P xi     to be:
+                                n           o        
+                                  (l)             (k)
+                                 xj : ∀ j, l \ T xi     .
+
+                                                               2 says 
+Then, by definition, the Markov chain condition given byFigure          that conditioned
+                                                                                         on
+                       (k)                                (k)        (k)             (k)
+the random variable xi , the sets of random variables P xi , L xi , and R xi               are
+independent; further, this is true for all pairs (i, k).
+
+
+
+
+                                              3
+                                                                           (L)
+                                                                         x1
+
+                                                        (L−1)
+                                                      x1
+                                                                              (L)
+                                      x1
+                                        (3)                               x2
+                  (2)
+                 x1
+                                        (3)
+                                      x2
+        (1)
+    x1                                x3
+                                        (3)
+
+
+                      (2)
+                 x2
+                                        (3)                                     (L)
+                                      x4                                    x2L−1 −1
+                                                        (L−1)
+                                                      x2L−2
+                                                                                (L)
+                                                                            x2L−1
+
+                                      Figure 2: The binary tree structure.
+
+2.1.1     A Specific Construction
+                                                                  (k)
+Now consider the following specific construction of xi s that satisfies the Markov chain
+structure in Figure 2. Let m, k, and i denote the time index, the tree depth index, and the
+node within the tree depth index, respectively. Then define
+                                 (k+1)             (k+1) (k)            (k+1)
+                                x2i−1 (m) = α2i−1 xi (m) + n2i−1 (m),                       (1)
+                                 (k+1)             (k+1) (k)      (k+1)
+                                x2i      (m) = α2i      xi (m) + n2i (m),                   (2)
+where the indices vary as:
+                                              m = 1, . . . , n,                             (3)
+                                              k = 1, . . . , L − 1                          (4)
+                                               i = 1, . . . , 2k−1.                         (5)
+         (k+1)          (k+1)
+Here α2i−1 and α2i   are real numbers. The random variables
+              n                                                              o
+                 (k)                                      k−1
+                ni (m), k = 2, . . . , L, i = 1, . . . , 2 , m = 1, . . . , n               (6)
+
+are independent Gaussian random variables (with zero mean and variance σ 2 (k) for the index
+                                                                                       ni
+pair (k, i) and any m). Further, these random variables are all independent of the root
+
+                                                       4
+random variables                  n                                  o
+                                    (1)
+                                   x1 (m),           m = 1, . . . , n .
+Finally let the root random variables
+                                n                                    o
+                                   (1)
+                                  x1 (m),            m = 1, . . . , n
+
+be a collection of i.i.d. Gaussian random variables with zero mean and variance σ 2(1) . From
+                                                                                          x1
+this construction, it readily follows that the random variables satisfy the tree structure in
+Figure 2. Formally:
+                                            (k)
+Claim 1 For this construction, the xi             satisfy the Markov chain conditions in Figure 2.
+
+2.1.2   Necessity of Construction
+Conversely, this is also the most general way of constructing jointly Gaussian random vari-
+ables that satisfy the binary tree structure. We state this formally below:
+                                            n                                     o
+                                               (k)
+Claim 2 Any zero-mean, jointly Gaussian xi , k = 1, . . . , L, i = 1, . . . , 2k−1 that sat-
+isfy the Markov tree structure in Figure 2 can be represented using the above construction
+(c.f. Equations (1) and (2)).
+
+Proof: The steps are routine: For a fixed 1 ≤ k < L and 1 ≤ i ≤ 2k−1, consider the Gaussian
+                 (k+1)                                                               (k+1)
+random variable x2i−1 . Since it is jointly Gaussian with all of the variables in P(x2i−1 ), we
+can write:                             h                 i
+                           (k+1)         (k+1)     (k+1)      (k+1)
+                          x2i−1 = E x2i−1 | P(x2i−1 ) + n2i−1 .                              (7)
+                             (k+1)                                                             (k+1)
+Here the random variable n2i−1 is Gaussian and independent of all the nodes in P(x2i−1 ).
+Further, the conditional expectation in Equation (7) is simply the linear conditional expec-
+tation that is particularly simple (this is due to the Markov chain conditions imposed by
+                                                     (k)                             (k+1)
+the tree structure): specifically, conditioned on xi the random variable of focus, x2i−1 , is
+                                               (k+1)
+independent of all the other variables in P(x2i−1 ). Thus we can write
+                                 h                 i
+                                    (k+1)    (k+1)       (k+1) (k)
+                              E x2i−1 | P(x2i−1 ) = α2i−1 xi ,                             (8)
+
+                         (k+1)
+for some real number α2i−1 . Substituting Equation (8) in Equation (7), we have derived
+                                                                       (k)
+Equation (1). The derivation of Equation (2) is analogous. Since ni is independent of
+    (k)
+P(xi ) for all i and k, the required independence conditions hold and the conclusion follows.
+✷
+
+2.2     Problem Statement
+Denote the vector                                                       
+                                  (1) def        (1)             (1)
+                                 x1,n =         x1 (1), . . . , x1 (n)       .                    (9)
+
+                                                      5
+                             (L)                       R1
+                           x1          Encoder 1
+
+                           x2
+                             (L)                       R2
+                                       Encoder 2
+                                                                                (1)
+                                                             Decoder        x̂1
+
+
+
+                            (L)                     R2L−1
+                          x2L−1       Encoder 2L−1
+
+
+                                    Figure 3: The problem setup.
+
+Similar notation will be used for other vectors to be introduced later. Consider the following
+distributed source coding problem depicted in Figure 3: There are 2L−1 distributed encoders
+each having access to a memoryless observation sequence: encoder i observes the memoryless
+                  (L)
+random process xi,n . The goal of each encoder is to map the observation into a discrete set
+(encoder i maps its length-n observation into a discrete set Ci ). The encoded observation is
+then conveyed to the central decoder on rate-constrained links. The rate of communication
+from encoder i to the decoder is
+                                           1
+                                             log |Ci |.
+                                           n
+                                     (1)                                  (1)
+The decoder forms an estimate x̂1,n of the root of the binary tree, x1,n , based on the messages
+C1 , . . . , C2L−1 . The average distortion of the reconstruction is
+                                      n                   2 
+                                   1X        (1)      (1)
+                                         E x1 (m) − x̂1 (m)      .
+                                   n m=1
+
+The goal is to characterize the set of achievable rates and distortions (R1 , · · · , R2L−1 , d), i.e.,
+those such that there exists an encoder and decoder such that
+                                             1
+                                      Ri ≥     log |Ci | for all i
+                                             n
+and                                       
+                                   1X
+                                      n                     2 
+                                             (1)      (1)
+                                d≥       E x1 (m) − x̂1 (m)      .
+                                   n m=1
+. We denote the closure of this set by RD ∗ .
+   We note that two special cases of this problem have been resolved in the literature:
+
+   • L = 1 is the single-user Gaussian source coding problem with quadratic distortion,
+
+   • L = 2 is the Gaussian CEO problem solved in [7, 9].
+
+
+
+                                                   6
+The recent work in [8] studies a special case of the general tree structure depicted in Figure 2.1
+While a general outer bound is derived in [8] for that special case of the tree structure, it is
+shown to be tight only for a certain range of the parameters in the problem (the distortion
+constraint and the covariance matrix of the Gaussian sources).
+    Our main result is that a natural strategy of point-to-point Gaussian vector quantization
+followed by Slepian-Wolf binning is optimal for any L. In the next section we formally
+present the natural achievable strategy and then state our main result. In the subsequent
+section, we prove a novel outer bound and use it to establish the main result.
+
+2.3     Analog-Digital Separation Strategy
+The natural achievable analog-digital separation strategy is depicted in Figure 4: each en-
+coder first vector quantizes the observation as in point-to-point Gaussian rate distortion
+theory, and then codes the quantizer outputs using a Slepian-Wolf binning scheme. The rate
+
+                        (L)                          Binning
+                       x1         VQ − 1            Scheme − 1
+
+                        (L)
+                       x2         VQ − 2             Binning
+                                                    Scheme − 2
+                                                                                       (1)
+                                                                            Decoder   x̂1
+
+
+
+                       (L)                          Binning
+                      x2L−1      VQ-2L−1         Scheme - 2L−1
+
+
+
+                              Figure 4: The natural separation scheme.
+
+tuples needed by this architecture to satisfy the distortion constraint can be calculated by
+the so-called Berger-Tung inner bound [1]: let
+                                           def
+                                        u = (u1 , u2 , · · · , u2L−1 )                                 (10)
+denote a vector of 2L−1 jointly Gaussian random variables. Consider the set U(d) of u such
+that
+    • For each i = 1, . . . , 2L−1 , ui satisfies
+                                                            (L)
+                                                 ui = αi xi       + wi ,                               (11)
+       where α1 , . . . , α2L−1 are constants and w1 , . . . , w2L−1 are independent zero-mean Gaus-
+                                                                        (k)
+       sian random variables that are also independent of the xi s. It is convenient to assume
+                                                                                  (L)
+       that αi ∈ [0, 1] and that wi has variance (1 − αi2 )σ 2(L) , so that xi and ui have the
+                                                                           xi
+       same variance. This assumption incurs no loss of generality.
+   1
+    As an aside, we note that the material in [8] along with our own previous work [13] provided the impetus
+to the present work.
+
+                                                        7
+   • u satisfies                                                2 
+                                                   (1)    (1)
+                                         E        x1 − E[x1 |u]          ≤ d.                   (12)
+
+Now, consider                                
+                                          A ⊆ 1, . . . , 2L−1 .                                 (13)
+Denote the set
+                                                           def
+                                             {ui : i ∈ A} = uA .                                (14)
+Similar notation will be used for other vectors introduced later. We now have:
+
+Lemma 1 [Berger-Tung inner bound [1]] The analog-digital separation architecture achieves
+convex hull of the rate-distortion region
+              h                                               
+        def
+  RD in =         (R1 , · · · , R2L−1 , d) : ∃ u ∈ U(d) ∋ ∀A ⊆ 1, . . . , 2L−1 ,
+                                                                    X                        i
+                                                                                   (L)
+                                                                           Ri ≥ I xA ; uA |uAc . (15)
+                                                                         i∈A
+
+In particular, RD ∗ contains co(RD in ), where co(·) denotes the closure of the convex hull.
+
+The region RD in can be explicitly computed for a given covariance matrix for the observed
+Gaussian sources. This computation is aided by the following combinatorial structure of the
+set RD in .
+
+2.3.1   Combinatorial Structure of RD in
+Consider a specific u ∈ U(d) (this parameterizes a specific choice of the analog-digital sepa-
+ration architecture) and the rate tuples (R1 , . . . , R2L−1 ) that satisfy the conditions
+                           X                             
+                               Ri ≥ f (A) , ∀A ⊆ 1, . . . , 2L−1                           (16)
+                                 i∈A
+
+where                                                       
+                                               def(L)
+                                       f (A) = I xA ; uA |uAc .                                 (17)
+                                                                         
+Consider the following properties of the set function f for all A1 , A2 ⊆ 1, . . . , 2L−1 . We
+              def
+have f (φ) = 0.
+
+Lemma 2
+
+                                          f (A1 ) ≥ 0,                                          (18)
+                                                                 
+                                   f (A1 ∪ {t}) ≥ f (A1 ) , ∀t ∈ 1, . . . , 2L−1 ,              (19)
+                     f (A1 ∪ A2 ) + f (A1 ∩ A2 ) ≥ f (A1 ) + f (A2 ) .                          (20)
+
+
+
+
+                                                       8
+Proof Equation (18) follows from the non-negativity of mutual information. Equation (19)
+                                                         / A1 , we have
+follows from the chain rule of mutual information: for t ∈
+                                                                         
+                                     (L) (L)                   (L) (L)
+          f (A1 ∪ {t}) = I uA1 ; xt xA1 | uAc1 + I ut ; xt xA1 | u(A1 ∪{t})c ,
+                                                
+                                     (L) (L)
+                       ≥ I uA1 ; xt xA1 | uAc1 ,
+                         = f (A1 ) .
+
+Finally, consider (20). Let
+                                                           (L)
+                                      B = {i : Var(ui |xi ) > 0}.
+                                             (L)    (L)
+Suppose i ∈ (A1 ∪ A2 ) ∩ B c . If Var(xi |x(A1 ∪A2 )c ) > 0, then f (A1 ∪ A2 ) = ∞, so (20)
+                         (L)    (L)
+trivially holds. If Var(xi |x(A1 ∪A2 )c ) = 0, then
+
+                          (L)   (L)           (L)   (L)                 (L)   (L)
+                   Var(xi |xAc1 ) = Var(xi |xAc2 ) = Var(xi |xAc1 ∪Ac2 ) = 0,
+
+so A1 and A2 can be replaced with A1 \{i} and A2 \{i}, respectively, without affecting the
+validity of (20). By repeating this process as many times as necessary, we may assume that
+A1 ∪ A2 ⊂ B.
+    This case requires the use of the Markov property satisfied by u: in particular, we have
+by construction
+                                              (L)
+                                     uA1 ↔ xA1 ↔ uAc1 ,
+meaning that these tree variables form a Markov chain in the specified order. Thus we can
+write                                      X                
+                                    (L)                    (L)
+                         h uA1 | xA1 , uAc1 =     h ui | xi      .                   (21)
+                                                          i∈A1
+
+Now we rewrite f (A1 ) as, using (21),
+                                                           X       (L)
+                                                                         
+                        f (A1 ) = h uA1 | uAc1            −  h ui | xi                   (22)
+                                                            i∈A1
+                                                   X       (L)
+                                                                 
+                                  = h (u) − h uAc1 − h ui | xi     .                     (23)
+                                                                 i∈A1
+
+It follows from (23) that we have shown (20) if
+                                                                  
+                      h uAc1 + h uAc2 ≥ h u(A1 ∪A2 )c + h u(A1 ∩A2 )c ,
+
+i.e.,
+                                                                
+                     h uAc1 −Ac2 | uAc1 ∩Ac2 ≥ h uAc1 −Ac2 | uAc2 ,
+
+which is true since conditioning cannot increase the differential entropy.                   ✷
+   A polyhedron such as the one in (16) with the rank function f satisfying the properties in
+Lemma 2 is called a contra-polymatroid. A generic reference to the class of polyhedrons called
+
+                                                    9
+matroids is [15] and applications to information theory are in [11] where natural achievable
+regions of the multiple access channel are shown to be polymatroids and in [3, 14] where
+natural achievable regions are shown to be contrapolymatroids. An important property of
+                                 in Lemma 3.3 of [11]: the characterization of its vertices.
+contra-polymatroids is summarized
+For π a permutation on the set 1, . . . , 2L−1 , let
+                   def
+               b(π)
+                 πi = f ({π1 , π2 , . . . , πi }) − f ({π1 , π2 , . . . , πi−1 }) , i = 1 . . . 2
+                                                                                                  L−1
+                                                                                                      ,
+                                                                   
+                (π)       (π)
+and b(π) = bπ1 , . . . , bπ2L−1 . Then the 2L−1 ! points b(π) , π a permutation , are the ver-
+tices of (and hence belong to) the contra-polymatroid (16). We use this result to conclude
+that all of the constraints in (16) are tight for some rate tuple and there is a computationally
+simple way to find the vertex that leads to a minimal linear functional of the rates [11].
+
+2.4     An outer bound for a special case
+We first focus on the case in which σ 2 (k) > 0 for all i and k. We abbreviate this condition
+                                          ni
+by saying that “all of the noise variances are positive.” To derive our outer bound, we need
+the following definitions:
+   • Fix 1 ≤ k ≤ L − 1 and 1 ≤ i ≤ 2k−1 and define the function
+                                  (k+1) 2                    (k+1) 2
+                                                                                     
+                                 α      σ                  α      σ                
+                      def 1        2i−1                       2i
+                                            (k)                        (k)
+                                          ni                        ni
+     fx(k) (r1 , r2 ) = log 1 +     2
+                                                1 − e−2r1 +      2
+                                                                           1 − e−2r2  ,       r1 , r2 ≥ 0.
+       i                  2         σ (k+1)                    σ (k+1)
+                                       n2i−1                        n2i
+                                                                                                  (24)
+                  (k)
+   • For node xi , we define the set of associated observations to be
+                                                                 
+                               (k)             2L (i − 1)      2L i
+                          O xi       =     j:             <j≤ k .                                 (25)
+                                                   2k           2
+
+   • To each node in the binary tree structure of Figure 2 we associate a nonnegative
+                                                                        (k)
+     number, known as noise-quantization rate. Specifically associate ri with the node
+      (k)
+     xi . A physical interpretation for the nomenclature “noise quantization rate” will be
+     available during the proof of the outer bound.
+                         (k)                           (k)
+   • For each node xi define the set rA,Ac (xi ) to be the set of noise-quantization rates
+            (l)                            (l)                   (k)
+     (say, rj ) of the variables (say xj ) in the tree of xi whose associated observations are
+                                                                                  (l)
+     entirely in A or Ac and are such that none of the ancestors of xj have this property.
+     Formally,
+                             n                                                   
+                     (k)           (l)      (l)         (k)           (l)              (l)
+            rA,Ac xi       =      rj : xj ∈ T xi              , O xj ⊂ A or O xj ⊂ Ac
+                                                                                        
+                                                  (k)
+                               6 ∃ xa(b) ∈ T xi           with O x(b) a     ⊂ A or O x(b)
+                                                                                       a     ⊂ Ac ,
+                                                                      o
+                                        (l)           (b)         (b)
+                                and xj ∈ R xa ∪ L(xa ) .
+
+                                                  10
+                          (k)
+  Likewise, we let rA (xi ) denote the set of noise-quantization rates of variables in the
+           (k)
+  tree of xi whose associated observations are entirely in A and are such that none of
+  the ancestors have this property. Formally,
+                                n                              
+                         (k)         (l)     (l)         (k)          (l)
+                  rA xi        = rj : xj ∈ T xi                , O xj ⊂ A
+                                                                        
+                                                   (k)
+                                 6 ∃ x(b)
+                                       a    ∈  T  xi       with O x(b)a     ⊂ A,
+                                                                      o
+                                         (l)
+                                  and xj ∈ R x(b)      a     ∪ L(x(b)
+                                                                  a ) .               (26)
+
+                                                                                  
+                                                        (k)
+• Define the following set of noise-quantization rates ri , 1 ≤ k ≤ L, 1 ≤ i ≤ 2k−1 :
+                                                                          
+                                          2
+                                   1   σ   (1)                          
+                         (k)    (1)      x1        (k)        (k+1) (k+1)
+              Fr (d) =  r ≥ 0, r1 ≥ log         , ri ≤ fx(k) r2i−1 , r2i     .                   (27)
+                        i          2     d              i                 
+
+
+• We next implicitly define a collection offunctions of the noise-quantization
+                                                                               rates. Con-
+                                              (k)                     k−1
+  sider a set of noise-quantization rates ri , 1 ≤ k ≤ L, 1 ≤ i ≤ 2         in Fr (d). Then
+  for any i and k, we have                                 
+                                  (k)           (k+1) (k+1)
+                                 ri ≤ fx(k) r2i−1 , r2i       .
+                                                       i
+
+  Since fx(k) is increasing in both arguments, this implies
+          i
+
+                                                            
+                   (k)          (k+1)            (k+2) (k+2)
+                  ri   ≤ fx(k) r2i−1 , fx(k+1) r4i−1 , r4i
+                           i
+                                       2i                     
+                   (k)                   (k+2) (k+2)       (k+1)
+                  ri ≤ fx(k) fx(k+1) r4i−3 , r4i−2 , r2i
+                           i
+                               2i−1                                         
+                   (k)                    (k+2) (k+2)               (k+2) (k+2)
+                  ri ≤ fx(k) fx(k+1) r4i−3 , r4i−2 , fx(k+1) r4i−1 , r4i           .
+                           i      2i−1                              2i
+
+
+                                                                                       (k)
+                                           may
+  By repeating this substitution process, we      obtain an upper bound on ri               in terms
+                                             (k)
+  of the noise-quantization rates in rA,Ac xi . We implicitly define
+
+                                                   c
+                                                                 
+                                                               (k)
+                                         f A,A
+                                            (k)         rA,Ac xi                                 (28)
+                                          xi
+
+
+  to be this upper bound. (By convention, if
+                                                            (k)   (k)
+                                         rA,Ac (xi ) = {ri },
+                                                            (k)
+  then we define this upper bound to be ri itself.) We then let
+                                                
+                                              (k)
+                                   fxA(k) rA xi
+                                               i
+
+
+
+
+                                                           11
+                                     
+                                  (k)
+     denote the function of rA xi       obtained by evaluating the function in (28) with all
+     of the noise quantization rates in
+                                                           
+                                              (k)         (k)
+                                      rA,Ac xi      \ rA xi
+
+     set equal to zero. The significance of this function will be apparent in the proof of the
+     outer bound.
+
+   • For any set                              
+                                           A ⊆ 1, 2, . . . , 2L−1 ,                      (29)
+     we define the ancestors set at level k to be
+                                        n              o
+                                    def         (k)
+                              A(k) = i : O(xi ) ∩ A =
+                                                    6 Φ ,                                (30)
+
+     where Φ denotes the empty set.
+
+   Consider the following region, RD out , defined as
+            n                               n o
+                                              (k)
+ RD out =       (R1 , · · · , R2L−1 , d) : ∃ ri   ∈ Fr (d) ∋
+                                            X      L X 
+                                                   X                         o
+                                       L−1              (k)  Ac         (k)
+                      ∀A ⊆ 1, . . . , 2       Ri ≥      ri − fx(k) rAc (xi )     . (31)
+                                                                      i
+                                              i∈A        k=1 i∈A(k)
+
+
+   This constitutes an outer bound to the rate-distortion region of the binary tree structure
+problem:
+
+Lemma 3 For the binary tree structure problem in which all of the noise variances are
+positive,
+                                  RD ∗ ⊂ RD out .                                (32)
+
+Proof: See Appendix A.
+   We next show that the outer bound just derived matches the inner bound derived from
+the analog-digital separation architecture (c.f. Lemma 1). Recall that we use co(·) to denote
+the closure of the convex hull of a given set.
+
+Lemma 4 For the binary tree structure problem in which all of the noise variances are
+positive,
+                               RD out = co (RD in ) .                            (33)
+
+Proof: See Appendix B.
+
+
+
+
+                                                    12
+2.5    Main Result
+Using a continuity argument, one can relax the assumption that all of the noise variables
+have positive variance. This allows us to conclude our first main result of this paper: the
+optimality of the analog-digital separation architecture in achieving the rate-distortion region
+of the binary tree structure problem.
+Theorem 1 For the binary tree structure problem, the optimal rate-distortion region is
+achieved by the analog-digital separation architecture,
+
+                                         RD ∗ = co (RD in ) .
+
+Proof See Appendix C.                                                                           ✷
+
+2.6    Worst-Case Property
+Up to this point we have assumed that the source variables are jointly Gaussian. In this
+section, we justify this assumption by showing that the rate-distortion region for other dis-
+         with
+tributions      the same covariance are only larger.
+           (k)
+    Let xi      be a Gaussian source satisfying the tree structure as before. Let
+                                                                     
+                                          (1)    (L)         (L)
+                                         x̃1 , x̃1 , . . . , x̃2L−1
+
+be an alternate source with the same covariance of
+                                                         
+                                    (1)  (L)          (L)
+                                   x1 , x1 , . . . , x2L−1 .
+
+Note that the alternate source need not be part of a Markov tree. Let RD            g ∗ denote the
+rate-distortion region of the alternate source.
+    The separation-based architecture yields an inner bound on the rate-distortion region
+of                                          let RD  g in denote the region obtained by replacing
+ the alternate source.     Specifically,
+                                                       
+   (1)  (L)         (L)         (1)   (L)           (L)
+ x1 , x1 , . . . , x2L−1 with x̃1 , x̃1 , . . . , x̃2L−1 in the discussion in Section 2.3. Then
+                                             
+                                                 g ∗.
+                                          g in ⊂ RD
+                                      co RD
+
+Theorem 2 A Gaussian source satifying the binary tree structure has the smallest rate-
+distortion region for its covariance:
+                                                             ∗
+                                                   g .
+                                            RD ∗ ⊂ RD
+
+In fact, the separation-based architecture has the most difficulty compressing a Gaussian
+source in the sense that
+                                                      
+                                                   g in ⊂ RD
+                          RD ∗ = co (RD in ) ⊂ co RD        g ∗.                     (34)
+
+Proof See Appendix D.                                                                           ✷
+
+                                                    13
+3     Tree Structure and the Many-Help-One Problem
+We now turn to the main problem of interest: the many-help-one distributed source coding
+problem. As in the tree structure problem, there is a natural analog-digital separation
+architecture that is a candidate solution. This is illustrated in Figure 5.
+
+                                             Binning
+                       x1      VQ − 1       Scheme − 1
+
+
+                       x2      VQ − 2        Binning
+                                            Scheme − 2
+                                                               Decoder       x̂1
+
+
+
+                       xN                     Binning
+                              VQ-N         Scheme - N
+
+
+
+                Figure 5: The natural analog-digital separation architecture.
+
+
+3.1    Main Result
+Our main result is a sufficient condition under which the analog-digital separation architec-
+ture is optimal. To state it, we first define a general Gauss-Markov tree: it is made up of
+jointly Gaussian random variables and respects the Markov conditions implied by the tree
+structure. The only extra feature compared to the binary Gauss-Markov tree (c.f. Figure 2)
+is that each node can have any number of descendants (not just two).
+
+Theorem 3 Consider the many-help-one distributed source coding problem illustrated in
+Figure 1. Suppose the observations x1 , . . . , xN can be embedded in a general Gauss-Markov
+tree of size M ≥ N. Then the natural analog-digital separation architecture (c.f. Figure 5)
+achieves the entire rate-distortion region.
+
+Proof: The proof is elementary and builds heavily on Theorem 1. We outline the steps
+below:
+    • A general Gauss-Markov tree can be recast as a (potentially larger) binary Gauss-
+      Markov tree with the root being identified with any specified node in the original tree.
+      To see this, we only need to observe that the Markov chain relations are the same no
+      matter which node is identified as the root.
+    • Next, by potentially increasing the height of the binary tree (to L̃ ≥ L) we can ensure
+      that the observations x1 , . . . , xN are a subset of the 2L̃−1 leaves of the binary Gauss-
+      Markov tree. If one observation of interest, say xi , is an intermediate node of the
+      binary Gauss-Markov tree we can effectively make it a leaf by adding descendants that
+      are identical (almost surely) to xi .
+
+                                               14
+This allows us to convert the many-help-one problem into a binary tree structure problem
+(with potentially more observations than we started out with). The analog-digital separation
+architecture is optimal for this problem (c.f. Theorem 1). By restricting the corresponding
+rate-distortion region to the instance when the rates of the encoders corresponding to the
+observations that were not part of the original N are zero, we still have the optimality of the
+analog-digital separation architecture. This latter rate-distortion region simply corresponds
+to the many-help-one problem studied in Figure 1. This completes the proof.                  ✷
+    We illustrate the two key steps outlined above with an example with N = 4. Suppose
+that x1 , . . . , x4 can be embedded in the tree depicted in Figure 6. This tree happens to be
+binary, but unfortunately the root is not the source of interest, x1 . Figure 7 shows how to
+construct a new Gauss-Markov tree that still preserves the Markov conditions but has x1 as
+its root. Finally, a binary Gauss-Markov tree of height 5 is constructed that has the original
+four observations as a subset of its 16 leaf nodes; this is done in Figure 8—here any node
+indicated by a dot is simply identically equal (almost surely) to its parent node. Finally we
+can set to zero the rates of all the encoders except those numbered 1, 9, 13 and 14. This
+allows us to capture the rate-distortion region of the original three-help-one problem.
+                                                           x1
+                                              y1
+
+                                                           x2
+                            y0
+                                                           x3
+
+                                              y2
+                                                           x4
+
+
+        Figure 6: Four observations are embedded in a (binary) Gauss-Markov tree.
+
+
+3.2    Worst-Case Property
+As with our earlier result for the binary tree structure problem, the Gaussian assumption in
+Theorem 3 can be justified on the grounds that it is the worst-case distribution. Specifically,
+as in Section 2.6, let x̃1 , . . . , x̃N denote an alternate source with the same covariances as
+                      g ∗ denote the rate-distortion region of the source, and let RD
+x1 , . . . , xN . Let RD                                                            g in denote
+the inner bound obtained by replacing the source variables in the discussion in Section 2.3
+with the alternate source x̃1 , . . . , x̃N .
+Theorem 4 A Gaussian source that can be embedded in a Gauss-Markov tree has the small-
+est rate-distortion region for its covariance:
+                                                g ∗.
+                                         RD ∗ ⊂ RD
+
+                                              15
+               x1                            x2
+
+
+                             y1
+
+
+                                        y0
+                                                        y2          x3
+
+
+                                                                    x4
+
+
+                     Figure 7: The tree rewritten with x1 as the root.
+                                                              x1
+                                                         x1
+                                                   x1
+
+                                   x1
+
+
+
+                        x1
+                                                              x2
+                                                         x2
+                                                   x2
+
+                                   y1                         x3
+                                                         y2
+                                                              x4
+                                                   y0
+
+
+
+
+   Figure 8: The many-help-one problem rewritten as a binary tree structure problem.
+
+In fact, the separation-based architecture has the most difficulty compressing a Gaussian
+source in the sense that
+                                                      
+                                                   g in ⊂ RD
+                          RD ∗ = co (RD in ) ⊂ co RD        g ∗.
+
+   The proof of Theorem 2 applies verbatim here.
+
+3.3    Tree Structure Condition and Computational Verification
+If N = 2, then x1 and x2 can always be placed in the trivial Gauss-Markov tree consisting
+of these two variables; no embedding is needed in this case. We note that N = 2 corre-
+sponds to the “one-help-one” problem, whose rate-distortion region has been determined by
+Oohama [6]. With N ≥ 3, embedding is not always possible. We see an example of this next,
+where we also see a simple test for when N linearly independent variables can themselves be
+
+                                                  16
+arranged in a tree, without adding additional variables. We then derive a condition on the
+covariance matrix of x1 , . . . , xN that is necessary for these variables to be embedded as the
+nodes of a general Gauss-Markov tree. Finally, we show that this condition is also sufficient
+when N = 3.
+
+3.3.1     Trees Without Embedding
+We next demonstrate a simple test for when N linearly independent, jointly Gaussian random
+variables can themselves be arranged in a tree, without adding additional variables. Without
+loss of generality, we may assume that x1 , . . . , xN each has unit variance (this can be ensured
+by normalizing each observation). We shall write
+                                            ρij = E[xi xj ].
+Suppose that x1 , . . . , xN are linearly independent, and let Kx denote their (invertible) co-
+variance matrix. We will use the following fact from the literature (Speed and Kiiveri [10]):
+        x1 , . . . , xN are Markov with respect to a simple, undirected graph G if and only
+        if for all i 6= j such that (i, j) is not an edge in G, the (i, j) entry of K−1
+                                                                                     x is zero.
+
+Now let G denote the simple, undirected graph with x1 , . . . , xN as the nodes obtained by
+interpreting K−1 x − I as the adjacency matrix: there is an edge between xi and xj if and only
+if the (i, j) element of K−1
+                           x − I is nonzero. It follows that x1 , . . . , xN can be arranged in a
+Gauss-Markov tree if and only if G is a tree, or more generally, a forest (i.e, a collection of
+unconnected trees).
+    This fact can be illustrated with the following example. Suppose that N = 3 and
+                                                          
+                                            1 1/4 1/4
+                                   Kx =  1/4 1 1/4  .                                      (35)
+                                           1/4 1/4 1
+Then                                                 
+                                             10 −2 −2
+                                         1  −2 10 −2  ,
+                                    K−1
+                                     x =
+                                         9
+                                             −2 −2 10
+which yields a fully-connected graph. Hence x1 , x2 , and x3 cannot be arranged in a Gauss-
+Markov tree.
+   Nevertheless, it is possible that x1 , x2 , x3 can be embedded in a larger Gauss-Markov tree.
+Indeed, in this case it turns out that it is possible to embed the variables in a tree of size 4.
+We offer the following specific construction to demonstrate this fact. Let x0 be a standard
+Normal random variable and let
+                                                 1
+                                          x1 = · x0 + z1
+                                                 2
+                                                 1
+                                          x2 = · x0 + z2
+                                                 2
+                                                 1
+                                          x3 = · x0 + z3
+                                                 2
+
+                                                  17
+where z1 , z2 , and z3 are i.i.d. Gaussian with variance 3/4, and are independent of x0 . The
+covariance matrix for this quadruple of variables is
+                                                             
+                                           1 1/2 1/2 1/2
+                                        1/2 1 1/4 1/4 
+                                  Kx = 
+                                        1/2 1/4 1 1/4  .
+                                                              
+
+                                         1/2 1/4 1/4 1
+
+The inverse of this matrix is
+                                                     
+                                           3 −1 −1 −1
+                                      2 −1 2   0  0 
+                                                      .
+                                K−1 =
+                                 x
+                                      3  −1 0   2  0 
+                                          −1 0   0  2
+
+with the resulting G being the tree depicted in Fig. 9.
+
+                                                 x1
+
+
+                                                 x0
+
+                                    x2                        x3
+
+
+                       Figure 9: Tree embedding for x1 , x2 , and x3 .
+
+
+3.3.2   Necessary Condition for Tree Embedding
+Even allowing additional variables in the Gauss-Markov tree, it can turn out that embedding
+is impossible. Towards understanding the situation better, we derive a necessary condition
+for x1 , . . . , xN to be embeddable. It turns out that this condition is also sufficient when
+N = 3.
+
+Proposition 1 Let N ≥ 3. If x1 , . . . , xN can be embedded in a Gauss-Markov tree, then
+
+                                             |ρik | ≥ |ρij ρjk |                         (36)
+
+and
+
+                                     ρik ρij ρjk ≥ 0                                     (37)
+
+for all distinct i, j, and k. Conversely, if N = 3 and conditions (36) and (37) hold for all
+distinct i j, and k, then x1 , . . . , xN can be embedded in a Gauss-Markov tree.
+
+Proof See Appendix E.                                                                       ✷
+
+                                                  18
+4     A Partial Converse
+We have shown that if the source can be embedded in a Gauss-Markov tree, then the
+separation-based scheme achieves the entire rate-distortion region for the many-help-one
+problem. This raises the question of whether the tree-embeddability condition can be re-
+laxed, or whether it is necessary in order for the separation-based scheme to achieve the
+entire rate-distortion region. We next show that it is reasonable to conjecture that tree-
+embeddability, or a similar condition, is a necessary and sufficient condition for separation
+to achieve the entire rate-distortion region. Our argument consists of two parts.
+    • First, we provide an example that shows that separation does not always achieve the
+      entire rate-distortion region for the many-help-one problem, which establishes that
+      some added condition is required.
+    • We then establish a connection between this counterexample and the tree embeddabil-
+      ity condition.
+
+4.1    Suboptimality of Separation
+We begin by showing that the separation-based scheme does not always achieve the entire
+rate-distortion region for the many-help-one problem. Consider the special case of three
+sources (N = 3), where x1 and x2 have covariance matrix
+                                 2          
+                                   σ    ρσ 2
+                                               0 < ρ < 1.
+                                  ρσ 2 σ 2
+and where x3 = x1 − x2 . We shall assume that the goal is to reproduce x3 at the decoder
+and that R3 = 0, i.e., the helpers completely shoulder the communication burden.
+   We shall focus in particular on the asymptotic regime in which σ 2 is large and ρ is near
+one. Specifically, let
+                                                   1
+                                         ρ=1− 2
+                                                  2σ
+and consider the behavior of the rate-distortion region as σ 2 tends to infinity. Note that the
+variance of x3 does not tend to infinity, and in fact equals one for any positive value of σ 2 ,
+due to our choice of ρ. In this regime, the separation-based scheme performs quite poorly.
+Proposition 2 Let 0 < d < 1 and let R(σ 2 , d) denote the minimum value of R1 + R2 such
+that (R1 , R2 , 0, d) is in the rate-distortion region for the separation-based scheme. Then
+                                      lim R(σ 2 , d) = ∞.
+                                     σ2 →∞
+
+Proof Please see Appendix F.                                                               ✷
+    We now exhibit a scheme whose sum rate is bounded as σ 2 tends to infinity. This scheme
+is simple in the sense that it operates on individual samples, not long blocks. Consider two
+lattices in R,
+                                    Λi = {k · 2−n : k ∈ Z}
+                                    Λo = {k · 2m : k ∈ Z}.
+
+                                              19
+Let Qi (x) denote the lattice point in Λi that is closest to x; ties are broken arbitrarily. Let
+
+                                    x mod Λi = x − Qi (x).
+
+Analogous definitions for Λo are also in effect.
+  Let
+                                     x̃1 (ℓ) = Qi (x1 (ℓ)).
+For each time ℓ, the first encoder communicates
+
+                                    u1 (ℓ) = x̃1 (ℓ) mod Λo
+
+to the decoder. This requires sending n + m bits per sample. The second decoder operates
+analogously, yielding a sum rate of 2(n + m) bits per sample.
+    The decoder uses
+                             x̂3 (ℓ) = [u1 (ℓ) − u2 (ℓ)] mod Λo
+as its estimate for x3 (ℓ).
+
+Proposition 3 For any d > 0, if m and n are sufficiently large, then
+
+                                     E[(x3 (ℓ) − x̂3 (ℓ))2 ] ≤ d
+
+   all ℓ and all σ 2 .
+
+Proof Please see Appendix G.                                                                ✷
+   Since n and m need not tend to infinity as σ 2 grows, this simple scheme beats the
+separation-based approach by an arbitrarily large amount as σ 2 tends to infinity. The scheme
+can be improved by using higher-dimensional lattices for Λi and Λo . This has been explored
+by Krithivasan and Pradhan [5].
+   Conceptually, the difference between the two schemes can be understood as follows.
+Consider the binary expansion of x1 . The quantity
+
+                                        Qi (x1 )    mod Λo
+
+can be computed from the sign of x1 and the m bits to the left of the binary point and the
+n+1 bits to the right of the binary point. Thus, Proposition 3 shows that only these n+m+2
+bits are necessary for the purpose of reproducing the difference x1 − x2 . In particular, it is
+not necesssary to send the bits that are more significant than the block of m to the left of the
+binary point. As a result of using a standard vector quantizer, however, the separation-based
+scheme effectively sends these most significant bits. If the variances of x1 and x2 are large,
+this is inefficient.
+
+
+
+
+                                                   20
+4.2    On the Necessity of the Tree Condition
+The previous section shows that the separation-based architecture does not achieve the
+complete rate-distortion region when x1 and x2 are positively correlated and x3 = x1 − x2 , at
+least when the variances of x1 and x2 are large and their correlation coefficient is near one.
+This is also true of the problem in which x1 and x2 are negatively correlated and x3 = x1 +x2 .
+The defining feature of these two examples is that if E[x3 |x1 , x2 ] = a1 x1 + a2 x2 , then
+
+                                      a1 · a2 · E[x1 x2 ] < 0.                            (38)
+
+We next show that for N = 3, if the sources cannot be embedded in a Gauss-Markov tree,
+then this condition holds, except for a possible relabeling.
+
+Proposition 4 For N = 3, if x1 , x2 , and x3 cannot be embedded in a Gauss-Markov tree,
+then (38) holds for some relabeling of x1 , x2 , and x3 .
+
+Proof Please see Appendix H.                                                                 ✷
+
+
+A     Proof of Lemma 3
+Consider any encoding-decoding procedure that achieves the rate-distortion tuple
+
+                                    (R1 , R2 , . . . , R2L−1 , d)
+
+for the binary tree structure problem over a block of time of length n. Let the discrete set
+Ci denote the output of encoder i (for i = 1, . . . , 2L−1 ). We have that
+                                  1
+                             Ri ≥   log |Ci |, i = 1, . . . , 2L−1                        (39)
+                                  n
+                                  1X
+                                      n                   
+                                                (1)
+                              d ≥        Var x1 (m)|C .                                   (40)
+                                  n m=1
+
+Here we have denoted
+                                       def
+                                    C = {C1 , . . . , C2L−1 } ,                           (41)
+the set of all the encoder outputs. Further, the distributed nature of encoding imposes
+natural Markov chain conditions on the encoder outputs with respect to the observations.
+These Markov chain conditions are described in Figure 10.
+   Recall our earlier definition of the ancestors set A(k) (c.f. Equation (30))
+                                         n                   o
+                                     def        (k)
+                                A(k) = i : O(xi ) ∩ A = 6 Φ ,                       (42)
+
+where Φ is the null set. Now define
+                                              n                  o
+                                    (k) def        (k)
+                                  xA,n =          xi,n : i ∈ A(k) .                       (43)
+
+
+                                                    21
+                                                            (L)
+                                                           x1,n           C1
+
+                                                (L−1)
+                                               x1,n
+                                                             (L)
+                          x1,n
+                              (3)                          x2,n            C2
+               (2)
+             x1,n
+                              (3)
+                          x2,n
+       (1)
+     x1,n                 x3,n
+                              (3)
+
+
+                (2)
+              x2,n
+                              (3)                             (L)
+                          x4,n                              x2L−1 −1,n    C2L−1 −1
+                                                (L−1)
+                                               x2L−2 ,n
+                                                              (L)
+                                                            x2L−1 ,n      C2L−1
+
+
+     Figure 10: The tree structure with the encoder outputs over a block of length n.
+                                                    
+Our outer bound will consider arbitrary subsets A of 1, . . . , 2L−1 . Denote the set
+                                               def
+                                         CA = {Ci : i ∈ A} .                            (44)
+The sum of any subset A of the encoder rates satisfies
+               X           X
+             n    Ri =        log |Ci |
+                 i∈A            i∈A
+                               X
+                        ≥             H(Ci )
+                                i∈A
+                        ≥ H (CA )
+                        ≥ H (CA |CAc )
+                                             
+                              (L)
+                        = I xA,n ; CA |CAc
+                        (a)
+                                                              
+                              (1)         (L−1)  (L)
+                        = I xA,n , · · · xA,n , xA,n ; CA |CAc                          (45)
+                          L
+                          X
+                        (b)
+                                                   
+                               (k)        (k−1)
+                        =   I xA,n ; CA |xA,n , CAc                                     (46)
+                               k=1
+                               XL                                         
+                        (c)               (k)      (k−1)     (k)        (k−1)
+                        =              I xA,n ; C|xA,n − I xA,n ; CAc |xA,n      .      (47)
+                                k=1
+
+Here each of the steps (a), (b), and (c) follow from the Markov chain conditions described
+in Figure 10. We use the chain rule to expand each of the mutual information terms in the
+
+                                                      22
+lower bound of Equation (47):
+                                    X                                               
+                (k)    (k−1)                     (k)      (k−1)  (k)
+           I xA,n ; C|xA,n     =              I xi,n ; C|xA,n , xj,n , j < i, j ∈ A(k)        (48)
+                                     i∈A(k)
+                                      X                           
+                                                 (k)      (k−1)
+                                 =            I xi,n ; C|x⌊ i+1 ⌋,n ,                         (49)
+                                                                    2
+                                     i∈A(k)
+
+and
+                                    X                                                  
+             (k)         (k−1)                   (k)         (k−1)  (k)
+          I xA,n ; CAc |xA,n     =            I xi,n ; CAc |xA,n , xj,n , j < i, j ∈ A(k)     (50)
+                                     i∈A(k)
+                                      X                                       
+                                                       (k)         (k−1)
+                                 =            I       xi,n ; CAc |x⌊ i+1 ⌋,n                  (51)
+                                                                        2
+                                     i∈A(k)
+
+Here both Equations (49) and (51) follow from the Markov chain conditions described in
+Figure 10. Denote by                                  
+                              (k) def 1   (k)   (k−1)
+                             ri = I xi,n ; C|x⌊ i+1 ⌋,n ,                         (52)
+                                      n           2
+
+                                                                        (1)
+the term inside the summation in Equation (49). Then r1 is the number of bits per sample
+                                                          (k)
+that the encoders send about the root of the tree and ri for k > 1 can be interpreted as
+the number of bits per sample that the encoders use to represent the noise introduced at
+       (k)
+node xi . We will upper bound the terms inside the summation in Equation (51) in terms
+of these quantities. To do this, we start with a central preliminary lemma.
+
+A.1     A Preliminary Lemma
+Consider four memoryless jointly Gaussian random processes w(m), x(m), y(m), z(m), m =
+1, . . . , n. They are identically jointly distributed in the (time) index m. At any given time
+index m, their joint distribution satisfies the Markov chain conditions implied in Figure 11.
+Then we can write, for all m = 1, . . . , n,
+
+                                                                y
+
+                                      w                x
+
+                                                                z
+
+
+
+                          Figure 11: The Markov chain conditions.
+
+
+                               x(m) = αxw w(m) + n0 (m),
+                               y(m) = αyx x(m) + n1 (m),
+                               z(m) = αzx x(m) + n2 (m),
+
+                                                      23
+for some real αxw , αyx , αzx . Here n0 (m), n1 (m), n2 (m), m = 1 . . . , n, are i.i.d. in time and
+independent of each other and independent of the process w(m), m = 1, . . . , n. Further, the
+random variables n0 (m), n1 (m), n2 (m), w(m) at any time index n are N (0, σn2 0 ), N (0, σn2 1 ), N (0, σn2 2 ),
+and N (0, σw2 ) respectively.
+    Write the vectors
+                                       wn     =    [w(1), . . . , w(n)]                              (53)
+                                       xn     =    [x(1), . . . , x(n)]                              (54)
+                                       yn     =    [y(1), . . . , y(n)]                              (55)
+                                       zn     =    [z(1), . . . , z(n)] .                            (56)
+Consider two random variables C1 , C2 that satisfy the following two Markov chain conditions:
+                                 (wn , xn , zn , C2 )    ↔ yn ↔             C1 ,                     (57)
+                                 (wn , xn , yn , C1 )    ↔ zn ↔             C2 ,                     (58)
+Our first inequality concerns this Markov chain condition. We intentionally use notation
+similar to that introduced in Section 2.4.
+Lemma 5 Define
+                          def   1
+                     r1 =         I(yn ; C1 |xn ),
+                                n
+                          def   1
+                     r2 =         I(zn ; C2 |xn ),
+                                n                                                     
+                                                2
+                          def   1             αyx  σn2 0    −2r1
+                                                                    2
+                                                                  αzx σn2 0    −2r2
+                                                                                     
+             fx (r1 , r2 ) =      log 1 +                1−e      +          1−e         .
+                                2               σn2 1               σn2 2
+Then
+                                  1
+                                    I(xn ; C1 , C2 |wn ) ≤ fx (r1 , r2 ),                            (59)
+                                  n
+                                      1
+                                        I(xn ; C1 |wn ) ≤ fx (r1 , 0),                               (60)
+                                      n
+                                      1
+                                        I(xn ; C2 |wn ) ≤ fx (0, r2 ).                               (61)
+                                      n
+Proof: This lemma is a conditional version (conditioned on wn ) of Lemma 3 in [7]. The
+proof follows “mutatis mutandis” that of Lemma 3 in [7]; the only extra fact needed is that
+conditioned on any realization of wn , (xn , yn , zn ) are jointly Gaussian with their original
+variances and (xn , yn , zn , C1 , C2 ) satisfies the Markov condition
+                                      C1 ↔ yn ↔ xn ↔ zn ↔ C2 .
+Specifically, suppose first that αyx and αzx are nonzero. For any realization of wn , say w̃n ,
+Oohama [7, Lemma 3] has shown that
+                                1
+                                  I(xn ; C1, C2 |wn = w̃n ) ≤ fx (r1 , r2 ).
+                                n
+                                                        24
+By averaging the left-hand side over w̃n , we obtain (59). The proofs of (60) and (61) are
+similar. If both αyx and αzx are zero, then the result is trivial. If, say, only αyx is zero, then
+I(xn ; C1 , C2 |wn ) = I(xn ; C2 |wn ) and (59) follows from (61).                               ✷
+
+A.1.1    Sufficient Conditions for Equality
+It is useful to observe the conditions for equality in (59), (60) and (61): suppose
+
+                              Ck = [uk (1), . . . , uk (n)] ,     k = 1, 2.                      (62)
+
+Here
+
+                        u1 (m) = α1 y(m) + v1 (m), m = 1, · · · , n,
+                        u2 (m) = α2 z(m) + v2 (m), m = 1, · · · , n,
+
+where v1 (m) and v2 (m) are Gaussian and independent of each other and of wn , xn , yn , zn and
+are i.i.d. in the time index m. Then it is verified directly that with this choice of C1 , C2 (c.f.
+Equation (62)) the inequalities in Equations (59), (60) and (61) are all simultaneously met
+with equality (this verification is also done in [7, 9]). This fact will be used later to show that
+the achievable region of the separation-based inner bound coincides with the outer bound.
+
+A.1.2    An Important Instance
+Of specific interest to us will be the following association of the random variables in Figure 11
+to the binary tree structure in Figure 2: fix 1 ≤ k ≤ L − 1 and 1 ≤ i ≤ 2k−1 . Then let
+                                                        (k)
+                                            x = xi                                               (63)
+                                                      (k+1)
+                                            y =      x2i−1                                       (64)
+                                                      (k+1)
+                                            z =      x2i                                         (65)
+                                                      (k−1)
+                                           w =       x⌊ i+1 ⌋ .                                  (66)
+                                                         2
+
+
+With this association, denote the function corresponding to fx in Equation (59) by fx(k) :
+                                                                                             i
+
+                              (k+1)                              (k+1)
+                                                                                
+                             α2i−1 σ 2 (k)                    2
+                                                     α2i σn(k)            
+                  def 1              ni
+ fx(k) (r1 , r2 ) = log 1 +    2
+                                           1−e−2r 1
+                                                     +   2
+                                                                i
+                                                                  1 − e−2r2  ,       r1 , r2 ≥ 0.
+   i                  2        σ (k+1)                  σ (k+1)
+                                 n2i−1                              n2i
+                                                                                                 (67)
+Indeed, this is the same notation as that introduced in Section 2.4 (c.f. Equation (24)).
+
+A.2     An Iteration Lemma
+As an immediate application
+                               of the preliminary lemma derived in the previous section,
+consider any subset A ⊆ 1, . . . , 2L−1 . Fix 1 ≤ k ≤ L − 1 and 1 ≤ i ≤ 2k−1 . For simplicity
+                                    (0)
+of notation, let us suppose that x1 is a zero random variable.
+
+                                                   25
+Lemma 6
+                                                                                
+   1  (k)         (k−1)
+                                     1    (k+1)         (k)
+                                                              1 
+                                                                   (k+1)      (k)
+     I xi,n ; CA |x⌊ i+1 ⌋,n ≤ fx(k)    I x2i−1,n ; CA |xi,n , I x2i,n ; CA |xi,n    .              (68)
+   n                  2          i    n                        n
+                            (k)
+Proof: For any node xi , recall the set of associated observations defined as (c.f. Equa-
+tion (25))
+                                                            
+                           (k)            2L (i − 1)      2L i
+                      O xi       =    j:             <j≤ k .
+                                              2k           2
+With this definition, we observe that
+                                                                 
+                                       (k)         (k+1)        (k+1)
+                                O xi         = O x2i−1 ∪ O x2i           ,
+                                                                        
+                       (k)       (k−1)            (k)             (k−1)
+                   I xi,n ; CA |x⌊ i+1 ⌋,n = I xi,n ; CA∩O x(k) |x⌊ i+1 ⌋,n .
+                                                           “   ”
+                                     2                              i       2
+
+
+Then we only need to invoke Lemma 5 with the following random variables:
+                                                   (k−1)
+                                         wn = x⌊ i+1 ⌋,n ,
+                                                     2
+                                                  (k)
+                                         xn =    xi,n ,
+                                                  (k+1)
+                                         yn =    x2i−1,n ,
+                                                  (k+1)
+                                         zn =    x2i,n ,
+                                         C1 =    CA∩O“x(k+1) ” ,
+                                                           2i−1
+
+                                         C2 = CA∩O“x(k+1) ” .
+                                                           2i
+
+
+This completes the proof.                                                                      ✷
+   Observe that the parameters inside the function fx(k) (·, ·) are themselves of the type of
+                                                         i
+the term in the left hand side of Equation (68). Then, we can repeatedly apply Lemma 6.
+As an example, we have for k ≤ L − 2 and 1 ≤ i ≤ 2k−1 , the two parameters of fx(k) in
+                                                                                           i
+Equation (68) are upper bounded by
+                                                                                        
+  1  (k+1)          (k)
+                                     1    (k+2)         (k+1)
+                                                                1 
+                                                                       (k+2)        (k+1)
+    I x2i−1,n ; CA |xi,n   ≤ fx(k+1)    I x4i−3,n ; CA |x2i−1,n , I x4i−2,n ; CA |x2i−1,n (69)
+                                                                                             .
+  n                            2i−1   n                          n
+                                                                                      
+   1  (k+1)         (k)
+                                     1    (k+2)         (k+1)
+                                                                1 
+                                                                      (k+2)       (k+1)
+     I x2i,n ; CA |xi,n    ≤ fx(k+1)    I x4i−1,n ; CA |x2i,n , I x4i,n ; CA |x2i,n        .(70)
+   n                           2i     n                          n
+Now the function fx(k) (·, ·) is monotonically increasing in both of its parameters (this is true
+                      i
+for each 1 ≤ k ≤ L − 1 and 1 ≤ i ≤ 2k−1 ). So, we can combine Equations (68), (70) and (69)
+to get
+                                                                       1                          
+1     (k)       (k−1)                           1      (k+2)       (k+1)           (k+2)        (k+1)
+  I(xi,n ; CA |x⌊ i+1 ⌋,n ) ≤ fx(k) fx(k+1)       I x4i−3,n ; CA |x2i−1,n , I x4i−2,n ; CA |x2i−1,n       ,
+n                  2            i        2i−1   n                          n
+                                                                    1                      
+                                            1      (k+2)       (k+1)         (k+2)       (k+1)
+                                 fx(k+1)      I x4i−1,n ; CA |x2i,n , I x4i,n ; CA |x2i,n             . (71)
+                                   2i       n                          n
+
+                                                   26
+The stage is now set to recursively apply Lemma 6. Continuing this process until the
+boundary conditions are met, we arrive at
+                         1  (k)         (k−1)
+                                                           
+                                                                (k)
+                                                                    
+                           I xi,n ; CA |x⌊ i+1 ⌋,n ≤ fxA(k) rA xi      .        (72)
+                         n                  2           i
+
+                    
+                 (k)
+Here the set rA xi     is defined as in Equation (26):
+                                     n                          
+                              (k)         (l)      (l)         (k)         (l)
+                          rA xi     = rj : xj ∈ T xi                 , O(xj ) ⊂ A,
+                                                                             
+                                                         (k)
+                                      6 ∃ xa(b) ∈ T xi           with O x(b) a   ⊂ A,
+                                                                            o
+                                               (l)
+                                       and xj ∈ R x(b)       a     ∪ L(x(b)
+                                                                         a ) .          (73)
+
+The function f A(k) (·) was also defined in Section 2.4.
+               xi
+
+
+A.3     Putting Them Together
+We are now ready to complete the proof of Lemma 3. First, we substitute Equation (72) in
+Equation (51) to get
+                                           X                
+                        (k)        (k−1)        Ac          (k)
+                     I xA,n ; CA |xA,n
+                                c          ≤   fx(k) rA xi
+                                                        c          .                (74)
+                                                                    i
+                                                       i∈A(k)
+
+Combining Equation (74) with Equations (49) and (52), we can rewrite the inequality in
+Equation (47) as
+                     X       XL X                          
+                                        (k)     c        (k)
+                        Ri ≥           ri − fxA(k) rAc (xi ) .                    (75)
+                                                                i
+                               i∈A       k=1 i∈A(k)
+
+                    (k)
+The quantities risatisfy other natural inequalities as well:
+                                            
+   • Supposing that A equals the entire set 1, 2, . . . , 2L−1 and substituting in Lemma 6
+     we have                                                 
+                                  (k)             (k+1) (k+1)
+                                ri ≤ fx(k+1)
+                                         i
+                                                r 2i−1 , r 2i   .                      (76)
+
+
+
+
+                                                      27
+    • By direct calculation we also have
+
+               (1)     1  (1) 
+              r1 =       I x1,n ; C                                                             (77)
+                       n
+                       1  (1)  1  (1) 
+                   =     h x1,n − h x1,n |C                                                     (78)
+                       n               n
+                       1                 1               h         i
+                                    2                (1)       (1)
+                   ≥     log 2πeσx(1) − h x1,n − E x1,n |C                                      (79)
+                       2              1       n
+                       1                 1                             h         i
+                               2                                 (1)          (1)
+                   ≥     log σx(1) −         log det Covar x1,n − E x1,n |C                     (80)
+                       2                  2n 
+                                                                                         i
+                                 1
+
+                       1           1            1                             h
+                               2                                       (1)          (1)
+                   ≥     log σx(1) − log            Trace Covar x1,n − E x1,n |C                (81)
+                       2         1        2      n
+                                                                             !
+                       1           1            1 X n                    
+                                                                (1)
+                   =     log σx2(1) − log                Var x1 (m)|C                           (82)
+                       2         1        2       n m=1
+                                   2
+                       1    σ (1)
+                             x
+                     ≥   log 1 .                                                                (83)
+                       2     d
+      where:
+
+         – Equation (79) follows from the fact that conditioning only reduces the differential
+           entropy;
+         – Equation (80) is the usual bound on the differential entropy of a vector by the
+           determinant of its covariance matrix;
+         – Equation (81) follows from the Hadamard inequality on the determinant of a
+           positive definite matrix in terms of its trace;
+         – Equation (83) follows from the fact that the encoder outputs describe the original
+           root node of the tree with sufficiently small quadratic fidelity (c.f. Equation (40)).
+                                                                    (k)
+Based on Equations (76) and (83) we see that the set of ri indeed belong to the set Fr (d)
+defined in Equation (27). Combining this fact with the key inequality in Equation (75), we
+have completed the proof of the outer bound in Lemma 3.                                  ✷
+
+
+B      Proof of Lemma 4
+Since we know that
+                                          co(RD in ) ⊂ RD out ,                                 (84)
+it suffices to prove that for any d and any componentwise nonnegative vector (α1 , . . . , α2L−1 ),
+                                          L−1
+                                         2X                               L−1
+                                                                         2X
+                             inf                αi Ri ≥       inf               αi Ri .
+                        R:(R,d)∈RD out                    R:(R,d)∈RDin
+                                         i=1                              i=1
+
+
+
+
+                                                     28
+We will assume that α1 ≤ α2 ≤ · · · ≤ α2L−1 . The proof for the other orderings is similar.
+We will also use the convention α0 = 0. Now for any R1 , . . . , R2L−1 ,
+                               L−1
+                              2X                             L−1
+                                                            2X                                   L−1
+                                                                                                2X
+                                       αi Ri = α1                  Ri + (α2 − α1 )                     Ri +
+                                 i=1                        i=1                                 i=2
+                                                       · · · + (α2L−1 − α2L−1 −1 )R2L−1 ,
+                                                        L−1
+                                                       2X                        L−1
+                                                                                2X
+                                                =             (αj − αj−1 )                Ri
+                                                       j=1                      i=j
+
+
+Thus
+                                         L−1
+                                        2X                                       L−1
+                                                                                2X                                L−1
+                                                                                                                 2X
+                           inf                 αi Ri =             inf                    (αj − αj−1 )                  Ri .
+                    R:(R,d)∈RD out                          R:(R,d)∈RD out
+                                        i=1                                     j=1                               i=1
+
+Let ǫ > 0. Then there exists s ∈ Fr (d) and R∗ such that
+                  L−1
+                 2X                       L−1
+                                         2X                                  L−1
+                                                                            2X                                    L−1
+                                                                                                                 2X
+                        (αj − αj−1 )            Ri∗ ≤              inf                (αj − αj−1 )                      Ri + ǫ
+                                                         R:(R,d)∈RD out
+                  j=1                     i=1                                j=1                                 i=1
+
+
+and
+                                  X              L X 
+                                                 X                             
+                                                        (k)     c         (k)
+                                        Ri∗ ≥          si − fxA(k) (sAc (xi ))
+                                                                                i
+                                  i∈A            k=1 i∈A(k)
+
+for all A. Let
+                                                                                    (L)
+                                        Aj = {j, . . . , 2L−1 } ∩ {i : si                  > 0}.
+Then
+         L−1
+        2X                     L−1
+                              2X                 L−1
+                                                2X                       X
+               (αj − αj−1 )            Ri∗ ≥           (αj − αj−1 )             Ri∗
+        j=1                      i=1            j=1                      i∈Aj
+                                                 L−1
+                                                2X                       L X
+                                                                         X                      (k)         Ac             (k)
+                                                                                                    j
+                                          ≥            (αj − αj−1 )                        (si − f (k) (sAc (xi )))
+                                                                                                            xi
+                                                j=1                      k=1 i∈A(k)
+                                                                                      j
+
+                                                    2L−1
+                                                      X                     L X
+                                                                            X                         (k) j        Ac            (k)
+                                          ≥ inf             (αj − αj−1 )                         (ri − f (k) (rAc (xi ))),
+                                                                                                                  xi
+                                                      j=1                   k=1 i∈A(k)
+                                                                                            j
+
+
+
+
+                                                                   29
+                                                                              (L)                         (L)
+where the infimum is over all r in Fr (d) such that ri = 0 if and only if si                                     = 0. Then
+                                     (L)                   (L)
+there exists s̃ ∈ Fr (d) such that s̃i = 0 if and only if si = 0 and
+
+   L−1
+  2X                    L
+                        X X             (k)     Ac              (k)
+                                                j
+         (αj − αj−1 )                 (s̃i − f (k) (s̃Ac (xi )))
+                                                xi
+  j=1                    k=1 i∈A(k)
+                                j
+                                                 L−1
+                                                2X                         L
+                                                                           X X            (k)   Ac        (k)
+                                                                                                 j
+                                        ≤ inf          (αj − αj−1 )                     (ri − f (k) (rAcj (xi ))) + ǫ (85)
+                                                                                                xi
+                                                j=1                        k=1 i∈A(k)
+                                                                                    j
+
+
+and the s̃ minimize
+                                                        L 2X    k−1
+                                                        X      (k)
+                                                             s̃i .                                                    (86)
+                                                        k=1 i=1
+                   (k)
+Now since the s̃i        are in Fr (d), we have
+
+                                                    1            σ 2(1)
+                                                (1)                   x1
+                                              s̃1 ≥ log                                                               (87)
+                                                    2        d
+                                                (k)         (k+1) (k+1)
+                                              s̃i ≤ fx(k) (s2i−1 , s2i ).                                             (88)
+                                                          i
+
+
+We will show that both of these inequalities must actually be equalities. Since the left-hand
+                                             (1)            (k)
+side of (85) is monotonically decreasing in s1 and the si minimize (86), it follows that the
+ (1)
+s1 inequality must be tight.
+     Next suppose that
+                                                 (n+1) (n+1)
+                                  s̃(n)
+                                    m < fx(n)
+                                           m
+                                              (s̃2m−1 , s̃2m )                            (89)
+                                (n)
+for some non-leaf node xm . We will show that this is incompatible with the assumption that
+      (k)
+the s̃i minimize (86). Without loss of generality, we may assume that none of the children
+     (n)                                                             (L)
+of xm have a strict inequality in (88). In order for (89) to hold, s̃j must be positive for
+                            (L)        (n)                            (L)       (n)
+at least one leaf variable xj under xm . Consider the leaf variable xm̂ under xm with the
+                             (L)
+largest index m̂ such that s̃m̂ is positive:
+                                     L                               
+                                     2 (m − 1)         2L m (L)
+                      m̂ = arg max             < j ≤ n : s̃j > 0 .
+                                           2n           2
+                                                (n)     (n+1)                                              (L)
+Then consider the descendant of xm , xm̃ , that leads to the leaf variable xm̂ . Note that
+                 (n+1)
+we must have s̃m̃      > 0.
+                                 (n+1)
+    Suppose that we decrease s̃m̃      by a slight amount such that (89) still holds. Fix a j in
+             L−1
+{1, . . . , 2 } and consider the sum
+                                       L
+                                       X X  (k)   Acj
+                                                       
+                                                                (k)
+                                                                    
+                                            s̃i − f (k) s̃Acj (xi ) ,                                                 (90)
+                                                                  xi
+                                       k=1 i∈A(k)
+                                              j
+
+
+
+                                                                30
+and recall that
+                                   Aj = {j, . . . , 2L−1 } ∩ {i : s̃Li > 0}.
+                                                                               (n)
+Now if j > m̂, then all of the observations under xm are in Acj , which implies that the
+                                     (n+1)
+sum in (90) does not depend on s̃m̃ . On the other hand, if j ≤ m̂, then not all of the
+                     (n+1)
+observations under s̃m̃    are in Acj , and so
+                                                            
+                                          (n+1)          (k)
+                                        s̃m̃    ∈
+                                                / s̃Acj xi
+
+        (k)
+for all xi . It follows that the objective in (85) is not increased while the sum in (86) is
+                        (n+1)
+reduced by decreasing s̃m̃ , which is a contradiction. Thus (89) cannot hold at any non-leaf
+nodes in the tree. We have thus shown that equality must hold in (87) and (88).
+    We are now in a position to show that
+          L−1
+         2X                    L X                                                                                   L−1
+                                                                                                                    2X
+                               X               (k)  Acj           (k)
+                (αj − αj−1 )                (s̃i − f (k) (s̃Acj (xi ))) ≥                             inf                   αi Ri .
+                                                    x       i                                 R:(R,d)∈RD in (d)
+          j=1                  k=1 i∈A(k)                                                                             i=1
+                                        j
+
+
+Specifically, choose the auxiliary random variables u in the Berger-Tung inner bound such
+that
+                                       (L)      (L−1)         (L)
+                                    I(xi ; ui |x⌊ i+1 ⌋ ) = s̃i
+                                                                   2
+
+for each observation i. We will first show by induction that
+                                               (k)              (k−1)                   (k)
+                                            I(xi ; u|x⌊(i+1)/2⌋ ) = s̃i                                                               (91)
+
+                     (k)                                                                                      (L)
+for all variables xi in the tree. This is true of the leaf variables xi , i = 1, . . . , 2L−1 by
+                                        (k)                                           (k+1)
+hypothesis. Next consider a variable xi and suppose the condition holds for x2i−1 and
+  (k+1)
+x2i . By the observation in Appendix A.1.1,
+                       (k)      (k−1)                             (k+1)             (k)             (k+1)       (k)
+                   I(xi ; u|x⌊(i+1)/2⌋ ) = fx(k) (I(x2i−1 ; u|xi ), I(x2i                                   ; u|xi ))
+                                                      i
+                                                                (k+1)       (k+1)
+                                             = fx(k) (s̃2i−1 , s̃2i                 )
+                                                      i
+                                                     (k)
+                                             = s̃i .
+
+This establishes (91). Then
+                                  (1)          (1)                                            (1)
+                             E[(x1 − E[x1 |u])2 ] = σx2(1) exp(−2s̃1 ) = d.
+                                                                        1
+
+
+Thus u is in U(d). If we let
+                                                          (L)
+                                        R̃i = I(xi ; ui |u1 , . . . , ui−1),
+
+
+
+                                                                 31
+then (R̃, d) is in RD in . Since ui is conditionally independent of u and all of the source
+                  (L)                  (L)
+variables given xi , it follows that s̃i = 0 if and only if ui is independent of all of the other
+variables. We will show that
+                             L−1
+                            2X
+                                                   (L)          (L)
+                                   R̃i = I(xj , . . . , x2L−1 ; uj , . . . , u2L−1 |u1 , . . . , uj−1)
+                             i=j
+
+
+by induction. For j = 2L−1 , this condition holds by the definition of R̃j . Next suppose that
+the condition holds for j. Then by the tree structure,
+ L−1
+2X
+                    (L)                                         (L)                  (L)
+        R̃i = I(xj−1 ; uj−1|u1, . . . , uj−2) + I(xj , . . . , x2L−1 ; uj , . . . , u2L−1 |u1 , . . . , uj−1)
+i=j−1
+                    (L)            (L)                                                (L)            (L)
+            = I(xj−1 , . . . , x2L−1 ; uj−1|u1, . . . , uj−2) + I(xj−1 , . . . , x2L−1 ; uj , . . . , u2L−1 |u1 , . . . , uj−1)
+                    (L)            (L)
+            = I(xj−1 , . . . , x2L−1 ; uj−1, . . . , u2L−1 |u1, . . . , uj−2).
+
+Thus
+                           L−1
+                          2X                  L−1
+                                             2X
+             inf                 αi Ri ≤            αi R̃i
+    R:(R,d)∈RD in (d)
+                          i=1                i=1
+                                              L−1
+                                             2X
+                                                                               (L)           (L)
+                                         ≤          (αj − αj−1 )I(xj , . . . , x2L−1 ; uj , . . . , u2L−1 |u1 , . . . , uj−1)
+                                             j=1
+                                              L−1
+                                             2X
+                                                                               (L)
+                                         =          (αj − αj−1 )I(xAj ; uAj |uAcj ).
+                                             j=1
+
+
+By mimicking (45) through (51), one can show that
+                                                          L X
+                                                          X
+                             (L)                                              (k)           (k)            (k−1)
+                          I(xAj ; uAj |uAcj ) =                           (s̃i − I(xi ; uAcj |x⌊(i+1)/2⌋ )).
+                                                          k=1 i∈A(k)
+                                                                     j
+
+
+But by Lemma 6 and the observation in Appendix A.1.1,
+                                             (k)             (k−1)      j            Ac             (k)
+                                         I(xi ; uAcj |x⌊(i+1)/2⌋ ) = f (k) (s̃Acj (xi )).
+                                                                                     xi
+
+
+It follows that
+                                                    L−1
+                                                   2X                                         L−1
+                                                                                             2X
+                                     inf                  αi Ri ≤               inf                 αi Ri + 2ǫ.
+                             R:(R,d)∈RD in                               R:(R,d)∈RD out
+                                                   i=1                                       i=1
+
+Since ǫ was arbitrary, the proof is complete.
+
+
+
+                                                                         32
+C     Proof of Theorem 1
+We must show that RD ∗ ⊆ co(RD in ). Since both sets are convex, it suffices to show that
+for any componentwise nonnegative vector (β1 , . . . , β2L−1 , β)
+                                            L−1
+                                           2X                                         L−1
+                                                                                     2X
+                              inf                 βi Ri + βd ≥          inf                   βi Ri + βd                       (92)
+                           (R,d)∈RD ∗                             (R,d)∈co(RD in )
+                                           i=1                                          i=1
+                                                                                   L−1
+                                                                                  2X
+                                                              =       inf                βi Ri + βd.
+                                                                  (R,d)∈RD in
+                                                                                  i=1
+
+We shall assume that β1 ≤ β2 ≤ · · · ≤ β2L−1 ; the other cases are similar. Let us temporarily
+use RD ∗ (Kx ) to denote the rate-distortion region for the binary tree structure problem when
+the source variables have covariance matrix Kx and similarly for RD in (Kx ). If Kx is such
+that all of the noise variances are positive, then (92) follows from Lemma 3.
+                                                          (n)
+   If some of the noise variances are zero, then let Kx be a sequence of source covariance
+                                                      (n)
+matrices converging to Kx such that for each n, Kx corresponds to a source satisfying the
+                                                                                         (n)
+binary tree structure for which all of the noise variances are positive. Then RD ∗ (Kx ) =
+             (n)
+co(RD in (Kx )) for each n, so
+                                             L−1
+                                            2X                                              L−1
+                                                                                           2X
+                             inf                   βi Ri + βd =             inf                   βi Ri + βd.
+                                     (n)                                             (n)
+                     (R,d)∈RD ∗ (Kx ) i=1                          (R,d)∈RD in (Kx ) i=1
+
+
+We will first show that
+                                                    L−1
+                                                   2X                                            L−1
+                                                                                                2X
+              lim inf               inf                   βi Ri + βd ≥             inf                  βi Ri + βd.            (93)
+               n→∞ (R,d)∈RD (K(n) )                                      (R,d)∈RD in (Kx )
+                           in x     i=1                                                           i=1
+
+
+For each n, there exists a set of auxiliary random variables u(n) such that [11, Lemma 3.3]
+
+                       L−1
+                      2X
+        inf                  βi Ri + βd
+               (n)
+  (R,d)∈RD in (Kx ) i=1
+                   L−1
+                  2X                                                                                                2 
+                                 (n)  (L,n) (L,n)      (L,n)                                (1,n)  (1,n)
+              =            βi I(ui ; xi |x1 , . . . , xi−1 ) + βE                          x1 − E[x1 |u(n) ]                 . (94)
+                     i=1
+
+      (L,n)
+Here xi    denotes the ith variable at depth L of the tree corresponding to covariance matrix
+  (n)
+Kx . Now the auxiliary random variables u(n) can be parametrized by a compact set, so
+                             (n)
+consider a subsequence of Kx along which u(n) converges in distribution to a limit u and
+
+
+
+
+                                                                33
+the right-hand side of (94) converges to the lim inf. Then
+                                                  L−1
+                                                 2X
+               lim inf             inf                  βi Ri + βd
+                n→∞ (R,d)∈RD (K(n) )
+                            in x     i=1
+                    L−1
+                   2X                                                                  2 
+                                     (L) (L)          (L)                    (1)    (1)
+               =          βi I(ui ; xi |x1 , . . . , xi−1 ) + βE           (x1 − E[x1 |u]
+                   i=1
+                                          L−1
+                                         2X
+               ≥           inf                  βi Ri + βd.
+                   (R,d)∈RD in (Kx )
+                                          i=1
+
+This establishes (93). On the other hand, Chen and Wagner [2] have shown that the rate-
+distortion region is inner-semicontinuous:
+                                                L−1
+                                               2X                                         L−1
+                                                                                         2X
+             lim sup             inf                  βi Ri + βd ≤           inf                βi Ri + βd.
+                                         (n)                          (R,d)∈RD ∗ (Kx )
+              n→∞      (R,d)∈RD ∗ (Kx ) i=1                                              i=1
+
+Together with (93), this establishes (92) and hence Theorem 1.
+
+
+D     Proof of Theorem 2
+It suffices to show (34). If (R, d) is in RD in, then there exist auxiliary random variables u
+in U(d) such that
+                                                           2 
+                                                (1)     (1)
+                                     d ≥ E x1 − E[x1 |u]
+
+and
+                                       X                          
+                                                       (L)
+                                               Ri ≥ I xA ; uA |uAc
+                                       i∈A
+
+for all A. Now for each i,
+                                                              (L)
+                                                  ui = αi xi        + wi ,
+                                                           (L)                                                (L)
+where wi is Gaussian and independent of xi . Let ũi be a quantized version of x̃i using
+the same test channel
+                                             (L)
+                                  ũi = αi x̃i + wi .
+                     
+                 (1)
+   Let MMSE x1 |u denote the mean-square error of the minimum mean-square error
+                                                         
+                      (1)                             (1)
+(MMSE) estimate of x1 given u. Likewise, let LLSE x1 |u denote the mean-square error
+
+
+
+
+                                                            34
+                                                             (1)
+of the linear least-square error (LLSE) estimate of x1 given u. Then
+                                            2 
+                                 (1)     (1)                (1)
+                           E x̃1 − E[x̃1 |ũ]      = MMSE(x̃1 |ũ)
+                                                                         (1)
+                                                       ≤ LLSE(x̃1 |ũ)
+                                                                         (1)
+                                                       = LLSE(x1 |u)
+                                                                          (1)
+                                                       = MMSE(x1 |u)
+                                                       ≤ d.
+
+Also, for any A,
+                            X               (L)
+                                  Ri ≥ I(xA ; uA |uAc )
+                            i∈A
+                                                                           (L)
+                                     = h(uA |uAc ) − h(uA |uAc , xA )
+                                                                   (L)
+                                     = h(uA |uAc ) − h(uA |xA )
+                                                                   (L)
+                                     ≥ h(ũA |ũAc ) − h(uA |xA )
+                                                                   (L)
+                                     = h(ũA |ũAc ) − h(ũA |x̃A )
+                                                                           (L)
+                                     = h(ũA |ũAc ) − h(ũA |ũAc , x̃A )
+                                            (L)
+                                     = I(x̃A ; ũA |ũAc )
+
+where in the inequality we have used the fact that the Gaussian distribution maximizes
+                                                             g in .
+entropy for a fixed covariance. It follows that (R, d) is in RD
+
+
+E     Proof of Proposition 1
+Suppose that x1 , . . . , xN can be embedded in a Gauss-Markov tree and fix distinct indices i,
+j, and k. Without loss of generality, we may assume that all variables in the tree have mean
+zero and variance one. Consider two paths (i.e., two sequences of variables), one from xi to
+xj and one from xi to xk . Evidently both paths contain xi ; let x denote the last variable in
+the first path that is contained in the second. This is the point at which the two paths split,
+as shown in Fig. 12. Note that it is possible for x to equal xi , xj , or xk .
+    Now since x is along the path from xi to xj , it follows from the tree condition that
+xi ↔ x ↔ xj . Likewise xi ↔ x ↔ xk . Since all of the variables are standard Normals, this
+implies [16, (5.13)]
+
+                                       ρij = E[xi x]E[xxj ]                                 (95)
+                                       ρik = E[xi x]E[xxk ].                                (96)
+
+    Next consider the paths from xj to xi and from xj to xk , and let x̃ denote the last variable
+in the first path that is contained in the second. Then both x and x̃ lie along the path from
+
+
+                                                  35
+                                              xk
+                                               .
+                                               ..
+
+
+                             xi     ···       x          ···       xj
+
+
+                    Figure 12: x is the point at which the two paths split.
+
+xj to xi . If x 6= x̃, then the path from x to xk to x̃ to x would form a loop, which is impossible
+since the graph is a tree. Thus x̃ must equal x. Thus xj ↔ x ↔ xk and
+
+                                       ρjk = E[xj x]E[xxk ].
+
+Combining this equation with (95) and (96) yields conditions (36) and (37).
+   Now suppose that N = 3 and conditions (36) and (37) hold. If ρij is nonzero for all i 6= j,
+then
+                                         ρij ρik
+                                     0<          ≤1
+                                          ρjk
+for all distinct i, j, and k. This implies that x1 , x2 , and x3 , can be written
+                                     r
+                                        ρ12 ρ13
+                               x1 =             · sgn(ρ23 ) · x0 + z1
+                                         ρ23
+                                     r
+                                        ρ12 ρ23
+                               x2 =             · sgn(ρ13 ) · x0 + z2
+                                         ρ13
+                                     r
+                                        ρ13 ρ23
+                               x3 =             · sgn(ρ12 ) · x0 + z3 ,
+                                         ρ12
+
+where sgn(·) is the signum function
+                                           
+                                           
+                                           1  if ρ > 0
+                                   sgn(ρ) = 0  if ρ = 0
+                                           
+                                           
+                                            −1 if ρ < 0,
+
+and where x0 , z1 , z2 , z3 are independent Gaussian random variables. Here x is a standard
+Normal and the variances of the zs are chosen to such that the xs have unit variance. It
+is readily verified that this construction yields the correct correlation coefficients among the
+xs. It is then clear that x and the xs can be arranged in the Gauss-Markov tree shown in
+Figure 9.
+    If, say, ρ12 = 0, then by condition (36), either ρ13 = 0 or ρ23 = 0. Suppose that ρ13 = 0.
+Then x1 is uncorrelated, and hence independent, of x2 and x3 . It follows that the xs can be
+
+
+
+
+                                                    36
+written
+
+                                  x1 = z1
+                                       p
+                                  x2 = |ρ23 | · x0 + z2
+                                       p
+                                  x3 = |ρ23 | · sgn(ρ23 ) · x0 + z3 ,
+
+so that the x0 and the xs can again be arranged in the Gauss-Markov tree shown in Figure 9.
+
+
+F     Proof of Proposition 2
+Since we are assuming that R3 = 0, the problem effectively reduces to a two-encoder setup.
+By Lemma 1 and (20), the minimum R1 + R2 equals
+
+                                    inf I(x; u)
+                             subject to u1 ↔ x1 ↔ x2 ↔ u2
+                                        (x, u) jointly Gaussian
+                                        E[(x3 − E[x3 |u])2 ] ≤ d.
+
+Without loss of generality, we may assume that
+
+                                            u1 = x1 + z1
+                                            u2 = x2 + z2
+
+where the z variables are Gaussian and independent of each other and x. Let z1 have variance
+ασ 2 and z2 have variance βσ 2 .
+    Via straightforward calculations one can show that
+                                  1                                        
+                      I(x; u) =     log (1 − ρ2 )α−1 β −1 + α−1 + β −1 + 1                  (97)
+                                  2
+and
+                                                   1   2(1 + ρ) + α + β
+                     E[(x3 − E[x3 |u])2 ] = 1 −                            .
+                                                    2
+                                                   σ 4(1 + α)(1 + β) − 4ρ2
+Now
+                             2(1 + ρ) + α + β         4+α+β
+                                               2
+                                                 ≤
+                           4(1 + α)(1 + β) − 4ρ    4α + 4β + 4αβ
+                                                    1+α+β
+                                                 ≤
+                                                   α + β + αβ
+                                                    1
+                                                 ≤     + 2.
+                                                   αβ
+
+It follows that as σ 2 tends to infinity, in order to continue to meet the distortion constraint,
+we require that αβ tend to zero. But this implies that I(x; u) tend to infinity, by (97).
+
+                                                  37
+G      Proof of Proposition 3
+Since the average distortion is the same for all ℓ, let us assume that ℓ = 1 and write x3 in
+place of x3 (1) and likewise for the other variables. Then by the triangle inequality
+              p                    p                          p
+                 E[(x3 − x̂3 )2 ] ≤ E[(x3 − (x̃1 − x̃2 ))2 ] + E[((x̃1 − x̃2 ) − x̂3 )2 ].
+
+Now
+                                          |x1 − x̃1 | ≤ 2−(n+1)
+and likewise for |x2 − x̃2 |. Thus
+
+                                     E[(x3 − (x̃1 − x̃2 ))2 ] ≤ 2−2n .
+
+Define the event
+                                       A = {|x̃1 − x̃2 | < 2m−1 }.
+Now on A,
+
+                                        x̂3 = u1 − u2 mod Λo
+                                            = x̃1 − x̃2 mod Λo
+                                            = x̃1 − x̃2 ,
+
+so
+
+                         E[(x̃1 − x̃2 − x̂3 )2 ] = E[(x̃1 − x̃2 − x̂3 )2 1Ac ]
+                                                   p
+                                                 ≤ E[(x̃1 − x̃2 − x̂3 )4 ]P(Ac ).
+
+But
+
+                   |x̃1 − x̃2 − x̂3 | ≤ |x1 − x2 | + |x̃1 − x1 | + |x2 − x̃2 | + |x̂3 |
+                                      ≤ |x1 − x2 | + 2−n + 2m−1
+                                      ≤ |x1 − x2 | + 2m .
+
+Since x1 − x2 is a standard Normal random variable, E[(x1 − x2 )4 ] = 3, and Minkowski’s
+inequality implies
+                              E[(x̃1 − x̃2 − x̂3 )4 ] ≤ 3 + 2m .
+It only remains to bound P(Ac ). Using a well-known upper bound on the tail of the Gaussian
+distribution
+                                  P(Ac ) ≤ 2 exp(−22m−3 ).
+Combining these various bounds gives
+
+                     E[(x3 − x̂3 )2 ] ≤ (2−n + (2(3 + 2m ) exp(−22m−3 ))1/2 )2
+
+Proposition 3 follows.
+
+                                                    38
+H      Proof of Proposition 4
+Recall we may assume that all of the variables have unit variance. By Proposition 1, if x1 ,
+x2 , and x3 cannot be embedded in a Gauss-Markov tree, then either
+
+                                                 ρ12 ρ13 ρ23 < 0                                (98)
+
+or
+                                                |ρij | < |ρik ρkj |                             (99)
+for some distinct i, j, and k.
+    Suppose first that (98) holds. Then we must have |ρij | < 1 for all i 6= j. Now
+                                             ρ12 − ρ13 ρ23        ρ13 − ρ12 ρ23
+                       E[x1 |x2 , x3 ] =             2
+                                                           · x2 +               · x3
+                                               1 − ρ23              1 − ρ223
+                                       def
+                                       = a2 x2 + a3 x3 .
+
+Then
+                                     1       ρ23
+               a2 · a3 · ρ23 =                     (ρ2 − ρ12 ρ13 ρ23 )(ρ213 − ρ12 ρ13 ρ23 ),   (100)
+                                 (1 − ρ23 ) ρ13 ρ12 12
+                                       2 2
+
+which is negative by (98). This establishes the desired conclusion in this case. We will
+therefore assume throughout the remainder of the proof that ρ12 ρ13 ρ23 ≥ 0.
+   Suppose that (99) holds, say, for i = 1, j = 2, and k = 3. Then we must have |ρ12 | < 1
+and ρ13 · ρ23 6= 0. Furthermore, if |ρ23 | = 1, then |ρ12 | = |ρ13 |, which would contradict (99).
+Thus we may assume that |ρ23 | < 1. First suppose that ρ12 = 0. Then
+
+                                                               ρ213 ρ223
+                                      a2 · a3 · ρ23 = −                   ,
+                                                             (1 − ρ223 )2
+
+which is negative. We will therefore focus on the case in which ρ12 ρ13 ρ23 > 0.
+   Next observe that since we are assuming that (99) holds for i = 1, j = 2, and k = 3, the
+opposite inequality must hold strictly in the other two cases
+
+                                               |ρ13 | > |ρ12 ρ23 |
+                                               |ρ23 | > |ρ12 ρ13 |.
+
+This can be seen by contradiction: if, e.g., |ρ13 | ≤ |ρ12 ρ23 |, then combining this fact with
+(99) yields
+                               |ρ12 | < |ρ13 ρ23 | ≤ |ρ12 ||ρ23 |2
+which is evidently false. From (100) and the three assumed conditions, ρ12 ρ13 ρ23 > 0,
+|ρ12 | < |ρ13 ρ23 |, and |ρ13 | > |ρ12 ρ23 |, it follows that a2 · a3 · ρ23 is negative, as desired.
+
+
+
+
+                                                       39
+References
+ [1] T. Berger, Multiterminal Source Coding, series: The Information Theory Approach to
+     Communications, Vol. 229, CISM courses and lectures, Springer-Verlag, 1978.
+ [2] J. Chen and A. B. Wagner, “Inner Semicontinuity of Gaussian Rate-Distortion Regions
+     with Applications,” preprint.
+ [3] J. Chen, X. Zhang, T. Berger, S. B. Wicker, “An upper bound on the sum-rate distortion
+     function and its corresponding rate allocation schemes for the CEO problem,” IEEE
+     Transactions on Information Theory, v. 22, No. 6, Aug., 2004, pp. 977–987.
+ [4] S. Hanly and D. Tse, “Multi-Access Fading Channels: Part II: Delay-Limited Capac-
+     ities”, IEEE Transactions on Information Theory, v. 44, No. 7, Nov., 1998, pp. 2816-
+     2831.
+ [5] D. Krithivasan and S. S. Pradhan, “Lattices for Distributed Source Coding: Jointly
+     Gaussian Sources and Reconstruction of a Linear Function,” arXiv:0707.3461.
+ [6] Y. Oohama, “Gaussian Multiterminal Source Coding,” IEEE Transactions on Informa-
+     tion Theory, Vol. 43(6), pp. 1912-1923, Nov., 1997.
+ [7] Y. Oohama, “Rate-Distortion Theory for Gaussian Multiterminal Source Coding Sys-
+     tems with Several Side Informations at the Decoder”, IEEE Transactions on Informa-
+     tion Theory, Vol. 51(7), pp. 2577-2593, July 2005.
+ [8] Y. Oohama, “Gaussian Multiterminal Source Coding with Several Side Informations at
+     the Decoder”, IEEE Symposium on Information Theory, 2006.
+ [9] V. Prabhakaran, D. Tse and K. Ramchandran, “Rate Region of the Quadratic Gaussian
+     CEO Problem”, IEEE Symposium on Information Theory, 2004.
+[10] T. P. Speed and H. T. Kiiveri, “Gaussian Markov Distributions Over Finite Graphs,”
+     Annals of Statistics, Vol. 14(1), pp. 138-150, Mar., 1986.
+[11] D. Tse and S. Hanly, “Multi-Access Fading Channels: Part I: Polymatroid Structure,
+     Optimal Resource Allocation and Throughput Capacities”, IEEE Transactions on In-
+     formation Theory, Vol. 44(7), Nov. 1998, pp. 2796-2815.
+[12] S.-Y. Tung, “Multiterminal Source Coding”, Ph.D. dissertation, Cornell University,
+     1978.
+[13] A. B. Wagner, S. Tavildar and P. Viswanath, “Rate Region of the Quadratic Gaussian
+     Two-Terminal Source-Coding Problem”, submitted to IEEE Transactions on Informa-
+     tion Theory, accepted.
+[14] H. Wang and P. Viswanath, “Vector Gaussian Multiple Description for Individual and
+     Central Receivers”, IEEE Transactions on Information Theory, Vol. 53(6), pp. 2133-
+     2153, June 2007.
+
+                                            40
+[15] D. J. A. Welsh, Matroid theory, Academic Press, London, 1976.
+
+[16] E. Wong and B. Hajek Stochastic Processes in Engineering Systems, Springer-Verlag,
+     New York, 1985.
+
+
+
+
+                                           41

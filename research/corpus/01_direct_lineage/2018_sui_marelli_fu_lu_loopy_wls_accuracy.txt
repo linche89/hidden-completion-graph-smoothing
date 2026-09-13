@@ -1,0 +1,1682 @@
+                                              Accuracy Analysis for Distributed Weighted Least-Squares
+                                                   Estimation in Finite Steps and Loopy Networks
+
+
+                                                                 Tianju Sui aDamián Marelli b,cMinyue Fu d,b Renquan Lu b
+arXiv:1806.09104v1 [cs.MA] 24 Jun 2018
+
+
+
+
+                                                       a
+                                                           Department of Control Science and Engineering, Dalian University of Technology, Liaoning, China.
+                                                                   b
+                                                                       School of Automation, Guandong University of Technology, Guangzhou, China.
+                                         c
+                                             French-Argentinean International Center for Information and Systems Sciences, National Scientific and Technical Research
+                                                                            Council, Ocampo y Esmeralda, Rosario 2000, Argentina.
+                                          d
+                                              School of Electrical Engineering and Computer Science, University of Newcastle, University Drive, Callaghan, NSW 2308,
+                                                                                                    Australia.
+
+
+
+                                         Abstract
+
+                                         Distributed parameter estimation for large-scale systems is an active research problem. The goal is to derive a distributed
+                                         algorithm in which each agent obtains a local estimate of its own subset of the global parameter vector, based on local
+                                         measurements as well as information received from its neighbours. A recent algorithm has been proposed, which yields the
+                                         optimal solution (i.e., the one that would be obtained using a centralized method) in finite time, provided the communication
+                                         network forms an acyclic graph. If instead, the graph is cyclic, the only available alternative algorithm, which is based on
+                                         iterative matrix inversion, achieving the optimal solution, does so asymptotically. However, it is also known that, in the cyclic
+                                         case, the algorithm designed for acyclic graphs produces a solution which, although non optimal, is highly accurate. In this
+                                         paper we do a theoretical study of the accuracy of this algorithm, in communication networks forming cyclic graphs. To
+                                         this end, we provide bounds for the sub-optimality of the estimation error and the estimation error covariance, for a class of
+                                         systems whose topological sparsity and signal-to-noise ratio satisfy certain condition. Our results show that, at each node, the
+                                         accuracy improves exponentially with the so-called loop-free depth. Also, although the algorithm no longer converges in finite
+                                         time in the case of cyclic graphs, simulation results show that the convergence is significantly faster than that of methods
+                                         based on iterative matrix inversion. Our results suggest that, depending on the loop-free depth, the studied algorithm may be
+                                         the preferred option even in applications with cyclic communication graphs.
+
+
+                                         Key words: Distributed statistical estimation, Weighted least squares, Convergence rate.
+
+
+
+                                         1      Introduction                                                  tions in industrial monitoring, multi-agent systems, the
+                                                                                                              smart grid, etc.
+                                         With the fast development of sensor networks and wire-
+                                         less communications, the scale of systems is becoming                The distributed estimation problem consists of a net-
+                                         increasingly large. Since centralized estimation requires            work of interconnected nodes, each of which aims to ob-
+                                         a fusion center to process all the information from the              tain an estimate of certain vector of interest. This is
+                                         whole graph, the computation and communication bur-                  achieved through an iterative procedure in which each
+                                         den increases with the system’s size. Thus, the central-             node processes its available information, and exchange
+                                         ized estimation approach is not suitable for large-scale             relevant information with its neighbors, in order to suc-
+                                         systems, and distributed approaches are needed. The                  cessively compute the required estimate as accurately
+                                         development of distributed estimation has attracted a                as possible. The existing distributed estimation prob-
+                                         great deal of attention [10,15,11,21,22]. It finds applica-          lems can be broadly classified into four classes. These
+                                                                                                              classes are: static fully reconstructive, static partially re-
+                                           Email addresses: kevindulant@126.com (Tianju Sui),                 constructive, dynamic fully reconstructive and dynamic
+                                         Damian.Marelli@newcastle.edu.au (Damián Marelli),                   partially reconstructive. A fully reconstructive system is
+                                         Minyue.Fu@newcastle.edu.au (Minyue Fu),                              one in which each node aims to obtain an estimate of
+                                         rqlu@gdut.edu.cn (Renquan Lu).                                       the same vector. In contrast, in a partially reconstruc-
+
+
+                                         Preprint submitted to Automatica                                                                                  18 August 2021
+tive system, each node aims to obtain an estimate of its         tion matrices and vectors, observability is sufficient for
+own partial sub-vector of interest. Also, a static system        the estimation stability.
+is one in which prior knowledge of the state at a certain
+time is independent of the knowledge of the same state at        Concerning the dynamic partially reconstructive prob-
+previous times. A dynamic system refers to the comple-           lem, information passing and processing methods guar-
+mentary case. We point out that methods for dynamic              anteeing a stable estimate and proposed in [28,29,9,14].
+estimation can be readily used for static problems, by           Also, the authors of [12] study systems with banded dy-
+choosing the dynamic model in a way such that the state          namic state transition matrices, concluding that the con-
+stays constant over time.                                        tribution from faraway nodes decreases with the increase
+                                                                 of their distance. The authors also propose the moving
+In the static fully reconstructive problem, the most pop-        horizon estimation approach as an approximation to the
+ular distributed estimation algorithm is consensus [10].         optimal state estimate.
+By running average consensus on the information vec-
+tor and information matrix of each node, in view of the          In this paper we focus on the static partially reconstruc-
+weighted least squares (WLS) formula, the final esti-            tive problem. Also, as typically done in static problems,
+mate of each node converges to the one obtained via              we assume that the vector to be estimated is determin-
+WLS [19]. Although the average consensus algorithm is            istic. More precisely, we consider the algorithm in [23],
+simple, it has two main disadvantages: First, the com-           which, as mentioned, yields the optimal solution in finite-
+munication burden is large, as each node communicates            time, only when the communication graph is acyclic. For
+n×(n+3)                                                          cyclic graphs, this algorithm is not guaranteed to pro-
+    2     scalars to its neighbors, where n is the dimen-
+sion of the estimated vector. Second, the convergence            duce the optimal solution. Nevertheless, in many appli-
+                                                                 cations, even in the presence of loops, it delivers very
+of average consensus requires infinite iterations, and the
+                                                                 good approximations to the optimal solution, in only a
+stopping criterion is still an open problem. To avoid
+                                                                 very few steps. For those applications, this makes the
+these two disadvantages, many algorithms have been
+                                                                 algorithm a valid alternative to the method in [16] even
+proposed [20,7,5,2]. One of the most important works
+                                                                 for cyclic networks. This is because, while the later guar-
+is the one in [20], where using the space structure of
+                                                                 antees the optimal solution, the former one converges
+measurements and doing kernel projection, each node
+                                                                 much faster. Motivated by this, we study the accuracy
+achieves its minimum norm solution in a finite number
+                                                                 of the estimate produced by the algorithm in [23], under
+of steps.
+                                                                 the general setting of a cyclic graph.
+In the static partially reconstructive problem, since each       For a class of systems whose topological sparsity and
+node considers its own partial state, the consensus algo-        signal-to-noise ratio satisfy certain condition, we are
+rithm is not applicable. For the case in which the graph         able to determine the accuracy of the estimates and
+induced by the communication network is acyclic (i.e.,           their associated estimation error covariances, with re-
+without loops), an algorithm is proposed in [23]. In this        spect to those achievable via a centralized WLS method.
+algorithm, each node obtains a WLS estimate on its own           Our formulas clearly show how accuracy depends on the
+state in a finite number of steps. When the graph is             so-called loop-free depth of each node. More precisely,
+cyclic (i.e., with loops), [16] gave a novel method which,       the estimates and estimation error covariances approach
+based on Richardson iterations, solves the WLS estima-           those from the centralized solution, exponentially on the
+tion problem. However, it does so asymptotically, i.e.,          loop-free depth.
+in infinite iterations. We point out that most estimation
+algorithms for large-scale systems are partially recon-          The rest of this paper is organized as follows. In Sec-
+structive, since the whole state of the system is often of       tion 2, we give the problem formulation and introduce
+very high dimension.                                             the distributed WLS algorithm under study. In Sec-
+                                                                 tion 3, we show how to convert a given graph into other
+In the dynamic fully reconstructive problem, the con-            equivalent ones, which are instrumental for analyzing the
+sensus algorithm is also a popular option. In [17], one          behavior of the algorithm in cyclic graphs. In Section 4,
+consensus algorithm is run at time each sampling time,           we introduce our notation, as well as the definition of the
+using the partial estimates obtained at each node, based         Riemannian Distance between matrices, together with
+on their local measurements. Building on this line, a            some of its properties. The accuracy of the information
+study on the number of consensus iterations required at          matrices (i.e., the inverses of the error covariances) and
+each sampling time to guarantee the stability of the esti-       state estimates produced by the distributed WLS algo-
+mator, under the observability condition, is done in [1].        rithm are analyzed in Sections 5 and 6, respectively. In
+Also, the so-called diffusion Kalman filter [6] runs con-        Section 7, we provide some simulations to illustrate our
+sensus on the estimates obtained at each sensor, using lo-       results. Finally, concluding remarks are stated in Sec-
+cal measurements as well as those from neighbors. As op-         tion 8. Complementary mathematical material (includ-
+posite to doing consensus on the estimates, the authors          ing most proofs and some additional lemmas) appear in
+of [3] found that, by running consensus on the informa-          the Appendix.
+
+
+                                                             2
+2   Problem Formulation                                               Algorithm 1 Distributed WLS algorithm.
+                                                                       1) Initialization: At time k = 0, node i defines:
+Consider a system observed by I sensing nodes. Asso-
+ciated to this system, there is a deterministic vector                              αj→i (0) = 0,       Qj→i (0) = 0.                (3)
+                                             PI
+xT = xT1 , xT2 , . . . , xTI ∈ Rn , with i=1 ni = n, called
+the global state. For any i = 1, . . . , I, node i aims to es-          2) Main loop: At time N = 1, 2, · · · , do:
+timate the sub-vector xi ∈ Rni . There are also two kind                2.1) Each node i computes
+of measurements. The so-called self measurements for                                                      X
+node i                                                                          αi (N ) = CiT Ri−1 zi +          αj→i (N − 1),
+                           zi = Ci xi + vi ,               (1)                                            j∈Ni
+                                                                                                           X
+and the (pair-wise) joint measurements between nodes                            Qi (N ) = CiT Ri−1 Ci +          Qj→i (N − 1),         (4)
+i and j                                                                                                   j∈Ni
+             zi,j = Ci,j xi + Cj,i xj + vi,j .   (2)
+                                                                        and
+In the above, the matrices Ci , Ci,j and Cj,i are known,
+and vi and vi,j are independent measurement noises with
+known covariances Ri > 0 and Ri,j > 0, respectively.                       x̂i (N ) = Q−1
+                                                                                       i (N )αi (N ),      Σi (N ) = Q−1
+                                                                                                                      i (N ).          (5)
+Note that 1) the pair (i, j) is unordered, i.e., (i, j) =
+(j, i); 2) zi,j = zj,i and vi,j = vj,i ; 3) It is not necessary         2.2) Each node i sends to each connected node j with
+for all nodes to have self measurements or all node pairs               j ∈ Ni :
+to have joint measurements. In fact, joint measurements                                         T    −1
+are typically sparse for large graphs.                                             αi→j (N ) = Cj,i Ri→j (N )zi→j (N ),
+                                                                                                T    −1
+                                                                                   Qi→j (N ) = Cj,i Ri→j (N )Cj,i ,                    (6)
+We assume that node i and node j could communicate
+if zi,j exist. Furthermore, we call node j a neighbour of               where
+node i (i.e., j ∈ Ni ) and node i a neighbour of node j
+(i.e., i ∈ Nj ) if there is communication between them.                                                                          −1
+                                                                         zi→j (N ) =zi,j − Ci,j (Qi (N ) − Qj→i (N − 1))
+In view of this, communication between nodes is always                              · (αi (N ) − αj→i (N − 1)),                        (7)
+two-ways; and therefore, the associated communication                                                                            −1     T
+graph (which will be formally introduced later) is always               Ri→j (N ) =Ri,j + Ci,j (Qi (N ) − Qj→i (N − 1))               Ci,j .
+undirected.                                                                                                                            (8)
+
+The target of distributed WLS estimation is to compute
+the WLS estimate for each xi , and its associated estima-             Notation 1 The superscript T denotes vector or matrix
+tion error covariance, using a fully distributed algorithm.           transposition. For a matrix A, kAk denotes the induced
+The algorithm summarized in Algorithm 1, achieves this                operator norm, i.e., the maximum singular value of A.
+goal. In this algorithm, at iteration N , node i computes             Also, A > 0 (A ≥ 0) means that A is positive definite
+a local estimate x̂i (N ) of its sub-vector of interest, and          (semi-definite), i.e., xT Ax > 0 (xT Ax ≥ 0), for all x 6=
+its associated covariance Σi (N ), using its local informa-           0. For a second matrix B, A > B (A ≥ B) means that
+tion vector αi (N ) and information matrix Qi (N ). Then,             A − B > 0 (A − B ≥ 0).
+for each neighbor j ∈ Ni , it removes from αi (N ) and
+Qi (N ) the information vector αj→i (N − 1) and matrix                Assumption 2 For every i = 1, 2, . . . , I, we have
+Qj→i (N − 1), respectively, which it received at the pre-
+vious iteration from neighbor j, to built the information                                   CiT Ri−1 Ci > 0.
+vector αi→j (N ) and matrix Qi→j (N ), that it sends to
+the same neighbor at the current iteration.
+                                                                      It is known that Algorithm 1 converges to the correct
+Algorithm 1 requires Assumption 2, which is given be-                 estimates in a finite number of iterations, when its asso-
+low. This assumption implies that each node is able to                ciated communication graph is acyclic [23]. In fact, the
+obtain a (possibly coarse) estimate of its sub-vector of              required number of iterations equals the diameter of the
+interest, using only its self measurements. Notice that,              graph, i.e., the maximum number of edges connecting
+if this assumption is not met, we have, at time N = 1,                one node to another over the whole graphs. The fun-
+and node i, that Qi (1) − Qj→i (0) = CiT Ri−1 Ci . Hence,             damental challenge in our study is to understand how
+Qi (1) − Qj→i (0) cannot be inverted in (7) and (8).                  the algorithm performs for cyclic graphs. As mentioned
+                                                                      in Section 1, the goal of this paper is to quantify the
+Before stating Assumption 2 we introduce some required                accuracy of the estimate when the graph is cyclic, i.e.,
+notation.                                                             quantify the difference between the distributed estimate
+
+
+                                                                  3
+and the centralized one. We split our accuracy analysis             A associated to node i in G. Graph A is constructed as
+in that of the information matrix (Section 5) and that              the limit of the following iterative procedure. We start
+of the state estimate (Section 6). In the rest of paper,            by defining A0 as the empty graph and A1 as the graph
+without loss of generality, we concentrate our study on             having no edges, and having a single node, which is as-
+the accuracy of an arbitrary node, which is labeled as              sociated to node 1 of G. Then, at each step N ≥ 2, we
+node 1.                                                             do the following steps:
+
+3     Graph Representations                                          (1) Find all leaf nodes l of the tree AN −1 .
+                                                                     (2) Find all neighbors j of G(l) in G, excluding all nodes
+                                                                         in A(p(l)) (i.e., associated to the parent of l in A).
+In the network described above, nodes have only self                 (3) For each l and j:
+and pair-wise joint measurements. This permits using a                   (a) Add a node n to the tree.
+simple connectivity (undirected) graph, called canonical                 (b) Add the undirected edge from l to n to the tree.
+graph, to describe the nodes and their measurements.                     (c) Associate n in A to j in G.
+This is explained in Section 3.1. A drawback of this rep-            (4) Define AN as the resulting graph.
+resentation for our intended analysis is that this graph
+is cyclic in general. In Section 3.2 we describe how to
+                                                                    Our next step is to associate a system of measurement
+convert this cyclic graph into an acyclic one, with an
+                                                                    equations to the acyclic graph A, in a way similar to the
+infinite number of nodes. It turns out that this is an
+                                                                    way in which the system of equations (1)-(2) is associ-
+equivalent graph, as far as distributed estimation is con-
+                                                                    ated with G. These equations need to satisfy two condi-
+cerned. Then, in Section 3.3, we explain how to further
+                                                                    tions. First, their canonical graph should be A. Second,
+convert the acyclic graph into another equivalent one,
+                                                                    the aforementioned equivalence at node 1 should be pre-
+whose topology is that of a single line. For a more de-
+                                                                    served. As explained in [13,26,25,24], both conditions are
+tailed presentation of equivalent graph transformations,
+                                                                    satisfied if
+the reader is referred to [26,25,24]. We point out that all
+the above graphs are undirected.
+                                                                      z̄i = C̄i x̄i + v̄i ,                                       (9)
+3.1    Canonical graph representation                               z̄i,j = C̄i,j x̄i + C̄j,i x̄j + v̄i,j                        (10)
+                                                                                                                   
+The canonical graph G has a node associated with each               for all i ∈ A and j ∈ Si , with v̄i ∼ N 0, R̄i and v̄i,j ∼
+sensing node i = 1, . . . , I. Also, nodes i and j are con-         N 0, R̄i,j . The values of the quantities in (9)-(10) are
+nected by an undirected edge if they can communicate                given by those corresponding to the nodes in G which
+with each other, i.e., j ∈ Ni .                                     are associated to nodes i and j in A, i.e.,
+
+3.2    Acyclic graph representation                                          z̄i = zG(i) , v̄i = vG(i) , C̄i = CG(i) ,
+                                                                            R̄i = RG(i) , z̄i,j = zG(i),G(j) , v̄i,j = vG(i),G(j) ,
+We start the section with the following definition.                       C̄i,j = CG(i),G(j) , R̄i,j = RG(i),G(j) .
+
+Definition 3 A rooted tree graph is an acyclic connected            Also, all noises v̄i and v̄i,j , i = 1, · · · , I, j ∈ Ni , are
+graph, in which a node is assigned as its root. For a node          pairwise uncorrelated.
+i different from the root one, we let p(i) denote its parent
+(i.e., the next node when moving towards the root) and              Remark 4 Recall that, in an acyclic graph, Algorithm 1
+Si denote the set of its children (i.e., all the nodes j with       produces, at each node, the same estimate that would be
+i = p(j)). Also, node i is called a leaf if Si is empty.            obtained using the centralized WLS method. Since the
+                                                                    graph AN is acyclic, the outcomes of both methods will be
+Given a cyclic canonical graph G, we can convert it into            the same on AN . Moreover, its measurements (9)-(10),
+an acyclic one A, having a rooted tree topology, with               are designed so that, at node 1 and iteration N , this out-
+any arbitrary node as its root one. Since, as pointed               come equals that resulting from applying Algorithm 1 to
+out before, we concentrate our study on the accuracy at             graph G. Hence, G and AN are equivalent graphs only
+node 1, we choose this node as the root one. This graph             from the point of view Algorithm 1 (at node 1 and itera-
+enjoys the property that, if Algorithm 1 is applied to              tion N ), but not from that of centralized WLS.
+both graphs, it will produce at node 1 and iteration N ,
+the same result.
+                                                                    3.3     Representation as a line graph
+Graph A has an infinite number of nodes. Each of its
+nodes is associated to a node in G. With some abuse of              Let AN be the N -layer acyclic graph with root node
+notation, we use G(n) to denote the node in G associated            1 and measurement equations (9)-(10), as described
+to node n in A, and A(i) to denote the set of nodes in              above. We now describe how to convert AN into a line
+
+
+                                                                4
+graph LN such that the aforementioned equivalence is                                 Remark 5 Note that the statement in Remark 4 also
+still preserved.                                                                     holds for LN . More precisely, the centralized WLS esti-
+                                                                                     mate at node 1 in LN equals to that of Algorithm 1, when
+Indeed, LN is formed by simply grouping all the nodes in                             applied to G, at the same nodes and iteration N .
+AN , which are exactly n− 1 hops away from node 1, into
+a super node Tn , for all n = 1, 2, . . . , N . In particular,                       In view of the above analysis, the problem of studying
+T1 is just node 1.                                                                   the dynamics of Algorithm 1 becomes the problem of
+                                                                                     studying the centralized WLS estimate at node 1 for the
+Again, we need to associate a system of measurement                                  graph LN , as N → ∞.
+equations to LN satisfying the conditions described in
+Section 3.2. This is done by grouping all the measure-
+                                                                                     4   Preliminaries
+ment equations for each super node Tn , as detailed be-
+low.
+                                                                                     In our analysis below, we will make use of the so-called
+Denote the size of any finite set S by |S| and its elements                          Riemannian distance between matrices [4].
+by S(1), S(2), . . . , S(|S|). For each n ∈ N, the state of
+Tn is given by                                                                       Definition 6 For n × n matrices P, Q > 0, their Rie-
+                                                                                     mannian distance is defined by
+     h                                             iT
+x̃n = x̄TTn (1) , x̄TTn (2) , . . . , x̄TTn (|Tn |) ,                                                      v
+                                                                                                           u n
+                                                                                                           uX 2
+                                                                                                δ (P, Q) = t   log σk (P Q−1 ) ,
+and its measurement equations are given by                                                                   k=1
+
+
+     z̃n = C̃n x̃n + ṽn ,                                                (11)       where σ1 (X) ≥ · · · ≥ σn (X) denote the singular values
+z̃n,n+1 = C̃n,n+1 x̃n + C̃n+1,n x̃n+1 + ṽn,n+1 .                         (12)       of matrix X.
+
+That is, z̃n consists of all the measurements z̄i with i ∈                           The following proposition states a number of properties
+Tn , and z̃n,n+1 consists of all the measurements z̄i,j with                         of the Riemannian distance. Its proof appears in the
+                                                                                     appendix.
+i ∈ Tn and j ∈ Tn+1 . Note that ṽn ∼ N (0, R̃n ) and
+ṽn,n+1 ∼ N (0, R̃n,n+1 ). The matrices C̃n , R̃n , C̃n,n+1
+                                                                                     Proposition 7 For any n × n positive definite matrices
+and R̃n,n+1 are naturally related to C̄i , R̄i , C̄i,j and R̄i,j                     P and Q, the following results hold:
+through the above construction. More precisely,
+      h                                             iT                               (1) δ(P, P ) = 0.
+ z̃n = z̄TTn (1) , z̄TTn (2) , . . . , z̄TTn (|Tn |) ,                               (2) δ P −1 , Q−1 = δ (Q, P ) = δ (P, Q) .
+                                                                                     (3) If B has full row rank, δ BP B T , BQB T ≤
+                                                                                                                                         
+C̃n = diag{C̄Tn (1) , C̄Tn (2) , . . . , C̄Tn (|Tn |) },                                 δ (P, Q), and the equality holds if B is invertible.
+R̃n = diag{R̄Tn (1) , R̄Tn (2) , . . . , R̄Tn (|Tn |) }.                             (4) If P ≥ Q and W ≥ 0, then δ (P + W, Q) ≥
+                                                                                         δ (P, Q) .
+Similarly,                                                                           (5) For any m × m matrix W > 0 and m × n matrix B,
+                                                                                         we have
+          h                                         iT
+ z̃n,n+1 = z̀TT (1) , z̀TT (2) , . . . , z̀TT (|T |) ,                                                                         α
+                      n           n                    n     n                           δ(W + BP −1 B T , W + BQ−1 B T ) ≤       δ(P, Q),
+                                                                                                                              α+β
+C̃n,n+1 = diag{C̀Tn (1) , C̀Tn (2) , . . . , C̀Tn (|Tn |) },
+C̃n+1,n = diag{ĆTn+1 (1) , ĆTn+1 (2) , . . . , ĆTn+1 (|Tn+1 |) },                     where α = max{kBP −1 B T k, kBQ−1B T k} and β =
+                                                                                         σmin (W ), with σmin (W ) denoting the smallest sin-
+R̃n,n+1 = diag{R̀Tn (1) , R̀Tn (2) , . . . , R̀Tn (|Tn |) },
+                                                                                         gular value of W .
+                                                                                     (6) If P > Q, then kP − Qk ≤ eδ(P,Q) − 1 kQk .
+                                                                                                                                 
+with
+      h                                                          iT                  We now introduce some notation that will be used in the
+         T
+ z̀i = z̄i,S            T                        T                  ,                rest of the paper.
+             i (1) , z̄ i,S i (2)  ,  . . . , z̄ i,S i (|S  i |)
+      h                                                            iT
+          T
+C̀i = C̄i,S               T                         T                 ,              Notation 8 For a graph C, we use x̂i (C), Qi (C) and
+              i (1)
+                    , C̄i,S    i (2)
+                                     , . . . , C̄i,S     i (|Si |)
+                                                                                     αi (C) to denote the final (after convergence) state es-
+Ći = diag{C̄Si (1),i , C̄Si (2),i , . . . , C̄Si (|Si |),i },                       timate, information matrix and information vector, re-
+R̀i = diag{R̄i,Si (1) , R̄i,Si (2) , . . . , R̄i,Si (|Si |) }.                       spectively, obtained by running Algorithm 1 on C.
+
+
+
+                                                                                 5
+Notation 9 Let Q(i,j),0 ≥ 0, for each i =                            where
+ · · · , I, j ∈ Ni , and define the set Q =
+1,                                                                         √                α1      α2
+  Q(i,j),0 : i = 1, 2, . . . , I, j ∈ Ni . Suppose that we run        ρ = λ ū,          λ=             ,
+Algorithm 1 on the network G, but replacing the initial-                                α1 + β1 α2 + β2
+                                                                                        −1
+ization (3) by Qj→i (0) = Q(i,j),0 , for all i = 1, · · · , I,                     T
+                                                                     α1 = ū max kCi,j Ri,j Ci,j k, β1 = min σmin (CiT Ri−1 Ci ),
+                                                                                   i,j                               i
+j ∈ Ni . We use x̂1 (N, Q) and Q1 (N, Q) to denote the
+estimate and information matrix, respectively, yield by              α2 = max kCi,j (CiT Ri−1 Ci )−1 Ci,j
+                                                                                                      T
+                                                                                                          k, β2 = min σmin (Ri,j ).
+                                                                              i,j                                           i,j
+such algorithm at node 1 and step N .
+                                                                     Remark 12 Theorem 11 states that, if the graph/system
+Notation 10 If zi,j exists, the pair (i, j) is called an             satisfies ρ < 1, the inverse of the information matrix
+(undirected) edge. Notice that since edges are undirected,           Q−1
+                                                                       1 (N ) yield by Algorithm 1 at node 1, exponentially
+the pairs (i, j) and (j, i) denote the same edge. A path             approaches the estimation error covariance of centralized
+is a concatenation of contiguous edges, and its length is            WLS, as its loop-free depth l1 increases.
+the number of edges forming it. A cycle is a path with no
+                                                                                                 √
+repetitions of vertices and edges, except for the necessary          Remark 13 Since ρ = λ ū, the result is mainly given
+repetition of the starting and ending vertices. For each             for a class of graph with sparse connections (small ū) and
+i, j ∈ {1, · · · , I}, the distance between nodes i and j is         where the ratio between the signal-to-noise-ratio (SNR)
+defined as the minimum length of a path joining these                of local measurements and the SNR of each joint mea-
+two nodes. Let N1 (l) denote the subgraph of G formed by             surement is small (small λ). Notice that the later con-
+nodes whose distance from node 1 is less than or equal to            dition is relatively mild, since each joint measurement
+l. The loop-free depth l1 of node 1 is the largest integer           typically has a lower SNR than the local one.
+such that N1 (l1 ) is acyclic (i.e., without cycles).
+                                                                     5.2     Proof of Theorem 11
+We also introduce the following constants
+                                                                     Recall that, in view of the graph conversions described
+ū := max |Ni | − 1,   n̄ := max dim xi ,                            in Section 3, we have Q1 (N ) = Q1 (AN ) = Q1 (LN ). The
+        i                       i
+                                                                     proof of Theorem 11 uses this fact. It also requires the
+m̄ := max{max dim zi , max dim zi,j }.
+              i           i,j                                        following lemmas, whose proofs appear in the Appendix.
+
+                                                                     Lemma 14 Let Q1 and Q2 be initial sets both satisfying
+                                                                                            −1
+                                                                                        T
+                                                                     0 ≤ Qc(i,j),0 ≤ Ci,j Ri,j Ci,j , for all Qc(i,j),0 ∈ Qc and
+5     Accuracy Analysis for the Information Ma-
+      trix                                                           c ∈ {1, 2}. Then, in the notation of Theorem 11, for all
+                                                                     N ∈ N,
+
+In this section we derive a bound for the difference be-                            δ (Q1 (N, Q1 ) − Q1 (N, Q2 )) ≤ ρN −1 δ̄,
+tween the information matrix yield by the Algorithm 1
+and that obtained using the centralized WLS method.                  with
+For a class of system, we provide a lower bound for the
+time after which the difference falls within this bound.                      p
+                                                                       δ̄ =    (ū + 1)n̄
+Moreover, this bound decreases exponentially with the                                            X
+                                                                                                             −1
+increase of the loop free-depth. Our main result is given                  × max log kI + (             T
+                                                                                                       Ci,j Ri,j Ci,j )(CiT Ri−1 Ci )−1 k.
+                                                                               i
+in the Subsection 5.1. Its proof appears in Subsection 5.2.                                     j∈Ni
+
+
+                                                                     Notation 15 Let
+5.1    Main Result                                                              n                                      o
+                                                                          QM = QM (i,j),0 : i = 1, . . . , I and j ∈ Ni ,
+The main result on the accuracy of the information ma-
+trix is given below.                                                              n                                       o
+                                                                              Q0 = Q0(i,j),0 : i = 1, . . . , I and j ∈ Ni ,
+Theorem 11 Let CovWLS   1     be the estimation error co-            with
+variance obtained at node 1 when using centralized WLS.
+                                                                                                     −1
+If ρ < 1, then there exists a constant ̟ (only dependent                            QM          T
+                                                                                     (i,j),0 = Ci,j Ri,j Ci,j ,    Q0(i,j),0 = 0.
+on the system parameters ū, n̄, Ci,j , Ci , Ri,j and Ri )
+such that, for any N ≥ l1 + 1,                                       In particular, notice that Q0 is the initialization used
+                                                                     in Algorithm 1, i.e., x̂1 (N ) = x̂1 (N, Q0 ) and Q1 (N ) =
+              kCovWLS − Q−1          l1                              Q1 (N, Q0 ).
+                  1      1 (N )k ≤ ̟ρ ,
+
+
+
+
+                                                                 6
+Lemma 16 Recall the definition of loop-free depth l1                 where with
+from Notation 10. For any N ≥ l1 + 1, we have
+                                                                                √ √                         a1     a2
+                                                                      κ = max{ū ω, ūι1/ζ },          ω=                 ,
+      Q−1          WLS                                                                                  a1 + b 1 a2 + b 2
+       1 (N ) − Cov1
+                                                                                                                    ūr̄
+               −1
+          ≤ Q1 (l1 + 1, QM) − Q−1          0
+                               1 (l1 + 1, Q )          . (13)        a1 = r −1 ū max kCi,j k2 , a2 = max kCi,j k2 2 ,
+                                                                                   i,j                  i,j         ε
+                                                                                                   √      √
+                                                                                                     q −    q
+                                                                     b1 = r̄−1 ε2 , b2 = r, ι = √         √ ,
+The proof of Theorem 11 uses the above property to pro-                                              q+ q
+vide an upper bound for the difference between Q1−1 (N )              q = ε2 r −1 ,    q = ε2 r−1 ,    ζ = 2 + log √1 (q/q).
+                                                                                                                      ω
+and CovWLS
+        1    .
+                                                                      r = max{kRi k, kRi,j k}, r = min{σmin (Ri ), σmin (Ri,j )},
+                                                                           i                         i
+                                                                             q
+                                                                                     2             2
+                                                                      ε = max kCi k + 4ū kCi,j k , ε = min σmin (Ci ).
+PROOF. (of Theorem 11) Since both QM and Q0 sat-                             i,j                                     i
+
+isfy the condition in Lemma 14, it follows that
+                                                                     Remark 18 From the definition of κ, the observation
+       δ(Q−1          0    −1          M      l1
+          1 (l1 + 1, Q ), Q1 (l1 + 1, Q )) ≤ ρ δ̄.                   made in Remark 13 also applies to Theorem 17. However,
+                                                                     since κ ≥ ρ, the condition required for Theorem 17 is
+From the Proposition 7,                                              stronger than that for Theorem 11.
+
+    kQ−1          0    −1          M
+      1 (l1 + 1, Q ), Q1 (l1 + 1, Q )k
+       l1                          l1                                6.2     Proof of Theorem 17
+≤ (eρ δ̄ −1)kQ−1
+              1 (l1 +1)k ≤ (e
+                              ρ δ̄
+                                   −1)k(C1T R1−1 C1 )−1 k
+                                        ≤ β1−1 (eδ̄ − 1)ρl1 ,
+                                                                     We split the proof of Theorem 17 into three parts. In
+                                                                     Section 6.2.1 we derive a bound for the increment x̂1 (N +
+where the last inequality follows from Lemma 30. Since               1)− x̂1 (N ) in a graph with line topology. In Section 6.2.2
+the quantity β1−1 (eδ̄ − 1) depends only on ū, n̄ and the           we generalize this result for an arbitrary graph. Finally,
+system parameters Ci,j , Ci , Ri,j , Ri for some i and j, the        in Section 6.2.3 we use this result to bound the difference
+result then follows from (13).                                       between the state estimate yield by the Algorithm 1 and
+                                                                     that obtained using the centralized WLS method.
+
+6     Accuracy Analysis for the State Estimate
+                                                                     6.2.1    Bound of the increment in a line graph
+In this section, we derive a bound for the difference be-
+tween the estimate yield by Algorithm 1 and that ob-                 Consider a line graph LN with measurement equations
+tained using the centralized WLS method. For a class                 given by (11)-(12). Let
+of system, we provide a lower bound for the time after
+which the difference falls within this bound. Moreover,                                   T                       T
+                                                                                    T
+                                                                      yi = z̃iT , z̃i,i+1                    T
+                                                                                             , wi = ṽiT , ṽi,i+1
+                                                                                                   
+this bound decreases exponentially with the increase of                                                               ,
+the loop-free depth. Our main result is given in the Sub-                   "          #            "          #
+                                                                                C̃i                      0
+section 6.1 and its proof appears in Subsection 6.2.                 Ai,i =              , Ai,i+1 =              ,
+                                                                              C̃i,i+1                 C̃i+1,i
+                                                                            "              #
+6.1    Main Result                                                            R̃i      0
+                                                                      Si =                                                        (14)
+                                                                               0 R̃i,i+1
+The main result on the accuracy of the estimate is given
+below.
+                                                                     for any i = 1, 2, . . . , N − 1, and
+Theorem 17 Let x̂WLS   1        be the estimate obtained at
+node 1 when using centralized WLS. If κ < 1, then there                 yN = z̃N ,      wi = ṽN ,    AN,N = C̃N ,        SN = R̃N .
+exists a constant ̟ (only dependent on the system pa-
+rameters m̄, ū, n̄, Ci,j , Ci , Ri,j and Ri as well as on the
+measurements zi,j , zi ) such that, for all N ≥ l1 + 1,              Then, (11) and (12) become
+
+               kx̂1 (N ) − x̂WLS
+                             1   k ≤ ̟κl1 +1                                          yi = Ai,i x̃i + Ai,i+1 x̃i+1 + wi ,
+
+
+                                                                 7
+with wi ∼ N (0, Si ). We also define                                         Recall that x̂1 (LN ) = [x̂N ]1 , it then follows from (19)
+                                                                             that
+                              T                    T T
+     xN = x̃T1 , · · · , x̃TN , yN = y1T , · · · , yN
+                                                    
+                                                        ,
+                                                                                                                  N
+                             T T
+            T                                                                                                   X
+     wN = w1 , · · · , wN ,                                                  kx̂1 (LN +1 ) − x̂1 (LN )k ≤                [ΣN +1 ]1,j − [ΣN ]1,j kqj k
+                                                                                                                  j=1
+           
+             An,m , 0 ≤ m − n ≤ 1,
+[AN ]n,m =
+             0,           otherwise.                                                                       + [ΣN +1 ]1,N +1 kqN +1 k .          (20)
+
+We then have
+
+                         yN = AN xN + wN ,                                   The main result of this section is given in Lemma 26.
+                                                                             It bounds the decay rate in (20). Its proof requires a
+                                                                             number of lemmas, which are stated below.
+with wN ∼ N (0, SN ) and SN = diag {S1 , · · · , SN }.
+
+The WLS estimate x̂N of xN is given by                                       We start by stating bounds for certain quantities,
+                                                                             namely, AN , QN , ∆k , Γk (N ), Φk (N ). This is done in
+                            x̂N = Q−1                                        Lemmas 19-21. Some of the proofs are given in the Ap-
+                                   N qN ,
+                                                                             pendix.
+                                     T T
+where qN = ATN S−1
+                       T              
+                N yN = q1 , · · · , qN   with
+                                                                             Lemma 19 For any N ∈ N,
+               ATi,i Si−1 yi ,
+           
+                                                         i = 1,                                            ε̃I ≤ AN ≤ ε̃I,
+    qi =                                                          (15)
+                                        −1
+               ATi,i Si−1 yi + ATi−1,i Si−1 yi−1 ,       i > 1,
+
+                                          −1
+                                                                             with
+and the (i, j)-th entry Qi,j of QN = ATN SN  AN given
+by                                                                                                2
+                                                                             ε̃ = max( C̃i            + 2 max{kC̃i−1,i k2 , kC̃i,i−1 k2 }
+                                                                                    i
+                    ATi,i Si−1 Ai,i ,
+                
+                                                            i = 1,               +2 max{kC̃i,i+1 k2 , kC̃i+1,i k2 })1/2 ,
+       Qi,i =                                  −1
+                    ATi,i Si−1 Ai,i + ATi−1,i Si−1 Ai−1,i , i > 1,
+                                                                             ε̃ = min σmin (C̃i ).
+  Qi,i+1 = ATi,i Si−1 Ai,i+1 , Qi+1,i = QTi,i+1 ,                 (16)              i
+
+   Qi,j = 0, |i − j| ≥ 2.                                                    Lemma 20 For any N ∈ N,
+
+Let ΣN = Q−1 N and [ΣN ]i,j be its (i, j)-th block. From                                                   q̃I ≤ QN ≤ q̃I,
+the inverse formula for band matrices given in Theo-
+rem 3.1 of [18], it follows that the first block row of ΣN
+is given by                                                                  with
+
+                             j−1
+                                                  !                                     ε̃2                       n                   o
+                             Y                                                      q̃ =     ,        r̄˜ = max       R̃i , R̃i,i+1       ,
+           [ΣN ]1,j =              ∆−1
+                                    k Qk,k+1          Φ−1
+                                                       j (N )     (17)                   r̃                 i
+                                                                                           2
+                             k=1                                                        ε̃                    n                            o
+                                                                                    q̃ = ,            r̃ = min σmin (R̃i ), σmin (R̃i,i+1 ) .
+with                                                                                     r̃                 i
+
+
+Φj (N ) = Γj (N ) − Qj,j−1 ∆−1
+                             j−1 Qj−1,j ,              (18)
+          
+           Qkk ,                            k = 1,                           PROOF. Since QN = ATN S−1
+                                                                                                    N AN , from Lemma 19, it
+    ∆k =                                                                     follows that
+           Qkk − Qk,k−1 ∆−1  k−1 Q k−1,k ,  k  > 1,
+                                                                                                                                2
+          
+           Qkk ,                                k = N,                                         ε̃2                 ε̃
+Γk (N ) =                                                                                              I ≤ QN ≤            I.
+           Qkk − Qk,k+1 Γ−1 k+1 (N  )Q k+1,k ,  k < N,                                      σmax (SN )          σmin (SN )
+
+for any j = 1, 2, . . . , N . Then, the first entry [x̂N ]1 of               The result then follows from r̃I ≤ SN ≤ r̃I.
+x̂N is given by
+
+                                   N                                         Lemma 21 For every 1 ≤ k ≤ N ,
+                                   X
+                       [x̂N ]1 =         [ΣN ]1,j qj .            (19)
+                                   j=1                                                           q̃I ≤ ∆k , Γk (N ), Φk (N ) ≤ q̃I.
+
+
+                                                                         8
+Our next goal is to bound the difference kx̂1 (LN +1 ) −                         Then, using Lemmas 21 and 22, we get
+x̂1 (LN )k. From (17) and (20), this requires an upper
+bound for Φ−1               −1                                                                                      j−1 
+               j (N + 1) − Φj (N ) . This is given in the                                                       1   q̃              N −j
+                                                                                                                                          
+following lemma, whose proof appears in the Appendix.                             [ΣN +1 ]1,j − [ΣN ]1,j      ≤              eψ̃N λ̃N − 1
+                                                                                                                q̃  q̃
+                                                                                                                  −1 j
+                                                                                                                            N −j
+                                                                                                                                       
+Lemma 22 For any 1 ≤ j ≤ N , we have                                                                          ≤ q̃ r̃ eψ̃N λ̃N − 1 .
+                                                     
+                                       ψ̃N λ̃N −j
+   Φ−1
+    j  (N + 1) − Φ −1
+                   j  (N ) ≤ q̃ −1
+                                     e       N    − 1                            Lemma 24 For all 1 ≤ j ≤ N ,
+
+with                                                                                                       [ΣN ]1,j ≤ c̃ι̃j ,
+ψ̃N = n̄|TN |ξ̄˜N ,
+       p
+                                                                                 with
+ ξ̄˜ = max log σ
+ N                  [I + (C̃ T
+                           max
+                                               −1
+                                       i,i+1 R̃i,i+1 C̃i,i+1 )
+        i≤N                                                                                                               √
+                                                                                                         r̃ − 1            r̃ − 1
+        ·(C̃iT R̃i−1 C̃i )−1 ],                                                                     c̃ =         ,   ι̃ = √       .
+                                                                                                           2q̃ι̃           r̃ + 1
+               α̃1,N         α̃2,N
+λ̃N =                                  ,
+           α̃1,N + β̃1,N α̃2,N + β̃2,N
+                                                                                 PROOF. Since QN is 2-banded(please refer to Defini-
+where                                                                            tion 32 in Appendix), it follows from Lemma 33 by let-
+               T       −1                                                        ting a = q̃ and b = q̃.
+α̃1,N = max kC̃i,i+1 R̃i,i+1 C̃i,i+1 k,
+             i≤N
+                              −1
+                        T
+α̃2,N = max kC̃i+1,i (C̃i+1 R̃i+1 C̃i+1 )−1 C̃i+1,i
+                                              T
+                                                    k,
+             i≤N                                                                 It follows from (20) that, in addition to the bounds given
+β̃1,N = min σmin (C̃iT R̃i−1 C̃i ),           β̃2,N = min σmin (R̃i,i+1 ).       in Lemmas 23 and 24, we also need an upper bound for
+            i≤N                                         i≤N                      kqi k. This is given in the following lemma.
+
+                                                                                 Lemma 25 For any N ∈ N,
+Combining the results in Lemmas 21-22 and (17), we
+can obtain upper bounds for [ΣN +1 ]1,j − [ΣN ]1,j and                                                    max kqn k ≤ η̃N ,
+                                                                                                          n≤N
+  [ΣN ]1,j . These are given in Lemmas 23 and 24, respec-
+tively.                                                                          with
+                                                                                                                   p
+Lemma 23 For any 1 ≤ j ≤ N ,                                                                                23/2 ε̃ m̄|Ti |z̄˜N
+                                                                                                 η̃N = max                       ,
+                                                                                                        i≤N          r̃
+                                             −1 j
+                                                            N −j
+                                                                   
+        [ΣN +1 ]1,j − [ΣN ]1,j ≤ q̃             r̃    eψ̃N λ̃N − 1                               z̄˜N = max {kz̃i k∞ , kz̃i,i+1 k∞ } .
+                                                                                                        i≤N
+
+
+with r̃ = q̃/q̃.
+                                                                                 PROOF. From (14) and (15),
+PROOF. From Lemma 31, for all k ∈ N,                                                       ε̃(kyn k + kyn−1 k)
+                                                                                 kqn k ≤                       .                              (21)
+                                 kQk,k+1 k ≤ q̃.                                                     r̃
+
+We then have                                                                     For any n = 1, 2, . . . , N , the result then follows from
+                                                                                                 p                    p
+       [ΣN +1 ]1,j − [ΣN ]1,j                                                    kyn k ≤ max      2m̄|Ti |kyn k∞ ≤ max 2m̄|Ti |z̄˜N .
+                                                                                           i≤N                          i≤N
+         j−1
+                          !
+         Y
+             ∆k Qk,k+1 Φ−1
+               −1                          −1
+                                                 
+     =                        j (N + 1) − Φj (N )
+            k=1                                                                  We now state the main result of this subsection.
+          j−1
+          Y
+     ≤(              ∆−1          −1           −1                                Lemma 26 For any 1 ≤ J ≤ N ,
+                      k Qk,k+1 ) Φj (N + 1) − Φj (N )
+        k=1
+                     j−1                                                                  kx̂1 (LN +1 ) − x̂1 (LN )k
+           j−1       Y
+     ≤q̃                   ∆−1       Φ−1           −1
+                                      j (N + 1) − Φj (N )                                              r̃J
+                                                                                                                                      
+                 (               )                               .                                                   N −J
+                                                                                                                              2c̃ J
+                            k
+                                                                                        ≤η̃N +1                eψ̃N λ̃N − 1 +        ι̃ .
+                 k=1                                                                               (r̃ − 1)q̃                 1 − ι̃
+
+
+                                                                             9
+PROOF. From Lemmas 23-25 and (20),                                                              Remark 28 The above lemma shows that, when κ̌ < 1,
+                                                                                                the sequence of state estimates produced by the Algo-
+    kx̂1 (LN +1 ) − x̂1 (LN )k                                                                  rithm 1 converges exponentially.
+    J−1
+    X
+≤             [ΣN +1 ]1,j − [ΣN ]1,j kqj k                                                      6.2.3     Accuracy analysis
+    j=1
+        N
+        X                                                                                       Let x̂WLS
+                                                                                                       1    (N ) denote the centralized WLS estimate of x1
+    +             [ΣN +1 ]1,j − [ΣN ]1,j kqj k                                                  obtained by considering only the subgraph N1 (N − 1)
+        j=J
+                                                                                                (i.e., of nodes in G which are within N −1 steps away from
+  + [ΣN +1 ]1,N +1 kqN +1 k                                                                     node 1). It follows from [23] that, in an acyclic graph, if
+                                                                                              the Algorithm 1 is initialized by Q0 (as done in (3)), it
+         J−1
+         X −1                        N                                                        generates the true WLS estimate. Hence, based on the
+                           N −j        X
+≤η̃N +1     q̃ r̃j eψ̃N λ̃N − 1 + 2c̃   ι̃j + c̃ι̃N +1                                        definition of the loop-free depth l1 (see Notation 10), for
+               j=1                                              j=J                             any N ≤ l1 + 1,
+                                                                             
+                J−1                                                  N +1
+                             −1 j
+                                                           
+                                            ψ̃N λ̃N                                                                   x̂1 (N ) = x̂WLS
+                X                                   −J               X
+≤η̃N +1                q̃     r̃       e         N      − 1 + 2c̃          ι̃j                                                   1   (N ).                      (22)
+                  j=1                                                j=J
+       
+           −1
+                                r̃J − r̃       ι̃J − ι̃N +2
+                                                                                               From Lemma 27, if κ̌ < 1, for any N ∈ N,
+                  ψ̃N λ̃N −J
+=η̃N +1 q̃      e       N    −1            + 2c̃
+                                   r̃ − 1            1 − ι̃
+                                       J          J
+                                                                                                                                           ˇκ̌N .
+                                                                                                                 kx̂1 (N + 1) − x̂1 (N )k ≤ χ̄                    (23)
+           −1
+                       N −J
+                                    r̃          ι̃
+≤η̃N +1 q̃      eψ̃N λ̃N − 1              + 2c̃          .
+                                  r̃ − 1        1 − ι̃
+
+                                                                                                Let Ťk denote the set of nodes in G which are precisely
+6.2.2     Bound of the increment in an arbitrary graph                                          k − 1 steps away from node 1. We collect all the nodes in
+                                                                                                Ťk and their inner connections into a single node. This
+For each N , the value of x̂1 (N ) obtained by running                                          yields a graph Ľ having line topology, whose structure is
+Algorithm 1 on G equals the one x̂1 (AN ) obtained by                                           given in Appendix H. The number of nodes in Ľ is given
+running the same algorithm on the equivalent acyclic                                            by
+graph AN . The latter in turn equals the one x̂1 (LN )                                                              r1 = max d1,j + 1,
+                                                                                                                                 j
+obtained by running the algorithm on the equivalent line
+graph LN . Then, from Lemma 26 we obtain the following                                          where di,j is the minimum distance from node i to node j
+result, which applies to an arbitrary graph G, and whose                                        in G.
+proof appears in the Appendix.
+                                                                                                Recall that Lemma 27 provides a bound for the state
+Lemma 27 If κ̌ < 1, then, in the notation of Theo-                                              estimate increments for Algorithm 1. If we follow the
+rem 17, for all N ∈ N,                                                                          steps of that proof, but considering Ľ in place of LN , we
+                                                                                                would arrive to the following result.
+                                               ˇκ̌N ,
+                    kx̂1 (N + 1) − x̂1 (N )k ≤ χ̄
+                                                                                                Lemma 29 Recall the notations in Theorem 17 and
+where                                                                                           Lemma 27, for all N ∈ N, if κ < 1,
+
+                 ψ̌ η̌   2η̌c                                 √ √                                                                          N
+    ˇ=
+    χ̄                 +      ,                    κ̌ = max{ū λ, ūι1/ζ̌ },                                                               χ̄κ ,     N ≤ r1 ,
+              (q − q)λ 1 − ι                                                                      x̂WLS
+                                                                                                    1   (N + 1) − x̂WLS
+                                                                                                                    1   (N )            ≤                     (24)
+                                                                                                                                           0,        N > r1 ,
+
+with
+                                                                                                where
+     √                                              p
+                                                   εz̄ 8m̄(ū + 1)
+ψ̌ = eξ̄ n̄(ū+1) − 1 ,                       η̌ =                 ,                                              ψ̄ η̄   2η̄c
+                                                         r                                              χ̄ =            +
+                                                 q−q                                                           (q − q)ω 1 − ι
+ζ̌ = 2 + log √1 (q/q),                       c=       ,
+                                                                                                                     √                               √
+                        λ                        2qqι                                                   ψ̄ = eξ̄(ū+1) n̄ − 1,       η̄ = εz̄(ū + 1) 8m̄r −1 .
+                                                                                −1
+ξ¯ = max log kI + (
+                                    X
+                                                    −1
+                                               T
+                                              Cj,k Rj,k Cj,k ) CjT Rj−1 Cj            k,
+          j
+                                    k∈Nj
+                                                                                                Combining (22)-(23) and Lemma 29, we can prove our
+z̄ = max {kzi k∞ , kzi,j k∞ } .                                                                 main result.
+        i,j
+
+
+
+
+                                                                                           10
+PROOF. (of Theorem 17) Clearly, κ̌ ≤ κ < 1. Hence,
+from (22)-(24)
+
+    kx̂1 (N ) − x̂WLS
+                  1   k
+=kx̂1 (N ) − x̂1 (l1 + 1) + x̂WLS
+                              1   (l1 + 1) − x̂WLS
+                                               1   (r1 )k
+≤kx̂1 (l1 + 1) − x̂1 (N )k + kx̂WLS
+                                1   (l1 + 1) − x̂WLS
+                                                 1   (r1 )k
+       N −1                  1 −1
+                            rX
+       X                                     χ̄            ˇ
+                                                           χ̄
+ ˇ
+≤χ̄             κ̌t + χ̄             κt ≤       κl1 +1 +        κ̌l1 +1 .
+                                            1−κ          1 − κ̌
+      t=l1 +1              t=l1 +1
+
+
+Since a1 ≥ α1 , a2 ≥ α2 , b1 ≤ β1 and b2 ≤ β2 , it follows
+that ω ≥ λ and ζ ≥ ζ̌. We also have χ̄ˇ ≤ χ̄ and κ̌ ≤ κ.
+It then follows that
+                                                2χ̄ l1 +1                                  Fig. 1. Network communication graph.
+                 kx̂1 (N ) − x̂WLS
+                               1   k≤               κ     .
+                                               1−κ
+                                                                                 the IMI one, regardless of the value of δIMI used in the
+                       2χ̄                                                       latter.
+Since the quantity 1−κ     only depends on m̄, ū, n̄ and
+the system parameters Ci,j , Ci , Ri,j , Ri , zi,j , zi for some
+i and j, the result then follows.
+
+
+7    Simulations
+
+In this section we present experimental evidence to sup-
+port our claims, namely, that in the case of cyclic com-
+munication graphs, the studied distributed WLS algo-
+rithm (DWLS) converges faster than the iterative matrix
+inversion (IMI) algorithm in [16], and that the accuracy
+of the DWLS algorithm at a given node improves with
+the size of the loop-free depth of that node. To this end,
+we use a network formed by 330 nodes, whose commu-
+nication graph is depicted in Figure 1. In this network,
+all nodes have the same measurements equations, which
+are given by                                                                     Fig. 2. Comparison between DWLS and IMI algorithms. The
+                                                                                 delayed start δIMI of the IMI algorithm ranges from 0 to 6.
+                      zi = xi + vi ;
+                    zi,j = 0.4xi + 0.4xj + vi,j .                                In the second simulation we evaluate the mismatches be-
+                                                                                 tween the estimation and its associated covariance, pro-
+with xi ∈ R3 , Ri = Ri,j = 0.01, for all i = 1, 2, . . . , 330                   duced at each node, and at time li + 1 (recall that li
+and j ∈ Ni .                                                                     denotes the loop-free depth of node i), with respect to
+                                                                                 those yield by the centralized WLS method. Figures 3
+In the first simulation we compare the convergence rate                          and 4 show these differences for the covariance and es-
+of the DWLS and IMI methods. As explained in [16],                               timate, respectively, for each node, as a function of the
+before starting with the matrix inversion iterations, the                        loop-free depth. We see how both differences decay ex-
+IMI method needs to invest a number δIMI of iterations                           ponentially with the loop-free depths of each node. We
+in order to obtain estimates of the largest and smallest                         also show in the same figures the bound on these decays
+eigenvalues of certain matrix. This delayed start is re-                         derived in Theorems 11 and 17, respectively.
+quired in order to avoid that the transients caused by
+too rough estimates of these eigenvalues brings the esti-
+mation mismatch (with respect to the estimation yield                            8   Conclusions
+by the centralized WLS method) to very big values from
+which the algorithm would take a long time to converge.                          A recently proposed distributed WLS estimation al-
+In Figure 2 we show the combined estimation mismatch                             gorithm converges in finite time if the communication
+of all 330 nodes, yield by the DWLS algorithm and the                            graph is acyclic. We studied the accuracy of this algo-
+IMI algorithm with δIMI ranging from 0 to 6. We see                              rithm, when used in cyclic graphs. We showed that, for a
+that the DWLS algorithm converges much faster than                               class of system satisfying certain requirements in terms
+
+
+                                                                            11
+                                                                  · · · ≥ σn (X) denote the singular-values of X. We have
+                       Covariance mismatch
+       −5
+                       Decaing rate bound                                                    
+     10
+                                                                  σk P Q−1 = σk Q−1/2 P Q−1/2
+                                                                          
+
+                                                                                          Q−1/2 P Q−1/2 x, x
+                                                                              = max min
+     10
+       −10
+                                                                                V∈Γk x∈V         hx, xi
+                                                                                              −1/2
+                                                                                          PQ        x, Q−1/2 x
+                                                                              = max min
+                                                                                V∈Γk x∈V         hx, xi
+       −15
+     10                                                                                      hP x, xi
+                                                                              = max min
+                                                                                V∈Γk x∈V Q1/2 x, Q1/2 x
+               1   2   3       4         5     6   7   8
+                             Loop−free depth
+                                                                                         hP x, xi
+                                                                              = max min           .                    (A.1)
+Fig. 3. Covariance mismatch between DWLS and centralized                        V∈Γk x∈V hQx, xi
+WLS.
+                                                                  For a given subspace V ∈ Γk , let
+          −2
+     10
+                                                                                                 hP x, xi
+                                                                                    Ξ(V) = min              .
+     10
+          −4                                                                                 x∈V hQx, xi
+
+
+
+     10
+          −6                                                      Let also P̃ = BP B T and Q̃ = BQB T , we then have
+                                                                                        D        E
+          −8
+     10                                                                                 P̃ x, x
+                                                                  σk P̃ Q̃−1 = max min D         E
+                           Estimation mismatch                                 V∈Γk x∈V
+     10
+          −10                                                                             Q̃x, x
+                           Decaying rate bound
+                                                                                          P B T x, B T x
+     10
+          −12                                                                 = max min
+               1   2   3       4         5     6   7   8                        V∈Γk x∈V hQB T x, B T xi
+                             Loop−free depth
+                                                                              = max Ξ B T V
+                                                                                            
+                                                                                 V∈Γk
+Fig. 4. Estimation mismatch between DWLS and centralized
+WLS.                                                                          ≤ max Ξ (W)
+                                                                                W∈Γk
+                                                                              = σk P Q−1 .
+                                                                                        
+of topological sparsity and signal-to-noise ratio, the er-
+ror between the state estimate yield by this distributed          Then, Property 3) follows because the number of non-
+algorithm, and that from centralized WLS, decrease ex-            zero eigenvalues of P Q−1 is no less than that of P̃ Q̃−1 .
+ponentially at each node, with the increase of its local
+loop-free depth. The same property holds for the differ-
+ence between the estimation error covariance produced             Property 4): For any vector x, we have
+by the distributed algorithm and that from centralized              D                         E
+WLS. The derived expressions are explicit and easy to                Q−1/2 (P + W ) Q−1/2 x, x
+interpret. An implication of our results is that, even in          D                  E D                  E
+applications where the communication graph has a cyclic           = Q−1/2 P Q−1/2 x, x + Q−1/2 W Q−1/2 x, x
+topology, due to its faster convergence, the studied algo-
+rithm may be a preferred option over algorithms based             ≥ P Q−1 x, x .
+on iterative matrix inversion, provided that the loop-free
+depths of those nodes of interest are sufficiently large.         Hence, δ(P + W, Q) ≥ δ(P, Q) holds from above inequal-
+                                                                  ity, equality (A.1) and the fact that σk (P Q−1 ) ≥ 1 for
+                                                                  all k.
+
+A   Proof of Proposition 7                                        Property 5): The case when B is invertible follows im-
+                                                                  mediately from the invariance of eigenvalues under simi-
+                                                                  larity transformations[4]. Hence, we show the case when
+Properties 1)-2) come from definition and P. 947 in [4].
+                                                                  B is non-invertible. Let Λ = Q1/2 P −1 Q1/2 and de-
+                                                                  compose B into B = U T diag{∆, 0}V , where U and V
+Property 3): Let X ∈ Rn×n and Γk denote the set of                are unitary matrices and ∆ > 0 is diagonal. Let also
+all k-dimensional subspaces of Rn . Recall that σ1 (X) ≥          V Q−1/2 = [T T X T ]T , with T having as many rows as
+
+
+                                                             12
+∆. Then,                                                                                              Then,
+                           "           #                                      "          #
+                               ∆0                                                 ∆T 0
+ BP    −1    T
+            B =U      T
+                                           VQ   −1/2
+                                                       ΛQ      −1/2
+                                                                      V   T
+                                                                                             U            P Q−1 ≤ eδ(P,Q) ⇒ P Q−1 ≤ eδ(P,Q) I ⇒
+                               0 0            0 0                                                                                                
+                           "     #" #     "    #                                                               P ≤ eδ(P,Q) Q ⇒ P − Q ≤ eδ(P,Q) − 1 Q,
+                               ∆0 T
+                                 h       i ∆T 0
+                    T               T  T
+                 =U             Λ T X            U
+                        0 0 X               0 0                                                       and the result follows.
+                      "           #
+                             T T
+                    T ∆T ΛT ∆ 0
+                 =U                 U.
+                           0     0
+                                                                                                      B    Proof of Lemma 14
+Similarly, we obtain
+
+                                                                                                      For each N ∈ N, consider the line LN built from G
+                                               "           #
+                      −1       T           T    ∆T T T ∆T 0
+                 BQ        B =U                                           U.                          as described in Section 3.3. Recall the Notation 9, let
+                                                       0          0                                   Q̃i (n, Q), n ≤ N , denote the information matrix at
+                                                                                                      Node i and step n, when running the distributed WLS
+Thus, for any ε > 0, it follows that                                                                  algorithm in the network LN with initial condition set
+                                                                                                      Q. And the similar notation follows Q̃i→i−1 (n, Q) and
+            δ(εI + BP −1 B T , εI + BQ−1 B T )
+                                                                                                      Q̃i→i+1 (n, Q). To simplify the expressions, we denote
+        =δ(εI + ∆T ΛT T ∆T , εI + ∆T T T ∆T ).                                       (A.2)            Q̃i→i−1,i (n, Q) := Qi (n, Q) − Qi−1→i (n − 1, Q) in this
+                                                                                                      proof.
+Since ∆T has full row rank, it follows from Property 3)
+that
+                                                                                                      Then, based on the properties in Proposition 7, the Rie-
+             δ(∆T ΛT T ∆T , ∆T T T ∆T )                                                               mannian distance between Q̃1 (N, Q1 ) and Q̃1 (N, Q2 ) is
+            ≤δ(Λ, I) = δ(P −1 , Q−1 ) = δ(P, Q).                                     (A.3)            given by
+
+Then, from (A.2) and (A.3), we have                                                                                                  
+                                                                                                          δ Q̃1 (N, Q1 ), Q̃1 (N, Q2 )
+      δ(W + BP −1 B T , W + BQ−1 B T )                                                                 =δ(C̃1T R̃1−1 C̃1 + C̃1,2
+                                                                                                                             T
+                                                                                                                                 (R̃1,2 + C̃2,1 Q̃−1
+                                                                                                                                                  2→1,2 (N − 1, Q1 )
+  = lim+ δ[(W − εI) + (εI + BP −1 B T ),
+       ε→0
+                                                                                                              T −1
+                                                                                                          · C̃2,1 ) C̃1,2 , C̃1T R̃1−1 C̃1 + C̃1,2
+                                                                                                                                               T
+                                                                                                                                                   (R̃1,2
+                                           −1     T
+      (W − εI) + (εI + BQ                       B )]                                                     + C̃2,1 Q̃−1                    T −1
+                                                                                                                   2→1,2 (N − 1, Q2 )C̃2,1 )   C̃1,2 )
+ (b)  α                                                                                                      α̃1,N
+  ≤        lim δ(εI + BP −1 B T , εI + BQ−1 B T )                                                      ≤               δ(R̃1,2 + C̃2,1 Q̃−1                  T
+                                                                                                                                         2→1,2 (N − 1, Q1 )C̃2,1
+    α + β ε→0+                                                                                           α̃1,N + β̃1,N
+      α
+  =        lim δ(εI + ∆T1 ΛT1T ∆T , εI + ∆T1 T1T ∆T )                                                   , R̃1,2 + C̃2,1 Q̃−1                  T
+                                                                                                                          2→1,2 (N − 1, Q2 )C̃2,1 )
+    α + β ε→0+
+      α                                                                                                      α̃1,N           α̃2,N
+  =       δ(∆T1 ΛT1T ∆T , ∆T1 T1T ∆T )                                                                 ≤
+    α+β                                                                                                  α̃1,N + β̃1,N α̃2,N + β̃2,N
+      α
+  ≤       δ(P, Q),                                                                                        · δ(Q̃2→1,2 (N − 1, Q1 ), Q̃2→1,2 (N − 1, Q2 )),
+    α+β
+
+where (b) above follows from [4, Proposition 1.6] and                                                 where
+
+  α = lim max{kεI + BP −1 B T k, kεI + BQ−1 B T k}                                                                        T       −1
+        ε→0+                                                                                               α̃1,N = max kC̃i,i+1 R̃i,i+1 C̃i,i+1 k,
+                           −1      T             −1        T                                                         i≤N
+    = max{kBP B k, kBQ B k},                                                                                                             −1
+                                                                                                                                   T
+                                                                                                           α̃2,N = max kC̃i+1,i (C̃i+1 R̃i+1 C̃i+1 )−1 C̃i+1,i
+                                                                                                                                                         T
+                                                                                                                                                               k,
+  β = lim+ σmin (W − εI) = σmin (W ).                                                                                i≤N
+        ε→0
+                                                                                                           β̃1,N = min σmin (C̃iT R̃i−1 C̃i ),
+                                                                                                                     i≤N
+
+Property 6): We have                                                                                       β̃2,N = min σmin (R̃i,i+1 ).
+                                                                                                                     i≤N
+              v
+              u n
+              uX 2
+   δ(P, Q) = t     log σk (P Q−1 ) ≥ log P Q−1 .                                                      Recall the definition of line LN in Subsection 3.3, it
+                          k=1                                                                         follows that α̃1,N ≤ α1 , α̃2,N ≤ α2 and β̃1,N ≥ β1 ,
+
+
+                                                                                                 13
+β̃2,N ≥ β2 . Then, we have                                             Q̃j→j−1,j (2, Q0 ) ≥ Q̃j→j−1,j (1, Q0 ), for any j. Hence,
+                                                                     Q̃i→i−1,i (N, QM ) is a decreasing function of N and
+     δ Q̃1 (N, Q1 ), Q̃1 (N, Q2 )                                      Q̃i→i−1,i (N, Q0 ) is an increasing function of N . Thus,
+                                                                     we have
+    ≤λδ Q̃2→1,2 (N − 1, Q1 ), Q̃2→1,2 (N − 1, Q2 )
+                                                                       Q1−1 (l1 + 1, QM ) ≤ Q−1        −1          0
+                                                                                               1 (N ) ≤ Q1 (l1 + 1, Q ). (C.1)
+    ≤λN −1 δ Q̃N →N −1,N (1, Q1 ), Q̃N →N −1,N (1, Q2 ) .
+
+                                                                       The computation of Q̃−1                    0
+                                                                                                   1 (l1 + 1, Q ) is done by im-
+Now, for any initial condition Q,                                      plicitly assuming that Q̃l1 +2→l1 +1 (0, Q0 ) = 0. On the
+                           T −1
+                                                                       other hand, notice that Q̃−1                  0
+                                                                                                         1 (l1 + 1, Q ) would equal
+    Q̃N →N −1,N (1, Q) = C̃N R̃N C̃N + Q̃N +1→N (0, Q),                Cov1 WLS                          0
+                                                                                 if Q̃l1 +2→l1 +1 (0, Q ) is given with a properly
+                                                                       chosen positive semi-definite value. Hence, it follows that
+hence                                                                  Q̃−1            0         WLS
+                                                                         1 (l1 + 2, Q ) ≥ Cov1         .
+  T −1
+C̃N R̃N C̃N ≤ Q̃N →N −1,N (1, Q)
+                  T −1          T        −1
+                                                                       Similarly, on the computation of Q̃−1                            M
+                                                                                                                            1 (l1 + 1, Q ),
+              ≤ C̃N R̃N C̃N + C̃N,N +1 R̃N,N +1 C̃N,N +1 .             it is implicitly assumed that Q̃l1 +2→l1 +1 (0, Q ) =          M
+
+                                                                       C̃lT1 +1,l1 +2 R̃l−1
+                                                                                         1 +1,l1 +2
+                                                                                                    C̃l1 +1,l1 +2 , which means that the es-
+Recall that |Ti | is the number of nodes in the i-th layer
+of AN . Since |Ti | ≤ (ū + 1)ūi−1 , we then have                     timate of x̃l1 +2 do not have error, i.e., x̃ˆl1 +2 = x̃l1 +2 .
+                                                                       Hence, Q̃−1                    M
+                                                                                     1 (l1 + 1, Q ) ≤ Cov1
+                                                                                                                    WLS
+                                                                                                                        , and we have
+                                               
+    δ Q̃N →N −1,N (1, Q1 ), Q̃N →N −1,N (1, Q2 )
+                                                                         Q1−1 (l1 + 1, QM ) ≤ CovWLS
+                                                                                                 1   ≤ Q−1          0
+                                                                                                        1 (l1 + 1, Q ). (C.2)
+       T −1
+ ≤δ(C̃N  R̃N C̃N
+      T −1          T
+  , C̃N R̃N C̃N + C̃N,N      −1                                        Then, the result follows from (C.1) and (C.2).
+                        +1 R̃N,N +1 C̃N,N +1 )
+  p
+ ≤ n̄|TN |
+                                                                       D     Proof of Lemma 19
+                          −1
+                  T
+  max log kI + (C̃i,i+1 R̃i,i+1 C̃i,i+1 )(C̃iT R̃i−1 C̃i )−1 k
+  i≤N
+  √ p                                                                  Recall that xTN = x̃T1 , · · · , x̃TN , we have
+                                                                                                           
+ ≤ n̄ |TN |
+                                        
+                  X
+                                −1
+                                                           −1             kAN xN k2
+  max log I +             T
+                        Cj,k  Rj,k  Cj,k  CjT Rj−1 Cj                     N                                  N −1
+       j                                                                   X                      2           X                                               2
+                       k∈Nj
+                                                                       =           C̃i x̃i             +              C̃i,i+1 x̃i + C̃i+1,i x̃i+1
+ ≤δ̄ū(N −1)/2 .                                                           i=1                                i=1
+                                                                           N                                        N −1
+                                                                                                                                                              "           # 2
+                                                                           X                 2
+                                                                                                              2
+                                                                                                                    X                                   2          x̃i
+Thus,                                                                  ≤           C̃i           kx̃i k +                      [C̃i,i+1 , C̃i+1,i ]
+                                                                           i=1                                       i=1                                          x̃i+1
+                                                              
+    δ (Q1 (N, Q1 ), Q1 (N, Q2 )) = δ Q̃1 (N, Q1 ), Q̃1 (N, Q2 )
+                                                 −1
+                               ≤ δ̄ū(N −1)/2 λN
+                                               1    = δ̄ρN −1 .                 N                     2                N −1                                   2
+                                                                                                          kx̃i k2 +                                               kx̃i k2
+                                                                                X                                      X
+                                                                            =            C̃i                                           [C̃i,i+1 , C̃i+1,i ]
+                                                                                 i=1                                       i=1
+C     Proof of Lemma 16                                                              N                                             2
+                                                                                                                                       kx̃i k2
+                                                                                     X
+                                                                                 +               [C̃i−1,i , C̃i,i−1 ]
+For each N ∈ N, consider the network LN built from G as                                i=2
+described in Section 3.3. Recall the notations Q̃i (N, Q)                       N 
+                                                                                X                         2                                      2
+and Q̃i→i−1,i (N, Q) for any initial condition Q in the                     ≤                    C̃i          + [C̃i,i+1 , C̃i+1,i ]
+proof of Lemma 14, We have that                                                  i=1
+                                                                                                                               
+                                                                                                                           2
+                                                                                                                                            2
+                                                                                 + [C̃i−1,i , C̃i,i−1 ]                            kx̃i k
+    Q̃i→i−1,i (N, Q) = C̃iT R̃i−1 C̃i + C̃i,i+1
+                                          T
+                                                (R̃i,i+1
+     + C̃i,i+1 (Q̃i+1→i,i+1 (N − 1, Q))−1 C̃i+1,i
+                                            T
+                                                  )−1 C̃i,i+1               ≤ max{kC̃i k2 + k[C̃i−1,i , C̃i,i−1 ]k2
+                                                                                   i
+                                                                                                                               N
+                                                                                                                                        kx̃j k2 .
+                                                                                                                               X
+is a increasing function of Q̃i+1→i,i+1 (N − 1, Q).                              + k[C̃i,i+1 , C̃i+1,i ]k2 }
+Also, Q̃j→j−1,j (2, QM ) ≤ Q̃j→j−1,j (1, QM ) and                                                                              j=1
+
+
+
+
+                                                                  14
+Combining with                                                                and
+                                                                                                         T       −1
+                                √                                                             Qj,j+1 = C̃j,j+1 R̃j,j+1 C̃j+1,j .           (F.2)
+     k[C̃i,i+1 , C̃i+1,i ]k ≤       2 max{kC̃i,i+1 k, kC̃i+1,i k},            Let
+                                                                                                                T       −1
+                                                                                         Γ̃j (N ) = Γj (N ) − C̃j,j−1 R̃j−1,j C̃j,j−1 .
+we have                                  2       2                            Putting (F.1)-(F.2) into (18), for any j = 1, 2, . . . , N −1,
+                      kAN xN k2 ≤ ε̃ kxN k .
+                                                                              we get
+Also,
+                                                                              Γ̃j (N ) = C̃jT R̃j−1 C̃j + C̃j,j+1
+                                                                                                            T
+                                                                                                                  Γ̌−1
+                                                                                                                    j (N )C̃j,j+1 .        (F.3)
+               2      2
+    kAN xN k       ≥ σmin                  2
+                          (C̃1 )kx̃1 k2 + σmin (C̃2 )kx̃2 k2 + . . .
+                      2
+                   + σmin (C̃N )kx̃N k2 ≥ ε̃2 kxN k2 ,                        with
+
+completing the proof.                                                         Γ̌−1         −1        −1             −1        T       −1
+                                                                                j (N ) = R̃j,j+1 − R̃j,j+1 C̃j+1,j Γj+1 (N )C̃j+1,j R̃j,j+1
+                                                                                             −1        −1
+                                                                                         = R̃j,j+1 − R̃j,j+1 C̃j+1,j [Γ̃j+1 (N )
+E     Proof of Lemma 21                                                                      T
+                                                                                         + C̃j+1,j   −1
+                                                                                                   R̃j,j+1 C̃j+1,j ]−1 C̃j+1,j
+                                                                                                                         T       −1
+                                                                                                                               R̃j,j+1 .
+From [16, S 4], it follows that ∆k is the information
+                                                                              Using the matrix inversion lemma, for any j                      =
+matrix at node k of the system yk = Ak xk + wk . Hence,
+                                                                              1, 2, . . . , N − 1, we obtain
+∆−1
+  k = [Σk ]kk . Then,
+
+                                                                                     Γ̌j (N ) = R̃j,j+1 + C̃j+1,j Γ̃−1        T
+                                                                                                                    j+1 (N )C̃j+1,j .      (F.4)
+                  −1
+                      ∆−1      −1
+                          
+    σmin (∆k ) = σmax  k    = σmax ([Σk ]kk )
+                              (a)
+                                   −1
+                                ≥ σmax (Σk ) = σmin (Qk ) ≥ q̃,               Following similar steps, we also define
+
+                                                                                             ˜ j = ∆j − C̃j,j+1
+                                                                                             ∆            T       −1
+                                                                                                                R̃j,j+1 C̃j,j+1 ,
+where (a) follows from [27, S 2]. Following a similar ar-
+gument, we obtain
+                                                                              and obtain that
+                           σmax (∆k ) ≤ q̃,
+                                                                                          ˜ j = C̃jT R̃−1 C̃j + C̃j,j−1
+                                                                                          ∆                       T     ˇ −1 C̃j,j−1 ,
+                                                                                                                        ∆
+                                                                                                       j                  j
+which proves the result for ∆k . The result for Γk (N )                                   ˇ                         ˜ −1
+follows from a similar argument, after noting that Γk (N )                                ∆j = R̃j−1,j + C̃j−1,j ∆ C̃ T j−1       .
+                                                                                                                              j−1,j
+is the information matrix at node k of the system
+
+                                                                              Step 2: From (F.3)-(F.4), and using the properties of
+                                  
+            Akk Ak,k+1      0                    
+    yk                              x̃k          w                           Riemannian Distance in Proposition 7, we get
+                     ..                          k 
+            
+         0            .
+                                   
+  ..  
+                             0     .     .. 
+  . = .                               .
+                                         .  +       .
+                                                                                                          
+                                             . 
+                                  
+         .         ..                                                           δ Γ̃j (N + 1), Γ̃j (N )
+ 
+                .       .  AN −1,N
+                                   
+    yN                              x̃N         wN
+                                                                                 =δ(C̃jT R̃j−1 C̃j + C̃j,j+1
+                                                                                                       T
+                                                                                                             Γ̌−1
+            
+               0     ···    AN,N                                                                               j (N + 1)C̃j,j+1
+                                                                                  , C̃jT R̃j−1 C̃j + C̃j,j+1
+                                                                                                       T
+                                                                                                             Γ̌−1
+                                                                                                               j (N )C̃j,j+1 )
+Finally, Φk (N ) is the information matrix at node k of                                   π̃1,j (N )
+                                                                                                           δ Γ̌−1              −1
+                                                                                                                                      
+the system yN = AN xN +wN , and the result for Φk (N )                           ≤                              j (N + 1), Γ̌j (N )
+                                                                                   π̃1,j (N ) + τ̃1,j (N )
+also follows.
+                                                                                          π̃1,j (N )                              
+                                                                                 =                         δ Γ̌j (N + 1), Γ̌j (N )
+F     Proof of Lemma 22                                                            π̃1,j (N ) + τ̃1,j (N )
+                                                                                          π̃1,j (N )
+                                                                                 =                         δ(R̃j,j+1 + C̃j+1,j Γ̃−1
+                                                                                                                                 j+1 (N + 1)
+We split the proof into four steps:                                                π̃1,j (N ) + τ̃1,j (N )
+                                                                                        T
+                                                                                   · C̃j+1,j  , R̃j,j+1 + C̃j+1,j Γ̃−1          T
+                                                                                                                     j+1 (N )C̃j+1,j )
+Step 1: From (14) and (16), we obtain
+                                                                                          π̃1,j (N )              π̃2,j (N )
+                                                                                 ≤
+         C̃1T R̃1−1 C̃1 + C̃1,2    −1
+       
+                             T                                                     π̃1,j (N ) + τ̃1,j (N ) π̃2,j (N ) + τ̃2,j (N )
+       
+                                R̃1,2 C̃1,2 ,          j = 1,
+            T −1                      −1
+                             T
+                                                                                   · δ(Γ̃−1                −1
+       
+       C̃j R̃j C̃j + C̃j,j+1 R̃j,j+1 C̃j,j+1                                             j+1 (N + 1), Γ̃j+1 (N ))
+       
+       
+              T        −1
+Qjj = +C̃j,j−1       R̃j,j−1 C̃j,j−1 ,                  2 ≤ j ≤ N − 1,                    π̃1,j (N )              π̃2,j (N )
+       
+         C̃ T
+              R̃ −1
+                    C̃                                                           =
+                                                                                   π̃1,j (N ) + τ̃1,j (N ) π̃2,j (N ) + τ̃2,j (N )
+       
+       
+          N N        N
+              T          −1
+       
+         +C̃N,N    −1 R̃N −1,N C̃N,N −1 ,               j=N
+                                                                                                                    
+                                                                                   · δ Γ̃j+1 (N + 1), Γ̃j+1 (N ) ,
+                                                                 (F.1)
+
+
+                                                                         15
+where                                                                  Step 4: From the Proposition 7,
+
+π̃1,j (N ) =   max       T
+                      C̃j,j+1 Γ̌−1                                          Φ−1           −1
+                                                                             j (N + 1) − Φj (N )
+                                 j (Ñ )C̃j,j+1
+           Ñ =N,N −1                                                                    −1      −1
+                                                                                                             
+                    T     −1                                                      ≤ eδ(Φj (N +1),Φj (N )) − 1 Φ−1
+                                                                                                               j (N ) .
+         ≤ max kC̃i,i+1 R̃i,i+1 C̃i,i+1 k = α̃1,N ,
+           i≤N
+                                
+τ̃1,j (N ) = σmin C̃jT R̃j−1 C̃j                                       Now, using Lemma 21, we get
+                                   
+           ≥ min σmin C̃iT R̃i−1 C̃i = β̃1,N ,                             Φ−1 (N + 1) − Φ−1 (N )
+               i≤N
+                                                                           j N −j       j                    N −j
+                                                                                                                     
+                                                                         ≤ e ψ̃N λ̃N        −1
+                                                                                     − 1 Φj (N ) ≤ q̃ −1 eψ̃N λ̃N − 1 .
+
+
+π̃2,j (N ) =     max        kC̃j+1,j Γ̃−1         T
+                                       j+1 (Ñ )C̃j+1,j k
+               Ñ =N,N −1                                              G     Proof of Lemma 27
+         ≤ max kC̃i+1,i (C̃iT R̃i−1 C̃i )−1 C̃i+1,i
+                                              T
+                                                    k
+               i≤N
+           = α̃2,N ,                                                   Following the equivalence between x̂1 (N ) in G and
+                                                                   x̂1 (LN ) in LN , we have
+τ̃2,j (N ) = σmin R̃j,j+1 ≥ min σmin R̃i,i+1
+                                       i≤N
+                                                                            kx̂1 (N + 1) − x̂1 (N )k = kx̂1 (LN +1 ) − x̂1 (LN )k .
+         = β̃2,N .
+
+                                                                                                        n̄|TN |ξ˜¯N
+                                                                                                       p
+                      α̃           α̃2,N
+                                                                       Since     ψ̃N       √=                         and   η̃N +1    =
+Recall that λ̃N = α̃ 1,N                    , we then have                          2  3/2
+                                                                                         ε̃   m̄|Ti |z̄˜N
+                    1,N +β̃1,N α̃2,N +β̃2,N
+                                                                       maxi≤N +1              r̃          ,   from Lemma 26 and taking
+                                                                     J = ⌈N
+                                                                            α̌ ⌉, we have
+ δ Γ̃j (N + 1), Γ̃j (N )
+                                                                    kx̂1 (LN +1 ) − x̂1 (LN )k
+≤λ̃N δ Γ̃j+1 (N + 1), Γ̃j+1 (N )                                              N/α̌+1                                                
+                                                                                r̃                    N −N/α̌−1
+                                                                                                ψ̃N λ̃N
+                                                                                                                            2c̃ N/α̌
+     −j
+                                                                  ≤η̃N +1                   e                   − 1     +        ι̃
+≤λ̃N
+   N    δ Γ̃N (N + 1), Γ̃N (N )                                                 (r̃ − 1)q̃                                  1 − ι̃
+                                                                                 3/2
+                                                                                         p
+                                                                               2 ε̃ m̄|Ti |z̄˜N r̃        N/  α̌+1
+                                                                 
+     −j
+≤λ̃N
+   N    δ C̃NT −1          T −1
+               R̃N C̃N , C̃N             T
+                             R̃N C̃N + C̃N,N      −1
+                                             +1 R̃N,N +1 C̃N,N +1   = max                             [
+                                                                      i≤N  +1             r̃            (r̃ − 1)q̃
+                                                                         √
+            q
+  ≤ λ̃N  −j
+              n̄|T | ˜
+                     ¯
+                     ξ 2 = ψ̃ λ̃N −j ,
+                                                                             n̄|T   | ˜ λ̃N −N/α̌−1
+                                                                                      ξ̄
+                                                                                                                  2c̃ N/α̌
+      N           N N        N N                                      · e         N N N
+                                                                                                      −1 +              ι̃   ]
+                                                                                                                 1 − ι̃
+
+                                                                       Following the similar definition as in Lemma 23, we let
+Step 3: From (18), we have                                             r = q/q. Substituting the structure of LN in Subsec-
+                                                                       tion 3.3, it follows that
+   Φj (N ) = Γj (N ) − Qj,j−1 ∆−1
+                               j−1 Qj−1,j
+                                                                           kx̂1 (LN +1 ) − x̂1 (LN )k
+           = Γj (N ) + ∆j − Qj,j                                                                      p
+                                                                                               23/2 ε m̄|Ti |z̄ r(N/ζ̌)+1
+           = Γj (N ) + ∆j − C̃jT R̃j−1 C̃j                                         ≤ max                       [
+                                                                                      i≤N +1            r        (r − 1)q
+               T
+           − C̃j,j+1   −1
+                     R̃j,j+1             T
+                             C̃j,j+1 − C̃j,j−1   −1
+                                               R̃j,j−1 C̃j,j−1                    √          N −(N/ζ̌)−1
+                                                                                                                   2c N/ζ̌
+                                                                                · e n̄|TN |ξ̄λ            −1 +         ι    ]. (G.1)
+                          ˜       T −1
+           = Γ̃j (N ) + ∆j − C̃j R̃j C̃j                                                                          1−ι
+                          T
+           = Γ̃j (N ) + C̃j,j−1 ˇ −1 C̃j,j−1 .
+                                ∆ j
+                                                                       Combining with maxi≤N |Ti | ≤ (ū + 1)ūN −1 , the in-
+                                                                       equality in (G.1) is upper bounded by
+Then,
+                                                                          kx̂1 (LN +1 ) − x̂1 (LN )k
+ δ Φ−1              −1
+                                                                                               p
+      j (N + 1), Φj (N ) = δ (Φj (N + 1), Φj (N ))                                      23/2 ε m̄(ū + 1)ūN z̄ r(N/ζ̌)+1
+                                                                                    ≤                           [
+                 T
+= δ(Γ̃j (N +1)+C̃j,j−1 ˇ −1 C̃j,j−1 , Γ̃j (N )+C̃ T ∆
+                       ∆                              ˇ −1                                           r            (r − 1)q
+                         j                       j,j−1 j C̃j,j−1 )
+                                                                         √           N −1    N −(N/ζ̌)−1
+                                                                                                                   2c N/ζ̌
+                     ≤ δ Γ̃j (N + 1), Γ̃j (N ) ≤ ψ̃N λ̃N
+                                                       N
+                                                         −j
+                                                            .            · e n̄(ū+1)ū      ξ̄λ
+                                                                                                            −1 +        ι   ]. (G.2)
+                                                                                                                   1−ι
+
+
+
+                                                                  16
+Under condition κ̌ < 1 and J = ⌈ Nζ̌ ⌉, combining that                       where
+ζ̌ > 2, it follows that                                                           h                                            iT
+                                                                             x̌n = xŤ T (1) , xŤ T (2) , . . . , xTŤ (|Ť |) .
+                                                                                         n               n            n    n
+            ū(N −1)/2 λN −(N/ζ̌)−1 ≤ (λū)(N −1)/2 ≤ κ̌ < 1.
+                                                                             Here,
+
+Then, following the Lemma 30, it follows                                                   "      #
+                                                                                            ȞŤn
+        √                                                                          Čn =                 ,
+    e   n̄(ū+1)ūN −1 ξ̄λN −(N/ζ̌)−1
+                                        −1                                                       V̌Ťn
+                       √               √
+                                                                             Čn,n+1 = diag{F1,Ťn (1) , F1,Ťn (2) , . . . , F1,Ťn (|Ťn |) },
+                     ≤ eξ̄ n̄(ū+1) − 1 ( ū)N λN −(N/ζ̌)−1 .
+                                                                             Čn+1,n = diag{F2,Ťn (1) , F2,Ťn (2) , . . . , F2,Ťn (|Ťn |) }
+
+Denote d = r/λ, it follows that                                              with
+
+                             ζ̌ = log √1 d,                                        ȞŤn = diag{CŤn (1) , CŤn (2) , . . . , CŤn (|Ťn |) },
+                                         λ                                                 
+                                                                                         Cu,v , x = (u, v) and y = bŤn (u),
+and we have                                                                   V̌Ťn x,y = Cv,u , x = (u, v) and y = bŤn (v),
+                                                                                             0,      else.
+                                                                                           
+   kx̂1 (N + 1) − x̂1 (N )k
+                                √                 
+                                   ξ̄ n̄(ū+1)
+                                 e             − 1   dN/ζ̌+1                 as the (x, y)-th block of V̌Ťn , and
+          p
+     3/2                 N
+   2 ε m̄(ū + 1)ū z̄
+ ≤                           (
+                r                          (r − 1)q                                h                                          iT
+     √ N            2c N/ζ̌                                                F1,i = Ci,TŠ (1) Ci,TŠ (2) . . . Ci,TŠ (|Š |) ,
+   ·     ūλ      +       ι     )                                                         i          i                i    i
+                    1−ι                                                            h                                          iT
+                                                                             F2,i = CŠT (1),i CŠT (2),i . . . CŠT (|Š |),i .
+      p
+   εz̄ 8m̄(ū + 1)
+ ≤                                                                                           i               i         i   i
+
+             r
+      √                                                      
+          eξ̄ n̄(ū+1) − 1 d  √ N 2c √
+                                                   ( ūι1/ζ̌ )N 
+                                                                                                                           
+   ·                             ū λ +                                     Also, v̌n ∼ N 0, Řn and v̌n,n+1 ∼ N 0, Řn,n+1 , with
+               (r − 1)q                       1−ι
+
+           ψ̌d  √ N                2c √ 1/ζ̌ N                             Řn = diag{RŤn (1) , RŤn (2) , . . . , RŤn (|Ťn |)
+                                                    
+ ≤η̌                ū λ      +          ( ūι )
+        (r − 1)q                  1−ι                                              , Ru,v |(u,v)=1 , . . . , Ru,v |(u,v)=|UŤn | },
+       ψ̌rη̌       √          2η̌c √ 1/ζ̌ N
+ =              (ū λ)N +            ( ūι ) ≤ χ̄    ˇκ̌N .
+                                                                             and
+   (r − 1)λq                 1−ι
+
+                                                                             Řn,n+1 = diag{F3,Ťn (1) , F3,Ťn (2) , . . . , F3,Ťn (|Ťn |) },
+H       The structure of Ľ in Subsection 6.2.3                                  F3,i = diag{Ri,Ši (1) , Ri,Ši (2) , . . . , Ri,Ši (|Ši |) }.
+
+Suppose that the j ∈ Ťk , denote the parent set of Node j                   Finally
+by P̌j := {p|p ∈ Ťk−1 , p ∈ Nj } and child set of Node j
+by Šj := {p|p ∈ Ťk+1 , p ∈ Nj }. For any i ∈ Ťk , its                     žn = col{zŤn(1) , zŤn (2) , . . . , zŤn (|Ťn |)
+rank number in Ťk is denoted by bŤk (i). Furthermore, for                        , zu,v |(u,v)=1 , . . . , zu,v |(u,v)=|UŤn | },
+any i, j ∈ Ťk , if j ∈ Ni , the rank number of connection
+{i, j} is denoted by (i, j)(a scalar number). And the set
+                                                                             and
+of all connections between nodes in Ťk is denoted by
+UŤk = {(i, j)|i, j ∈ Ťk and j ∈ Ni }.                                                h                                                   iT
+                                                                             žn,n+1 = F4,TŤ (1) , F4,TŤ (2) , . . . , F4,TŤ (|Ť |) ,
+                                                                                               n             n                      n    n
+
+For each n = 1, · · · , r1 , the n-th Node in Ľ for x̂W
+                                                       1
+                                                         LS
+                                                            (k)                        h                                                iT
+follows                                                                          F4,i = zi,TŠ (1) , zi,TŠ (2) , . . . , zi,TŠ (|Š |) .
+                                                                                                    i            i             i   i
+
+
+
+     žn = Čn x̌n + v̌n ,                                      (H.1)        Note that the line Ľ for x̂W LS
+                                                                                                              (k) given in (H.1) and
+                                                                                                         1
+žn,n+1 = Čn,n+1 x̌n + Čn+1,n x̌n+1 + v̌n,n+1 ,               (H.2)        (H.2) is another expression of origin graph G.
+
+
+                                                                        17
+I   Some Additional lemmas                                           with
+                                                                                          √ 2               √
+Lemma 30 For every x ∈ R and 0 ≤ y ≤ 1,                                               (1 + r)                r−1
+                                                                                   K=         ,          q= √    .
+                                                                                         2ar                 r+1
+                    exy − 1 ≤ (ex − 1) y.
+                                                                     Then,
+PROOF. Fix x ∈ R. Let fx (y) = exy − 1 and gx (y) =
+(ex − 1) y. We have that                                                                               1
+                                                                              A−1 − p(A) = sup           − p(x) ≤ Kq n+1 .
+                                                                                                x∈σ(A) x
+      fx (0) = 0 = gx (0),          fx (1) = ex − 1 = gx (1).
+                                                                     Since An is nm-banded, it follows that p(A) is nm-
+Hence, the result follows since the function fx is concave           banded. Hence,
+and gx is linear.
+                                                                                                mn
+                "             #                                                     |i − j| >      ⇒ [p(A)]ij = 0.
+                    A BT                          p                                              2
+Lemma 31 If                        ≥ 0, then kBk ≤ kAk kCk.
+                    B C                                              Then
+
+                                                                            A−1 ij = A−1 − p(A) ij ≤ A−1 − p(A)
+                                                                                              
+PROOF. Taking the Schur complement of A, we have
+that                                                                                             2
+                                                                                                                2 |i−j|
+             A − B T C −1 B ≥ 0.                                                   ≤ Kq n+1 ≤ Kq m |i−j|+1 = Kq q m       ,
+Hence,
+                                                                     and the result follows.
+    kAk ≥ B T C −1 B = max xT B T C −1 Bx
+                               kxk=1
+
+                                           kBk2                      References
+               ≥ σmin C −1 max xT B T Bx =
+                          
+                                                ,
+                            kxk=1          kCk
+                                                                     [1] Behcet Acikmese, Milan Mandić, and Jason Speyer.
+and the result follows.                                                  Decentralized observers with consensus filters for distributed
+                                                                         discrete-time linear systems. Automatica, 50(4):1037–1052,
+Definition 32 We say that the block matrix A = [Aij ]                    2014.
+is m-banded if Aij = 0, whenever |i − j| > m/2.                      [2] Jirı Ajgl and Miroslav Šimandl. On linear estimation fusion
+                                                                         under unknown correlations of estimator errors. In 19th IFAC
+The following lemma is a straightforward generalization                  World Congress, 2014.
+of [8, Proposition 2.2] to the case of block matrices.               [3] Giorgio Battistelli and Luigi Chisci.       Kullback-Leibler
+                                                                         average, consensus on probability densities, and distributed
+Lemma 33 If A is an m-banded block matrix, for any                       state estimation with guaranteed stability. Automatica,
+(i, j)-th block of A−1 , we have                                         50(3):707–718, 2014.
+                                                                     [4] Philippe Bougerol. Kalman filtering with random coefficients
+                         −1
+                                          |i−j|                         and contractions.      SIAM Journal on Control and
+                          A        ij
+                                        ≤ cλ                             Optimization, 31(4):942–959, 1993.
+                                                                     [5] Giuseppe Calafiore and Fabrizio Abrate. Distributed linear
+where                                                                    estimation over sensor networks. International Journal of
+                                                                         Control, 82(5):868–882, 2009.
+                                 √    2
+                r−1                r−1 m                             [6] Federico Cattivelli and Ali Sayed. Diffusion strategies for
+             c=     ,          λ= √       ,                              distributed kalman filtering and smoothing. Automatic
+                 2b                r+1
+                                                                         Control, IEEE Transactions on, 55(9):2069–2084, 2010.
+
+r = b/a and a ≤ σ(A) ≤ b.                                            [7] Lingji Chen, Pablo Arambel, and Raman Mehra. Estimation
+                                                                         under unknown correlation: covariance intersection revisited.
+                                                                         IEEE Transactions on Automatic Control, 47(11):1879–1882,
+                                      2                                  2002.
+PROOF. Fix i and j and let n < m        |i − j|. From [8,
+                                                                     [8] Stephen Demko, William Moss, and Philip Smith. Decay
+Proposition 2.1], there exists a polynomial p, of degree
+                                                                         rates for inverses of band matrices.  Mathematics of
+n, satisfying                                                            computation, 43(168):491–499, 1984.
+                                                                     [9] Marcello Farina, Giancarlo Ferrari-Trecate, and Riccardo
+                       1
+                sup      − p(x) = Kq n+1 ,                               Scattolini. Moving-horizon partition-based state estimation
+               x∈[a,b] x                                                 of large-scale systems. Automatica, 46(5):910–918, 2010.
+
+
+
+                                                                18
+[10] Federica Garin and Luca Schenato. A survey on distributed             [29] Tong Zhou. On the controllability and observability of
+     estimation and control applications using linear consensus                 networked dynamic systems. Automatica, 52:63–75, 2015.
+     algorithms. Lecture Notes in Control and Information
+     Sciences, 406(1):75–107, 2010.
+[11] Vijay Gupta, Amir Dana, Joao Hespanha, Richard Murray,
+     and Babak Hassibi. Data transmission over networks for
+     estimation and control. IEEE Transactions on Automatic
+     Control, 54(8):1807–1819, 2009.
+[12] Aleksandar Haber and Michel Verhaegen. Moving horizon
+     estimation for large-scale interconnected systems. IEEE
+     Transactions on Automatic Control, 58(11):2834–2847, 2013.
+[13] Alexander T Ihler, John Iii, and Alan S Willsky. Loopy
+     belief propagation: convergence and effects of message errors.
+     Journal of Machine Learning Research, pages 905–936, 2005.
+[14] Usman Khan, José MF Moura, et al. Distributing the
+     kalman filter for large-scale systems. Signal Processing, IEEE
+     Transactions on, 56(10):4919–4935, 2008.
+[15] Junlin Li and Chassan Alregib. Distributed estimation
+     in energy-constrained wireless sensor networks.      IEEE
+     Transactions on Signal Processing, 57(10):3746–3758, 2009.
+[16] Damián Marelli and Minyue Fu. Distributed weighted
+     least-squares estimation with fast convergence for large-scale
+     systems. Automatica, 51:27–39, 2015.
+[17] Ion Matei and John Baras.            Consensus-based linear
+     distributed filtering. Automatica, 48(8):1076–1082, 2012.
+[18] Gérard Meurant. A review on the inverse of symmetric
+     tridiagonal and block tridiagonal matrices. SIAM Journal
+     on Matrix Analysis and Applications, 13(3):707–728, 1992.
+[19] Reza Olfati-Saber. Distributed kalman filter with embedded
+     consensus filters. Decision and Control, 2007 44th IEEE
+     Conference on, 1:8179–8184, 2005.
+[20] Fabio Pasqualetti, Ruggero Carli, and Francesco Bullo.
+     Distributed estimation via iterative projections with
+     application to power network monitoring. Automatica,
+     48(5):747–758, 2012.
+[21] Alejandro Ribeiro and Geogios Giannakis. Bandwidth-
+     constrained distributed estimation for wireless sensor
+     networks-part I: Gaussian case. IEEE Transactions on Signal
+     Processing, 54(3):1132–1143, 2006.
+[22] Alejandro Ribeiro and Geogios Giannakis. Bandwidth-
+     constrained distributed estimation for wireless sensor
+     networks-part II: unknown probability density function.
+     IEEE Transactions on Signal Processing, 54(7):2784–2796,
+     2006.
+[23] Xin Tai, Zhiyun Lin, Minyue Fu, and Yuanzhang Sun. A new
+     distributed state estimation technique for power networks.
+     In American Control Conference, pages 3338–3343, 2013.
+[24] Sekhar Tatikonda.      Convergence of the sum-product
+     algorithm. In Proceedings of Information Theory Workshop,
+     pages 222–225. IEEE, 2003.
+[25] Sekhar Tatikonda and Michael Jordan.       Loopy belief
+     propagation and Gibbs measures.       In Proceedings of
+     the Eighteenth conference on Uncertainty in artificial
+     intelligence, pages 493–500. Morgan Kaufmann Publishers
+     Inc., 2002.
+[26] Yair Weiss. Correctness of local probability propagation in
+     graphical models with loops. Neural Computation, 12:1–41,
+     2000.
+[27] Fuzhen Zhang. The Schur complement and its applications,
+     volume 4. Springer Science & Business Media, 2006.
+[28] Tong Zhou.      Coordinated one-step optimal distributed
+     state prediction for a networked dynamical system. IEEE
+     Transactions on Automatic Control, 58(11):2756–2771, 2013.
+
+
+
+                                                                      19
