@@ -10,6 +10,11 @@
 
 ## 主要交付物
 
+- `../paper/main.tex`：scope-frozen 正式论文稿；一个几何主定理、三个应用推论，含完整证明、
+  sharp Schatten 边界、exact SDP 与保守原创性表述。
+- `../hidden_completion/`：finite-\(h\)/unbounded 精确场景枚举与 spectral SDP 求解器；支持
+  zero pattern、\(r\)-hop、shared coefficient，并输出 active worst-case scenarios。
+- `p1_p2_delivery.md`：本轮论文落地与精确求解器的逐项验收、复现命令和测试快照。
 - `main_theorem_decision_v2.md`：**已冻结的论文主线**；finite-\(h\) 精确 hull、完整输入
   all-Schatten 归约、exact SDP、\(q/(q+h)\) 收敛率，以及无界 partial-partition sharp limit。
 - `agent_reports/finite_hidden_budget_theorem.md`：有限隐藏节点预算主定理的完整证明、

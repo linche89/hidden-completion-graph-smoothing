@@ -59,3 +59,17 @@ python experiments/theory_search/hidden_partial_partition_checks.py
 Results are JSON and may be redirected by the caller. Large sweeps should use a
 separate output directory and the cluster workflow described in
 `research/agent_reports/hpc_experiments_phase2.md`.
+
+The exact hidden-completion solver enumerates set partitions and hidden-budget
+allocations, applies the proved vertex pruning rule, solves the lossless
+spectral SDP, and reports active worst-case topology scenarios:
+
+```powershell
+python -m pip install -r hidden_completion/requirements.txt
+python -m hidden_completion solve experiments/configs/exact_finite_q2_h1.json
+python -m hidden_completion solve experiments/configs/exact_unbounded_shared_opcode.json
+python -m unittest experiments.test_exact_scenario_solver -v
+```
+
+See `hidden_completion/README.md` for the JSON schema, including zero patterns,
+`r`-hop masks, and shared-coefficient constraints.

@@ -1,0 +1,20 @@
+{
+  "q": 2,
+  "C": [
+    [1.0, 0.0],
+    [0.0, 2.0]
+  ],
+  "completion": {
+    "mode": "unbounded"
+  },
+  "local_rule": {
+    "zeros": [[0, 1], [1, 0]],
+    "shared_coefficients": [
+      [[0, 0], [1, 1]]
+    ]
+  },
+  "active_tolerance": 2e-6,
+  "solver": {
+    "name": "CLARABEL"
+  }
+}

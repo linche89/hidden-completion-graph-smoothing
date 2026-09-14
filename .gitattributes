@@ -6,9 +6,12 @@
 *.yaml text eol=lf
 *.yml text eol=lf
 *.toml text eol=lf
+*.txt text eol=lf
 *.tsv text eol=lf
 *.csv text eol=lf
 *.m text eol=lf
+*.tex text eol=lf
+*.bib text eol=lf
 
 *.pdf binary
 *.gz binary

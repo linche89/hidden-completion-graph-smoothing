@@ -6,6 +6,7 @@ __pycache__/
 .ruff_cache/
 .coverage
 htmlcov/
+*.egg-info/
 
 # Local Python environments (the GPU environment is hundreds of MiB)
 .venv/
@@ -22,6 +23,9 @@ Desktop.ini
 
 # Scratch downloads used only during literature audits
 research/tmp_sdp_audit/
+
+# LaTeX build products
+/paper/build/
 
 # Generic transient files
 *.log
