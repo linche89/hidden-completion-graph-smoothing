@@ -1,0 +1,36 @@
+{
+  "q": 3,
+  "C": [
+    [1.0, 0.0, 0.0],
+    [0.0, 1.5, 0.0],
+    [0.0, 0.0, 2.0]
+  ],
+  "local_rule": {
+    "r_hop": {
+      "adjacency": [
+        [0, 1, 0],
+        [1, 0, 1],
+        [0, 1, 0]
+      ],
+      "output_nodes": [0, 1, 2],
+      "radius": 1
+    },
+    "shared_coefficients": [
+      [[0, 0], [1, 1], [2, 2]]
+    ]
+  },
+  "hidden_budgets": [0, 1, 2, 4, 8],
+  "weight_profiles": [
+    {"name": "weak", "min": 0.01, "max": 0.1},
+    {"name": "moderate", "min": 0.2, "max": 5.0},
+    {"name": "strong", "min": 10.0, "max": 100.0}
+  ],
+  "mean_degrees": [2.0, 4.0, 6.0],
+  "replicates": 3,
+  "family": "random_cyclic",
+  "seed": 20260914,
+  "solver": {
+    "name": "CLARABEL"
+  },
+  "certificate_tolerance": 0.000002
+}

@@ -23,6 +23,7 @@ from experiments.smoother.graphs import (
     synthetic_weighted_graph,
 )
 from experiments.smoother.paper_data import _export_budget
+from experiments.smoother.parameter_sweep import run_parameter_sweep
 from experiments.smoother.resources import direct_rule_resources
 from experiments.smoother.robust import (
     full_error_operator,
@@ -170,6 +171,31 @@ class RobustDesignTests(unittest.TestCase):
             ],
             math.sqrt(2.0) / 3.0,
             places=6,
+        )
+
+    def test_parameter_sweep_keeps_physical_errors_below_certificates(self) -> None:
+        result = run_parameter_sweep(
+            {
+                "q": 2,
+                "C": [[0.5, 0.5]],
+                "hidden_budgets": [0, 1],
+                "weight_profiles": [
+                    {"name": "test", "min": 0.1, "max": 10.0}
+                ],
+                "mean_degrees": [2.0],
+                "replicates": 1,
+                "family": "random_cyclic",
+                "seed": 73,
+                "solver": {"name": "CLARABEL"},
+            }
+        )
+        self.assertTrue(
+            result["checks"]["all_physical_errors_within_exact_certificate"]
+        )
+        self.assertTrue(result["checks"]["all_requested_cells_present"])
+        self.assertEqual(result["sweep_axes"]["total_physical_completions"], 2)
+        self.assertEqual(
+            [group["h"] for group in result["by_hidden_budget"]], [0, 1]
         )
 
 

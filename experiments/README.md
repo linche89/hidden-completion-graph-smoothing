@@ -111,3 +111,15 @@ python -m experiments.smoother.paper_data `
         experiments/results/smoother_gpu_scale_recheck1.json `
         experiments/results/smoother_gpu_scale_recheck2.json
 ```
+
+The lightweight factorial audit varies hidden budget, edge-weight scale and
+graph density (recording the realized visible/hidden cut for every sample):
+
+```powershell
+python -m experiments.smoother.parameter_sweep `
+  --config experiments/configs/p4_parameter_sweep.json `
+  --output experiments/results/p4_parameter_sweep.json
+```
+
+Physical samples are lower-bound stress points only.  Each row is checked
+against the exact finite-`h` certificate produced independently of sampling.
