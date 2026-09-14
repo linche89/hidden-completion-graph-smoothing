@@ -791,6 +791,20 @@ largest error-to-certificate ratio is $0.9475$.  This is a coverage and
 implementation audit only: finite physical samples remain lower bounds and do
 not replace the exact supremum.
 
+Table~\ref{tab:p4-ablation} collects the certificate failures and the safe
+interpretation of each deliberately weakened baseline.
+
+\begin{table}[t]
+  \centering
+  \small
+  \input{tables/p4_ablation.tex}
+  \caption{Certificate and NO-GO ablations on the principal theorem-matched
+  instance.  Positive gaps quantify what is lost by sampling, deleting
+  partition directions, or replacing the exact terminal geometry by a coarse
+  outer set.}
+  \label{tab:p4-ablation}
+\end{table}
+
 For the optimized three-port rule, one explicit shortest-path unicast schedule
 uses one synchronous round, four scalar-hops (32 byte-hops in double precision),
 11 online FLOPs, and 100 bytes of sparse coefficient storage.  These numbers
@@ -918,6 +932,8 @@ coefficients, and the analytic values in \eqref{eq:finite-example} and
 The application and figure-data commands are
 \begin{verbatim}
 python -m experiments.smoother --config <config.json> --output <result.json>
+python -m experiments.smoother.parameter_sweep
+  --config <config.json> --output <result.json>
 python -m experiments.smoother.paper_data --p3-p4 <result.json> ...
 \end{verbatim}
 The committed records preserve normalized configurations, RNG seeds, platform
