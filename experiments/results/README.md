@@ -37,6 +37,11 @@ per fixed radius, not simultaneously over all radii.
 - `p4_external_scale.json`: six PGLib topology transformations and three
   SuiteSparse sparsity-graph transformations, reaching 129,164 nodes.  These
   are explicitly external graph-smoother stress tests, not raw WLS instances.
+- `p4_parameter_sweep.json`: 135 theorem-matched physical completions spanning
+  five hidden budgets, three edge-weight ranges, three requested graph
+  densities, and three repetitions per cell.  Every row records its realized
+  port-cut size/weight and is checked against an independently solved exact
+  finite-`h` certificate.  Its provenance points to clean commit `6d1e183`.
 - `smoother_gpu_scale.json`, `smoother_gpu_scale_recheck1.json` and
   `smoother_gpu_scale_recheck2.json`: three independent CPU/RTX 5080 timing
   repetitions for a fixed 40-round local Richardson smoother on grids from

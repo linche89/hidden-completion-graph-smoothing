@@ -36,7 +36,7 @@ both devices, and reports both resident-kernel and transfer-inclusive timings.
 
 ## One-command paper verification
 
-From the repository root, the following command runs the 34 regression tests,
+From the repository root, the following command runs the 35 regression tests,
 regenerates every paper CSV and the ablation table from committed JSON, builds
 the seven standalone TikZ figures and PNG previews, and compiles the manuscript:
 
@@ -56,6 +56,14 @@ The seconds-scale P3/P4 suite is:
   --config experiments/configs/p3_p4_smoke.json `
   --output experiments/results/p3_p4_smoke-rerun.json `
   --section all
+```
+
+The 135-completion hidden-budget/weight/cut audit is:
+
+```powershell
+.venv-repro/Scripts/python -m experiments.smoother.parameter_sweep `
+  --config experiments/configs/p4_parameter_sweep.json `
+  --output experiments/results/p4_parameter_sweep-rerun.json
 ```
 
 The external scale and GPU commands are documented in

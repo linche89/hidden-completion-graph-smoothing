@@ -781,6 +781,16 @@ alone produces 66,491 candidates, 49,484 retained vertices, and 21,147
 unbounded partial partitions.  This confirms the intended boundary-size
 parameterization and also identifies its practical combinatorial limit.
 
+A separate factorial audit covers $h\in\{0,1,2,4,8\}$, three edge-weight
+ranges ($[0.01,0.1]$, $[0.2,5]$, and $[10,100]$), three requested mean
+degrees, and three repetitions per cell, for 135 physical completions in
+total.  For $h>0$, the realized visible--hidden cuts range from 2 to 15 edges
+and from $0.0344$ to $508.44$ in total weight.  Every sampled operator error
+lies below its independently computed exact finite-$h$ certificate; the
+largest error-to-certificate ratio is $0.9475$.  This is a coverage and
+implementation audit only: finite physical samples remain lower bounds and do
+not replace the exact supremum.
+
 For the optimized three-port rule, one explicit shortest-path unicast schedule
 uses one synchronous round, four scalar-hops (32 byte-hops in double precision),
 11 online FLOPs, and 100 bytes of sparse coefficient storage.  These numbers

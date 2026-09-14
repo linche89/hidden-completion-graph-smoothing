@@ -72,4 +72,6 @@ that radius and the solver objective.
 - Finite analytic radius: `0.47140452079113604`.
 - Shared-opcode analytic radius: `1.088303688353231`.
 
-P3--P5 remain outside this delivery and are intentionally not advanced here.
+At the time of this P1/P2 delivery, P3--P5 were intentionally outside its
+scope.  Their subsequently completed initial implementation is tracked in
+`research/p3_p5_delivery.md`.
