@@ -1,21 +1,14 @@
-# Paper build
+# TSP paper sources
 
-`main.tex` is the scope-frozen formal proof draft.  It is organized around one
-geometric main theorem and three application corollaries:
+The submission manuscript and supplement are in `tsp/`. They are organized
+around one geometric main theorem and three application corollaries:
 
 1. full-input Schatten reductions and the sharp `p=2` boundary;
 2. the necessary-and-sufficient spectral SDP;
 3. finite-budget convergence of certified risk.
 
-Build from this directory with
-
-```powershell
-latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir=build main.tex
-```
-
-The generated files live under `paper/build/` and are not tracked.  The paper
-uses the established random-forest/DPP mean-projection identity as a cited
-input and explicitly avoids claiming that identity as original.
+The paper uses the established random-forest/DPP mean-projection identity as
+a cited input and explicitly does not claim that identity as original.
 
 ## TikZ/PGFPlots figures
 
@@ -24,7 +17,7 @@ captions are English-first.  Each figure is a standalone, editable `.tex`
 source; numerical plots read generated CSV files rather than copied numbers.
 The checked PDF and 200-dpi PNG preview are stored beside each source.
 
-Regenerate the data from the repository root:
+Regenerate the figure data from the repository root:
 
 ```powershell
 python -m experiments.smoother.paper_data `
@@ -42,5 +35,10 @@ xelatex -interaction=nonstopmode -halt-on-error theorem_structure.tex
 pdftoppm -png -r 200 -singlefile theorem_structure.pdf theorem_structure
 ```
 
-See `figures/tikz/README.md`, `figures/tikz/CAPTIONS.md` and
-`figures/tikz/QA.md` for the complete batch command and review record.
+Build the complete manuscript and supplement from the repository root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/build_tsp.ps1
+```
+
+See `figures/tikz/README.md` for the standalone figure workflow.

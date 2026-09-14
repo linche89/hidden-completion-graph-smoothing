@@ -29,14 +29,13 @@ The required tools are XeLaTeX and Poppler's `pdftoppm`.  From this folder:
 $figures = @(
   'theorem_structure',
   'budget_pareto',
-  'certificate_sampling_failure',
-  'local_method_tradeoff',
   'scenario_scaling',
-  'cpu_gpu_crossover',
-  'external_stress',
   'core_design_benchmark',
   'sampling_budget_curve',
-  'path_tightness'
+  'path_tightness',
+  'local_method_tradeoff',
+  'external_stress',
+  'cpu_gpu_crossover'
 )
 foreach ($figure in $figures) {
   xelatex -interaction=nonstopmode -halt-on-error "$figure.tex"
@@ -44,16 +43,8 @@ foreach ($figure in $figures) {
 }
 ```
 
-From the repository root, `scripts/build_paper.ps1` regenerates the data,
-checks every test, compiles all ten figures, and builds the manuscript in one
-command.  It also fixes generated-PDF metadata to make unchanged figure builds
-byte-for-byte reproducible.
-
-The local Codex `tikz-diagrams` skill additionally ran its static checker,
-research-mode rendered QA and contact-sheet generator.  The exact commands and
-the review outcome are recorded in `QA.md`.  Compilation logs and `.aux` files
-are intentionally ignored; editable `.tex`, CSV, vector PDF, PNG preview and
-QA JSON are retained.
-
-Suggested manuscript captions are in `CAPTIONS.md`; caption prose is kept out
-of the rendered figures.
+From the repository root, `scripts/build_tsp.ps1` regenerates the data, runs
+the regression suite, compiles the nine figures used by the TSP manuscript and
+supplement, and builds both PDFs in one command. Compilation logs and `.aux`
+files are intentionally ignored; editable `.tex`, CSV, vector PDF, and PNG
+previews are retained.

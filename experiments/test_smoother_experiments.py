@@ -81,12 +81,20 @@ class GraphAndResourceTests(unittest.TestCase):
         )
         self.assertEqual(pglib.nodes, 14)
         self.assertEqual(pglib.metadata["classification"], "external_application_stress")
+        self.assertEqual(
+            pglib.metadata["source_path"],
+            "datasets/raw/pglib_opf_v23.07/pglib_opf_case14_ieee.m",
+        )
         suitesparse = load_suitesparse_pattern(
             ROOT / "datasets/raw/suitesparse_ccby4/bcsstk18.tar.gz"
         )
         self.assertEqual(suitesparse.adjacency.shape[0], suitesparse.adjacency.shape[1])
         self.assertGreater(suitesparse.edges, 0)
         self.assertIn("sparsity", suitesparse.metadata["transformation"])
+        self.assertEqual(
+            suitesparse.metadata["source_path"],
+            "datasets/raw/suitesparse_ccby4/bcsstk18.tar.gz",
+        )
 
 
 class FixedGraphAlgorithmTests(unittest.TestCase):

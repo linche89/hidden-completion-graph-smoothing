@@ -9,7 +9,7 @@ from typing import Any
 
 import numpy as np
 
-from .provenance import experiment_provenance
+from .provenance import experiment_provenance, record_path
 from .robust import run_robust_benchmark
 from .stress import run_stress_benchmark
 
@@ -52,7 +52,7 @@ def main() -> None:
     payload: dict[str, Any] = {
         "schema_version": 1,
         "experiment_program": "P3/P4 graph-regularized state smoothing",
-        "config_path": str(config_path),
+        "config_path": record_path(config_path, repository_root),
         "provenance": experiment_provenance(repository_root),
     }
     if arguments.section in {"all", "robust"}:

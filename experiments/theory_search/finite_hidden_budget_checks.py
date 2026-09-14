@@ -12,7 +12,7 @@ likely to be implemented incorrectly:
 * the analytic ``q=2, h=1`` robust-smoother improvement example.
 
 These are numerical regression checks, not substitutes for the proofs in
-``research/agent_reports/finite_hidden_budget_theorem.md``.
+the finite-hidden-budget theorem stated in ``paper/tsp/main.tex``.
 """
 
 from __future__ import annotations

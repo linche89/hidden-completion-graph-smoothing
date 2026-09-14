@@ -1,8 +1,7 @@
 # TSP submission draft
 
-This directory is an independent IEEE Transactions on Signal Processing
-polish of the manuscript. The earlier `paper/tsipn/` draft is intentionally
-kept unchanged as a fallback.
+This directory contains the manuscript and supplement prepared for
+*IEEE Transactions on Signal Processing*.
 
 The TSP version emphasizes the signal-processing problem: exact robust design
 of a common local approximation to the rational graph filter `(I+L)^{-1}` when

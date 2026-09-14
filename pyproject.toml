@@ -5,8 +5,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "hidden-completion"
 version = "0.1.0"
-description = "Exact finite-scenario SDP for hidden graph completions"
-readme = "hidden_completion/README.md"
+description = "Exact robust local graph-smoother design under hidden completions"
+readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
   "cvxpy>=1.7,<1.8",

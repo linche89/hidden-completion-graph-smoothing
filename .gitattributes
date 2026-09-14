@@ -20,3 +20,6 @@
 *.png binary
 *.jpg binary
 *.jpeg binary
+
+# Upstream MATPOWER-format benchmark records, parsed as data by Python.
+datasets/raw/pglib_opf_v23.07/*.m linguist-vendored

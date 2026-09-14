@@ -1,11 +1,13 @@
-# Locality benchmark skeleton
+# Experiments and numerical validation
 
 For the exact checked environment and the one-command paper verification
 workflow, see [`REPRODUCIBILITY.md`](../REPRODUCIBILITY.md).
 
-This directory is isolated from the literature survey. It contains a small CPU-only
-benchmark that checks mathematical locality quantities for synthetic block WLS
-instances. It is not yet the production HPC implementation.
+The primary experiment suite validates the exact hidden-completion certificate,
+its finite-scenario solver, and the graph-smoothing application used in the TSP
+manuscript. A separate CPU-only diagnostic also checks mathematical locality
+quantities for synthetic block WLS instances; it is not presented as the
+paper's main algorithm.
 
 The benchmark deliberately does **not** form `J^{-1}`. For sampled target nodes it
 solves `J^T y=e_i` and measures the target block row outside an `r`-hop ball. It also
@@ -59,9 +61,8 @@ python experiments/theory_search/forest_partition_extrema.py
 python experiments/theory_search/hidden_partial_partition_checks.py
 ```
 
-Results are JSON and may be redirected by the caller. Large sweeps should use a
-separate output directory and the cluster workflow described in
-`research/agent_reports/hpc_experiments_phase2.md`.
+Results are JSON and may be redirected by the caller. Use a new output file for
+large sweeps so that the checked paper records remain unchanged.
 
 The exact hidden-completion solver enumerates set partitions and hidden-budget
 allocations, applies the proved vertex pruning rule, solves the lossless

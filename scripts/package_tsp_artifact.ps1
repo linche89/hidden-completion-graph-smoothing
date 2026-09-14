@@ -3,8 +3,8 @@ $ErrorActionPreference = 'Stop'
 
 $repoRoot = [System.IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
 $releaseRoot = [System.IO.Path]::GetFullPath((Join-Path $repoRoot 'output/release'))
-$stageRoot = [System.IO.Path]::GetFullPath((Join-Path $releaseRoot 'tsp_anonymous_artifact'))
-$zipPath = [System.IO.Path]::GetFullPath((Join-Path $releaseRoot 'tsp_anonymous_artifact.zip'))
+$stageRoot = [System.IO.Path]::GetFullPath((Join-Path $releaseRoot 'tsp_reproducibility_artifact'))
+$zipPath = [System.IO.Path]::GetFullPath((Join-Path $releaseRoot 'tsp_reproducibility_artifact.zip'))
 $requiredPrefix = $releaseRoot.TrimEnd([System.IO.Path]::DirectorySeparatorChar) + `
     [System.IO.Path]::DirectorySeparatorChar
 
@@ -38,6 +38,8 @@ function Copy-ArtifactPath {
 }
 
 $artifactPaths = @(
+    '.gitattributes',
+    'README.md',
     'pyproject.toml',
     'REPRODUCIBILITY.md',
     'hidden_completion',
@@ -62,8 +64,8 @@ $artifactPaths = @(
     'paper/tsp/main.tex',
     'paper/tsp/supplement.tex',
     'paper/tsp/references.bib',
+    'paper/tsp/README.md',
     'paper/tsp/tables',
-    'paper/tsp/ANONYMOUS_ARTIFACT.md',
     'scripts/build_tsp.ps1',
     'scripts/package_tsp_artifact.ps1'
 )

@@ -30,11 +30,22 @@ def _git(arguments: list[str], cwd: Path) -> str | None:
     return completed.stdout.strip()
 
 
+def record_path(path: str | Path, repository_root: str | Path) -> str:
+    """Return a portable provenance path without recording a home directory."""
+
+    root = Path(repository_root).resolve()
+    resolved = Path(path).resolve()
+    try:
+        return resolved.relative_to(root).as_posix()
+    except ValueError:
+        return f"external/{resolved.name}"
+
+
 def experiment_provenance(repository_root: str | Path) -> dict[str, Any]:
     root = Path(repository_root).resolve()
     status = _git(["status", "--porcelain"], root)
     return {
-        "repository_root": str(root),
+        "repository_root": ".",
         "git_commit": _git(["rev-parse", "HEAD"], root),
         "git_dirty": bool(status) if status is not None else None,
         "platform": platform.platform(),

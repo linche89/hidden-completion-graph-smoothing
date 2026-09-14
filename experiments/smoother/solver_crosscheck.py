@@ -17,7 +17,7 @@ from typing import Any, Mapping
 import numpy as np
 import scs
 
-from experiments.smoother.provenance import experiment_provenance
+from experiments.smoother.provenance import experiment_provenance, record_path
 from experiments.smoother.robust import scenario_certificate
 from hidden_completion.local_rules import LocalRuleSpec
 from hidden_completion.scenarios import finite_scenarios
@@ -282,9 +282,9 @@ def main() -> None:
     provenance = experiment_provenance(repository_root)
     provenance["packages"]["scs"] = scs.__version__
     payload["inputs"] = {
-        "config_path": str(config_path),
+        "config_path": record_path(config_path, repository_root),
         "config_sha256": _sha256(config_path),
-        "source_path": str(source_path),
+        "source_path": record_path(source_path, repository_root),
         "source_sha256": _sha256(source_path),
     }
     payload["provenance"] = provenance

@@ -23,7 +23,7 @@ from hidden_completion.metrics import spectral_squared_risk
 from hidden_completion.scenarios import Scenario, finite_scenarios
 from hidden_completion.solver import ExactSolveResult, solve_exact_spectral
 
-from .provenance import experiment_provenance
+from .provenance import experiment_provenance, record_path
 from .resources import direct_rule_resources
 from .robust import (
     CompletionSample,
@@ -991,7 +991,7 @@ def main() -> None:
     config = json.loads(config_path.read_text(encoding="utf-8"))
     repository_root = Path(__file__).resolve().parents[2]
     payload = run_core_evidence(config)
-    payload["config_path"] = str(config_path)
+    payload["config_path"] = record_path(config_path, repository_root)
     payload["provenance"] = experiment_provenance(repository_root)
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
     arguments.output.write_text(

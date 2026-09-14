@@ -8578,9 +8578,9 @@
     "multiple_realized_port_cut_sizes": true,
     "all_requested_cells_present": true
   },
-  "config_path": "E:\\Code\\MAS\\experiments\\configs\\p4_parameter_sweep.json",
+  "config_path": "experiments/configs/p4_parameter_sweep.json",
   "provenance": {
-    "repository_root": "E:\\Code\\MAS",
+    "repository_root": ".",
     "git_commit": "6d1e183c1c8ed7b8e6f784f3139d29c81c22d333",
     "git_dirty": false,
     "platform": "Windows-11-10.0.26100-SP0",

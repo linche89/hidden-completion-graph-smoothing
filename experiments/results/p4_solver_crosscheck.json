@@ -424,13 +424,13 @@
     }
   ],
   "inputs": {
-    "config_path": "E:\\Code\\MAS\\experiments\\configs\\p4_solver_crosscheck.json",
+    "config_path": "experiments/configs/p4_solver_crosscheck.json",
     "config_sha256": "d2f93132e13dada6df450da866741b954a14888df86869ecf905c5462705d704",
-    "source_path": "E:\\Code\\MAS\\experiments\\results\\p4_core_evidence.json",
-    "source_sha256": "bfd6d0af77969a8aed2802a505c591e03b67737fa0512be49b0bd5074048f9ba"
+    "source_path": "experiments/results/p4_core_evidence.json",
+    "source_sha256": "090bbee71c572040f2f0a19370101ecbf97469c8a3b542f1a261205178812f4b"
   },
   "provenance": {
-    "repository_root": "E:\\Code\\MAS",
+    "repository_root": ".",
     "git_commit": "d11f98c56347e0ceea046bc3a0e7f252e28dcac1",
     "git_dirty": true,
     "platform": "Windows-11-10.0.26100-SP0",

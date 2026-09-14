@@ -31,27 +31,19 @@ GPU wall-clock values are hardware-specific.  The recorded comparison fixes
 OpenMP and OpenBLAS to one CPU thread, uses the same float64 CSR operator on
 both devices, and reports both resident-kernel and transfer-inclusive timings.
 
-## One-command paper verification
+## One-command TSP verification
 
-From the repository root, the following command runs the 38 regression tests,
-regenerates the paper CSV and macro files from committed JSON, builds the ten
-standalone TikZ figures and PNG previews, and compiles the base manuscript:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/build_paper.ps1
-```
-
-Use `-SkipTests` for a formatting-only build or `-SkipData` to leave committed
-CSV/table artifacts untouched.  The final PDF is `paper/build/main.pdf`.
-
-The TSP submission pair is built with:
+From the repository root, the checked TSP build runs the regression suite,
+regenerates the paper CSV and macro files from committed JSON, builds the
+standalone TikZ figures and PNG previews, and compiles both submission PDFs:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/build_tsp.ps1
 ```
 
 This writes `output/pdf/tsp_manuscript.pdf` and
-`output/pdf/tsp_supplement.pdf`.
+`output/pdf/tsp_supplement.pdf`. Use `-SkipTests` for a formatting-only build
+or `-SkipData` to leave committed CSV/table artifacts untouched.
 
 ## Re-run the experiments
 
@@ -107,4 +99,6 @@ checks, and deterministic CSV transformations are the stable comparisons.
 - The benchmark then constructs its own unit-grounded smoother `I + L`.  It does
   not reproduce or make claims about either dataset's original estimator.
 
-See `release/PUBLIC_RELEASE_AUDIT.md` before publishing any repository history.
+The project code and manuscript must receive an explicit project-wide license
+before an archival release. Third-party data are not covered by that future
+license and retain the terms recorded in their dataset directories.

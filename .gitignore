@@ -21,8 +21,10 @@ env/
 Thumbs.db
 Desktop.ini
 
-# Scratch downloads used only during literature audits
-research/tmp_sdp_audit/
+# Private planning and outreach notes are not part of the public artifact
+/TODO.md
+/paper/outreach/
+/research/tmp_sdp_audit/
 
 # LaTeX build products
 /paper/build/

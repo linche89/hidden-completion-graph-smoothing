@@ -387127,9 +387127,9 @@
     "all_graphs_connected_degree_two_with_exact_hidden_budget": true,
     "all_final_witness_gaps_below_tolerance": true
   },
-  "config_path": "E:\\Code\\MAS\\experiments\\configs\\p4_core_evidence.json",
+  "config_path": "experiments/configs/p4_core_evidence.json",
   "provenance": {
-    "repository_root": "E:\\Code\\MAS",
+    "repository_root": ".",
     "git_commit": "d11f98c56347e0ceea046bc3a0e7f252e28dcac1",
     "git_dirty": true,
     "platform": "Windows-11-10.0.26100-SP0",

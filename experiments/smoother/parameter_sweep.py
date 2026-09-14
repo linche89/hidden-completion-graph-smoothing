@@ -12,7 +12,7 @@ import numpy as np
 from hidden_completion.local_rules import LocalRuleSpec
 from hidden_completion.solver import solve_exact_spectral
 
-from .provenance import experiment_provenance
+from .provenance import experiment_provenance, record_path
 from .robust import full_error_operator, generate_completion
 
 
@@ -238,7 +238,7 @@ def main() -> None:
     config = json.loads(config_path.read_text(encoding="utf-8"))
     repository_root = Path(__file__).resolve().parents[2]
     payload = run_parameter_sweep(config)
-    payload["config_path"] = str(config_path)
+    payload["config_path"] = record_path(config_path, repository_root)
     payload["provenance"] = experiment_provenance(repository_root)
     arguments.output.parent.mkdir(parents=True, exist_ok=True)
     arguments.output.write_text(

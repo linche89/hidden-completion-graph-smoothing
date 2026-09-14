@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "experiment_program": "P3/P4 graph-regularized state smoothing",
-  "config_path": "E:\\Code\\MAS\\experiments\\configs\\p4_external_scale.json",
+  "config_path": "experiments/configs/p4_external_scale.json",
   "provenance": {
-    "repository_root": "E:\\Code\\MAS",
+    "repository_root": ".",
     "git_commit": "4c8830203a4e21991e2e05e45729e675415f84cf",
     "git_dirty": true,
     "platform": "Windows-11-10.0.26100-SP0",
@@ -95,7 +95,7 @@
         "source": {
           "classification": "external_application_stress",
           "source_kind": "PGLib topology",
-          "source_path": "E:\\Code\\MAS\\datasets\\raw\\pglib_opf_v23.07\\pglib_opf_case14_ieee.m",
+          "source_path": "datasets/raw/pglib_opf_v23.07/pglib_opf_case14_ieee.m",
           "source_sha256": "bd5c568621de65e4b0922317010868bc7fa94173807faa10ea8fdbbe77c28106",
           "transformation": "active branches mapped to abs(baseMVA/(x*tap)), parallel weights summed, then divided by their median; graph smoother only",
           "nodes": 14,
@@ -603,7 +603,7 @@
         "source": {
           "classification": "external_application_stress",
           "source_kind": "PGLib topology",
-          "source_path": "E:\\Code\\MAS\\datasets\\raw\\pglib_opf_v23.07\\pglib_opf_case118_ieee.m",
+          "source_path": "datasets/raw/pglib_opf_v23.07/pglib_opf_case118_ieee.m",
           "source_sha256": "b1af0833849040c04babc3700631cff0d9afa66b79c5d3e13ae79bdf516cec78",
           "transformation": "active branches mapped to abs(baseMVA/(x*tap)), parallel weights summed, then divided by their median; graph smoother only",
           "nodes": 118,
@@ -1057,7 +1057,7 @@
         "source": {
           "classification": "external_application_stress",
           "source_kind": "PGLib topology",
-          "source_path": "E:\\Code\\MAS\\datasets\\raw\\pglib_opf_v23.07\\pglib_opf_case300_ieee.m",
+          "source_path": "datasets/raw/pglib_opf_v23.07/pglib_opf_case300_ieee.m",
           "source_sha256": "7ecf056d5942135765200ad7ae8791c28f0d35fb1dc888ba2c32dfc950f3c2f5",
           "transformation": "active branches mapped to abs(baseMVA/(x*tap)), parallel weights summed, then divided by their median; graph smoother only",
           "nodes": 300,
@@ -1511,7 +1511,7 @@
         "source": {
           "classification": "external_application_stress",
           "source_kind": "PGLib topology",
-          "source_path": "E:\\Code\\MAS\\datasets\\raw\\pglib_opf_v23.07\\pglib_opf_case1354_pegase.m",
+          "source_path": "datasets/raw/pglib_opf_v23.07/pglib_opf_case1354_pegase.m",
           "source_sha256": "cd6d27dff4a56684f1e4f82cfa346b36d84c4e90733228aa88331cd550e17652",
           "transformation": "active branches mapped to abs(baseMVA/(x*tap)), parallel weights summed, then divided by their median; graph smoother only",
           "nodes": 1354,
@@ -1965,7 +1965,7 @@
         "source": {
           "classification": "external_application_stress",
           "source_kind": "PGLib topology",
-          "source_path": "E:\\Code\\MAS\\datasets\\raw\\pglib_opf_v23.07\\pglib_opf_case2869_pegase.m",
+          "source_path": "datasets/raw/pglib_opf_v23.07/pglib_opf_case2869_pegase.m",
           "source_sha256": "6c8e80fba6fc2fa78d65fce64cf4801425b01a0aa093661caf581b6551d4a7ac",
           "transformation": "active branches mapped to abs(baseMVA/(x*tap)), parallel weights summed, then divided by their median; graph smoother only",
           "nodes": 2869,
@@ -2419,7 +2419,7 @@
         "source": {
           "classification": "external_application_stress",
           "source_kind": "PGLib topology",
-          "source_path": "E:\\Code\\MAS\\datasets\\raw\\pglib_opf_v23.07\\pglib_opf_case10000_goc.m",
+          "source_path": "datasets/raw/pglib_opf_v23.07/pglib_opf_case10000_goc.m",
           "source_sha256": "8387f73e8c135938c60e41538dfbb6b4cb58d37738553fb8a36c1e1647a66e7b",
           "transformation": "active branches mapped to abs(baseMVA/(x*tap)), parallel weights summed, then divided by their median; graph smoother only",
           "nodes": 10000,
@@ -2873,7 +2873,7 @@
         "source": {
           "classification": "external_application_stress",
           "source_kind": "SuiteSparse sparsity graph",
-          "source_path": "E:\\Code\\MAS\\datasets\\raw\\suitesparse_ccby4\\bcsstk18.tar.gz",
+          "source_path": "datasets/raw/suitesparse_ccby4/bcsstk18.tar.gz",
           "source_sha256": "ebd14190b838f623f7a3ab9c73ff88badc9f9c084b8f12862891929a7bbb8fc8",
           "archive_member": "bcsstk18/bcsstk18.mtx",
           "transformation": "symmetric off-diagonal sparsity pattern with unit positive weights; original matrix is not treated as a graph smoother",
@@ -3328,7 +3328,7 @@
         "source": {
           "classification": "external_application_stress",
           "source_kind": "SuiteSparse sparsity graph",
-          "source_path": "E:\\Code\\MAS\\datasets\\raw\\suitesparse_ccby4\\wathen100.tar.gz",
+          "source_path": "datasets/raw/suitesparse_ccby4/wathen100.tar.gz",
           "source_sha256": "2498caf696dbc94ac332aaa8bac8aa2ebd277e45770ab01109a738fd2370b12f",
           "archive_member": "wathen100/wathen100.mtx",
           "transformation": "symmetric off-diagonal sparsity pattern with unit positive weights; original matrix is not treated as a graph smoother",
@@ -3783,7 +3783,7 @@
         "source": {
           "classification": "external_application_stress",
           "source_kind": "SuiteSparse sparsity graph",
-          "source_path": "E:\\Code\\MAS\\datasets\\raw\\suitesparse_ccby4\\usroads.tar.gz",
+          "source_path": "datasets/raw/suitesparse_ccby4/usroads.tar.gz",
           "source_sha256": "3ee6913382a90dbb89d7b5dd8052a95dc4c80e511ae20449d3b5562ed620f783",
           "archive_member": "usroads/usroads.mtx",
           "transformation": "symmetric off-diagonal sparsity pattern with unit positive weights; original matrix is not treated as a graph smoother",

@@ -11,19 +11,19 @@
   "sources": [
     {
       "path": "experiments/results/p3_p4_smoke.json",
-      "sha256": "1de86ec66627d0b2ec45363d94c175532b72c0dc43ea76321bb0fb8b6021e345"
+      "sha256": "ab874647cb6837a935ca6d0212da9279e711c844d29cd22b299edc2292d31537"
     },
     {
       "path": "experiments/results/p4_external_scale.json",
-      "sha256": "f2a98ea2c6e56f34abdc6936f4b83279e03b8e9d222ffa62c789aaf69a1b8161"
+      "sha256": "f164c19f143f960d2c424977a47a4ec22daeef520d0e02e658a6e2c6c7fc3976"
     },
     {
       "path": "experiments/results/p4_core_evidence.json",
-      "sha256": "bfd6d0af77969a8aed2802a505c591e03b67737fa0512be49b0bd5074048f9ba"
+      "sha256": "090bbee71c572040f2f0a19370101ecbf97469c8a3b542f1a261205178812f4b"
     },
     {
       "path": "experiments/results/p4_solver_crosscheck.json",
-      "sha256": "d54fd1b5ebf459ea14fbd11c2edffd686910895b8f577fc729eb8cc27c757fd8"
+      "sha256": "53249540a8c2a52225d72a5465b2d9020e73898eecefbd16ac23914bde68265c"
     },
     {
       "path": "experiments/results/smoother_gpu_scale.json",
@@ -40,7 +40,6 @@
   ],
   "outputs": [
     "budget_pareto.csv",
-    "certificate_failure.csv",
     "core_path_envelope.csv",
     "core_path_tightness.csv",
     "core_path_witness_0.csv",

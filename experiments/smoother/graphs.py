@@ -18,6 +18,7 @@ import scipy.sparse as sp
 import scipy.sparse.csgraph as csgraph
 
 from experiments.scalable.pglib_dc import parse_matpower
+from .provenance import record_path
 
 
 Array = NDArray[np.float64]
@@ -234,7 +235,7 @@ def load_pglib_topology(path: str | Path, *, normalize_median: bool = True) -> W
         {
             "classification": "external_application_stress",
             "source_kind": "PGLib topology",
-            "source_path": str(source.resolve()),
+            "source_path": record_path(source, Path(__file__).resolve().parents[2]),
             "source_sha256": parsed["source_sha256"],
             "transformation": (
                 "active branches mapped to abs(baseMVA/(x*tap)), parallel weights summed, "
@@ -294,7 +295,7 @@ def load_suitesparse_pattern(
         {
             "classification": "external_application_stress",
             "source_kind": "SuiteSparse sparsity graph",
-            "source_path": str(source.resolve()),
+            "source_path": record_path(source, Path(__file__).resolve().parents[2]),
             "source_sha256": _sha256(source),
             "archive_member": member,
             "transformation": (

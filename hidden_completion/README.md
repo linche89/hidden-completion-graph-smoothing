@@ -1,7 +1,7 @@
 # Exact hidden-completion scenario solver
 
-This package implements the lossless finite-scenario reductions proved in
-`paper/main.tex` and the frozen research reports.  It solves
+This package implements the lossless finite-scenario reductions stated in
+`paper/tsp/main.tex`. It solves
 
 \[
 \min_{Q\in\mathcal Q_{\rm loc}}\ \sup_G
