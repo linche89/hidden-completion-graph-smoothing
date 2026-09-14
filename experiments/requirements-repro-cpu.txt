@@ -1,0 +1,9 @@
+# Exact environment used for the checked theorem-matched and CPU stress results.
+# Python 3.13.5 on Windows 11 (build 26100).
+clarabel==0.11.1
+cvxpy==1.7.5
+networkx==3.6.1
+numpy==2.3.3
+psutil==7.2.2
+scipy==1.17.1
+scs==3.3.1

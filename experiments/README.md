@@ -1,5 +1,8 @@
 # Locality benchmark skeleton
 
+For the exact checked environment and the one-command paper verification
+workflow, see [`REPRODUCIBILITY.md`](../REPRODUCIBILITY.md).
+
 This directory is isolated from the literature survey. It contains a small CPU-only
 benchmark that checks mathematical locality quantities for synthetic block WLS
 instances. It is not yet the production HPC implementation.

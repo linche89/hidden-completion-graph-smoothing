@@ -1,5 +1,9 @@
 # Scalable sparse WLS implementation
 
+Exact package pins for the checked CPU and RTX 5080 runs are listed in
+[`REPRODUCIBILITY.md`](../../REPRODUCIBILITY.md).  The shorter requirement file
+below remains the portable GPU environment specification.
+
 All large matrices are assembled directly as COO/CSR. No complete inverse or dense
 `H/J` is constructed.
 

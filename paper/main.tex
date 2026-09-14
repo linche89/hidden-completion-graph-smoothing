@@ -812,14 +812,16 @@ separately rather than collapsing them into a single score.
 
 \subsection{External scale and accelerator crossover}
 
-The external stress track uses six PGLib networks as weighted topologies and
-three SuiteSparse matrices as symmetric sparsity graphs.  In every case the
-benchmark constructs the unit-grounded matrix $I+L$; it does not claim to
-reproduce the source dataset's original estimator.  The largest case has
-129,164 vertices.  All global sparse-reference solves meet the configured
-residual tolerance.  Figure~\ref{fig:external-stress} records the 16-round
-Chebyshev signal error and reference-solve time without converting either into
-a theorem-matched completion certificate.
+The external stress track uses six PGLib-OPF v23.07 networks as weighted
+topologies~\cite{babaeinejadsarookolaee2019pglib} and three matrices from the
+SuiteSparse Matrix Collection as symmetric sparsity
+graphs~\cite{davis2011suitesparse}.  In every case the benchmark constructs the
+unit-grounded matrix $I+L$; it does not claim to reproduce the source dataset's
+original estimator.  The largest case has 129,164 vertices.  All global
+sparse-reference solves meet the configured residual tolerance.
+Figure~\ref{fig:external-stress} records the 16-round Chebyshev signal error
+and reference-solve time without converting either into a theorem-matched
+completion certificate.
 
 \begin{figure}[t]
   \centering

@@ -1,0 +1,7 @@
+# Exact environment used for the checked RTX 5080 crossover measurements.
+# Python 3.13.5; CuPy CUDA 12.x wheel 14.2.0; float64 throughout.
+cupy-cuda12x==14.2.0
+networkx==3.6.1
+numpy==2.3.3
+psutil==7.2.2
+scipy==1.17.1

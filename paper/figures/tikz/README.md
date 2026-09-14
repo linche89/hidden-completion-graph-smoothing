@@ -39,6 +39,11 @@ foreach ($figure in $figures) {
 }
 ```
 
+From the repository root, `scripts/build_paper.ps1` regenerates the data,
+checks every test, compiles all seven figures, and builds the manuscript in one
+command.  It also fixes generated-PDF metadata to make unchanged figure builds
+byte-for-byte reproducible.
+
 The local Codex `tikz-diagrams` skill additionally ran its static checker,
 research-mode rendered QA and contact-sheet generator.  The exact commands and
 the review outcome are recorded in `QA.md`.  Compilation logs and `.aux` files
