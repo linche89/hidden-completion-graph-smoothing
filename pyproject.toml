@@ -16,5 +16,12 @@ dependencies = [
 [project.scripts]
 hidden-completion = "hidden_completion.cli:main"
 
+[project.optional-dependencies]
+experiments = [
+  "networkx>=3.6,<3.7",
+  "psutil>=7.2,<8",
+  "scipy>=1.17,<1.18",
+]
+
 [tool.setuptools.packages.find]
-include = ["hidden_completion*"]
+include = ["hidden_completion*", "experiments.smoother*"]

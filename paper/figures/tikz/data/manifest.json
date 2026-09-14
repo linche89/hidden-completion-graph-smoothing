@@ -1,0 +1,40 @@
+{
+  "generator": "experiments.smoother.paper_data",
+  "semantics": {
+    "robust": "theorem-matched hidden-completion experiment",
+    "synthetic_stress": "fixed-graph graph-smoother stress test",
+    "external_stress": "topology/sparsity transformation stress test; not raw WLS",
+    "gpu": "fixed 40-round I+L Richardson kernel benchmark"
+  },
+  "sources": [
+    {
+      "path": "experiments/results/p3_p4_smoke.json",
+      "sha256": "1de86ec66627d0b2ec45363d94c175532b72c0dc43ea76321bb0fb8b6021e345"
+    },
+    {
+      "path": "experiments/results/p4_external_scale.json",
+      "sha256": "f2a98ea2c6e56f34abdc6936f4b83279e03b8e9d222ffa62c789aaf69a1b8161"
+    },
+    {
+      "path": "experiments/results/smoother_gpu_scale.json",
+      "sha256": "114e6812ad7b55360ddf20603081f6cbb05ba292a8434b8b7a4c77b2c7b8318b"
+    },
+    {
+      "path": "experiments/results/smoother_gpu_scale_recheck1.json",
+      "sha256": "a775c5a483163d1f88c1da83bdcec88887c733b70dac4f634a5f6ead9fb976d9"
+    },
+    {
+      "path": "experiments/results/smoother_gpu_scale_recheck2.json",
+      "sha256": "f21fbe8a6aec3471309713f891dcb50fb6e32ea5241b0d8a60ac10b22dd60a60"
+    }
+  ],
+  "outputs": [
+    "budget_pareto.csv",
+    "certificate_failure.csv",
+    "cpu_gpu_crossover.csv",
+    "external_pglib.csv",
+    "external_suitesparse.csv",
+    "local_method_tradeoff.csv",
+    "scenario_scaling.csv"
+  ]
+}

@@ -73,3 +73,38 @@ python -m unittest experiments.test_exact_scenario_solver -v
 
 See `hidden_completion/README.md` for the JSON schema, including zero patterns,
 `r`-hop masks, and shared-coefficient constraints.
+
+## P3/P4 graph-smoother experiments
+
+The primary-application runner keeps theorem-matched robust design separate
+from fixed-known-graph stress tests:
+
+```powershell
+python -m experiments.smoother `
+  --config experiments/configs/p3_p4_smoke.json `
+  --output experiments/results/p3_p4_smoke.json `
+  --section all
+
+python -m experiments.smoother `
+  --config experiments/configs/p4_external_scale.json `
+  --output experiments/results/p4_external_scale.json `
+  --section stress
+```
+
+The first command runs exact finite-`h` and unbounded certificates, random
+completion sampling, the PSD-contraction outer relaxation, the endpoint NO-GO
+ablation, vertex-pruning and scenario-count sweeps, and four 36-node synthetic
+graph families.  The second command treats PGLib topologies and SuiteSparse
+sparsity patterns only as external graph-smoother stress transformations; it
+does not relabel them as raw WLS or Kalman models.
+
+Export the checked JSON records to backend-neutral CSV files for TikZ with:
+
+```powershell
+python -m experiments.smoother.paper_data `
+  --p3-p4 experiments/results/p3_p4_smoke.json `
+  --external experiments/results/p4_external_scale.json `
+  --gpu experiments/results/smoother_gpu_scale.json `
+        experiments/results/smoother_gpu_scale_recheck1.json `
+        experiments/results/smoother_gpu_scale_recheck2.json
+```

@@ -1,0 +1,116 @@
+{
+  "robust": {
+    "q": 3,
+    "h": 2,
+    "C": [
+      [1.0, 0.0, 0.0],
+      [0.0, 1.5, 0.0],
+      [0.0, 0.0, 2.0]
+    ],
+    "seed": 20260914,
+    "scalar_bytes": 8,
+    "local_rule": {
+      "r_hop": {
+        "adjacency": [
+          [0, 1, 0],
+          [1, 0, 1],
+          [0, 1, 0]
+        ],
+        "output_nodes": [0, 1, 2],
+        "radius": 1
+      },
+      "shared_coefficients": [
+        [[0, 0], [1, 1], [2, 2]]
+      ]
+    },
+    "solver": {
+      "name": "CLARABEL"
+    },
+    "random_sampling": {
+      "families": ["random_cyclic", "grid", "geometric", "small_world"],
+      "training_count": 12,
+      "test_count": 20,
+      "input_draws": 32,
+      "training_weight_min": 0.1,
+      "training_weight_max": 10.0,
+      "test_weight_min": 0.01,
+      "test_weight_max": 100.0,
+      "graph_options": {
+        "mean_degree": 4.0,
+        "small_world_k": 2,
+        "rewire_probability": 0.3
+      }
+    },
+    "projection_audit_samples": 128,
+    "run_pruning_ablation": true,
+    "budget_sweep": {
+      "C": [
+        [0.7071067811865476, 0.7071067811865476]
+      ],
+      "local_rule": {
+        "fixed_entries": [
+          [0, 0, 0.7071067811865476],
+          [0, 1, 0.7071067811865476]
+        ]
+      },
+      "h_values": [0, 1, 2, 4, 8],
+      "solve_optima": true
+    },
+    "scenario_scaling": {
+      "q_values": [2, 3, 4, 5, 6, 7, 8],
+      "h": 2,
+      "solve_max_q": 4
+    }
+  },
+  "stress": {
+    "seed": 20260914,
+    "rounds": [0, 1, 2, 4],
+    "signal_samples": 16,
+    "scalar_bytes": 8,
+    "edge_scale": 1.0,
+    "exact_operator_max_n": 64,
+    "local_truncation_max_n": 64,
+    "cut_root_samples": 24,
+    "direct_max_n": 50000,
+    "reference_relative_tolerance": 1e-10,
+    "enable_local_truncation": true,
+    "cases": [
+      {
+        "source": "synthetic",
+        "family": "random_cyclic",
+        "n": 36,
+        "seed": 101,
+        "mean_degree": 4.0,
+        "weight_min": 0.2,
+        "weight_max": 5.0
+      },
+      {
+        "source": "synthetic",
+        "family": "grid",
+        "n": 36,
+        "seed": 102,
+        "weight_min": 0.2,
+        "weight_max": 5.0
+      },
+      {
+        "source": "synthetic",
+        "family": "geometric",
+        "n": 36,
+        "seed": 103,
+        "geometric_radius": 0.25,
+        "weight_min": 0.2,
+        "weight_max": 5.0
+      },
+      {
+        "source": "synthetic",
+        "family": "small_world",
+        "n": 36,
+        "seed": 104,
+        "small_world_k": 4,
+        "rewire_probability": 0.25,
+        "weight_min": 0.2,
+        "weight_max": 5.0
+      }
+    ]
+  }
+}

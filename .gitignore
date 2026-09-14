@@ -26,6 +26,11 @@ research/tmp_sdp_audit/
 
 # LaTeX build products
 /paper/build/
+*.aux
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.xdv
 
 # Generic transient files
 *.log

@@ -1,0 +1,44 @@
+{
+  "cases": [
+    {
+      "side": 100,
+      "family": "stable_mass",
+      "mass": 1.0,
+      "batches": [1, 8, 32],
+      "spmv_repeats": 500,
+      "spmm_repeats": 50,
+      "local_steps": 40,
+      "seed": 301
+    },
+    {
+      "side": 224,
+      "family": "stable_mass",
+      "mass": 1.0,
+      "batches": [1, 8, 32],
+      "spmv_repeats": 300,
+      "spmm_repeats": 30,
+      "local_steps": 40,
+      "seed": 302
+    },
+    {
+      "side": 320,
+      "family": "stable_mass",
+      "mass": 1.0,
+      "batches": [1, 8, 32],
+      "spmv_repeats": 200,
+      "spmm_repeats": 20,
+      "local_steps": 40,
+      "seed": 303
+    },
+    {
+      "side": 1000,
+      "family": "stable_mass",
+      "mass": 1.0,
+      "batches": [1, 8, 32],
+      "spmv_repeats": 50,
+      "spmm_repeats": 5,
+      "local_steps": 40,
+      "seed": 304
+    }
+  ]
+}

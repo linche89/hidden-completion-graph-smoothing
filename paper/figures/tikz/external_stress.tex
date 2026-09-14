@@ -1,0 +1,40 @@
+\documentclass[tikz,border=6pt]{standalone}
+\input{figure_style.tex}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{groupplot}[
+    group style={group size=2 by 1,horizontal sep=16mm},
+    paper axis,
+    width=67mm,
+    height=49mm,
+    xmode=log,
+    ymode=log,
+    grid=major,
+    xlabel={Graph nodes},
+  ]
+  \nextgroupplot[
+    ylabel={16-round relative signal error},
+    ymin=1e-4,ymax=0.5,
+    title={(a) Local Chebyshev stress},
+    legend pos=north west,
+  ]
+    \addplot[only marks,oiBlue,paper mark,mark=*]
+      table[col sep=comma,x=nodes,y=relative_error] {data/external_pglib.csv};
+    \addlegendentry{PGLib topology}
+    \addplot[only marks,oiVermillion,paper mark,mark=square*]
+      table[col sep=comma,x=nodes,y=relative_error] {data/external_suitesparse.csv};
+    \addlegendentry{SuiteSparse pattern}
+
+  \nextgroupplot[
+    ylabel={Reference solve time (s)},
+    ymin=2e-5,ymax=0.25,
+    title={(b) Sparse global reference},
+  ]
+    \addplot[only marks,oiBlue,paper mark,mark=*]
+      table[col sep=comma,x=nodes,y=solve_seconds] {data/external_pglib.csv};
+    \addplot[only marks,oiVermillion,paper mark,mark=square*]
+      table[col sep=comma,x=nodes,y=solve_seconds] {data/external_suitesparse.csv};
+  \end{groupplot}
+\end{tikzpicture}
+\end{document}

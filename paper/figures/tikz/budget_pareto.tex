@@ -1,0 +1,46 @@
+\documentclass[tikz,border=6pt]{standalone}
+\input{figure_style.tex}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{groupplot}[
+    group style={group size=2 by 1,horizontal sep=16mm},
+    paper axis,
+    width=67mm,
+    height=49mm,
+    grid=major,
+  ]
+  \nextgroupplot[
+    xlabel={Exact hull distance $q/(q+h)$},
+    ylabel={Squared-risk gap},
+    xmin=0.15,xmax=1.05,
+    ymin=0.15,ymax=1.05,
+    title={(a) Sharp finite-budget rate},
+    legend pos=north west,
+  ]
+    \addplot[oiBlue,paper mark,mark=*,solid]
+      table[col sep=comma,x=hausdorff,y=risk_gap] {data/budget_pareto.csv};
+    \addlegendentry{Measured gap}
+    \addplot[oiOrange,paper mark,mark=square*,dashed,domain=0.18:1.02,samples=2] {x};
+    \addlegendentry{$y=x$}
+
+  \nextgroupplot[
+    xmode=log,
+    xlabel={Offline scenario count},
+    ylabel={Certified spectral radius},
+    xmin=1.7,xmax=70,
+    xtick={2,5,10,20,50},
+    xticklabels={2,5,10,20,50},
+    ymin=-0.04,ymax=0.98,
+    title={(b) Complexity--robustness frontier},
+    legend pos=south east,
+  ]
+    \addplot[oiVermillion,paper mark,mark=*,solid]
+      table[col sep=comma,x=candidates,y=certified_radius] {data/budget_pareto.csv};
+    \addlegendentry{Enumerated}
+    \addplot[oiGreen!85!black,paper mark,mark=square*,dashed]
+      table[col sep=comma,x=vertices,y=certified_radius] {data/budget_pareto.csv};
+    \addlegendentry{After pruning}
+  \end{groupplot}
+\end{tikzpicture}
+\end{document}

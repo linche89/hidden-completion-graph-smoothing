@@ -1,0 +1,29 @@
+\documentclass[tikz,border=6pt]{standalone}
+\input{figure_style.tex}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+    paper axis,
+    width=78mm,
+    height=54mm,
+    ymode=log,
+    grid=major,
+    xlabel={Boundary size $q$},
+    ylabel={Scenario count},
+    xtick={2,3,4,5,6,7,8},
+    xmin=1.8,xmax=8.2,
+    legend pos=north west,
+  ]
+    \addplot[oiVermillion,paper mark,mark=*,solid]
+      table[col sep=comma,x=q,y=finite_candidates] {data/scenario_scaling.csv};
+    \addlegendentry{Finite candidates}
+    \addplot[oiGreen!85!black,paper mark,mark=square*,dashed]
+      table[col sep=comma,x=q,y=finite_vertices] {data/scenario_scaling.csv};
+    \addlegendentry{Retained vertices}
+    \addplot[oiBlue,paper mark,mark=triangle*,dash dot]
+      table[col sep=comma,x=q,y=unbounded_partial_partitions] {data/scenario_scaling.csv};
+    \addlegendentry{Unbounded limit}
+  \end{axis}
+\end{tikzpicture}
+\end{document}

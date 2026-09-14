@@ -1,0 +1,4242 @@
+{
+  "schema_version": 1,
+  "experiment_program": "P3/P4 graph-regularized state smoothing",
+  "config_path": "E:\\Code\\MAS\\experiments\\configs\\p4_external_scale.json",
+  "provenance": {
+    "repository_root": "E:\\Code\\MAS",
+    "git_commit": "4c8830203a4e21991e2e05e45729e675415f84cf",
+    "git_dirty": true,
+    "platform": "Windows-11-10.0.26100-SP0",
+    "python": "3.13.5",
+    "packages": {
+      "numpy": "2.3.3",
+      "scipy": "1.17.1",
+      "networkx": "3.6.1",
+      "cvxpy": "1.7.5",
+      "psutil": "7.2.2"
+    },
+    "logical_cpus": 32,
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null
+    }
+  },
+  "stress": {
+    "schema_version": 1,
+    "classification": "graph_smoother_application_stress",
+    "semantics": {
+      "objective": "0.5||x-y||^2 + 0.5 sum_edges w_ij(x_i-x_j)^2",
+      "target": "(I+L)^-1 y on one fully specified graph",
+      "operator_audit": "exact fixed-instance error, not a hidden-completion certificate",
+      "empirical_mse": "synthetic graph-signal error, not WLS/Kalman measurement-noise MSE"
+    },
+    "config": {
+      "seed": 20260914,
+      "rounds": [
+        2,
+        4,
+        8,
+        16
+      ],
+      "signal_samples": 4,
+      "scalar_bytes": 8,
+      "edge_scale": 1.0,
+      "exact_operator_max_n": 32,
+      "local_truncation_max_n": 0,
+      "cut_root_samples": 16,
+      "direct_max_n": 50000,
+      "reference_relative_tolerance": 1e-10,
+      "reference_max_iterations": 50000,
+      "enable_local_truncation": false,
+      "cases": [
+        {
+          "source": "pglib",
+          "path": "../../datasets/raw/pglib_opf_v23.07/pglib_opf_case14_ieee.m"
+        },
+        {
+          "source": "pglib",
+          "path": "../../datasets/raw/pglib_opf_v23.07/pglib_opf_case118_ieee.m"
+        },
+        {
+          "source": "pglib",
+          "path": "../../datasets/raw/pglib_opf_v23.07/pglib_opf_case300_ieee.m"
+        },
+        {
+          "source": "pglib",
+          "path": "../../datasets/raw/pglib_opf_v23.07/pglib_opf_case1354_pegase.m"
+        },
+        {
+          "source": "pglib",
+          "path": "../../datasets/raw/pglib_opf_v23.07/pglib_opf_case2869_pegase.m"
+        },
+        {
+          "source": "pglib",
+          "path": "../../datasets/raw/pglib_opf_v23.07/pglib_opf_case10000_goc.m"
+        },
+        {
+          "source": "suitesparse",
+          "archive": "../../datasets/raw/suitesparse_ccby4/bcsstk18.tar.gz"
+        },
+        {
+          "source": "suitesparse",
+          "archive": "../../datasets/raw/suitesparse_ccby4/wathen100.tar.gz"
+        },
+        {
+          "source": "suitesparse",
+          "archive": "../../datasets/raw/suitesparse_ccby4/usroads.tar.gz"
+        }
+      ]
+    },
+    "cases": [
+      {
+        "case_index": 0,
+        "classification": "external_application_stress",
+        "source": {
+          "classification": "external_application_stress",
+          "source_kind": "PGLib topology",
+          "source_path": "E:\\Code\\MAS\\datasets\\raw\\pglib_opf_v23.07\\pglib_opf_case14_ieee.m",
+          "source_sha256": "bd5c568621de65e4b0922317010868bc7fa94173807faa10ea8fdbbe77c28106",
+          "transformation": "active branches mapped to abs(baseMVA/(x*tap)), parallel weights summed, then divided by their median; graph smoother only",
+          "nodes": 14,
+          "edges": 20,
+          "connected_components": 1,
+          "skipped_inactive_or_zero_reactance_branches": 0,
+          "normalization_scale": 512.8852774177188
+        },
+        "graph": {
+          "nodes": 14,
+          "edges": 20,
+          "connected_components": 1,
+          "weighted_degree_min": 1.106871282268829,
+          "weighted_degree_median": 3.5775378552522685,
+          "weighted_degree_max": 8.191066557207359,
+          "edge_weight_min": 0.3617767246425931,
+          "edge_weight_median": 1.0,
+          "edge_weight_max": 4.630144297593307,
+          "adjacency_csr_bytes": 540,
+          "system_nnz": 54,
+          "system_csr_bytes": 708
+        },
+        "edge_scale": 1.0,
+        "signal_seed": 20260914,
+        "signal_samples": 4,
+        "spectral_interval_used": [
+          1.0,
+          17.382133114414717
+        ],
+        "construction": {
+          "seconds": 0.0024106000000756467,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 135999488,
+            "peak_sampled_rss_bytes": 136335360,
+            "peak_increment_bytes": 335872
+          }
+        },
+        "global_exact": {
+          "access_class": "full_graph_and_full_input",
+          "rounds": null,
+          "signal_metrics": {
+            "empirical_mse_per_node": 0.0,
+            "empirical_relative_l2_error": 0.0,
+            "maximum_node_rmse": 0.0,
+            "median_node_rmse": 0.0
+          },
+          "offline": {
+            "factorization_seconds": 0.00016230000073846895
+          },
+          "online": {
+            "solve_seconds": 3.600000036385609e-05,
+            "right_hand_sides_in_timed_solve": 4
+          },
+          "relative_residual_max": 5.184619022082513e-16,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 136335360,
+            "peak_sampled_rss_bytes": 136699904,
+            "peak_increment_bytes": 364544
+          },
+          "operator_audit": {
+            "fixed_instance_operator_2_norm_error": 0.0,
+            "isotropic_expected_mse_per_node": 0.0,
+            "fixed_instance_frobenius_error": 0.0
+          },
+          "operator_audit_reference_seconds": 0.00015839999923628056
+        },
+        "round_sweep": [
+          {
+            "rounds": 2,
+            "cut": {
+              "sampled_roots": 14,
+              "mean_cut_edges": 5.785714285714286,
+              "maximum_cut_edges": 8,
+              "mean_cut_weight": 7.981779071145184,
+              "maximum_cut_weight": 12.082284584297538
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.2258448576123114,
+                  "empirical_relative_l2_error": 0.7698405616345785,
+                  "maximum_node_rmse": 0.6912083674773629,
+                  "median_node_rmse": 0.48437687071014357
+                },
+                "offline": {
+                  "spectral_upper_bound": 17.382133114414717,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 4.529999932856299e-05,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 320,
+                  "scalar_hops": 320,
+                  "byte_hop": 2560,
+                  "estimated_spmv_flops": 752,
+                  "estimated_recurrence_flops": 448,
+                  "estimated_online_flops": 1200,
+                  "matrix_storage_bytes": 708,
+                  "working_vector_bytes": 896,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 136982528,
+                  "peak_sampled_rss_bytes": 137007104,
+                  "peak_increment_bytes": 24576
+                },
+                "operator_audit": {
+                  "fixed_instance_operator_2_norm_error": 0.837147793884984,
+                  "isotropic_expected_mse_per_node": 0.10690600519480621,
+                  "fixed_instance_frobenius_error": 1.223390400782713
+                },
+                "operator_audit_seconds": 0.00010779999956866959
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.04388489068330702,
+                  "empirical_relative_l2_error": 0.33935417524374534,
+                  "maximum_node_rmse": 0.27851299985287653,
+                  "median_node_rmse": 0.20915828509102666
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    17.382133114414717
+                  ],
+                  "coefficient_seconds": 5.140000030223746e-05,
+                  "coefficient_count": 3
+                },
+                "online": {
+                  "batch_apply_seconds": 9.569999929226469e-05,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 320,
+                  "scalar_hops": 320,
+                  "byte_hop": 2560,
+                  "estimated_spmv_flops": 752,
+                  "estimated_recurrence_flops": 448,
+                  "estimated_online_flops": 1200,
+                  "matrix_storage_bytes": 708,
+                  "working_vector_bytes": 1344,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 137039872,
+                  "peak_sampled_rss_bytes": 137064448,
+                  "peak_increment_bytes": 24576
+                },
+                "operator_audit": {
+                  "fixed_instance_operator_2_norm_error": 0.437657610461243,
+                  "isotropic_expected_mse_per_node": 0.019973680996533388,
+                  "fixed_instance_frobenius_error": 0.5288019799050183
+                },
+                "operator_audit_seconds": 0.00013109999963489827
+              }
+            }
+          },
+          {
+            "rounds": 4,
+            "cut": {
+              "sampled_roots": 14,
+              "mean_cut_edges": 0.21428571428571427,
+              "maximum_cut_edges": 2,
+              "mean_cut_weight": 0.2031801208547548,
+              "maximum_cut_weight": 1.7376504096977379
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.1645375000534258,
+                  "empirical_relative_l2_error": 0.6570949563357029,
+                  "maximum_node_rmse": 0.5814177053954166,
+                  "median_node_rmse": 0.41822502880504975
+                },
+                "offline": {
+                  "spectral_upper_bound": 17.382133114414717,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 5.0800000281014945e-05,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 640,
+                  "scalar_hops": 640,
+                  "byte_hop": 5120,
+                  "estimated_spmv_flops": 1504,
+                  "estimated_recurrence_flops": 896,
+                  "estimated_online_flops": 2400,
+                  "matrix_storage_bytes": 708,
+                  "working_vector_bytes": 896,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 137043968,
+                  "peak_sampled_rss_bytes": 137068544,
+                  "peak_increment_bytes": 24576
+                },
+                "operator_audit": {
+                  "fixed_instance_operator_2_norm_error": 0.7435957435582387,
+                  "isotropic_expected_mse_per_node": 0.07602895006432069,
+                  "fixed_instance_frobenius_error": 1.0317001991375643
+                },
+                "operator_audit_seconds": 8.329999945999589e-05
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.00671936084689844,
+                  "empirical_relative_l2_error": 0.1327882565004669,
+                  "maximum_node_rmse": 0.11289297768632073,
+                  "median_node_rmse": 0.0717161361312039
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    17.382133114414717
+                  ],
+                  "coefficient_seconds": 3.389999983482994e-05,
+                  "coefficient_count": 5
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00011379999978089472,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 640,
+                  "scalar_hops": 640,
+                  "byte_hop": 5120,
+                  "estimated_spmv_flops": 1504,
+                  "estimated_recurrence_flops": 896,
+                  "estimated_online_flops": 2400,
+                  "matrix_storage_bytes": 708,
+                  "working_vector_bytes": 1344,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 137048064,
+                  "peak_sampled_rss_bytes": 137072640,
+                  "peak_increment_bytes": 24576
+                },
+                "operator_audit": {
+                  "fixed_instance_operator_2_norm_error": 0.17195388962688182,
+                  "isotropic_expected_mse_per_node": 0.0032287230044034643,
+                  "fixed_instance_frobenius_error": 0.21260790686531042
+                },
+                "operator_audit_seconds": 0.0001357000001007691
+              }
+            }
+          },
+          {
+            "rounds": 8,
+            "cut": {
+              "sampled_roots": 14,
+              "mean_cut_edges": 0.0,
+              "maximum_cut_edges": 0,
+              "mean_cut_weight": 0.0,
+              "maximum_cut_weight": 0.0
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.09083678797790237,
+                  "empirical_relative_l2_error": 0.48823237116616,
+                  "maximum_node_rmse": 0.4226845319833038,
+                  "median_node_rmse": 0.3204706985395397
+                },
+                "offline": {
+                  "spectral_upper_bound": 17.382133114414717,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 6.069999926694436e-05,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 1280,
+                  "scalar_hops": 1280,
+                  "byte_hop": 10240,
+                  "estimated_spmv_flops": 3008,
+                  "estimated_recurrence_flops": 1792,
+                  "estimated_online_flops": 4800,
+                  "matrix_storage_bytes": 708,
+                  "working_vector_bytes": 896,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 137060352,
+                  "peak_sampled_rss_bytes": 137084928,
+                  "peak_increment_bytes": 24576
+                },
+                "operator_audit": {
+                  "fixed_instance_operator_2_norm_error": 0.5866869272937107,
+                  "isotropic_expected_mse_per_node": 0.04059668261178632,
+                  "fixed_instance_frobenius_error": 0.7538922711933107
+                },
+                "operator_audit_seconds": 8.86999996509985e-05
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.000197278767284505,
+                  "empirical_relative_l2_error": 0.022752852908874424,
+                  "maximum_node_rmse": 0.02787525369651342,
+                  "median_node_rmse": 0.012208953249631484
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    17.382133114414717
+                  ],
+                  "coefficient_seconds": 3.590000051190145e-05,
+                  "coefficient_count": 9
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00012689999948634068,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 1280,
+                  "scalar_hops": 1280,
+                  "byte_hop": 10240,
+                  "estimated_spmv_flops": 3008,
+                  "estimated_recurrence_flops": 1792,
+                  "estimated_online_flops": 4800,
+                  "matrix_storage_bytes": 708,
+                  "working_vector_bytes": 1344,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 137060352,
+                  "peak_sampled_rss_bytes": 137084928,
+                  "peak_increment_bytes": 24576
+                },
+                "operator_audit": {
+                  "fixed_instance_operator_2_norm_error": 0.024473511568344004,
+                  "isotropic_expected_mse_per_node": 8.81796348111937e-05,
+                  "fixed_instance_frobenius_error": 0.03513566403750912
+                },
+                "operator_audit_seconds": 0.00019830000019283034
+              }
+            }
+          },
+          {
+            "rounds": 16,
+            "cut": {
+              "sampled_roots": 14,
+              "mean_cut_edges": 0.0,
+              "maximum_cut_edges": 0,
+              "mean_cut_weight": 0.0,
+              "maximum_cut_weight": 0.0
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.0301321195823483,
+                  "empirical_relative_l2_error": 0.28119689937761155,
+                  "maximum_node_rmse": 0.22908594582050282,
+                  "median_node_rmse": 0.18696090432291307
+                },
+                "offline": {
+                  "spectral_upper_bound": 17.382133114414717,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 6.630000007135095e-05,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 2560,
+                  "scalar_hops": 2560,
+                  "byte_hop": 20480,
+                  "estimated_spmv_flops": 6016,
+                  "estimated_recurrence_flops": 3584,
+                  "estimated_online_flops": 9600,
+                  "matrix_storage_bytes": 708,
+                  "working_vector_bytes": 896,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 137068544,
+                  "peak_sampled_rss_bytes": 137093120,
+                  "peak_increment_bytes": 24576
+                },
+                "operator_audit": {
+                  "fixed_instance_operator_2_norm_error": 0.36521234017133813,
+                  "isotropic_expected_mse_per_node": 0.012937151658922645,
+                  "fixed_instance_frobenius_error": 0.425582099276881
+                },
+                "operator_audit_seconds": 0.00011199999971722718
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 8.055164256400506e-08,
+                  "empirical_relative_l2_error": 0.000459761802552575,
+                  "maximum_node_rmse": 0.0004287888441204122,
+                  "median_node_rmse": 0.0002689886889848522
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    17.382133114414717
+                  ],
+                  "coefficient_seconds": 4.4099999286117963e-05,
+                  "coefficient_count": 17
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00016109999978652922,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 2560,
+                  "scalar_hops": 2560,
+                  "byte_hop": 20480,
+                  "estimated_spmv_flops": 6016,
+                  "estimated_recurrence_flops": 3584,
+                  "estimated_online_flops": 9600,
+                  "matrix_storage_bytes": 708,
+                  "working_vector_bytes": 1344,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 137068544,
+                  "peak_sampled_rss_bytes": 137093120,
+                  "peak_increment_bytes": 24576
+                },
+                "operator_audit": {
+                  "fixed_instance_operator_2_norm_error": 0.000488615164029942,
+                  "isotropic_expected_mse_per_node": 3.8390202505875777e-08,
+                  "fixed_instance_frobenius_error": 0.0007331185682290832
+                },
+                "operator_audit_seconds": 0.0001799000001483364
+              }
+            }
+          }
+        ],
+        "checks": {
+          "reference_residual_below_tolerance": true,
+          "global_empirical_error_is_zero": true,
+          "all_reported_errors_finite": true
+        },
+        "case_total_seconds": 0.013409700000011071
+      },
+      {
+        "case_index": 1,
+        "classification": "external_application_stress",
+        "source": {
+          "classification": "external_application_stress",
+          "source_kind": "PGLib topology",
+          "source_path": "E:\\Code\\MAS\\datasets\\raw\\pglib_opf_v23.07\\pglib_opf_case118_ieee.m",
+          "source_sha256": "b1af0833849040c04babc3700631cff0d9afa66b79c5d3e13ae79bdf516cec78",
+          "transformation": "active branches mapped to abs(baseMVA/(x*tap)), parallel weights summed, then divided by their median; graph smoother only",
+          "nodes": 118,
+          "edges": 179,
+          "connected_components": 1,
+          "skipped_inactive_or_zero_reactance_branches": 0,
+          "normalization_scale": 1196.1722488038279
+        },
+        "graph": {
+          "nodes": 118,
+          "edges": 179,
+          "connected_components": 1,
+          "weighted_degree_min": 0.40308582449373187,
+          "weighted_degree_median": 3.602693071450406,
+          "weighted_degree_max": 32.422123351268176,
+          "edge_weight_min": 0.2031591737545565,
+          "edge_weight_median": 1.0,
+          "edge_weight_max": 20.641975308641975,
+          "adjacency_csr_bytes": 4772,
+          "system_nnz": 476,
+          "system_csr_bytes": 6188
+        },
+        "edge_scale": 1.0,
+        "signal_seed": 20261914,
+        "signal_samples": 4,
+        "spectral_interval_used": [
+          1.0,
+          65.84424670253635
+        ],
+        "construction": {
+          "seconds": 0.009456800000407384,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 137072640,
+            "peak_sampled_rss_bytes": 137347072,
+            "peak_increment_bytes": 274432
+          }
+        },
+        "global_exact": {
+          "access_class": "full_graph_and_full_input",
+          "rounds": null,
+          "signal_metrics": {
+            "empirical_mse_per_node": 0.0,
+            "empirical_relative_l2_error": 0.0,
+            "maximum_node_rmse": 0.0,
+            "median_node_rmse": 0.0
+          },
+          "offline": {
+            "factorization_seconds": 0.0003423999996812199
+          },
+          "online": {
+            "solve_seconds": 4.11000000895001e-05,
+            "right_hand_sides_in_timed_solve": 4
+          },
+          "relative_residual_max": 3.582254479923262e-16,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 137347072,
+            "peak_sampled_rss_bytes": 137453568,
+            "peak_increment_bytes": 106496
+          }
+        },
+        "round_sweep": [
+          {
+            "rounds": 2,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 14.5,
+              "maximum_cut_edges": 23,
+              "mean_cut_weight": 26.591377452296747,
+              "maximum_cut_weight": 55.51422459363238
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.13174993060215942,
+                  "empirical_relative_l2_error": 0.9133754548498761,
+                  "maximum_node_rmse": 0.8678886585600082,
+                  "median_node_rmse": 0.30358017598282394
+                },
+                "offline": {
+                  "spectral_upper_bound": 65.84424670253635,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 4.929999977321131e-05,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 2864,
+                  "scalar_hops": 2864,
+                  "byte_hop": 22912,
+                  "estimated_spmv_flops": 6672,
+                  "estimated_recurrence_flops": 3776,
+                  "estimated_online_flops": 10448,
+                  "matrix_storage_bytes": 6188,
+                  "working_vector_bytes": 7552,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 137461760,
+                  "peak_sampled_rss_bytes": 137486336,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.06075882290238267,
+                  "empirical_relative_l2_error": 0.6202671982230298,
+                  "maximum_node_rmse": 0.5917032806693598,
+                  "median_node_rmse": 0.19934664036901703
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    65.84424670253635
+                  ],
+                  "coefficient_seconds": 3.670000023703324e-05,
+                  "coefficient_count": 3
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00014109999938227702,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 2864,
+                  "scalar_hops": 2864,
+                  "byte_hop": 22912,
+                  "estimated_spmv_flops": 6672,
+                  "estimated_recurrence_flops": 3776,
+                  "estimated_online_flops": 10448,
+                  "matrix_storage_bytes": 6188,
+                  "working_vector_bytes": 11328,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 137461760,
+                  "peak_sampled_rss_bytes": 137486336,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 4,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 17.75,
+              "maximum_cut_edges": 26,
+              "mean_cut_weight": 31.452217714998973,
+              "maximum_cut_weight": 58.854829247513074
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.11756202251051916,
+                  "empirical_relative_l2_error": 0.8627950872132507,
+                  "maximum_node_rmse": 0.8142305565948927,
+                  "median_node_rmse": 0.2902613572513374
+                },
+                "offline": {
+                  "spectral_upper_bound": 65.84424670253635,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 5.510000028152717e-05,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 5728,
+                  "scalar_hops": 5728,
+                  "byte_hop": 45824,
+                  "estimated_spmv_flops": 13344,
+                  "estimated_recurrence_flops": 7552,
+                  "estimated_online_flops": 20896,
+                  "matrix_storage_bytes": 6188,
+                  "working_vector_bytes": 7552,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 137461760,
+                  "peak_sampled_rss_bytes": 137486336,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.019077510648216212,
+                  "empirical_relative_l2_error": 0.34756416377834903,
+                  "maximum_node_rmse": 0.3500402754918382,
+                  "median_node_rmse": 0.11409102011098088
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    65.84424670253635
+                  ],
+                  "coefficient_seconds": 3.3399999665562063e-05,
+                  "coefficient_count": 5
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00013450000005832408,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 5728,
+                  "scalar_hops": 5728,
+                  "byte_hop": 45824,
+                  "estimated_spmv_flops": 13344,
+                  "estimated_recurrence_flops": 7552,
+                  "estimated_online_flops": 20896,
+                  "matrix_storage_bytes": 6188,
+                  "working_vector_bytes": 11328,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 137461760,
+                  "peak_sampled_rss_bytes": 137486336,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 8,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 10.5625,
+              "maximum_cut_edges": 24,
+              "mean_cut_weight": 17.604883955720148,
+              "maximum_cut_weight": 42.37696881334573
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.09463127569542552,
+                  "empirical_relative_l2_error": 0.7740900522602228,
+                  "maximum_node_rmse": 0.7195300660263637,
+                  "median_node_rmse": 0.2565892096212504
+                },
+                "offline": {
+                  "spectral_upper_bound": 65.84424670253635,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 7.229999937408138e-05,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 11456,
+                  "scalar_hops": 11456,
+                  "byte_hop": 91648,
+                  "estimated_spmv_flops": 26688,
+                  "estimated_recurrence_flops": 15104,
+                  "estimated_online_flops": 41792,
+                  "matrix_storage_bytes": 6188,
+                  "working_vector_bytes": 7552,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 137461760,
+                  "peak_sampled_rss_bytes": 137486336,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.0028933345538719943,
+                  "empirical_relative_l2_error": 0.13535473904140444,
+                  "maximum_node_rmse": 0.12198411946900475,
+                  "median_node_rmse": 0.04766369958859078
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    65.84424670253635
+                  ],
+                  "coefficient_seconds": 3.7599999814119656e-05,
+                  "coefficient_count": 9
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00015460000031453092,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 11456,
+                  "scalar_hops": 11456,
+                  "byte_hop": 91648,
+                  "estimated_spmv_flops": 26688,
+                  "estimated_recurrence_flops": 15104,
+                  "estimated_online_flops": 41792,
+                  "matrix_storage_bytes": 6188,
+                  "working_vector_bytes": 11328,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 137461760,
+                  "peak_sampled_rss_bytes": 137486336,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 16,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 0.0,
+              "maximum_cut_edges": 0,
+              "mean_cut_weight": 0.0,
+              "maximum_cut_weight": 0.0
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.06309478071518566,
+                  "empirical_relative_l2_error": 0.6320782650425009,
+                  "maximum_node_rmse": 0.5956606068610412,
+                  "median_node_rmse": 0.2077056524324264
+                },
+                "offline": {
+                  "spectral_upper_bound": 65.84424670253635,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0001021999996737577,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 22912,
+                  "scalar_hops": 22912,
+                  "byte_hop": 183296,
+                  "estimated_spmv_flops": 53376,
+                  "estimated_recurrence_flops": 30208,
+                  "estimated_online_flops": 83584,
+                  "matrix_storage_bytes": 6188,
+                  "working_vector_bytes": 7552,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 137461760,
+                  "peak_sampled_rss_bytes": 137486336,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 7.030199178518183e-05,
+                  "empirical_relative_l2_error": 0.02109880964156357,
+                  "maximum_node_rmse": 0.01899257614686108,
+                  "median_node_rmse": 0.007414609031358573
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    65.84424670253635
+                  ],
+                  "coefficient_seconds": 4.4099999286117963e-05,
+                  "coefficient_count": 17
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00019779999911406776,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 22912,
+                  "scalar_hops": 22912,
+                  "byte_hop": 183296,
+                  "estimated_spmv_flops": 53376,
+                  "estimated_recurrence_flops": 30208,
+                  "estimated_online_flops": 83584,
+                  "matrix_storage_bytes": 6188,
+                  "working_vector_bytes": 11328,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 137461760,
+                  "peak_sampled_rss_bytes": 137486336,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          }
+        ],
+        "checks": {
+          "reference_residual_below_tolerance": true,
+          "global_empirical_error_is_zero": true,
+          "all_reported_errors_finite": true
+        },
+        "case_total_seconds": 0.02280499999960739
+      },
+      {
+        "case_index": 2,
+        "classification": "external_application_stress",
+        "source": {
+          "classification": "external_application_stress",
+          "source_kind": "PGLib topology",
+          "source_path": "E:\\Code\\MAS\\datasets\\raw\\pglib_opf_v23.07\\pglib_opf_case300_ieee.m",
+          "source_sha256": "7ecf056d5942135765200ad7ae8791c28f0d35fb1dc888ba2c32dfc950f3c2f5",
+          "transformation": "active branches mapped to abs(baseMVA/(x*tap)), parallel weights summed, then divided by their median; graph smoother only",
+          "nodes": 300,
+          "edges": 409,
+          "connected_components": 1,
+          "skipped_inactive_or_zero_reactance_branches": 0,
+          "normalization_scale": 1700.897223285283
+        },
+        "graph": {
+          "nodes": 300,
+          "edges": 409,
+          "connected_components": 1,
+          "weighted_degree_min": 0.010780493618893942,
+          "weighted_degree_median": 3.003262456797235,
+          "weighted_degree_max": 143.89635565670883,
+          "edge_weight_min": 0.010780493618893942,
+          "edge_weight_median": 1.0,
+          "edge_weight_max": 126.7702664240187,
+          "adjacency_csr_bytes": 11020,
+          "system_nnz": 1118,
+          "system_csr_bytes": 14620
+        },
+        "edge_scale": 1.0,
+        "signal_seed": 20262914,
+        "signal_samples": 4,
+        "spectral_interval_used": [
+          1.0,
+          288.79271131341767
+        ],
+        "construction": {
+          "seconds": 0.1162534000004598,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 137461760,
+            "peak_sampled_rss_bytes": 137932800,
+            "peak_increment_bytes": 471040
+          }
+        },
+        "global_exact": {
+          "access_class": "full_graph_and_full_input",
+          "rounds": null,
+          "signal_metrics": {
+            "empirical_mse_per_node": 0.0,
+            "empirical_relative_l2_error": 0.0,
+            "maximum_node_rmse": 0.0,
+            "median_node_rmse": 0.0
+          },
+          "offline": {
+            "factorization_seconds": 0.0003062999994654092
+          },
+          "online": {
+            "solve_seconds": 3.710000055434648e-05,
+            "right_hand_sides_in_timed_solve": 4
+          },
+          "relative_residual_max": 1.0844987303704412e-15,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 137932800,
+            "peak_sampled_rss_bytes": 138088448,
+            "peak_increment_bytes": 155648
+          }
+        },
+        "round_sweep": [
+          {
+            "rounds": 2,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 10.3125,
+              "maximum_cut_edges": 20,
+              "mean_cut_weight": 43.25834696540359,
+              "maximum_cut_weight": 240.99791596868815
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.23642061627502295,
+                  "empirical_relative_l2_error": 0.9837732976270643,
+                  "maximum_node_rmse": 1.5051462515131042,
+                  "median_node_rmse": 0.3427103541418821
+                },
+                "offline": {
+                  "spectral_upper_bound": 288.79271131341767,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 3.790000027947826e-05,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 6544,
+                  "scalar_hops": 6544,
+                  "byte_hop": 52352,
+                  "estimated_spmv_flops": 15488,
+                  "estimated_recurrence_flops": 9600,
+                  "estimated_online_flops": 25088,
+                  "matrix_storage_bytes": 14620,
+                  "working_vector_bytes": 19200,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 138092544,
+                  "peak_sampled_rss_bytes": 138117120,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.20210236170182816,
+                  "empirical_relative_l2_error": 0.9095740304260843,
+                  "maximum_node_rmse": 1.4299815215967717,
+                  "median_node_rmse": 0.3037353674318575
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    288.79271131341767
+                  ],
+                  "coefficient_seconds": 4.820000049221562e-05,
+                  "coefficient_count": 3
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00010850000035134144,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 6544,
+                  "scalar_hops": 6544,
+                  "byte_hop": 52352,
+                  "estimated_spmv_flops": 15488,
+                  "estimated_recurrence_flops": 9600,
+                  "estimated_online_flops": 25088,
+                  "matrix_storage_bytes": 14620,
+                  "working_vector_bytes": 28800,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 138092544,
+                  "peak_sampled_rss_bytes": 138117120,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 4,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 20.0,
+              "maximum_cut_edges": 35,
+              "mean_cut_weight": 71.39404538205628,
+              "maximum_cut_weight": 284.7676260796272
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.23139050689529428,
+                  "empirical_relative_l2_error": 0.9732516005624992,
+                  "maximum_node_rmse": 1.494656606062568,
+                  "median_node_rmse": 0.33752145191663596
+                },
+                "offline": {
+                  "spectral_upper_bound": 288.79271131341767,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 5.959999998594867e-05,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 13088,
+                  "scalar_hops": 13088,
+                  "byte_hop": 104704,
+                  "estimated_spmv_flops": 30976,
+                  "estimated_recurrence_flops": 19200,
+                  "estimated_online_flops": 50176,
+                  "matrix_storage_bytes": 14620,
+                  "working_vector_bytes": 19200,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 138092544,
+                  "peak_sampled_rss_bytes": 138117120,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.1492230612756467,
+                  "empirical_relative_l2_error": 0.7815744082483147,
+                  "maximum_node_rmse": 1.2886901566355673,
+                  "median_node_rmse": 0.2466921559209138
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    288.79271131341767
+                  ],
+                  "coefficient_seconds": 3.569999989849748e-05,
+                  "coefficient_count": 5
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00012760000026901253,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 13088,
+                  "scalar_hops": 13088,
+                  "byte_hop": 104704,
+                  "estimated_spmv_flops": 30976,
+                  "estimated_recurrence_flops": 19200,
+                  "estimated_online_flops": 50176,
+                  "matrix_storage_bytes": 14620,
+                  "working_vector_bytes": 28800,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 138092544,
+                  "peak_sampled_rss_bytes": 138117120,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 8,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 33.3125,
+              "maximum_cut_edges": 51,
+              "mean_cut_weight": 111.31513017901659,
+              "maximum_cut_weight": 215.3175157716932
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.2217879117191063,
+                  "empirical_relative_l2_error": 0.9528428814218074,
+                  "maximum_node_rmse": 1.473895308417345,
+                  "median_node_rmse": 0.3259824607771142
+                },
+                "offline": {
+                  "spectral_upper_bound": 288.79271131341767,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 8.279999929072801e-05,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 26176,
+                  "scalar_hops": 26176,
+                  "byte_hop": 209408,
+                  "estimated_spmv_flops": 61952,
+                  "estimated_recurrence_flops": 38400,
+                  "estimated_online_flops": 100352,
+                  "matrix_storage_bytes": 14620,
+                  "working_vector_bytes": 19200,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 138092544,
+                  "peak_sampled_rss_bytes": 138117120,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.06408719660684381,
+                  "empirical_relative_l2_error": 0.5121981377323022,
+                  "maximum_node_rmse": 0.9362354616607858,
+                  "median_node_rmse": 0.14654432610674273
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    288.79271131341767
+                  ],
+                  "coefficient_seconds": 4.059999992023222e-05,
+                  "coefficient_count": 9
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00017190000016853446,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 26176,
+                  "scalar_hops": 26176,
+                  "byte_hop": 209408,
+                  "estimated_spmv_flops": 61952,
+                  "estimated_recurrence_flops": 38400,
+                  "estimated_online_flops": 100352,
+                  "matrix_storage_bytes": 14620,
+                  "working_vector_bytes": 28800,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 138092544,
+                  "peak_sampled_rss_bytes": 138117120,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 16,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 5.3125,
+              "maximum_cut_edges": 28,
+              "mean_cut_weight": 12.051288004136733,
+              "maximum_cut_weight": 49.08651522876368
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.2041839141144803,
+                  "empirical_relative_l2_error": 0.9142461081563124,
+                  "maximum_node_rmse": 1.4332308030437755,
+                  "median_node_rmse": 0.30808113245525004
+                },
+                "offline": {
+                  "spectral_upper_bound": 288.79271131341767,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00012539999988803174,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 52352,
+                  "scalar_hops": 52352,
+                  "byte_hop": 418816,
+                  "estimated_spmv_flops": 123904,
+                  "estimated_recurrence_flops": 76800,
+                  "estimated_online_flops": 200704,
+                  "matrix_storage_bytes": 14620,
+                  "working_vector_bytes": 19200,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 138092544,
+                  "peak_sampled_rss_bytes": 138117120,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.009286931137492002,
+                  "empirical_relative_l2_error": 0.19497928366921305,
+                  "maximum_node_rmse": 0.39580772058536245,
+                  "median_node_rmse": 0.060703328723324776
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    288.79271131341767
+                  ],
+                  "coefficient_seconds": 4.669999998441199e-05,
+                  "coefficient_count": 17
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0002134000005753478,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 52352,
+                  "scalar_hops": 52352,
+                  "byte_hop": 418816,
+                  "estimated_spmv_flops": 123904,
+                  "estimated_recurrence_flops": 76800,
+                  "estimated_online_flops": 200704,
+                  "matrix_storage_bytes": 14620,
+                  "working_vector_bytes": 28800,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 138092544,
+                  "peak_sampled_rss_bytes": 138117120,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          }
+        ],
+        "checks": {
+          "reference_residual_below_tolerance": true,
+          "global_empirical_error_is_zero": true,
+          "all_reported_errors_finite": true
+        },
+        "case_total_seconds": 0.1321023000000423
+      },
+      {
+        "case_index": 3,
+        "classification": "external_application_stress",
+        "source": {
+          "classification": "external_application_stress",
+          "source_kind": "PGLib topology",
+          "source_path": "E:\\Code\\MAS\\datasets\\raw\\pglib_opf_v23.07\\pglib_opf_case1354_pegase.m",
+          "source_sha256": "cd6d27dff4a56684f1e4f82cfa346b36d84c4e90733228aa88331cd550e17652",
+          "transformation": "active branches mapped to abs(baseMVA/(x*tap)), parallel weights summed, then divided by their median; graph smoother only",
+          "nodes": 1354,
+          "edges": 1710,
+          "connected_components": 1,
+          "skipped_inactive_or_zero_reactance_branches": 0,
+          "normalization_scale": 10121.467858705128
+        },
+        "graph": {
+          "nodes": 1354,
+          "edges": 1710,
+          "connected_components": 1,
+          "weighted_degree_min": 0.13227995553009117,
+          "weighted_degree_median": 4.000465034488897,
+          "weighted_degree_max": 192.86782896135213,
+          "edge_weight_min": 0.09594179277855205,
+          "edge_weight_median": 1.0000000000000002,
+          "edge_weight_max": 100.06656415446902,
+          "adjacency_csr_bytes": 46460,
+          "system_nnz": 4774,
+          "system_csr_bytes": 62708
+        },
+        "edge_scale": 1.0,
+        "signal_seed": 20263914,
+        "signal_samples": 4,
+        "spectral_interval_used": [
+          1.0,
+          386.73565792270426
+        ],
+        "construction": {
+          "seconds": 0.019040799999856972,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 138092544,
+            "peak_sampled_rss_bytes": 141250560,
+            "peak_increment_bytes": 3158016
+          }
+        },
+        "global_exact": {
+          "access_class": "full_graph_and_full_input",
+          "rounds": null,
+          "signal_metrics": {
+            "empirical_mse_per_node": 0.0,
+            "empirical_relative_l2_error": 0.0,
+            "maximum_node_rmse": 0.0,
+            "median_node_rmse": 0.0
+          },
+          "offline": {
+            "factorization_seconds": 0.0008877999998730957
+          },
+          "online": {
+            "solve_seconds": 9.619999946153257e-05,
+            "right_hand_sides_in_timed_solve": 4
+          },
+          "relative_residual_max": 1.0181550813341987e-15,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 141250560,
+            "peak_sampled_rss_bytes": 141275136,
+            "peak_increment_bytes": 24576
+          }
+        },
+        "round_sweep": [
+          {
+            "rounds": 2,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 19.375,
+              "maximum_cut_edges": 66,
+              "mean_cut_weight": 66.0761111584902,
+              "maximum_cut_weight": 201.8188468643679
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.21493121603461401,
+                  "empirical_relative_l2_error": 0.987193230751305,
+                  "maximum_node_rmse": 1.6337798235004104,
+                  "median_node_rmse": 0.36959326550059185
+                },
+                "offline": {
+                  "spectral_upper_bound": 386.73565792270426,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00020620000032067765,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 27360,
+                  "scalar_hops": 27360,
+                  "byte_hop": 218880,
+                  "estimated_spmv_flops": 65552,
+                  "estimated_recurrence_flops": 43328,
+                  "estimated_online_flops": 108880,
+                  "matrix_storage_bytes": 62708,
+                  "working_vector_bytes": 86656,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 141271040,
+                  "peak_sampled_rss_bytes": 141295616,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.18969634028119056,
+                  "empirical_relative_l2_error": 0.9274316162535728,
+                  "maximum_node_rmse": 1.5514835698183522,
+                  "median_node_rmse": 0.3438974906844259
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    386.73565792270426
+                  ],
+                  "coefficient_seconds": 4.7200000153679866e-05,
+                  "coefficient_count": 3
+                },
+                "online": {
+                  "batch_apply_seconds": 0.000189200000022538,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 27360,
+                  "scalar_hops": 27360,
+                  "byte_hop": 218880,
+                  "estimated_spmv_flops": 65552,
+                  "estimated_recurrence_flops": 43328,
+                  "estimated_online_flops": 108880,
+                  "matrix_storage_bytes": 62708,
+                  "working_vector_bytes": 129984,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 141271040,
+                  "peak_sampled_rss_bytes": 141295616,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 4,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 57.0,
+              "maximum_cut_edges": 162,
+              "mean_cut_weight": 190.1060272894669,
+              "maximum_cut_weight": 466.43847677479897
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.21131043030939678,
+                  "empirical_relative_l2_error": 0.978842658759611,
+                  "maximum_node_rmse": 1.6224287906959762,
+                  "median_node_rmse": 0.3660807312661005
+                },
+                "offline": {
+                  "spectral_upper_bound": 386.73565792270426,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 7.920000007288763e-05,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 54720,
+                  "scalar_hops": 54720,
+                  "byte_hop": 437760,
+                  "estimated_spmv_flops": 131104,
+                  "estimated_recurrence_flops": 86656,
+                  "estimated_online_flops": 217760,
+                  "matrix_storage_bytes": 62708,
+                  "working_vector_bytes": 86656,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 141275136,
+                  "peak_sampled_rss_bytes": 141299712,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.14794685238813518,
+                  "empirical_relative_l2_error": 0.8190403272328105,
+                  "maximum_node_rmse": 1.393428479440372,
+                  "median_node_rmse": 0.30233333365529436
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    386.73565792270426
+                  ],
+                  "coefficient_seconds": 3.930000002583256e-05,
+                  "coefficient_count": 5
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00018199999976786785,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 54720,
+                  "scalar_hops": 54720,
+                  "byte_hop": 437760,
+                  "estimated_spmv_flops": 131104,
+                  "estimated_recurrence_flops": 86656,
+                  "estimated_online_flops": 217760,
+                  "matrix_storage_bytes": 62708,
+                  "working_vector_bytes": 129984,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 141275136,
+                  "peak_sampled_rss_bytes": 141299712,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 8,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 167.625,
+              "maximum_cut_edges": 226,
+              "mean_cut_weight": 647.7802235197742,
+              "maximum_cut_weight": 1071.7074876434149
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.2043302249099774,
+                  "empirical_relative_l2_error": 0.9625398690262581,
+                  "maximum_node_rmse": 1.5999747669629734,
+                  "median_node_rmse": 0.3596977998674836
+                },
+                "offline": {
+                  "spectral_upper_bound": 386.73565792270426,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00028530000054161064,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 109440,
+                  "scalar_hops": 109440,
+                  "byte_hop": 875520,
+                  "estimated_spmv_flops": 262208,
+                  "estimated_recurrence_flops": 173312,
+                  "estimated_online_flops": 435520,
+                  "matrix_storage_bytes": 62708,
+                  "working_vector_bytes": 86656,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 141275136,
+                  "peak_sampled_rss_bytes": 141299712,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.07053550381544234,
+                  "empirical_relative_l2_error": 0.5655308581577378,
+                  "maximum_node_rmse": 0.9976159803674981,
+                  "median_node_rmse": 0.20729227811438727
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    386.73565792270426
+                  ],
+                  "coefficient_seconds": 4.129999979340937e-05,
+                  "coefficient_count": 9
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0002133999996658531,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 109440,
+                  "scalar_hops": 109440,
+                  "byte_hop": 875520,
+                  "estimated_spmv_flops": 262208,
+                  "estimated_recurrence_flops": 173312,
+                  "estimated_online_flops": 435520,
+                  "matrix_storage_bytes": 62708,
+                  "working_vector_bytes": 129984,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 141275136,
+                  "peak_sampled_rss_bytes": 141299712,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 16,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 20.125,
+              "maximum_cut_edges": 107,
+              "mean_cut_weight": 121.02852397887492,
+              "maximum_cut_weight": 381.95137126522013
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.19129625302607792,
+                  "empirical_relative_l2_error": 0.9313344172918725,
+                  "maximum_node_rmse": 1.5560397489127644,
+                  "median_node_rmse": 0.34559225188311365
+                },
+                "offline": {
+                  "spectral_upper_bound": 386.73565792270426,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0002469000000928645,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 218880,
+                  "scalar_hops": 218880,
+                  "byte_hop": 1751040,
+                  "estimated_spmv_flops": 524416,
+                  "estimated_recurrence_flops": 346624,
+                  "estimated_online_flops": 871040,
+                  "matrix_storage_bytes": 62708,
+                  "working_vector_bytes": 86656,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 141275136,
+                  "peak_sampled_rss_bytes": 141299712,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.011594500556971338,
+                  "empirical_relative_l2_error": 0.2292864782051083,
+                  "maximum_node_rmse": 0.44371489591316754,
+                  "median_node_rmse": 0.08527665184201141
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    386.73565792270426
+                  ],
+                  "coefficient_seconds": 5.03999999637017e-05,
+                  "coefficient_count": 17
+                },
+                "online": {
+                  "batch_apply_seconds": 0.000357599999915692,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 218880,
+                  "scalar_hops": 218880,
+                  "byte_hop": 1751040,
+                  "estimated_spmv_flops": 524416,
+                  "estimated_recurrence_flops": 346624,
+                  "estimated_online_flops": 871040,
+                  "matrix_storage_bytes": 62708,
+                  "working_vector_bytes": 129984,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 141275136,
+                  "peak_sampled_rss_bytes": 141299712,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          }
+        ],
+        "checks": {
+          "reference_residual_below_tolerance": true,
+          "global_empirical_error_is_zero": true,
+          "all_reported_errors_finite": true
+        },
+        "case_total_seconds": 0.05677369999921211
+      },
+      {
+        "case_index": 4,
+        "classification": "external_application_stress",
+        "source": {
+          "classification": "external_application_stress",
+          "source_kind": "PGLib topology",
+          "source_path": "E:\\Code\\MAS\\datasets\\raw\\pglib_opf_v23.07\\pglib_opf_case2869_pegase.m",
+          "source_sha256": "6c8e80fba6fc2fa78d65fce64cf4801425b01a0aa093661caf581b6551d4a7ac",
+          "transformation": "active branches mapped to abs(baseMVA/(x*tap)), parallel weights summed, then divided by their median; graph smoother only",
+          "nodes": 2869,
+          "edges": 3968,
+          "connected_components": 1,
+          "skipped_inactive_or_zero_reactance_branches": 0,
+          "normalization_scale": 8913.352097963954
+        },
+        "graph": {
+          "nodes": 2869,
+          "edges": 3968,
+          "connected_components": 1,
+          "weighted_degree_min": 0.08656731270021971,
+          "weighted_degree_median": 4.494981879327093,
+          "weighted_degree_max": 256.60017617800617,
+          "edge_weight_min": 0.001352425771816678,
+          "edge_weight_median": 1.0,
+          "edge_weight_max": 113.62958645511915,
+          "adjacency_csr_bytes": 106712,
+          "system_nnz": 10805,
+          "system_csr_bytes": 141140
+        },
+        "edge_scale": 1.0,
+        "signal_seed": 20264914,
+        "signal_samples": 4,
+        "spectral_interval_used": [
+          1.0,
+          514.2003523560123
+        ],
+        "construction": {
+          "seconds": 0.028846799999882933,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 141275136,
+            "peak_sampled_rss_bytes": 144973824,
+            "peak_increment_bytes": 3698688
+          }
+        },
+        "global_exact": {
+          "access_class": "full_graph_and_full_input",
+          "rounds": null,
+          "signal_metrics": {
+            "empirical_mse_per_node": 0.0,
+            "empirical_relative_l2_error": 0.0,
+            "maximum_node_rmse": 0.0,
+            "median_node_rmse": 0.0
+          },
+          "offline": {
+            "factorization_seconds": 0.0021050000004834146
+          },
+          "online": {
+            "solve_seconds": 0.00019100000008620555,
+            "right_hand_sides_in_timed_solve": 4
+          },
+          "relative_residual_max": 1.0066051239207506e-15,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 143482880,
+            "peak_sampled_rss_bytes": 144003072,
+            "peak_increment_bytes": 520192
+          }
+        },
+        "round_sweep": [
+          {
+            "rounds": 2,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 11.0,
+              "maximum_cut_edges": 29,
+              "mean_cut_weight": 56.306056500252,
+              "maximum_cut_weight": 257.7964217460466
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.2003120499461658,
+                  "empirical_relative_l2_error": 0.9900453253555141,
+                  "maximum_node_rmse": 1.800867222275586,
+                  "median_node_rmse": 0.3597216489093688
+                },
+                "offline": {
+                  "spectral_upper_bound": 514.2003523560123,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 9.090000003197929e-05,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 63488,
+                  "scalar_hops": 63488,
+                  "byte_hop": 507904,
+                  "estimated_spmv_flops": 149928,
+                  "estimated_recurrence_flops": 91808,
+                  "estimated_online_flops": 241736,
+                  "matrix_storage_bytes": 141140,
+                  "working_vector_bytes": 183616,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 144003072,
+                  "peak_sampled_rss_bytes": 144027648,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.18168539651541105,
+                  "empirical_relative_l2_error": 0.9428911301834988,
+                  "maximum_node_rmse": 1.7359243696366946,
+                  "median_node_rmse": 0.33952896065180144
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    514.2003523560123
+                  ],
+                  "coefficient_seconds": 4.55999997939216e-05,
+                  "coefficient_count": 3
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00022960000023886096,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 63488,
+                  "scalar_hops": 63488,
+                  "byte_hop": 507904,
+                  "estimated_spmv_flops": 149928,
+                  "estimated_recurrence_flops": 91808,
+                  "estimated_online_flops": 241736,
+                  "matrix_storage_bytes": 141140,
+                  "working_vector_bytes": 275424,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 144003072,
+                  "peak_sampled_rss_bytes": 144027648,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 4,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 32.25,
+              "maximum_cut_edges": 82,
+              "mean_cut_weight": 132.5755981194361,
+              "maximum_cut_weight": 467.7258291397462
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.1976826489323049,
+                  "empirical_relative_l2_error": 0.9835259333767232,
+                  "maximum_node_rmse": 1.791983099579466,
+                  "median_node_rmse": 0.35695144607703155
+                },
+                "offline": {
+                  "spectral_upper_bound": 514.2003523560123,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00014339999961521244,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 126976,
+                  "scalar_hops": 126976,
+                  "byte_hop": 1015808,
+                  "estimated_spmv_flops": 299856,
+                  "estimated_recurrence_flops": 183616,
+                  "estimated_online_flops": 483472,
+                  "matrix_storage_bytes": 141140,
+                  "working_vector_bytes": 183616,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 144007168,
+                  "peak_sampled_rss_bytes": 144031744,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.14920067527108816,
+                  "empirical_relative_l2_error": 0.8544505509928456,
+                  "maximum_node_rmse": 1.6077990803028104,
+                  "median_node_rmse": 0.3048495099044416
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    514.2003523560123
+                  ],
+                  "coefficient_seconds": 3.80000001314329e-05,
+                  "coefficient_count": 5
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0002677000002222485,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 126976,
+                  "scalar_hops": 126976,
+                  "byte_hop": 1015808,
+                  "estimated_spmv_flops": 299856,
+                  "estimated_recurrence_flops": 183616,
+                  "estimated_online_flops": 483472,
+                  "matrix_storage_bytes": 141140,
+                  "working_vector_bytes": 275424,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 144007168,
+                  "peak_sampled_rss_bytes": 144031744,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 8,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 119.25,
+              "maximum_cut_edges": 255,
+              "mean_cut_weight": 488.8400282479453,
+              "maximum_cut_weight": 986.1623399795649
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.19257569880437123,
+                  "empirical_relative_l2_error": 0.9707385597446043,
+                  "maximum_node_rmse": 1.7743507487529602,
+                  "median_node_rmse": 0.35162659875573954
+                },
+                "offline": {
+                  "spectral_upper_bound": 514.2003523560123,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00024529999973310623,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 253952,
+                  "scalar_hops": 253952,
+                  "byte_hop": 2031616,
+                  "estimated_spmv_flops": 599712,
+                  "estimated_recurrence_flops": 367232,
+                  "estimated_online_flops": 966944,
+                  "matrix_storage_bytes": 141140,
+                  "working_vector_bytes": 183616,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 144007168,
+                  "peak_sampled_rss_bytes": 144031744,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.08151174598874121,
+                  "empirical_relative_l2_error": 0.6315556688705308,
+                  "maximum_node_rmse": 1.248619211822514,
+                  "median_node_rmse": 0.22081381407072215
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    514.2003523560123
+                  ],
+                  "coefficient_seconds": 4.269999953976367e-05,
+                  "coefficient_count": 9
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0003843000004053465,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 253952,
+                  "scalar_hops": 253952,
+                  "byte_hop": 2031616,
+                  "estimated_spmv_flops": 599712,
+                  "estimated_recurrence_flops": 367232,
+                  "estimated_online_flops": 966944,
+                  "matrix_storage_bytes": 141140,
+                  "working_vector_bytes": 275424,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 144007168,
+                  "peak_sampled_rss_bytes": 144031744,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 16,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 100.125,
+              "maximum_cut_edges": 203,
+              "mean_cut_weight": 442.87771785864095,
+              "maximum_cut_weight": 948.4847595971651
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.18290878401176527,
+                  "empirical_relative_l2_error": 0.9460603059361904,
+                  "maximum_node_rmse": 1.7396224358915304,
+                  "median_node_rmse": 0.3407438456883899
+                },
+                "offline": {
+                  "spectral_upper_bound": 514.2003523560123,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00043399999958637636,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 507904,
+                  "scalar_hops": 507904,
+                  "byte_hop": 4063232,
+                  "estimated_spmv_flops": 1199424,
+                  "estimated_recurrence_flops": 734464,
+                  "estimated_online_flops": 1933888,
+                  "matrix_storage_bytes": 141140,
+                  "working_vector_bytes": 183616,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 144027648,
+                  "peak_sampled_rss_bytes": 144052224,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.016806006584835786,
+                  "empirical_relative_l2_error": 0.28677005821648416,
+                  "maximum_node_rmse": 0.6155421943708469,
+                  "median_node_rmse": 0.10234928951786063
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    514.2003523560123
+                  ],
+                  "coefficient_seconds": 5.450000026030466e-05,
+                  "coefficient_count": 17
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0005543000006582588,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 507904,
+                  "scalar_hops": 507904,
+                  "byte_hop": 4063232,
+                  "estimated_spmv_flops": 1199424,
+                  "estimated_recurrence_flops": 734464,
+                  "estimated_online_flops": 1933888,
+                  "matrix_storage_bytes": 141140,
+                  "working_vector_bytes": 275424,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 144027648,
+                  "peak_sampled_rss_bytes": 144052224,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          }
+        ],
+        "checks": {
+          "reference_residual_below_tolerance": true,
+          "global_empirical_error_is_zero": true,
+          "all_reported_errors_finite": true
+        },
+        "case_total_seconds": 0.06716450000021723
+      },
+      {
+        "case_index": 5,
+        "classification": "external_application_stress",
+        "source": {
+          "classification": "external_application_stress",
+          "source_kind": "PGLib topology",
+          "source_path": "E:\\Code\\MAS\\datasets\\raw\\pglib_opf_v23.07\\pglib_opf_case10000_goc.m",
+          "source_sha256": "8387f73e8c135938c60e41538dfbb6b4cb58d37738553fb8a36c1e1647a66e7b",
+          "transformation": "active branches mapped to abs(baseMVA/(x*tap)), parallel weights summed, then divided by their median; graph smoother only",
+          "nodes": 10000,
+          "edges": 12742,
+          "connected_components": 1,
+          "skipped_inactive_or_zero_reactance_branches": 0,
+          "normalization_scale": 5200.208008320333
+        },
+        "graph": {
+          "nodes": 10000,
+          "edges": 12742,
+          "connected_components": 1,
+          "weighted_degree_min": 0.0010405112194488482,
+          "weighted_degree_median": 17.017699115044252,
+          "weighted_degree_max": 65.21606980229511,
+          "edge_weight_min": 0.0010405112194488482,
+          "edge_weight_median": 1.0,
+          "edge_weight_max": 29.13636363636364,
+          "adjacency_csr_bytes": 345812,
+          "system_nnz": 35484,
+          "system_csr_bytes": 465812
+        },
+        "edge_scale": 1.0,
+        "signal_seed": 20265914,
+        "signal_samples": 4,
+        "spectral_interval_used": [
+          1.0,
+          131.43213960459022
+        ],
+        "construction": {
+          "seconds": 0.06865430000016204,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 144027648,
+            "peak_sampled_rss_bytes": 151138304,
+            "peak_increment_bytes": 7110656
+          }
+        },
+        "global_exact": {
+          "access_class": "full_graph_and_full_input",
+          "rounds": null,
+          "signal_metrics": {
+            "empirical_mse_per_node": 0.0,
+            "empirical_relative_l2_error": 0.0,
+            "maximum_node_rmse": 0.0,
+            "median_node_rmse": 0.0
+          },
+          "offline": {
+            "factorization_seconds": 0.007229800000459363
+          },
+          "online": {
+            "solve_seconds": 0.000654499999654945,
+            "right_hand_sides_in_timed_solve": 4
+          },
+          "relative_residual_max": 8.12981448117516e-16,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 148078592,
+            "peak_sampled_rss_bytes": 148131840,
+            "peak_increment_bytes": 53248
+          }
+        },
+        "round_sweep": [
+          {
+            "rounds": 2,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 15.1875,
+              "maximum_cut_edges": 34,
+              "mean_cut_weight": 68.12543684286531,
+              "maximum_cut_weight": 185.79927438729393
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.21084295662876765,
+                  "empirical_relative_l2_error": 0.9652070108754482,
+                  "maximum_node_rmse": 1.6986434940410544,
+                  "median_node_rmse": 0.36234071175608246
+                },
+                "offline": {
+                  "spectral_upper_bound": 131.43213960459022,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00029829999948560726,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 203872,
+                  "scalar_hops": 203872,
+                  "byte_hop": 1630976,
+                  "estimated_spmv_flops": 487744,
+                  "estimated_recurrence_flops": 320000,
+                  "estimated_online_flops": 807744,
+                  "matrix_storage_bytes": 465812,
+                  "working_vector_bytes": 640000,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 148131840,
+                  "peak_sampled_rss_bytes": 148770816,
+                  "peak_increment_bytes": 638976
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.15166183572055325,
+                  "empirical_relative_l2_error": 0.8186138217831304,
+                  "maximum_node_rmse": 1.5214224600475676,
+                  "median_node_rmse": 0.30282462012035183
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    131.43213960459022
+                  ],
+                  "coefficient_seconds": 4.9700000090524554e-05,
+                  "coefficient_count": 3
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0005077999994682614,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 203872,
+                  "scalar_hops": 203872,
+                  "byte_hop": 1630976,
+                  "estimated_spmv_flops": 487744,
+                  "estimated_recurrence_flops": 320000,
+                  "estimated_online_flops": 807744,
+                  "matrix_storage_bytes": 465812,
+                  "working_vector_bytes": 960000,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 148770816,
+                  "peak_sampled_rss_bytes": 149413888,
+                  "peak_increment_bytes": 643072
+                }
+              }
+            }
+          },
+          {
+            "rounds": 4,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 37.375,
+              "maximum_cut_edges": 118,
+              "mean_cut_weight": 207.9098175148457,
+              "maximum_cut_weight": 608.4593068517004
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.20134166235919315,
+                  "empirical_relative_l2_error": 0.9432085827192717,
+                  "maximum_node_rmse": 1.6725962253560527,
+                  "median_node_rmse": 0.3528866691888965
+                },
+                "offline": {
+                  "spectral_upper_bound": 131.43213960459022,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00045079999927111203,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 407744,
+                  "scalar_hops": 407744,
+                  "byte_hop": 3261952,
+                  "estimated_spmv_flops": 975488,
+                  "estimated_recurrence_flops": 640000,
+                  "estimated_online_flops": 1615488,
+                  "matrix_storage_bytes": 465812,
+                  "working_vector_bytes": 640000,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 149413888,
+                  "peak_sampled_rss_bytes": 149438464,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.0814665980523052,
+                  "empirical_relative_l2_error": 0.5999716223892686,
+                  "maximum_node_rmse": 1.2297698106314325,
+                  "median_node_rmse": 0.21541265745804025
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    131.43213960459022
+                  ],
+                  "coefficient_seconds": 4.089999947609613e-05,
+                  "coefficient_count": 5
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0006552000004376168,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 407744,
+                  "scalar_hops": 407744,
+                  "byte_hop": 3261952,
+                  "estimated_spmv_flops": 975488,
+                  "estimated_recurrence_flops": 640000,
+                  "estimated_online_flops": 1615488,
+                  "matrix_storage_bytes": 465812,
+                  "working_vector_bytes": 960000,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 149413888,
+                  "peak_sampled_rss_bytes": 149733376,
+                  "peak_increment_bytes": 319488
+                }
+              }
+            }
+          },
+          {
+            "rounds": 8,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 105.875,
+              "maximum_cut_edges": 452,
+              "mean_cut_weight": 596.6538643453804,
+              "maximum_cut_weight": 2456.9018105324103
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.18388318089472067,
+                  "empirical_relative_l2_error": 0.901388312882778,
+                  "maximum_node_rmse": 1.6216926255548363,
+                  "median_node_rmse": 0.3353220906553077
+                },
+                "offline": {
+                  "spectral_upper_bound": 131.43213960459022,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0007322000001295237,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 815488,
+                  "scalar_hops": 815488,
+                  "byte_hop": 6523904,
+                  "estimated_spmv_flops": 1950976,
+                  "estimated_recurrence_flops": 1280000,
+                  "estimated_online_flops": 3230976,
+                  "matrix_storage_bytes": 465812,
+                  "working_vector_bytes": 640000,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 149733376,
+                  "peak_sampled_rss_bytes": 149757952,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.016639278526785293,
+                  "empirical_relative_l2_error": 0.2711490984118436,
+                  "maximum_node_rmse": 0.6806516391318304,
+                  "median_node_rmse": 0.09515605311746986
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    131.43213960459022
+                  ],
+                  "coefficient_seconds": 4.1599999349273276e-05,
+                  "coefficient_count": 9
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0009094999995795661,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 815488,
+                  "scalar_hops": 815488,
+                  "byte_hop": 6523904,
+                  "estimated_spmv_flops": 1950976,
+                  "estimated_recurrence_flops": 1280000,
+                  "estimated_online_flops": 3230976,
+                  "matrix_storage_bytes": 465812,
+                  "working_vector_bytes": 960000,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 149733376,
+                  "peak_sampled_rss_bytes": 149757952,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 16,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 385.375,
+              "maximum_cut_edges": 736,
+              "mean_cut_weight": 2261.450081244053,
+              "maximum_cut_weight": 4814.897533145811
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.15403712279115434,
+                  "empirical_relative_l2_error": 0.8249993719892571,
+                  "maximum_node_rmse": 1.5244804014740934,
+                  "median_node_rmse": 0.30503874754607363
+                },
+                "offline": {
+                  "spectral_upper_bound": 131.43213960459022,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0014274000004661502,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 1630976,
+                  "scalar_hops": 1630976,
+                  "byte_hop": 13047808,
+                  "estimated_spmv_flops": 3901952,
+                  "estimated_recurrence_flops": 2560000,
+                  "estimated_online_flops": 6461952,
+                  "matrix_storage_bytes": 465812,
+                  "working_vector_bytes": 640000,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 149733376,
+                  "peak_sampled_rss_bytes": 149757952,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.0009116370479207756,
+                  "empirical_relative_l2_error": 0.0634675745796707,
+                  "maximum_node_rmse": 0.16772696054565092,
+                  "median_node_rmse": 0.02409419344083804
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    131.43213960459022
+                  ],
+                  "coefficient_seconds": 5.599999985861359e-05,
+                  "coefficient_count": 17
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0016310999999404885,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 1630976,
+                  "scalar_hops": 1630976,
+                  "byte_hop": 13047808,
+                  "estimated_spmv_flops": 3901952,
+                  "estimated_recurrence_flops": 2560000,
+                  "estimated_online_flops": 6461952,
+                  "matrix_storage_bytes": 465812,
+                  "working_vector_bytes": 960000,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 149733376,
+                  "peak_sampled_rss_bytes": 149757952,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          }
+        ],
+        "checks": {
+          "reference_residual_below_tolerance": true,
+          "global_empirical_error_is_zero": true,
+          "all_reported_errors_finite": true
+        },
+        "case_total_seconds": 0.13188760000048205
+      },
+      {
+        "case_index": 6,
+        "classification": "external_application_stress",
+        "source": {
+          "classification": "external_application_stress",
+          "source_kind": "SuiteSparse sparsity graph",
+          "source_path": "E:\\Code\\MAS\\datasets\\raw\\suitesparse_ccby4\\bcsstk18.tar.gz",
+          "source_sha256": "ebd14190b838f623f7a3ab9c73ff88badc9f9c084b8f12862891929a7bbb8fc8",
+          "archive_member": "bcsstk18/bcsstk18.mtx",
+          "transformation": "symmetric off-diagonal sparsity pattern with unit positive weights; original matrix is not treated as a graph smoother",
+          "nodes": 11948,
+          "edges": 68571,
+          "connected_components": 792,
+          "uses_original_value_magnitudes": false,
+          "normalization_scale": 1.0
+        },
+        "graph": {
+          "nodes": 11948,
+          "edges": 68571,
+          "connected_components": 792,
+          "weighted_degree_min": 0.0,
+          "weighted_degree_median": 11.0,
+          "weighted_degree_max": 48.0,
+          "edge_weight_min": 1.0,
+          "edge_weight_median": 1.0,
+          "edge_weight_max": 1.0,
+          "adjacency_csr_bytes": 1693500,
+          "system_nnz": 149090,
+          "system_csr_bytes": 1836876
+        },
+        "edge_scale": 1.0,
+        "signal_seed": 20266914,
+        "signal_samples": 4,
+        "spectral_interval_used": [
+          1.0,
+          97.0
+        ],
+        "construction": {
+          "seconds": 0.04132409999965603,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 144629760,
+            "peak_sampled_rss_bytes": 154841088,
+            "peak_increment_bytes": 10211328
+          }
+        },
+        "global_exact": {
+          "access_class": "full_graph_and_full_input",
+          "rounds": null,
+          "signal_metrics": {
+            "empirical_mse_per_node": 0.0,
+            "empirical_relative_l2_error": 0.0,
+            "maximum_node_rmse": 0.0,
+            "median_node_rmse": 0.0
+          },
+          "offline": {
+            "factorization_seconds": 0.08087890000024345
+          },
+          "online": {
+            "solve_seconds": 0.003717499999766005,
+            "right_hand_sides_in_timed_solve": 4
+          },
+          "relative_residual_max": 7.236070523359378e-16,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 152764416,
+            "peak_sampled_rss_bytes": 183484416,
+            "peak_increment_bytes": 30720000
+          }
+        },
+        "round_sweep": [
+          {
+            "rounds": 2,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 355.5,
+              "maximum_cut_edges": 647,
+              "mean_cut_weight": 355.5,
+              "maximum_cut_weight": 647.0
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.08881503439394417,
+                  "empirical_relative_l2_error": 0.9466622010104906,
+                  "maximum_node_rmse": 1.976471438846927,
+                  "median_node_rmse": 0.09430423675549884
+                },
+                "offline": {
+                  "spectral_upper_bound": 97.0,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0006257999993977137,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 1097136,
+                  "scalar_hops": 1097136,
+                  "byte_hop": 8777088,
+                  "estimated_spmv_flops": 2289856,
+                  "estimated_recurrence_flops": 382336,
+                  "estimated_online_flops": 2672192,
+                  "matrix_storage_bytes": 1836876,
+                  "working_vector_bytes": 764672,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 153128960,
+                  "peak_sampled_rss_bytes": 153296896,
+                  "peak_increment_bytes": 167936
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.059235525360191305,
+                  "empirical_relative_l2_error": 0.7731128909160866,
+                  "maximum_node_rmse": 1.709403635020944,
+                  "median_node_rmse": 0.06303187244989664
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    97.0
+                  ],
+                  "coefficient_seconds": 5.229999987932388e-05,
+                  "coefficient_count": 3
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0014381000000867061,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 1097136,
+                  "scalar_hops": 1097136,
+                  "byte_hop": 8777088,
+                  "estimated_spmv_flops": 2289856,
+                  "estimated_recurrence_flops": 382336,
+                  "estimated_online_flops": 2672192,
+                  "matrix_storage_bytes": 1836876,
+                  "working_vector_bytes": 1147008,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 153559040,
+                  "peak_sampled_rss_bytes": 153583616,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 4,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 1102.1875,
+              "maximum_cut_edges": 2013,
+              "mean_cut_weight": 1102.1875,
+              "maximum_cut_weight": 2013.0
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.08324202316946912,
+                  "empirical_relative_l2_error": 0.9164802406964755,
+                  "maximum_node_rmse": 1.9359295122131237,
+                  "median_node_rmse": 0.08522712649478792
+                },
+                "offline": {
+                  "spectral_upper_bound": 97.0,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0011374999994586688,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 2194272,
+                  "scalar_hops": 2194272,
+                  "byte_hop": 17554176,
+                  "estimated_spmv_flops": 4579712,
+                  "estimated_recurrence_flops": 764672,
+                  "estimated_online_flops": 5344384,
+                  "matrix_storage_bytes": 1836876,
+                  "working_vector_bytes": 764672,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 154021888,
+                  "peak_sampled_rss_bytes": 154243072,
+                  "peak_increment_bytes": 221184
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.03250226508216263,
+                  "empirical_relative_l2_error": 0.5726755037123288,
+                  "maximum_node_rmse": 1.302369492804848,
+                  "median_node_rmse": 0.04776799460330426
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    97.0
+                  ],
+                  "coefficient_seconds": 4.540000009001233e-05,
+                  "coefficient_count": 5
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0018589999999676365,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 2194272,
+                  "scalar_hops": 2194272,
+                  "byte_hop": 17554176,
+                  "estimated_spmv_flops": 4579712,
+                  "estimated_recurrence_flops": 764672,
+                  "estimated_online_flops": 5344384,
+                  "matrix_storage_bytes": 1836876,
+                  "working_vector_bytes": 1147008,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 154300416,
+                  "peak_sampled_rss_bytes": 154324992,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 8,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 2480.375,
+              "maximum_cut_edges": 4508,
+              "mean_cut_weight": 2480.375,
+              "maximum_cut_weight": 4508.0
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.07391248536646215,
+                  "empirical_relative_l2_error": 0.8635961459529193,
+                  "maximum_node_rmse": 1.8573234222931219,
+                  "median_node_rmse": 0.07242342552516692
+                },
+                "offline": {
+                  "spectral_upper_bound": 97.0,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.002181900000323367,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 4388544,
+                  "scalar_hops": 4388544,
+                  "byte_hop": 35108352,
+                  "estimated_spmv_flops": 9159424,
+                  "estimated_recurrence_flops": 1529344,
+                  "estimated_online_flops": 10688768,
+                  "matrix_storage_bytes": 1836876,
+                  "working_vector_bytes": 764672,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 154537984,
+                  "peak_sampled_rss_bytes": 154562560,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.007719250843101205,
+                  "empirical_relative_l2_error": 0.2790868471301639,
+                  "maximum_node_rmse": 0.6353342941029809,
+                  "median_node_rmse": 0.024650764850850798
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    97.0
+                  ],
+                  "coefficient_seconds": 5.870000040886225e-05,
+                  "coefficient_count": 9
+                },
+                "online": {
+                  "batch_apply_seconds": 0.002934399999503512,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 4388544,
+                  "scalar_hops": 4388544,
+                  "byte_hop": 35108352,
+                  "estimated_spmv_flops": 9159424,
+                  "estimated_recurrence_flops": 1529344,
+                  "estimated_online_flops": 10688768,
+                  "matrix_storage_bytes": 1836876,
+                  "working_vector_bytes": 1147008,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 154537984,
+                  "peak_sampled_rss_bytes": 155140096,
+                  "peak_increment_bytes": 602112
+                }
+              }
+            }
+          },
+          {
+            "rounds": 16,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 1528.125,
+              "maximum_cut_edges": 5576,
+              "mean_cut_weight": 1528.125,
+              "maximum_cut_weight": 5576.0
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.059607663158568615,
+                  "empirical_relative_l2_error": 0.775537568309307,
+                  "maximum_node_rmse": 1.709556764354774,
+                  "median_node_rmse": 0.056128283934348586
+                },
+                "offline": {
+                  "spectral_upper_bound": 97.0,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.00443730000006326,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 8777088,
+                  "scalar_hops": 8777088,
+                  "byte_hop": 70216704,
+                  "estimated_spmv_flops": 18318848,
+                  "estimated_recurrence_flops": 3058688,
+                  "estimated_online_flops": 21377536,
+                  "matrix_storage_bytes": 1836876,
+                  "working_vector_bytes": 764672,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 155361280,
+                  "peak_sampled_rss_bytes": 155385856,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.0003164819735707835,
+                  "empirical_relative_l2_error": 0.0565101267722919,
+                  "maximum_node_rmse": 0.12751202586285,
+                  "median_node_rmse": 0.00501752018187701
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    97.0
+                  ],
+                  "coefficient_seconds": 7.400000049528899e-05,
+                  "coefficient_count": 17
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0054412999998021405,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 8777088,
+                  "scalar_hops": 8777088,
+                  "byte_hop": 70216704,
+                  "estimated_spmv_flops": 18318848,
+                  "estimated_recurrence_flops": 3058688,
+                  "estimated_online_flops": 21377536,
+                  "matrix_storage_bytes": 1836876,
+                  "working_vector_bytes": 1147008,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 153223168,
+                  "peak_sampled_rss_bytes": 153989120,
+                  "peak_increment_bytes": 765952
+                }
+              }
+            }
+          }
+        ],
+        "checks": {
+          "reference_residual_below_tolerance": true,
+          "global_empirical_error_is_zero": true,
+          "all_reported_errors_finite": true
+        },
+        "case_total_seconds": 0.4653754000000845
+      },
+      {
+        "case_index": 7,
+        "classification": "external_application_stress",
+        "source": {
+          "classification": "external_application_stress",
+          "source_kind": "SuiteSparse sparsity graph",
+          "source_path": "E:\\Code\\MAS\\datasets\\raw\\suitesparse_ccby4\\wathen100.tar.gz",
+          "source_sha256": "2498caf696dbc94ac332aaa8bac8aa2ebd277e45770ab01109a738fd2370b12f",
+          "archive_member": "wathen100/wathen100.mtx",
+          "transformation": "symmetric off-diagonal sparsity pattern with unit positive weights; original matrix is not treated as a graph smoother",
+          "nodes": 30401,
+          "edges": 220600,
+          "connected_components": 1,
+          "uses_original_value_magnitudes": false,
+          "normalization_scale": 1.0
+        },
+        "graph": {
+          "nodes": 30401,
+          "edges": 220600,
+          "connected_components": 1,
+          "weighted_degree_min": 7.0,
+          "weighted_degree_median": 12.0,
+          "weighted_degree_max": 20.0,
+          "edge_weight_min": 1.0,
+          "edge_weight_median": 1.0,
+          "edge_weight_max": 1.0,
+          "adjacency_csr_bytes": 5416008,
+          "system_nnz": 471601,
+          "system_csr_bytes": 5780820
+        },
+        "edge_scale": 1.0,
+        "signal_seed": 20267914,
+        "signal_samples": 4,
+        "spectral_interval_used": [
+          1.0,
+          41.0
+        ],
+        "construction": {
+          "seconds": 0.07660170000053768,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 147124224,
+            "peak_sampled_rss_bytes": 174002176,
+            "peak_increment_bytes": 26877952
+          }
+        },
+        "global_exact": {
+          "access_class": "full_graph_and_full_input",
+          "rounds": null,
+          "signal_metrics": {
+            "empirical_mse_per_node": 0.0,
+            "empirical_relative_l2_error": 0.0,
+            "maximum_node_rmse": 0.0,
+            "median_node_rmse": 0.0
+          },
+          "offline": {
+            "factorization_seconds": 0.15149590000055468
+          },
+          "online": {
+            "solve_seconds": 0.010621999999784748,
+            "right_hand_sides_in_timed_solve": 4
+          },
+          "relative_residual_max": 7.475571878567908e-16,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 160886784,
+            "peak_sampled_rss_bytes": 238710784,
+            "peak_increment_bytes": 77824000
+          }
+        },
+        "round_sweep": [
+          {
+            "rounds": 2,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 206.875,
+              "maximum_cut_edges": 228,
+              "mean_cut_weight": 206.875,
+              "maximum_cut_weight": 228.0
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.006243429639735986,
+                  "empirical_relative_l2_error": 0.7032105950813136,
+                  "maximum_node_rmse": 0.25693595847954415,
+                  "median_node_rmse": 0.07145919423357794
+                },
+                "offline": {
+                  "spectral_upper_bound": 41.0,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0021693999997296487,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 3529600,
+                  "scalar_hops": 3529600,
+                  "byte_hop": 28236800,
+                  "estimated_spmv_flops": 7302408,
+                  "estimated_recurrence_flops": 972832,
+                  "estimated_online_flops": 8275240,
+                  "matrix_storage_bytes": 5780820,
+                  "working_vector_bytes": 1945664,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 162996224,
+                  "peak_sampled_rss_bytes": 163020800,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.0031391802138009744,
+                  "empirical_relative_l2_error": 0.49863403522879496,
+                  "maximum_node_rmse": 0.1736852732178332,
+                  "median_node_rmse": 0.04945187301352794
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    41.0
+                  ],
+                  "coefficient_seconds": 5.500000042957254e-05,
+                  "coefficient_count": 3
+                },
+                "online": {
+                  "batch_apply_seconds": 0.004177200000412995,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 3529600,
+                  "scalar_hops": 3529600,
+                  "byte_hop": 28236800,
+                  "estimated_spmv_flops": 7302408,
+                  "estimated_recurrence_flops": 972832,
+                  "estimated_online_flops": 8275240,
+                  "matrix_storage_bytes": 5780820,
+                  "working_vector_bytes": 2918496,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 164028416,
+                  "peak_sampled_rss_bytes": 164052992,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 4,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 414.875,
+              "maximum_cut_edges": 436,
+              "mean_cut_weight": 414.875,
+              "maximum_cut_weight": 436.0
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.004812156248622687,
+                  "empirical_relative_l2_error": 0.6173673457572427,
+                  "maximum_node_rmse": 0.21758276215820074,
+                  "median_node_rmse": 0.06286462559113418
+                },
+                "offline": {
+                  "spectral_upper_bound": 41.0,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.004100699999980861,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 7059200,
+                  "scalar_hops": 7059200,
+                  "byte_hop": 56473600,
+                  "estimated_spmv_flops": 14604816,
+                  "estimated_recurrence_flops": 1945664,
+                  "estimated_online_flops": 16550480,
+                  "matrix_storage_bytes": 5780820,
+                  "working_vector_bytes": 1945664,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 165040128,
+                  "peak_sampled_rss_bytes": 165064704,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.0009697317911352436,
+                  "empirical_relative_l2_error": 0.27714025444640145,
+                  "maximum_node_rmse": 0.0949220096234936,
+                  "median_node_rmse": 0.027576441189874783
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    41.0
+                  ],
+                  "coefficient_seconds": 6.0200000007171184e-05,
+                  "coefficient_count": 5
+                },
+                "online": {
+                  "batch_apply_seconds": 0.0057393999995838385,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 7059200,
+                  "scalar_hops": 7059200,
+                  "byte_hop": 56473600,
+                  "estimated_spmv_flops": 14604816,
+                  "estimated_recurrence_flops": 1945664,
+                  "estimated_online_flops": 16550480,
+                  "matrix_storage_bytes": 5780820,
+                  "working_vector_bytes": 2918496,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 164491264,
+                  "peak_sampled_rss_bytes": 164515840,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 8,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 830.875,
+              "maximum_cut_edges": 852,
+              "mean_cut_weight": 830.875,
+              "maximum_cut_weight": 852.0
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.0032314014950932794,
+                  "empirical_relative_l2_error": 0.5059053304978114,
+                  "maximum_node_rmse": 0.16571009704241715,
+                  "median_node_rmse": 0.05168770598097796
+                },
+                "offline": {
+                  "spectral_upper_bound": 41.0,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.007579799999803072,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 14118400,
+                  "scalar_hops": 14118400,
+                  "byte_hop": 112947200,
+                  "estimated_spmv_flops": 29209632,
+                  "estimated_recurrence_flops": 3891328,
+                  "estimated_online_flops": 33100960,
+                  "matrix_storage_bytes": 5780820,
+                  "working_vector_bytes": 1945664,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 164622336,
+                  "peak_sampled_rss_bytes": 164696064,
+                  "peak_increment_bytes": 73728
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 7.464317807416794e-05,
+                  "empirical_relative_l2_error": 0.07688982202046106,
+                  "maximum_node_rmse": 0.029775465521800753,
+                  "median_node_rmse": 0.007776893467425012
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    41.0
+                  ],
+                  "coefficient_seconds": 7.170000026235357e-05,
+                  "coefficient_count": 9
+                },
+                "online": {
+                  "batch_apply_seconds": 0.008592200000748562,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 14118400,
+                  "scalar_hops": 14118400,
+                  "byte_hop": 112947200,
+                  "estimated_spmv_flops": 29209632,
+                  "estimated_recurrence_flops": 3891328,
+                  "estimated_online_flops": 33100960,
+                  "matrix_storage_bytes": 5780820,
+                  "working_vector_bytes": 2918496,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 164626432,
+                  "peak_sampled_rss_bytes": 164651008,
+                  "peak_increment_bytes": 24576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 16,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 1495.4375,
+              "maximum_cut_edges": 1684,
+              "mean_cut_weight": 1495.4375,
+              "maximum_cut_weight": 1684.0
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.0016873223673332758,
+                  "empirical_relative_l2_error": 0.3655719172468231,
+                  "maximum_node_rmse": 0.10996872116782525,
+                  "median_node_rmse": 0.037471722643834894
+                },
+                "offline": {
+                  "spectral_upper_bound": 41.0,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.014878500000122585,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 28236800,
+                  "scalar_hops": 28236800,
+                  "byte_hop": 225894400,
+                  "estimated_spmv_flops": 58419264,
+                  "estimated_recurrence_flops": 7782656,
+                  "estimated_online_flops": 66201920,
+                  "matrix_storage_bytes": 5780820,
+                  "working_vector_bytes": 1945664,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 165163008,
+                  "peak_sampled_rss_bytes": 166162432,
+                  "peak_increment_bytes": 999424
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 5.767664216716054e-07,
+                  "empirical_relative_l2_error": 0.006758865106893781,
+                  "maximum_node_rmse": 0.0027798733993080146,
+                  "median_node_rmse": 0.0006851219060174571
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    41.0
+                  ],
+                  "coefficient_seconds": 8.25000006443588e-05,
+                  "coefficient_count": 17
+                },
+                "online": {
+                  "batch_apply_seconds": 0.014849000000140222,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 28236800,
+                  "scalar_hops": 28236800,
+                  "byte_hop": 225894400,
+                  "estimated_spmv_flops": 58419264,
+                  "estimated_recurrence_flops": 7782656,
+                  "estimated_online_flops": 66201920,
+                  "matrix_storage_bytes": 5780820,
+                  "working_vector_bytes": 2918496,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 164626432,
+                  "peak_sampled_rss_bytes": 173359104,
+                  "peak_increment_bytes": 8732672
+                }
+              }
+            }
+          }
+        ],
+        "checks": {
+          "reference_residual_below_tolerance": true,
+          "global_empirical_error_is_zero": true,
+          "all_reported_errors_finite": true
+        },
+        "case_total_seconds": 0.46259100000042963
+      },
+      {
+        "case_index": 8,
+        "classification": "external_application_stress",
+        "source": {
+          "classification": "external_application_stress",
+          "source_kind": "SuiteSparse sparsity graph",
+          "source_path": "E:\\Code\\MAS\\datasets\\raw\\suitesparse_ccby4\\usroads.tar.gz",
+          "source_sha256": "3ee6913382a90dbb89d7b5dd8052a95dc4c80e511ae20449d3b5562ed620f783",
+          "archive_member": "usroads/usroads.mtx",
+          "transformation": "symmetric off-diagonal sparsity pattern with unit positive weights; original matrix is not treated as a graph smoother",
+          "nodes": 129164,
+          "edges": 165435,
+          "connected_components": 56,
+          "uses_original_value_magnitudes": false,
+          "normalization_scale": 1.0
+        },
+        "graph": {
+          "nodes": 129164,
+          "edges": 165435,
+          "connected_components": 56,
+          "weighted_degree_min": 1.0,
+          "weighted_degree_median": 2.0,
+          "weighted_degree_max": 7.0,
+          "edge_weight_min": 1.0,
+          "edge_weight_median": 1.0,
+          "edge_weight_max": 1.0,
+          "adjacency_csr_bytes": 4487100,
+          "system_nnz": 460034,
+          "system_csr_bytes": 6037068
+        },
+        "edge_scale": 1.0,
+        "signal_seed": 20268914,
+        "signal_samples": 4,
+        "spectral_interval_used": [
+          1.0,
+          15.0
+        ],
+        "construction": {
+          "seconds": 0.07111299999996845,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 147554304,
+            "peak_sampled_rss_bytes": 168480768,
+            "peak_increment_bytes": 20926464
+          }
+        },
+        "global_exact": {
+          "access_class": "full_graph_and_full_input",
+          "rounds": null,
+          "signal_metrics": {
+            "empirical_mse_per_node": 0.0,
+            "empirical_relative_l2_error": 0.0,
+            "maximum_node_rmse": 0.0,
+            "median_node_rmse": 0.0
+          },
+          "offline": {
+            "factorization_seconds": 0.0
+          },
+          "online": {
+            "solve_seconds": 0.12687370000003284,
+            "right_hand_sides_in_timed_solve": 4
+          },
+          "relative_residual_max": 7.286835390129704e-11,
+          "memory": {
+            "sampling_interval_seconds": 0.005,
+            "baseline_rss_bytes": 161988608,
+            "peak_sampled_rss_bytes": 172871680,
+            "peak_increment_bytes": 10883072
+          }
+        },
+        "round_sweep": [
+          {
+            "rounds": 2,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 6.6875,
+              "maximum_cut_edges": 12,
+              "mean_cut_weight": 6.6875,
+              "maximum_cut_weight": 12.0
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.09216477658219335,
+                  "empirical_relative_l2_error": 0.6889115487157184,
+                  "maximum_node_rmse": 1.0242335576472295,
+                  "median_node_rmse": 0.2690741582072358
+                },
+                "offline": {
+                  "spectral_upper_bound": 15.0,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.006775900000320689,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 2646960,
+                  "scalar_hops": 2646960,
+                  "byte_hop": 21175680,
+                  "estimated_spmv_flops": 6327232,
+                  "estimated_recurrence_flops": 4133248,
+                  "estimated_online_flops": 10460480,
+                  "matrix_storage_bytes": 6037068,
+                  "working_vector_bytes": 8266496,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 165658624,
+                  "peak_sampled_rss_bytes": 169893888,
+                  "peak_increment_bytes": 4235264
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.013259434680646708,
+                  "empirical_relative_l2_error": 0.2613024501468556,
+                  "maximum_node_rmse": 0.45922157952250203,
+                  "median_node_rmse": 0.10223084078087868
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    15.0
+                  ],
+                  "coefficient_seconds": 6.739999935234664e-05,
+                  "coefficient_count": 3
+                },
+                "online": {
+                  "batch_apply_seconds": 0.011001799999576178,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 2,
+                  "spmv_count": 8,
+                  "directed_message_count": 2646960,
+                  "scalar_hops": 2646960,
+                  "byte_hop": 21175680,
+                  "estimated_spmv_flops": 6327232,
+                  "estimated_recurrence_flops": 4133248,
+                  "estimated_online_flops": 10460480,
+                  "matrix_storage_bytes": 6037068,
+                  "working_vector_bytes": 12399744,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 173998080,
+                  "peak_sampled_rss_bytes": 192614400,
+                  "peak_increment_bytes": 18616320
+                }
+              }
+            }
+          },
+          {
+            "rounds": 4,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 10.6875,
+              "maximum_cut_edges": 18,
+              "mean_cut_weight": 10.6875,
+              "maximum_cut_weight": 18.0
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.06025986767828048,
+                  "empirical_relative_l2_error": 0.5570511366366391,
+                  "maximum_node_rmse": 0.8593308138608077,
+                  "median_node_rmse": 0.2167954798313773
+                },
+                "offline": {
+                  "spectral_upper_bound": 15.0,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.012741200000164099,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 5293920,
+                  "scalar_hops": 5293920,
+                  "byte_hop": 42351360,
+                  "estimated_spmv_flops": 12654464,
+                  "estimated_recurrence_flops": 8266496,
+                  "estimated_online_flops": 20920960,
+                  "matrix_storage_bytes": 6037068,
+                  "working_vector_bytes": 8266496,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 178266112,
+                  "peak_sampled_rss_bytes": 178290688,
+                  "peak_increment_bytes": 24576
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.0016742562599812087,
+                  "empirical_relative_l2_error": 0.09285214556766047,
+                  "maximum_node_rmse": 0.16742361009316453,
+                  "median_node_rmse": 0.03649704949581318
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    15.0
+                  ],
+                  "coefficient_seconds": 8.239999988290947e-05,
+                  "coefficient_count": 5
+                },
+                "online": {
+                  "batch_apply_seconds": 0.017251199999918754,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 4,
+                  "spmv_count": 16,
+                  "directed_message_count": 5293920,
+                  "scalar_hops": 5293920,
+                  "byte_hop": 42351360,
+                  "estimated_spmv_flops": 12654464,
+                  "estimated_recurrence_flops": 8266496,
+                  "estimated_online_flops": 20920960,
+                  "matrix_storage_bytes": 6037068,
+                  "working_vector_bytes": 12399744,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 178266112,
+                  "peak_sampled_rss_bytes": 193650688,
+                  "peak_increment_bytes": 15384576
+                }
+              }
+            }
+          },
+          {
+            "rounds": 8,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 24.875,
+              "maximum_cut_edges": 50,
+              "mean_cut_weight": 24.875,
+              "maximum_cut_weight": 50.0
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.027694395286906214,
+                  "empirical_relative_l2_error": 0.3776390715442737,
+                  "maximum_node_rmse": 0.6081652540411905,
+                  "median_node_rmse": 0.14622215760457707
+                },
+                "offline": {
+                  "spectral_upper_bound": 15.0,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.023263000000042666,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 10587840,
+                  "scalar_hops": 10587840,
+                  "byte_hop": 84702720,
+                  "estimated_spmv_flops": 25308928,
+                  "estimated_recurrence_flops": 16532992,
+                  "estimated_online_flops": 41841920,
+                  "matrix_storage_bytes": 6037068,
+                  "working_vector_bytes": 8266496,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 177668096,
+                  "peak_sampled_rss_bytes": 187457536,
+                  "peak_increment_bytes": 9789440
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 2.736664394762517e-05,
+                  "empirical_relative_l2_error": 0.011871121468020883,
+                  "maximum_node_rmse": 0.020440198096840792,
+                  "median_node_rmse": 0.004636199387503167
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    15.0
+                  ],
+                  "coefficient_seconds": 7.419999928970356e-05,
+                  "coefficient_count": 9
+                },
+                "online": {
+                  "batch_apply_seconds": 0.03067879999980505,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 8,
+                  "spmv_count": 32,
+                  "directed_message_count": 10587840,
+                  "scalar_hops": 10587840,
+                  "byte_hop": 84702720,
+                  "estimated_spmv_flops": 25308928,
+                  "estimated_recurrence_flops": 16532992,
+                  "estimated_online_flops": 41841920,
+                  "matrix_storage_bytes": 6037068,
+                  "working_vector_bytes": 12399744,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 178266112,
+                  "peak_sampled_rss_bytes": 195158016,
+                  "peak_increment_bytes": 16891904
+                }
+              }
+            }
+          },
+          {
+            "rounds": 16,
+            "cut": {
+              "sampled_roots": 16,
+              "mean_cut_edges": 63.8125,
+              "maximum_cut_edges": 88,
+              "mean_cut_weight": 63.8125,
+              "maximum_cut_weight": 88.0
+            },
+            "methods": {
+              "induced_local_truncation": {
+                "skipped": true,
+                "reason": "disabled by configuration"
+              },
+              "neumann": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_bound",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 0.006693469260774871,
+                  "empirical_relative_l2_error": 0.18565498483025672,
+                  "maximum_node_rmse": 0.3361925244468836,
+                  "median_node_rmse": 0.07141058512906721
+                },
+                "offline": {
+                  "spectral_upper_bound": 15.0,
+                  "coefficient_seconds": 0.0
+                },
+                "online": {
+                  "batch_apply_seconds": 0.04471949999970093,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 21175680,
+                  "scalar_hops": 21175680,
+                  "byte_hop": 169405440,
+                  "estimated_spmv_flops": 50617856,
+                  "estimated_recurrence_flops": 33065984,
+                  "estimated_online_flops": 83683840,
+                  "matrix_storage_bytes": 6037068,
+                  "working_vector_bytes": 8266496,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 173932544,
+                  "peak_sampled_rss_bytes": 186134528,
+                  "peak_increment_bytes": 12201984
+                }
+              },
+              "chebyshev": {
+                "access_class": "degree_r_local_polynomial_with_global_Gershgorin_interval",
+                "signal_metrics": {
+                  "empirical_mse_per_node": 6.123049825453943e-09,
+                  "empirical_relative_l2_error": 0.00017756807010993995,
+                  "maximum_node_rmse": 0.0003014104466637433,
+                  "median_node_rmse": 6.947357687278033e-05
+                },
+                "offline": {
+                  "spectral_interval": [
+                    1.0,
+                    15.0
+                  ],
+                  "coefficient_seconds": 8.640000032755779e-05,
+                  "coefficient_count": 17
+                },
+                "online": {
+                  "batch_apply_seconds": 0.07411390000015672,
+                  "signal_count": 4
+                },
+                "resources": {
+                  "protocol": "neighbor_sparse_polynomial",
+                  "rounds": 16,
+                  "spmv_count": 64,
+                  "directed_message_count": 21175680,
+                  "scalar_hops": 21175680,
+                  "byte_hop": 169405440,
+                  "estimated_spmv_flops": 50617856,
+                  "estimated_recurrence_flops": 33065984,
+                  "estimated_online_flops": 83683840,
+                  "matrix_storage_bytes": 6037068,
+                  "working_vector_bytes": 12399744,
+                  "scalar_bytes": 8
+                },
+                "memory": {
+                  "sampling_interval_seconds": 0.005,
+                  "baseline_rss_bytes": 178135040,
+                  "peak_sampled_rss_bytes": 199790592,
+                  "peak_increment_bytes": 21655552
+                }
+              }
+            }
+          }
+        ],
+        "checks": {
+          "reference_residual_below_tolerance": true,
+          "global_empirical_error_is_zero": true,
+          "all_reported_errors_finite": true
+        },
+        "case_total_seconds": 0.6147121000003608
+      }
+    ],
+    "checks": {
+      "all_cases_passed": true,
+      "contains_external_data": true,
+      "contains_synthetic_data": false
+    }
+  }
+}

@@ -1,0 +1,36 @@
+\documentclass[tikz,border=6pt]{standalone}
+\input{figure_style.tex}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+    paper axis,
+    width=78mm,
+    height=54mm,
+    xmode=log,
+    ymode=log,
+    grid=major,
+    xlabel={Grid states},
+    ylabel={CPU time / GPU time},
+    xmin=8e3,xmax=1.3e6,
+    ymin=0.18,ymax=105,
+    legend pos=north west,
+  ]
+    \addplot[name path=kernelupper,draw=none,forget plot]
+      table[col sep=comma,x=nodes,y=kernel_max] {data/cpu_gpu_crossover.csv};
+    \addplot[name path=kernellower,draw=none,forget plot]
+      table[col sep=comma,x=nodes,y=kernel_min] {data/cpu_gpu_crossover.csv};
+    \addplot[oiBlue!14,draw=none,forget plot]
+      fill between[of=kernelupper and kernellower];
+    \addplot[oiBlue,paper mark,mark=*,solid]
+      table[col sep=comma,x=nodes,y=kernel_median] {data/cpu_gpu_crossover.csv};
+    \addlegendentry{Resident kernel}
+    \addplot[oiOrange!95!black,paper mark,mark=square*,dashed]
+      table[col sep=comma,x=nodes,y=end_to_end_median] {data/cpu_gpu_crossover.csv};
+    \addlegendentry{Including vector transfer}
+    \addplot[midgray,densely dotted,domain=8e3:1.3e6,samples=2,forget plot] {1};
+    \node[font=\scriptsize,anchor=south east,fill=white,inner sep=1pt,text=midgray]
+      at (axis cs:1.15e6,1) {CPU = GPU};
+  \end{axis}
+\end{tikzpicture}
+\end{document}

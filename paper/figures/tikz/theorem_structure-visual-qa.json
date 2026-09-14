@@ -1,0 +1,33 @@
+{
+  "pdf": "E:\\Code\\MAS\\paper\\figures\\tikz\\theorem_structure.pdf",
+  "mode": "research",
+  "text_plot_overlap_check": false,
+  "plot_label_regex": null,
+  "page": {
+    "width": 440.2300109863281,
+    "height": 175.1699981689453
+  },
+  "text_box_count": 16,
+  "title": {
+    "text": "full-inputSchattennorms",
+    "x0": 318.6759948730469,
+    "y0": 25.309072494506836,
+    "x1": 422.01373291015625,
+    "y1": 34.275474548339844,
+    "colors": [
+      2106667
+    ]
+  },
+  "issues": [
+    {
+      "severity": "error",
+      "code": "title_band_collision",
+      "message": "Text enters protected title band near 'full-inputSchattennorms': 'Corollary1'",
+      "boxes": [
+        "full-inputSchattennorms",
+        "Corollary1"
+      ]
+    }
+  ],
+  "status": "fail"
+}

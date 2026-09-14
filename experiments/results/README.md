@@ -27,3 +27,17 @@
 CPU RSS is the maximum of explicit process checkpoints, not an operating-system
 peak-memory measurement. DKW intervals are conditional on one fixed graph and valid
 per fixed radius, not simultaneously over all radii.
+
+## Graph-smoother application records
+
+- `p3_p4_smoke.json`: canonical theorem-matched robust-design experiment plus
+  four fixed-graph synthetic stress cases.  It records the exact finite-`h`
+  and unbounded scenarios, sampled and relaxed baselines, pruning ablation,
+  active worst cases, resource models and the sharp budget sweep.
+- `p4_external_scale.json`: six PGLib topology transformations and three
+  SuiteSparse sparsity-graph transformations, reaching 129,164 nodes.  These
+  are explicitly external graph-smoother stress tests, not raw WLS instances.
+- `smoother_gpu_scale.json`, `smoother_gpu_scale_recheck1.json` and
+  `smoother_gpu_scale_recheck2.json`: three independent CPU/RTX 5080 timing
+  repetitions for a fixed 40-round local Richardson smoother on grids from
+  10,000 to 1,000,000 states.  Report medians and retain the full timing spread.

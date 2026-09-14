@@ -1,0 +1,47 @@
+\documentclass[tikz,border=6pt]{standalone}
+\input{figure_style.tex}
+
+\pgfplotstableread[col sep=comma]{data/certificate_failure.csv}\certdata
+\pgfplotstablegetelem{1}{training}\of\certdata
+\let\samplingtrain\pgfplotsretval
+\pgfplotstablegetelem{1}{exact}\of\certdata
+\let\samplingexact\pgfplotsretval
+\pgfmathsetmacro{\samplinggap}{\samplingexact-\samplingtrain}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{axis}[
+    paper axis,
+    width=151mm,
+    height=56mm,
+    ybar,
+    bar width=8pt,
+    ymin=0,
+    ymax=1.31,
+    ylabel={Spectral operator error},
+    xtick={0,1,2,3},
+    xticklabels={Exact finite-$h$,Random sampling,PSD contraction,Endpoints only},
+    x tick label style={font=\scriptsize,align=center,text width=25mm},
+    enlarge x limits=0.14,
+    ymajorgrids,
+    axis on top,
+    legend style={at={(0.5,1.03)},anchor=south,legend columns=3},
+  ]
+    \addplot[draw=midgray,fill=midgray!45]
+      table[col sep=comma,x=x,y=training] {data/certificate_failure.csv};
+    \addlegendentry{Training maximum}
+    \addplot[draw=oiOrange!90!black,fill=oiOrange!55]
+      table[col sep=comma,x=x,y=held_out] {data/certificate_failure.csv};
+    \addlegendentry{Held-out maximum}
+    \addplot[draw=oiBlue,fill=oiBlue!65]
+      table[col sep=comma,x=x,y=exact] {data/certificate_failure.csv};
+    \addlegendentry{Exact certificate}
+
+    \draw[oiVermillion,line width=0.9pt,{Stealth[length=1.7mm]}-{Stealth[length=1.7mm]}]
+      (axis cs:1.31,\samplingtrain) -- (axis cs:1.31,\samplingexact);
+    \node[font=\scriptsize,anchor=west,fill=white,inner sep=1.2pt,text=oiVermillion]
+      at (axis cs:1.34,{(\samplingtrain+\samplingexact)/2})
+      {$\Delta=\pgfmathprintnumber[fixed,precision=3]{\samplinggap}$};
+  \end{axis}
+\end{tikzpicture}
+\end{document}

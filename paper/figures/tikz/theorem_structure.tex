@@ -1,0 +1,52 @@
+\documentclass[tikz,border=6pt]{standalone}
+\input{figure_style.tex}
+
+\begin{document}
+\begin{tikzpicture}[font=\small,node distance=7mm and 11mm]
+  \node[source box,text width=30mm,minimum height=15mm] (completion) {
+    Hidden completion\\class\\
+    $G\in\mathfrak G_{q,h}$
+  };
+
+  \node[theorem box,right=11mm of completion,text width=45mm,minimum height=21mm] (main) {
+    \textbf{Main theorem}\\[1.5pt]
+    $K_h=\operatorname{conv}\{X_{\pi,k}\}$\\
+    $K_\infty=\operatorname{conv}\{P_{\mathcal A}\}$
+  };
+
+  \node[corollary box,right=13mm of main,yshift=15mm,
+        text width=42mm,minimum height=13mm] (schatten) {
+    \textbf{Corollary 1}\\
+    full-input Schatten norms
+  };
+  \node[corollary box,right=13mm of main,
+        text width=42mm,minimum height=13mm] (sdp) {
+    \textbf{Corollary 2}\\
+    necessary and sufficient SDP
+  };
+  \node[corollary box,right=13mm of main,yshift=-15mm,
+        text width=42mm,minimum height=13mm] (rate) {
+    \textbf{Corollary 3}\\
+    $d_H(K_h,K_\infty)=q/(q+h)$
+  };
+
+  \node[support box,below=12mm of main,xshift=-23mm,
+        text width=34mm,minimum height=13mm] (forest) {
+    Forest-mixture identity\\
+    gives the upper bound
+  };
+  \node[support box,right=7mm of forest,
+        text width=39mm,minimum height=13mm] (paths) {
+    Degree-2 path witnesses\\
+    expose every listed vertex
+  };
+
+  \draw[flow arrow] (completion.east) -- (main.west);
+  \draw[flow arrow] (main.east) -- (schatten.west);
+  \draw[flow arrow] (main.east) -- (sdp.west);
+  \draw[flow arrow] (main.east) -- (rate.west);
+  \draw[support arrow] (forest.north) -- ([xshift=-10mm]main.south);
+  \draw[support arrow] (paths.north) -- ([xshift=10mm]main.south);
+
+\end{tikzpicture}
+\end{document}

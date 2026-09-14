@@ -1,0 +1,52 @@
+\documentclass[tikz,border=6pt]{standalone}
+\input{figure_style.tex}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{groupplot}[
+    group style={group size=2 by 1,horizontal sep=16mm},
+    paper axis,
+    width=67mm,
+    height=49mm,
+    ymode=log,
+    grid=major,
+    ymin=5e-5,ymax=1,
+  ]
+  \nextgroupplot[
+    xlabel={Communication rounds},
+    ylabel={Mean empirical MSE per node},
+    xtick={0,1,2,3,4},
+    title={(a) Accuracy versus rounds},
+    legend pos=south west,
+  ]
+    \addplot[oiGreen!85!black,paper mark,mark=*,solid]
+      table[col sep=comma,x=rounds,y=trunc_mse] {data/local_method_tradeoff.csv};
+    \addlegendentry{Induced truncation}
+    \addplot[oiOrange!95!black,paper mark,mark=square*,dashed]
+      table[col sep=comma,x=rounds,y=neumann_mse] {data/local_method_tradeoff.csv};
+    \addlegendentry{Neumann}
+    \addplot[oiBlue,paper mark,mark=triangle*,dash dot]
+      table[col sep=comma,x=rounds,y=chebyshev_mse] {data/local_method_tradeoff.csv};
+    \addlegendentry{Chebyshev}
+
+  \nextgroupplot[
+    xmode=log,
+    xlabel={Mean byte-hop},
+    ylabel={Mean empirical MSE per node},
+    xmin=1.5e4,xmax=5e5,
+    xtick={2e4,1e5,5e5},
+    xticklabels={$2\!\times\!10^4$,$10^5$,$5\!\times\!10^5$},
+    title={(b) Accuracy versus communication},
+  ]
+    \addplot[oiGreen!85!black,paper mark,mark=*,solid]
+      table[col sep=comma,x expr={\thisrow{trunc_byte_hop}>0 ? \thisrow{trunc_byte_hop} : nan},y=trunc_mse]
+      {data/local_method_tradeoff.csv};
+    \addplot[oiOrange!95!black,paper mark,mark=square*,dashed]
+      table[col sep=comma,x expr={\thisrow{neumann_byte_hop}>0 ? \thisrow{neumann_byte_hop} : nan},y=neumann_mse]
+      {data/local_method_tradeoff.csv};
+    \addplot[oiBlue,paper mark,mark=triangle*,dash dot]
+      table[col sep=comma,x expr={\thisrow{chebyshev_byte_hop}>0 ? \thisrow{chebyshev_byte_hop} : nan},y=chebyshev_mse]
+      {data/local_method_tradeoff.csv};
+  \end{groupplot}
+\end{tikzpicture}
+\end{document}

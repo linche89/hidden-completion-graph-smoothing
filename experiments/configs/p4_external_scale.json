@@ -1,0 +1,54 @@
+{
+  "stress": {
+    "seed": 20260914,
+    "rounds": [2, 4, 8, 16],
+    "signal_samples": 4,
+    "scalar_bytes": 8,
+    "edge_scale": 1.0,
+    "exact_operator_max_n": 32,
+    "local_truncation_max_n": 0,
+    "cut_root_samples": 16,
+    "direct_max_n": 50000,
+    "reference_relative_tolerance": 1e-10,
+    "reference_max_iterations": 50000,
+    "enable_local_truncation": false,
+    "cases": [
+      {
+        "source": "pglib",
+        "path": "../../datasets/raw/pglib_opf_v23.07/pglib_opf_case14_ieee.m"
+      },
+      {
+        "source": "pglib",
+        "path": "../../datasets/raw/pglib_opf_v23.07/pglib_opf_case118_ieee.m"
+      },
+      {
+        "source": "pglib",
+        "path": "../../datasets/raw/pglib_opf_v23.07/pglib_opf_case300_ieee.m"
+      },
+      {
+        "source": "pglib",
+        "path": "../../datasets/raw/pglib_opf_v23.07/pglib_opf_case1354_pegase.m"
+      },
+      {
+        "source": "pglib",
+        "path": "../../datasets/raw/pglib_opf_v23.07/pglib_opf_case2869_pegase.m"
+      },
+      {
+        "source": "pglib",
+        "path": "../../datasets/raw/pglib_opf_v23.07/pglib_opf_case10000_goc.m"
+      },
+      {
+        "source": "suitesparse",
+        "archive": "../../datasets/raw/suitesparse_ccby4/bcsstk18.tar.gz"
+      },
+      {
+        "source": "suitesparse",
+        "archive": "../../datasets/raw/suitesparse_ccby4/wathen100.tar.gz"
+      },
+      {
+        "source": "suitesparse",
+        "archive": "../../datasets/raw/suitesparse_ccby4/usroads.tar.gz"
+      }
+    ]
+  }
+}
