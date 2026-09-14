@@ -8,12 +8,11 @@ resource use; they are not general WLS or Kalman MSE experiments.
 ## Checked environments
 
 The committed CPU results were produced with Python 3.13.5 on Windows 11
-(build 26100).  Install the exact numerical stack in an isolated environment:
+(build 26100). Install the pinned numerical stack in the current project
+environment:
 
 ```powershell
-python -m venv .venv-repro
-.venv-repro/Scripts/python -m pip install --upgrade pip
-.venv-repro/Scripts/python -m pip install -r experiments/requirements-repro-cpu.txt
+python -m pip install -r experiments/requirements-repro-cpu.txt
 ```
 
 The paper figures were checked with MiKTeX 25.12 (XeTeX 4.16), Latexmk 4.87,
@@ -22,12 +21,10 @@ figure uses XeLaTeX and is included as vector PDF.
 
 The committed accelerator crossover was measured on an NVIDIA GeForce RTX
 5080 with Python 3.13.5, CuPy 14.2.0, CUDA runtime 12.9 (locally installed
-toolkit 12.8), and NVIDIA driver API 13.02.  Install its isolated stack with:
+toolkit 12.8), and NVIDIA driver API 13.02. Its optional dependencies are:
 
 ```powershell
-python -m venv experiments/.venv-gpu
-experiments/.venv-gpu/Scripts/python -m pip install --upgrade pip
-experiments/.venv-gpu/Scripts/python -m pip install -r experiments/scalable/requirements-repro-gpu.txt
+python -m pip install -r experiments/scalable/requirements-repro-gpu.txt
 ```
 
 GPU wall-clock values are hardware-specific.  The recorded comparison fixes
@@ -36,9 +33,9 @@ both devices, and reports both resident-kernel and transfer-inclusive timings.
 
 ## One-command paper verification
 
-From the repository root, the following command runs the 35 regression tests,
-regenerates every paper CSV and the ablation table from committed JSON, builds
-the seven standalone TikZ figures and PNG previews, and compiles the manuscript:
+From the repository root, the following command runs the 38 regression tests,
+regenerates the paper CSV and macro files from committed JSON, builds the ten
+standalone TikZ figures and PNG previews, and compiles the base manuscript:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/build_paper.ps1
@@ -47,12 +44,21 @@ powershell -ExecutionPolicy Bypass -File scripts/build_paper.ps1
 Use `-SkipTests` for a formatting-only build or `-SkipData` to leave committed
 CSV/table artifacts untouched.  The final PDF is `paper/build/main.pdf`.
 
+The TSP submission pair is built with:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/build_tsp.ps1
+```
+
+This writes `output/pdf/tsp_manuscript.pdf` and
+`output/pdf/tsp_supplement.pdf`.
+
 ## Re-run the experiments
 
 The seconds-scale P3/P4 suite is:
 
 ```powershell
-.venv-repro/Scripts/python -m experiments.smoother `
+python -m experiments.smoother `
   --config experiments/configs/p3_p4_smoke.json `
   --output experiments/results/p3_p4_smoke-rerun.json `
   --section all
@@ -61,10 +67,28 @@ The seconds-scale P3/P4 suite is:
 The 135-completion hidden-budget/weight/cut audit is:
 
 ```powershell
-.venv-repro/Scripts/python -m experiments.smoother.parameter_sweep `
+python -m experiments.smoother.parameter_sweep `
   --config experiments/configs/p4_parameter_sweep.json `
   --output experiments/results/p4_parameter_sweep-rerun.json
 ```
+
+The fixed 54-problem grid, 420-fit nested sampling study, and connected-path
+tightness witnesses are reproduced with:
+
+```powershell
+python -m experiments.smoother.core_evidence `
+  --config experiments/configs/p4_core_evidence.json `
+  --output experiments/results/p4_core_evidence-rerun.json
+
+python -m experiments.smoother.solver_crosscheck `
+  --config experiments/configs/p4_solver_crosscheck.json `
+  --output experiments/results/p4_solver_crosscheck-rerun.json
+```
+
+The second command independently reruns every primary-solver
+`optimal_inaccurate` cell with high-accuracy SCS and compares full-scenario
+re-evaluated radii.  It is a numerical cross-solver check, not a rigorous dual
+lower bound.
 
 The external scale and GPU commands are documented in
 `experiments/README.md` and `experiments/scalable/README.md`.  Use new output

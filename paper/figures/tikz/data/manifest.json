@@ -2,6 +2,8 @@
   "generator": "experiments.smoother.paper_data",
   "semantics": {
     "robust": "theorem-matched hidden-completion experiment",
+    "core_evidence": "fixed theorem-matched breadth, sampling, and path-tightness audit",
+    "solver_crosscheck": "independent numerical SCS check of flagged Clarabel cells",
     "synthetic_stress": "fixed-graph graph-smoother stress test",
     "external_stress": "topology/sparsity transformation stress test; not raw WLS",
     "gpu": "fixed 40-round I+L Richardson kernel benchmark"
@@ -14,6 +16,14 @@
     {
       "path": "experiments/results/p4_external_scale.json",
       "sha256": "f2a98ea2c6e56f34abdc6936f4b83279e03b8e9d222ffa62c789aaf69a1b8161"
+    },
+    {
+      "path": "experiments/results/p4_core_evidence.json",
+      "sha256": "bfd6d0af77969a8aed2802a505c591e03b67737fa0512be49b0bd5074048f9ba"
+    },
+    {
+      "path": "experiments/results/p4_solver_crosscheck.json",
+      "sha256": "d54fd1b5ebf459ea14fbd11c2edffd686910895b8f577fc729eb8cc27c757fd8"
     },
     {
       "path": "experiments/results/smoother_gpu_scale.json",
@@ -31,6 +41,18 @@
   "outputs": [
     "budget_pareto.csv",
     "certificate_failure.csv",
+    "core_path_envelope.csv",
+    "core_path_tightness.csv",
+    "core_path_witness_0.csv",
+    "core_path_witness_1.csv",
+    "core_path_witness_2.csv",
+    "core_psd_overhead_cdf.csv",
+    "core_round_tradeoff_raw.csv",
+    "core_round_tradeoff_summary.csv",
+    "core_sampling_budget.csv",
+    "core_sampling_budget_constant_preserving_state.csv",
+    "core_sampling_budget_shared_opcode.csv",
+    "core_sampling_overhead_cdf.csv",
     "cpu_gpu_crossover.csv",
     "external_pglib.csv",
     "external_suitesparse.csv",

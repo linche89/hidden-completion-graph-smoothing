@@ -1,0 +1,33 @@
+{
+  "pdf": "E:\\Code\\MAS\\paper\\figures\\tikz\\core_design_benchmark.pdf",
+  "mode": "research",
+  "text_plot_overlap_check": false,
+  "plot_label_regex": null,
+  "page": {
+    "width": 518.52001953125,
+    "height": 214.94000244140625
+  },
+  "text_box_count": 29,
+  "title": {
+    "text": "(a)Statesmoother",
+    "x0": 102.73299407958984,
+    "y0": 8.798074722290039,
+    "x1": 190.55889892578125,
+    "y1": 17.764474868774414,
+    "colors": [
+      2106667
+    ]
+  },
+  "issues": [
+    {
+      "severity": "error",
+      "code": "title_band_collision",
+      "message": "Text enters protected title band near '(a)Statesmoother': '(b)Designgrid'",
+      "boxes": [
+        "(a)Statesmoother",
+        "(b)Designgrid"
+      ]
+    }
+  ],
+  "status": "fail"
+}

@@ -9,6 +9,7 @@ import subprocess
 import sys
 from typing import Any
 
+import clarabel
 import cvxpy
 import networkx
 import numpy
@@ -43,6 +44,7 @@ def experiment_provenance(repository_root: str | Path) -> dict[str, Any]:
             "scipy": scipy.__version__,
             "networkx": networkx.__version__,
             "cvxpy": cvxpy.__version__,
+            "clarabel": clarabel.__version__,
             "psutil": psutil.__version__,
         },
         "logical_cpus": os.cpu_count(),

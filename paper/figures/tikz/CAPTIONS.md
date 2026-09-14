@@ -10,7 +10,8 @@ spectral SDP, and the sharp finite-budget rate.
 
 ## `budget_pareto`
 
-Finite hidden-budget hierarchy for the two-port fixed-rule audit.  (a) The
+Finite hidden-budget hierarchy for the two-port fixed-rule audit with
+(C=Q=2^{-1/2}[1\;1]).  (a) The
 observed gap between finite-budget and unbounded squared risks agrees with the
 exact operator-Hausdorff distance (q/(q+h)) for every tested budget.  (b) A
 larger hidden budget increases both the certified radius and the offline
@@ -58,3 +59,26 @@ Chebyshev rounds and (b) sparse global-reference solve time.  PGLib cases
 contribute topology and positive branch weights, while SuiteSparse cases
 contribute symmetric sparsity graphs; neither transformation is presented as
 the original dataset's WLS model or as a theorem-matched hidden completion.
+
+## `core_design_benchmark`
+
+Fixed theorem-matched design grid.  (a) Postsolve-revalidated radii for nine
+`(q,h)` pairs under three support classes, normalized by the corresponding
+zero-hop radius; circles show every pair and the line shows median and
+interquartile range.  (b) Descriptive exact-revalidated risk-overhead CDFs for
+270 sampled rules and 54 finite-budget evaluations of 18
+positive-contraction designs.
+
+## `sampling_budget_curve`
+
+Same-distribution randomized design at seven nested training budgets, with 30
+independent seeds per case.  Bands show interquartile ranges.  Underreporting
+and true-risk regret both trend downward with training size, but exact reevaluation
+continues to find a deterministic certificate gap at the largest budget.
+
+## `path_tightness`
+
+Connected maximum-degree-two path witnesses for three active exact scenarios.
+Every graph contains exactly one hidden node.  Physical full-input risks and
+port blocks converge to their canonical values as within-component
+conductance grows and bridge conductance decays reciprocally.

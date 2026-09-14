@@ -1,0 +1,77 @@
+\documentclass[tikz,border=6pt]{standalone}
+\input{figure_style.tex}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{groupplot}[
+    group style={group size=2 by 1,horizontal sep=14mm},
+    paper axis,
+    width=77mm,
+    height=54mm,
+    xmode=log,
+    log basis x=2,
+    xmin=3.5,xmax=290,
+    xtick={4,8,16,32,64,128,256},
+    xticklabels={4,8,16,32,64,128,256},
+    xlabel={Training completions $N$},
+    ymajorgrids,
+  ]
+    \nextgroupplot[
+      title={(a) Underreporting},
+      ymin=0,ymax=50,
+      ylabel={Relative gap (\%)},
+      legend style={at={(0.98,0.98)},anchor=north east},
+    ]
+      \addplot[name path=stateupper,draw=none,forget plot]
+        table[col sep=comma,x=sample_size,y=under_q75_percent]
+        {data/core_sampling_budget_constant_preserving_state.csv};
+      \addplot[name path=statelower,draw=none,forget plot]
+        table[col sep=comma,x=sample_size,y=under_q25_percent]
+        {data/core_sampling_budget_constant_preserving_state.csv};
+      \addplot[oiBlue!16,draw=none,forget plot] fill between[of=stateupper and statelower];
+      \addplot[oiBlue,paper mark,mark=*,solid]
+        table[col sep=comma,x=sample_size,y=under_median_percent]
+        {data/core_sampling_budget_constant_preserving_state.csv};
+      \addlegendentry{State smoother}
+      \addplot[name path=opcodeupper,draw=none,forget plot]
+        table[col sep=comma,x=sample_size,y=under_q75_percent]
+        {data/core_sampling_budget_shared_opcode.csv};
+      \addplot[name path=opcodelower,draw=none,forget plot]
+        table[col sep=comma,x=sample_size,y=under_q25_percent]
+        {data/core_sampling_budget_shared_opcode.csv};
+      \addplot[oiOrange!18,draw=none,forget plot] fill between[of=opcodeupper and opcodelower];
+      \addplot[oiOrange!95!black,paper mark,mark=square*,dashed]
+        table[col sep=comma,x=sample_size,y=under_median_percent]
+        {data/core_sampling_budget_shared_opcode.csv};
+      \addlegendentry{Shared opcode}
+
+    \nextgroupplot[
+      title={(b) True-risk regret},
+      ymin=0,ymax=55,
+      ylabel={Over exact design (\%)},
+    ]
+      \addplot[name path=stateregretupper,draw=none,forget plot]
+        table[col sep=comma,x=sample_size,y=regret_q75_percent]
+        {data/core_sampling_budget_constant_preserving_state.csv};
+      \addplot[name path=stateregretlower,draw=none,forget plot]
+        table[col sep=comma,x=sample_size,y=regret_q25_percent]
+        {data/core_sampling_budget_constant_preserving_state.csv};
+      \addplot[oiBlue!16,draw=none,forget plot]
+        fill between[of=stateregretupper and stateregretlower];
+      \addplot[oiBlue,paper mark,mark=*,solid]
+        table[col sep=comma,x=sample_size,y=regret_median_percent]
+        {data/core_sampling_budget_constant_preserving_state.csv};
+      \addplot[name path=opcoderegretupper,draw=none,forget plot]
+        table[col sep=comma,x=sample_size,y=regret_q75_percent]
+        {data/core_sampling_budget_shared_opcode.csv};
+      \addplot[name path=opcoderegretlower,draw=none,forget plot]
+        table[col sep=comma,x=sample_size,y=regret_q25_percent]
+        {data/core_sampling_budget_shared_opcode.csv};
+      \addplot[oiOrange!18,draw=none,forget plot]
+        fill between[of=opcoderegretupper and opcoderegretlower];
+      \addplot[oiOrange!95!black,paper mark,mark=square*,dashed]
+        table[col sep=comma,x=sample_size,y=regret_median_percent]
+        {data/core_sampling_budget_shared_opcode.csv};
+  \end{groupplot}
+\end{tikzpicture}
+\end{document}

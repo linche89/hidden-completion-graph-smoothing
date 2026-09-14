@@ -1,0 +1,55 @@
+\documentclass[tikz,border=6pt]{standalone}
+\input{figure_style.tex}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{groupplot}[
+    group style={group size=2 by 1,horizontal sep=14mm},
+    paper axis,
+    width=77mm,
+    height=54mm,
+    xmode=log,
+    xmin=8,xmax=1.3e6,
+    xlabel={Strong conductance $t$ ($\varepsilon=t^{-1}$)},
+    xmajorgrids,
+    ymajorgrids,
+  ]
+    \nextgroupplot[
+      title={(a) Physical full-input error},
+      ymin=0.80,ymax=1.008,
+      ylabel={$R_G(Q)/R_{\pi,k}(Q)$},
+      legend style={at={(0.98,0.04)},anchor=south east},
+    ]
+      \addplot[midgray,densely dotted,line width=0.8pt,domain=10:1e6,forget plot]
+        {1};
+      \addplot[oiBlue,paper mark,mark=*,solid]
+        table[col sep=comma,x=strong_conductance,y=physical_over_canonical]
+        {data/core_path_witness_0.csv};
+      \addlegendentry{1 block}
+      \addplot[oiGreen!85!black,paper mark,mark=square*,dashed]
+        table[col sep=comma,x=strong_conductance,y=physical_over_canonical]
+        {data/core_path_witness_1.csv};
+      \addlegendentry{2 blocks}
+      \addplot[oiOrange!95!black,paper mark,mark=triangle*,dash dot]
+        table[col sep=comma,x=strong_conductance,y=physical_over_canonical]
+        {data/core_path_witness_2.csv};
+      \addlegendentry{3 blocks}
+
+    \nextgroupplot[
+      title={(b) Worst gap over the three paths},
+      ymode=log,
+      ymin=3e-7,ymax=3e-1,
+      ylabel={Convergence gap},
+      legend style={at={(0.98,0.98)},anchor=north east},
+    ]
+      \addplot[oiVermillion,paper mark,mark=*,solid]
+        table[col sep=comma,x=strong_conductance,y=maximum_relative_radius_gap]
+        {data/core_path_envelope.csv};
+      \addlegendentry{Relative risk gap}
+      \addplot[oiPurple,paper mark,mark=square*,dashed]
+        table[col sep=comma,x=strong_conductance,y=maximum_port_block_distance]
+        {data/core_path_envelope.csv};
+      \addlegendentry{$\|X_G-X_{\pi,k}\|_2$}
+  \end{groupplot}
+\end{tikzpicture}
+\end{document}

@@ -21,7 +21,10 @@ $figures = @(
     'local_method_tradeoff',
     'scenario_scaling',
     'cpu_gpu_crossover',
-    'external_stress'
+    'external_stress',
+    'core_design_benchmark',
+    'sampling_budget_curve',
+    'path_tightness'
 )
 
 function Invoke-Checked {
@@ -49,6 +52,8 @@ try {
             '-m', 'experiments.smoother.paper_data',
             '--p3-p4', 'experiments/results/p3_p4_smoke.json',
             '--external', 'experiments/results/p4_external_scale.json',
+            '--core-evidence', 'experiments/results/p4_core_evidence.json',
+            '--solver-crosscheck', 'experiments/results/p4_solver_crosscheck.json',
             '--gpu', 'experiments/results/smoother_gpu_scale.json',
             'experiments/results/smoother_gpu_scale_recheck1.json',
             'experiments/results/smoother_gpu_scale_recheck2.json'

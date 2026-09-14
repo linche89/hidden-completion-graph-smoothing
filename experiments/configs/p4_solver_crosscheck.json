@@ -1,0 +1,18 @@
+{
+  "source": "experiments/results/p4_core_evidence.json",
+  "selection_status": "optimal_inaccurate",
+  "expected_selected_cells": 14,
+  "solver": {
+    "name": "SCS",
+    "options": {
+      "eps": 1e-8,
+      "max_iters": 500000,
+      "acceleration_lookback": 10
+    }
+  },
+  "checks": {
+    "maximum_relative_radius_delta": 5e-7,
+    "maximum_epigraph_squared_risk_gap": 1e-8,
+    "maximum_local_rule_residual": 1e-8
+  }
+}

@@ -16,6 +16,11 @@ from experiments.smoother.algorithms import (
     induced_local_operator,
     neumann_apply,
 )
+from experiments.smoother.core_evidence import (
+    connected_path_completion,
+    frozen_benchmark_definitions,
+    wilson_interval,
+)
 from experiments.smoother.graphs import (
     load_pglib_topology,
     load_suitesparse_pattern,
@@ -106,6 +111,48 @@ class FixedGraphAlgorithmTests(unittest.TestCase):
 
 
 class RobustDesignTests(unittest.TestCase):
+    def test_core_evidence_grid_is_frozen_and_complete(self) -> None:
+        definitions = frozen_benchmark_definitions(4)
+        self.assertEqual(len(definitions), 6)
+        self.assertEqual(
+            {item["family"] for item in definitions},
+            {
+                "constant_preserving_state",
+                "heterogeneous_diagonal",
+                "unconstrained_state_control",
+            },
+        )
+        state_rules = {
+            item["rule_name"]
+            for item in definitions
+            if item["family"] == "constant_preserving_state"
+        }
+        self.assertEqual(state_rules, {"zero_hop", "one_hop", "full_port"})
+
+    def test_connected_path_witness_has_exact_budget_and_converges(self) -> None:
+        completion = connected_path_completion(
+            3,
+            2,
+            ((0, 2), (1,)),
+            (1, 0),
+            strong_conductance=1e6,
+            weak_conductance=1e-6,
+        )
+        target = np.array(
+            [[1.0 / 3.0, 0.0, 1.0 / 3.0], [0.0, 1.0, 0.0], [1.0 / 3.0, 0.0, 1.0 / 3.0]]
+        )
+        self.assertEqual(completion.hidden_count, 2)
+        self.assertTrue(completion.metadata["connected"])
+        self.assertLessEqual(completion.metadata["maximum_degree"], 2)
+        np.testing.assert_allclose(
+            completion.smoother[:3, :3], target, rtol=0.0, atol=4e-6
+        )
+
+    def test_wilson_interval_handles_all_failures(self) -> None:
+        lower, upper = wilson_interval(30, 30)
+        self.assertGreater(lower, 0.88)
+        self.assertEqual(upper, 1.0)
+
     def test_physical_completion_is_below_exact_finite_certificate(self) -> None:
         average = np.ones((2, 2)) / 2.0
         q_matrix = (2.0 / 3.0) * average

@@ -22,10 +22,10 @@
     {
       "severity": "error",
       "code": "title_band_collision",
-      "message": "Text enters protected title band near 'full-inputSchattennorms': 'Corollary1'",
+      "message": "Text enters protected title band near 'full-inputSchattennorms': 'Schattenreduction'",
       "boxes": [
         "full-inputSchattennorms",
-        "Corollary1"
+        "Schattenreduction"
       ]
     }
   ],

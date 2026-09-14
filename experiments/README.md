@@ -92,6 +92,14 @@ python -m experiments.smoother `
   --config experiments/configs/p4_external_scale.json `
   --output experiments/results/p4_external_scale.json `
   --section stress
+
+python -m experiments.smoother.core_evidence `
+  --config experiments/configs/p4_core_evidence.json `
+  --output experiments/results/p4_core_evidence.json
+
+python -m experiments.smoother.solver_crosscheck `
+  --config experiments/configs/p4_solver_crosscheck.json `
+  --output experiments/results/p4_solver_crosscheck.json
 ```
 
 The first command runs exact finite-`h` and unbounded certificates, random
@@ -99,7 +107,11 @@ completion sampling, the PSD-contraction outer relaxation, the endpoint NO-GO
 ablation, vertex-pruning and scenario-count sweeps, and four 36-node synthetic
 graph families.  The second command treats PGLib topologies and SuiteSparse
 sparsity patterns only as external graph-smoother stress transformations; it
-does not relabel them as raw WLS or Kalman models.
+does not relabel them as raw WLS or Kalman models.  The third command runs the
+fixed 54-problem exact-design grid, 420 nested same-distribution sampling
+fits, and connected maximum-degree-two path witnesses used in the TSP draft.
+The fourth command reruns every flagged primary-solver cell with high-accuracy
+SCS; its radius agreement is numerical corroboration, not a dual lower bound.
 
 Export the checked JSON records to backend-neutral CSV files for TikZ with:
 
@@ -107,6 +119,8 @@ Export the checked JSON records to backend-neutral CSV files for TikZ with:
 python -m experiments.smoother.paper_data `
   --p3-p4 experiments/results/p3_p4_smoke.json `
   --external experiments/results/p4_external_scale.json `
+  --core-evidence experiments/results/p4_core_evidence.json `
+  --solver-crosscheck experiments/results/p4_solver_crosscheck.json `
   --gpu experiments/results/smoother_gpu_scale.json `
         experiments/results/smoother_gpu_scale_recheck1.json `
         experiments/results/smoother_gpu_scale_recheck2.json
