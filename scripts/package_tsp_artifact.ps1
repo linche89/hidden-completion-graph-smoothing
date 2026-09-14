@@ -39,6 +39,7 @@ function Copy-ArtifactPath {
 
 $artifactPaths = @(
     '.gitattributes',
+    'LICENSE',
     'README.md',
     'pyproject.toml',
     'REPRODUCIBILITY.md',

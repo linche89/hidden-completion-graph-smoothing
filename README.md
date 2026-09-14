@@ -94,4 +94,11 @@ attribution notices stored in their respective dataset directories.
 
 ## Author
 
-Che Lin — <linmo891104@gmail.com>
+Che Lin, Independent Researcher — <linmo891104@gmail.com>
+
+## License
+
+The original software in `hidden_completion/`, `experiments/`, and `scripts/`
+is released under the [MIT License](LICENSE). The manuscript and original
+paper figures are not covered by the software license. Third-party benchmark
+data retain the licenses and attribution notices in their dataset directories.

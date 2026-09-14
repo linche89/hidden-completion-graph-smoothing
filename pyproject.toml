@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Exact robust local graph-smoother design under hidden completions"
 readme = "README.md"
 requires-python = ">=3.11"
+license = "MIT"
 dependencies = [
   "cvxpy>=1.7,<1.8",
   "numpy>=2.0",
