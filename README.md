@@ -57,6 +57,11 @@ configuration schema.
 
 ## Reproduce the TSP manuscript
 
+Checked PDFs from the current source tree are available directly:
+
+- [TSP manuscript](paper/tsp/manuscript.pdf);
+- [supplementary material](paper/tsp/supplement.pdf).
+
 Install the pinned CPU dependencies, then run the checked build:
 
 ```powershell

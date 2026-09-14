@@ -11,6 +11,9 @@ the observed port count, not in the total physical-graph size. The mathematical
 scope is frozen; edits in this directory concern positioning, exposition,
 experiments, and submission layout.
 
+Checked outputs: [manuscript PDF](manuscript.pdf) and
+[supplement PDF](supplement.pdf).
+
 ## Build
 
 From the repository root, the complete checked build is:

@@ -102,9 +102,15 @@ try {
         -Destination (Join-Path $outputDirectory 'tsp_manuscript.pdf') -Force
     Copy-Item -LiteralPath (Join-Path $tspBuildDirectory 'supplement.pdf') `
         -Destination (Join-Path $outputDirectory 'tsp_supplement.pdf') -Force
+    Copy-Item -LiteralPath (Join-Path $tspBuildDirectory 'main.pdf') `
+        -Destination (Join-Path $tspDirectory 'manuscript.pdf') -Force
+    Copy-Item -LiteralPath (Join-Path $tspBuildDirectory 'supplement.pdf') `
+        -Destination (Join-Path $tspDirectory 'supplement.pdf') -Force
 
     Write-Host "Built $outputDirectory/tsp_manuscript.pdf"
     Write-Host "Built $outputDirectory/tsp_supplement.pdf"
+    Write-Host "Updated $tspDirectory/manuscript.pdf"
+    Write-Host "Updated $tspDirectory/supplement.pdf"
 }
 finally {
     Pop-Location

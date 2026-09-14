@@ -64,6 +64,8 @@ $artifactPaths = @(
     'paper/figures/tikz',
     'paper/tsp/main.tex',
     'paper/tsp/supplement.tex',
+    'paper/tsp/manuscript.pdf',
+    'paper/tsp/supplement.pdf',
     'paper/tsp/references.bib',
     'paper/tsp/README.md',
     'paper/tsp/tables',
