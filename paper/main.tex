@@ -5,6 +5,7 @@
 \usepackage{bm}
 \usepackage{booktabs}
 \usepackage{enumitem}
+\usepackage{graphicx}
 \usepackage{microtype}
 \usepackage[hidelinks]{hyperref}
 \hypersetup{
@@ -105,6 +106,16 @@ unit-grounded, and has nonnegative edge weights.  We do not identify the
 smoother error in \eqref{eq:smoother} with the measurement-noise MSE of a
 general WLS or Kalman estimator.  Directed, signed, block-valued, and nonlinear
 extensions are outside the claims of this paper.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/tikz/theorem_structure.pdf}
+  \caption{Logical structure of the result.  The forest-mixture identity
+  supplies the upper inclusion, while connected maximum-degree-two paths
+  expose the listed vertices and give the converse.  The exact completion
+  hulls then imply the three application corollaries.}
+  \label{fig:theorem-structure}
+\end{figure}
 
 \section{Completion model and local rules}
 
@@ -642,6 +653,17 @@ Combine this Lipschitz bound with the exact Hausdorff distance
 \eqref{eq:hausdorff}.
 \end{proof}
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/tikz/budget_pareto.pdf}
+  \caption{Finite hidden-budget hierarchy for the two-port fixed-rule audit.
+  The measured finite-to-unbounded squared-risk gaps coincide numerically with
+  the exact distance $q/(q+h)$.  Increasing the hidden budget increases both
+  the certified radius and the offline scenario count; exact pruning deletes
+  redundant LMIs without changing the radius.}
+  \label{fig:budget-pareto}
+\end{figure}
+
 \section{Graph-smoothing examples and algorithmic meaning}
 
 \subsection{A finite-budget gain that is not imposed by a protocol constraint}
@@ -696,6 +718,17 @@ incorrect answer $\alpha=1$, $R=1$: the robust radius is underestimated by
 $8.83\%$.  This example also illustrates why the solver reports the active
 scenario set rather than only the optimal matrix.
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/tikz/certificate_sampling_failure.pdf}
+  \caption{Certificate comparison for $q=3$, $h=2$, one-hop path support, and
+  shared diagonal coefficients.  Physical training and held-out maxima do not
+  certify the completion class.  The rule trained on 12 random completions
+  understates its exact finite-budget worst case by $0.295$.  The plotted blue
+  bars re-evaluate every returned rule on the exact finite scenario set.}
+  \label{fig:certificate-failure}
+\end{figure}
+
 \subsection{Offline and online costs}
 
 Scenario generation, conic model construction, and SDP solution are offline
@@ -707,6 +740,115 @@ and byte-hop counts, $\operatorname{nnz}(Q)$ multiply-adds per signal, and
 storage proportional to $\operatorname{nnz}(Q)$.  These quantities are not
 part of the mathematical radius and should be reported separately in
 experiments.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.58\linewidth]{figures/tikz/scenario_scaling.pdf}
+  \caption{Exact scenario counts at hidden budget $h=2$.  Finite candidates,
+  retained finite-hull vertices, and unbounded partial partitions all grow
+  combinatorially with $q$.  The reduction is boundary-size fixed-parameter,
+  not polynomial in the boundary size.}
+  \label{fig:scenario-scaling}
+\end{figure}
+
+\section{Computational validation}
+
+\subsection{Protocol and certificate audit}
+
+We use two explicitly separated experiment tracks.  The theorem-matched track
+optimizes a common port rule over the exact completion scenarios and measures
+the full-input operator norm in \eqref{eq:full-error}.  The fixed-graph track
+instead reveals one complete graph and compares graph-smoothing algorithms on
+that instance.  Its empirical MSE is a graph-signal metric and is never labeled
+as a general WLS or Kalman measurement-noise MSE.
+
+The principal theorem-matched instance uses $q=3$, $h=2$,
+$C=\diag(1,1.5,2)$, a one-hop path zero pattern, and one shared coefficient for
+the three diagonal entries of $Q$.  The exact finite certificate is
+$1.088304$.  A design trained on 12 random physical completions reports radius
+$0.875273$, but exact re-evaluation gives $1.170691$, the gap displayed in
+Figure~\ref{fig:certificate-failure}.  The safe
+$0\preceq X\preceq I$ outer relaxation returns radius $1.122185$; the same
+rule has exact finite risk $1.092846$, so the safety margin is conservative.
+The endpoint-only NO-GO design reports approximately $1$ on its reduced set
+but has exact finite risk $1.144123$.
+
+Exact pruning reduces the finite model from 31 to 21 LMIs, a $32.3\%$
+reduction.  The pruned and unpruned radii differ by only
+$1.7\times10^{-9}$; on this smoke instance their total offline times are
+$0.0405$ and $0.0526$ seconds, respectively.  At $q=8$ and $h=2$, generation
+alone produces 66,491 candidates, 49,484 retained vertices, and 21,147
+unbounded partial partitions.  This confirms the intended boundary-size
+parameterization and also identifies its practical combinatorial limit.
+
+For the optimized three-port rule, one explicit shortest-path unicast schedule
+uses one synchronous round, four scalar-hops (32 byte-hops in double precision),
+11 online FLOPs, and 100 bytes of sparse coefficient storage.  These numbers
+describe an implementable schedule, not communication lower bounds.
+
+\subsection{Fixed-graph local algorithms}
+
+We next average over four 36-node weighted graphs: random cyclic, grid,
+geometric, and small-world.  Each point uses 16 graph-signal draws.  The
+ordinary induced-neighborhood truncation, Neumann iteration, and Chebyshev
+iteration all obey the stated causal radius, but truncation additionally
+collects a local model and performs a local solve.  At four rounds, the mean
+empirical MSEs are $8.63\times10^{-5}$, $6.69\times10^{-2}$, and
+$5.95\times10^{-3}$, respectively, while the corresponding mean byte-hop
+counts are 426,972 for truncation and 79,360 for each polynomial method.
+Figure~\ref{fig:local-tradeoff} therefore reports accuracy and communication
+separately rather than collapsing them into a single score.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/tikz/local_method_tradeoff.pdf}
+  \caption{Fixed-known-graph accuracy and communication tradeoff, averaged
+  over four synthetic graph families.  Induced truncation attains the lowest
+  error in this small test but collects substantially more model traffic;
+  Chebyshev improves much faster than Neumann at the same iterative byte-hop
+  count.}
+  \label{fig:local-tradeoff}
+\end{figure}
+
+\subsection{External scale and accelerator crossover}
+
+The external stress track uses six PGLib networks as weighted topologies and
+three SuiteSparse matrices as symmetric sparsity graphs.  In every case the
+benchmark constructs the unit-grounded matrix $I+L$; it does not claim to
+reproduce the source dataset's original estimator.  The largest case has
+129,164 vertices.  All global sparse-reference solves meet the configured
+residual tolerance.  Figure~\ref{fig:external-stress} records the 16-round
+Chebyshev signal error and reference-solve time without converting either into
+a theorem-matched completion certificate.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{figures/tikz/external_stress.pdf}
+  \caption{External graph-smoother stress tests.  PGLib cases contribute
+  topology and positive branch weights; SuiteSparse cases contribute sparsity
+  graphs.  Panel (a) reports 16-round Chebyshev relative signal error and panel
+  (b) the sparse global-reference solve time.}
+  \label{fig:external-stress}
+\end{figure}
+
+Finally, three independent process runs compare 40 rounds of a fixed local
+Richardson smoother on two-dimensional grids.  The environment fixes OpenMP
+and OpenBLAS to one CPU thread and uses an NVIDIA RTX 5080.  Median resident
+kernel speedups (CPU time divided by GPU time) are $0.273$, $1.468$, $3.235$,
+and $69.38$ at 10,000, 50,176, 102,400, and 1,000,000 states.  Including vector
+host--device transfers gives $0.259$, $1.400$, $2.922$, and $50.35$.  Thus the
+observed crossover lies between 10,000 and 50,176 states on this system;
+wall-clock values are hardware-specific and are not theoretical complexity
+claims.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.58\linewidth]{figures/tikz/cpu_gpu_crossover.pdf}
+  \caption{CPU/GPU crossover for a 40-round unit-grounded grid smoother.
+  Curves show medians over three process runs, and the blue band spans the
+  observed resident-kernel range.}
+  \label{fig:cpu-gpu}
+\end{figure}
 
 \section{Claim boundaries and relation to prior work}
 
@@ -761,6 +903,17 @@ the $X-X^2$ Gram term, exact vertex pruning, $r$-hop masks, shared
 coefficients, and the analytic values in \eqref{eq:finite-example} and
 \eqref{eq:shared-example}.
 
+The application and figure-data commands are
+\begin{verbatim}
+python -m experiments.smoother --config <config.json> --output <result.json>
+python -m experiments.smoother.paper_data --p3-p4 <result.json> ...
+\end{verbatim}
+The committed records preserve normalized configurations, RNG seeds, platform
+and package versions, source hashes, solver checks, and independent GPU timing
+repetitions.  Standalone TikZ/PGFPlots sources, their CSV inputs, vector PDFs,
+PNG previews, and the visual-QA record are in
+\texttt{paper/figures/tikz/}.
+
 \section{Conclusion}
 
 Unknown hidden topology need not be sampled or replaced by a full-block
@@ -769,9 +922,9 @@ allocations give an exact finite description, including the complete hidden
 input, while connected paths certify that every retained boundary scenario is
 genuinely sharp.  The result supplies a lossless SDP for constrained common
 local rules and an exact budget-to-unbounded convergence rate.  The next step
-is empirical rather than theoretical: quantify scenario-pruning gains,
-certificate failures of random completion sampling, and offline/online
-resource tradeoffs on synthetic and external graph instances.
+is not to enlarge the theory class, but to expand the preregistered experiment
+matrix, repeat timings across systems, and refine presentation of the exact
+certificates and fixed-graph resource tradeoffs.
 
 \bibliographystyle{plain}
 \bibliography{references}
