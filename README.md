@@ -1,109 +1,62 @@
-# Exact Robust Local Graph-Smoother Design Under Hidden-Topology Completions
+# Hidden-Completion Graph Smoothing
 
-Python reference implementation and reproducibility artifact for the
-manuscript **“Exact Robust Local Graph-Smoother Design Under Hidden-Topology
-Completions.”** The manuscript is being prepared for submission to *IEEE
-Transactions on Signal Processing*.
+Python implementation for **Exact Robust Local Graph-Smoother Design under
+Hidden-Topology Completions**, by Che Lin.
 
-The project designs one port-local linear approximation to the graph
-Tikhonov smoother
+[Manuscript](paper/tsp/manuscript.pdf) ·
+[Supplement](paper/tsp/supplement.pdf) ·
+[Solver guide](hidden_completion/README.md) ·
+[Reproducibility](REPRODUCIBILITY.md)
 
-$$
-    (I+L_G)^{-1}
-$$
+Design a local linear approximation to the graph Tikhonov smoother
+$(I+L_G)^{-1}$ when the remote topology and input signals are unknown.
+The method reduces worst-case design to a finite semidefinite program,
+with either a bounded or unbounded number of hidden nodes.
 
-when the topology and inputs beyond a labeled visible port set are unknown.
-For a finite hidden-node budget, the infinite completion family is reduced
-exactly to scenarios indexed by set partitions and hidden-budget allocations.
-The unbounded model reduces to partial partitions. Spectral-norm design under
-semidefinite-representable locality rules is then solved by a finite SDP.
-
-## Scope
-
-The exact method is fixed-parameter in the number of visible ports `q`; the
-hidden physical network itself may be arbitrarily large. It is intended for a
-modest observed boundary and is not presented as a general fast smoother for
-unrestricted large `q`.
-
-The implementation supports:
-
-- finite-`h` and unbounded hidden-completion scenario enumeration;
-- exact finite-budget vertex pruning;
-- spectral-norm SDP design with zero patterns, `r`-hop masks, affine
-  equalities, fixed entries, row sums, and shared coefficients;
-- active worst-case scenario reporting;
-- theorem-matched numerical studies and fixed-known-graph stress tests.
+The model assumes undirected graphs, nonnegative edge weights, and unit
+grounding. Exact scenario enumeration is intended for small visible port sets.
 
 ## Quick start
 
-Python 3.11 or newer is required.
+Requires **Python 3.11+**. The example runs on CPU.
 
-```powershell
+```bash
+git clone https://github.com/linche89/hidden-completion-graph-smoothing.git
+cd hidden-completion-graph-smoothing
+python -m pip install -e .
+python -m hidden_completion solve experiments/configs/exact_finite_q2_h1.json
+```
+
+Returns JSON with the local operator `Q`, worst-case error radius
+(approximately `0.471405` for this example), and solver diagnostics.
+See the [solver guide](hidden_completion/README.md) for unbounded completions
+and local-rule configuration.
+
+## Reproducibility
+
+Install the experiment dependencies and run the tests:
+
+```bash
 python -m pip install -e ".[experiments]"
 python -m unittest discover -s experiments -p "test_*.py" -v
 ```
 
-Solve representative finite-budget and unbounded problems:
+The [reproducibility guide](REPRODUCIBILITY.md) covers pinned environments,
+experiment reruns, and paper builds. PDF builds additionally require LaTeX,
+Latexmk, and Poppler.
 
-```powershell
-python -m hidden_completion solve experiments/configs/exact_finite_q2_h1.json
-python -m hidden_completion solve experiments/configs/exact_unbounded_shared_opcode.json
-```
+## Repository
 
-Each result reports the optimized local operator, its re-evaluated exact
-radius, scenario counts, solver diagnostics, and active worst-case topologies.
-See [hidden_completion/README.md](hidden_completion/README.md) for the complete
-configuration schema.
+| Directory | Contents |
+| --- | --- |
+| [`hidden_completion/`](hidden_completion/) | Scenario enumeration and SDP solver |
+| [`experiments/`](experiments/) | Tests, configurations, and recorded results |
+| [`paper/`](paper/) | Manuscript, supplement, and figure sources |
+| [`datasets/raw/`](datasets/raw/) | Benchmark data, provenance, and licenses |
 
-## Reproduce the TSP manuscript
+## License and contact
 
-Checked PDFs from the current source tree are available directly:
+Code: [MIT](LICENSE). The manuscript and original figures are excluded;
+benchmark data retain their upstream licenses.
 
-- [TSP manuscript](paper/tsp/manuscript.pdf);
-- [supplementary material](paper/tsp/supplement.pdf).
-
-Install the pinned CPU dependencies, then run the checked build:
-
-```powershell
-python -m pip install -r experiments/requirements-repro-cpu.txt
-powershell -ExecutionPolicy Bypass -File scripts/build_tsp.ps1
-```
-
-The build runs the regression suite, regenerates the paper data, compiles the
-standalone TikZ figures, and writes:
-
-- `output/pdf/tsp_manuscript.pdf`;
-- `output/pdf/tsp_supplement.pdf`.
-
-MiKTeX/XeLaTeX, Latexmk, and Poppler are needed for the full paper build. The
-Python experiments can be run without a TeX installation. Detailed commands
-and checked environments are in [REPRODUCIBILITY.md](REPRODUCIBILITY.md).
-
-## Repository layout
-
-- `hidden_completion/`: exact scenario generator and SDP solver;
-- `experiments/`: regression tests, experiment runners, configurations, and
-  checked numerical records;
-- `paper/tsp/`: TSP manuscript and supplement;
-- `paper/figures/tikz/`: editable TikZ/PGFPlots sources and generated data;
-- `datasets/raw/`: licensed third-party stress-test data and provenance;
-- `scripts/`: reproducible paper-build and artifact-packaging commands.
-
-## External benchmark data
-
-The `.m` files under `datasets/raw/pglib_opf_v23.07/` are upstream PGLib-OPF
-cases in MATPOWER data format. They are **not MATLAB implementation code** and
-are parsed directly by the Python experiment loader; MATLAB and Octave are not
-required. PGLib-OPF and SuiteSparse data remain under the licenses and
-attribution notices stored in their respective dataset directories.
-
-## Author
-
-Che Lin, Independent Researcher — <linmo891104@gmail.com>
-
-## License
-
-The original software in `hidden_completion/`, `experiments/`, and `scripts/`
-is released under the [MIT License](LICENSE). The manuscript and original
-paper figures are not covered by the software license. Third-party benchmark
-data retain the licenses and attribution notices in their dataset directories.
+Che Lin · [linmo891104@gmail.com](mailto:linmo891104@gmail.com)
